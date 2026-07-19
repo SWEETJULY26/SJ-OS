@@ -49,9 +49,8 @@ Agenda:
 Quarterly priorities. Not yearly aspirations. Things that, if not done by July, would make you say "I wasted Q2."
 
 ```
-1. [Priority 1]
-2. [Priority 2]
-3. [Priority 3]
+1. Hire a new Ops specialist and a Product Development specialist.
+2. Build out the AI-assisted skill and agent system to support the execution layer of the brand's operating tasks — Asana/task management, order management, inventory management, and the rest of the ops stack.
 ```
 
 ---
