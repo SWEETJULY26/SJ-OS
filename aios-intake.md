@@ -60,7 +60,7 @@ Quarterly priorities. Not yearly aspirations. Things that, if not done by July, 
 Multiple answers OK. Stripe? Skool? GoHighLevel? QuickBooks? A spreadsheet?
 
 ```
-[Your answer here]
+Shopify (sweetjuly.com) — primary revenue tracking for DTC.
 ```
 
 ---
