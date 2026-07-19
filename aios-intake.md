@@ -11,7 +11,7 @@ This is the source-of-truth file for your AIOS. Fill it in by typing, voice-past
 Identity, offer, ICP. One paragraph each is fine.
 
 ```
-[Your answer here]
+I'm Alvin, running Operations for AC Brands, the company behind Sweet July — Ayesha Curry's lifestyle brand — and its skincare line, Sweet July Skin. Sweet July Skin sells Caribbean/Jamaican-rooted skincare ("modern formulas, ancient wisdom") direct-to-consumer via sweetjuly.com and through retail partners like Sephora, Ulta, and Whole Foods. This AIOS is meant to become the operating system for the brand — starting as my tool for running day-to-day ops, but built so the knowledge and process are documented well enough to hand off (succession planning), not just personal productivity.
 ```
 
 ---
