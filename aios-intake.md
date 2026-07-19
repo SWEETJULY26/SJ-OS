@@ -90,7 +90,7 @@ Fireflies (meeting recordings/notes), SharePoint (docs), Supabase (PLM and struc
 The single biggest time-suck or recurring drudgery. Plus where tasks/projects live (ClickUp / Asana / Linear / Notion / a notebook).
 
 ```
-[Your answer here]
+Asana is where everything lives — project/task management. The biggest time-suck is project management and supplier communication: chasing suppliers and updating tasks manually. (Note: extensive skill suite already exists for PD/Ops/Quality/Regulatory Asana automation — see references/ and skills list.)
 ```
 
 ---
