@@ -1,0 +1,20 @@
+interface:
+  display_name: asana find replace
+  short_description: Bulk find-and-replace text across all tasks and subtasks in an
+    Asana project. Use this whenever the user wants to rename a product, update a
+    placeholder, or replace any text across an entire Asana project. Trigger on phrases
+    like "replace [X] with [Y] in my project", "I duplicated a project and need to
+    update the product name", "change all tasks that say [old name] to [new name]",
+    "I created a project from a template and need to swap out the placeholder", "update
+    the product name in every task", or any request to do a text swap or bulk rename
+    across Asana tasks. Always use this skill for Asana find-and-replace workflows
+    — even if the user just says "find X replace with Y" and mentions a project name.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

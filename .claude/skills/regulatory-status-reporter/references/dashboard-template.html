@@ -1,0 +1,35 @@
+<!--
+  CANONICAL TEMPLATE — regulatory-dashboard.html
+  Locked 2026-05-12 (v6.6.2). Every weekly regen by sjs-regulatory-sweep
+  starts from this file. Do NOT edit the chrome (head links, body shell,
+  script order). Only the inline content inside assets/js/regulatory-dashboard.js
+  is swapped per regen — this HTML stays identical week to week.
+
+  Three-file pattern mirroring quality-dashboard.html:
+    - regulatory-dashboard.html (this file)            — thin shell
+    - assets/js/regulatory-dashboard.js                — mount + tab content
+    - assets/css/regulatory-dashboard.css              — scoped rd-* styles
+
+  Chrome is rendered via Hub.renderHeader / renderNav / renderFooter in the
+  JS module. Hub.bindNav() and Hub.bindEditMode() are called after mount.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Regulatory Dashboard — AC Brands Internal Hub</title>
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/regulatory-dashboard.css" />
+  <link rel="stylesheet" href="assets/css/editor.css" />
+</head>
+<body>
+  <main id="page-root" class="wrap" data-page="regulatory-dashboard">
+    <div class="loading"><p style="padding:48px 0;">Loading…</p></div>
+  </main>
+
+  <script src="assets/js/hub.js" defer></script>
+  <script src="assets/js/regulatory-dashboard.js" defer></script>
+  <script src="assets/js/editor.js" defer></script>
+</body>
+</html>

@@ -113,14 +113,22 @@ AIS-OS/
 ├── decisions/
 │   └── log.md                       ← Append-only record of what was decided and why
 ├── archives/                        ← Old stuff. Don't delete. Move here.
+├── scheduled-prompts/                ← Bootstrap instructions for remote Routines (see below)
 └── .claude/
     └── skills/
         ├── onboard/SKILL.md
         ├── audit/SKILL.md
-        └── level-up/SKILL.md
+        ├── level-up/SKILL.md
+        └── ...59 total — PD, Ops, Quality, Regulatory, margin, and status-reporter skills for Sweet July Skin
 ```
 
 See `EXPANSIONS.md` for what to add as you grow (`projects/`, `templates/`, `scripts/`, `.claude/agents/`, sub-OS folders, etc.).
+
+### Skills + scheduled-prompts (Sweet July Skin operational layer)
+
+This repo is also the deployment artifact for AC Brands' remote scheduled Routines. Each Routine clones this repo to `/home/user/sj-os`, reads its own `scheduled-prompts/<name>.md`, and follows the `.claude/skills/<name>/SKILL.md` files it lists as instructions.
+
+This folder was previously a separate `SWEETJULY26/Skills` repo, deliberately scoped to only the skills the 23 scheduled Routines invoke. It's now consolidated here along with the rest of the locally-installed skill set (margin analysis, competitive/retail intel, ingredient lookup, opportunity assessment, etc.) so there's one repo — not several — as the source of truth for both the AIOS shell and its operational capabilities. `SWEETJULY26/acb-thelanding` (the internal team frontend hub) and `SWEETJULY26/SJ-PLM` (the PLM app) remain separate repos; only the skills/routines layer moved.
 
 ---
 
