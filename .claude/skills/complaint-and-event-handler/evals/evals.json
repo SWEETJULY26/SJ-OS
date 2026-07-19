@@ -1,0 +1,26 @@
+{
+  "skill_name": "complaint-and-event-handler",
+  "evals": [
+    {
+      "id": 0,
+      "eval_name": "intake-and-classify-pava-toner",
+      "prompt": "A new complaint came in on the SJ Skin Complaint Log — a customer says her face turned red and itchy after using the Pava Toner from lot 25-03. She's asking for a refund. Log it and tell me what to do. Don't actually write to Asana — draft the action plan, classification, and first-response recommendation as a markdown plan I can approve.",
+      "expected_output": "A drafted action plan that: (1) classifies the complaint as Skin Reactions & Irritations, (2) recommends Replace and no return as first response per the type-to-action map, (3) flags it for SAE keyword check (red + itchy is below SAE threshold but should be noted), (4) names the section move (New feedback → Actioning), (5) explicitly states HITL gates and does not commit any writes.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "eval_name": "sae-escalation-castaway",
+      "prompt": "We just got a complaint that says the customer had to go to the ER after using the Castaway Cream — her face swelled up and the doctor prescribed steroids. What's the protocol? Walk me through what to do.",
+      "expected_output": "Recognition of SAE keywords (ER, swelling, steroids = medical intervention) and a SKN-OPS-002 walk surfacing: (1) draft of SAE Report Form (§5.1), (2) cross-link to source complaint task with `[SAE Open]` prefix (§5.2), (3) Initial Assessment as operator-decision gate (§5.3) — not auto-classified, (4) investigation team ask staged (§5.4), (5) explicit reportability flag for regulatory-manager handoff (pre-v6, drafted as `[Reg Flag Pending — regulatory-manager]`), (6) HITL on every triage step. SOP referenced by section number, not invented logic.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "eval_name": "recall-kickoff-soursop",
+      "prompt": "I'm seeing 4 separate complaints this week on Soursop Vit C from lot 24-11 — all skin reactions, two with medical visits. Trigger a recall on Soursop Vit C batch 24-11.",
+      "expected_output": "A SKN-OPS-003 walk surfacing: (1) recognition of the explicit kickoff phrase, (2) §4.A issue summary draft pulling complaints from the SJ Skin Complaint Log + batch context from PLM, (3) §4.B scope draft with units produced and channel split, (4) §4.C three-form customer notification draft (email, phone script, letter) styled via sweet-july-skin-brand, (5) §4.D return and disposal plan with oc3pl-order-manager handoff, (6) §4.E CAPA brief stage for capa-coordinator (pre-v5.2: `[CAPA Pending — capa-coordinator]` task), (7) §4.F follow-up tasks. Cross-functional ask list with named owners (CS, Ops, Regulatory, Production). Step-by-step HITL gates explicitly named. No comms auto-sent.",
+      "files": []
+    }
+  ]
+}
