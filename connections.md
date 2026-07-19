@@ -4,13 +4,13 @@ Registry of every system your AIOS can reach. Filled by `/onboard` from Q4-Q7 an
 
 | # | Domain | Tool | Mechanism | Auth | Last checked |
 |---|---|---|---|---|---|
-| 1 | Revenue / Financials | _filled by /onboard_ | not yet connected | — | — |
-| 2 | Customer interactions | _filled by /onboard_ | not yet connected | — | — |
-| 3 | Calendar | _filled by /onboard_ | not yet connected | — | — |
-| 4 | Communication | _filled by /onboard_ | not yet connected | — | — |
-| 5 | Project / task tracking | _filled by /onboard_ | not yet connected | — | — |
-| 6 | Meeting intelligence | _filled by /onboard_ | not yet connected | — | — |
-| 7 | Knowledge / files | _filled by /onboard_ | not yet connected | — | — |
+| 1 | Revenue / Financials | Shopify (sweetjuly.com) | mcp | connected | 2026-07-19 |
+| 2 | Customer interactions | Outlook | mcp | connected | 2026-07-19 |
+| 3 | Calendar | Outlook Calendar | mcp | connected | 2026-07-19 |
+| 4 | Communication | Outlook, Microsoft Teams, iMessage | mcp (Outlook/Teams); not yet connected (iMessage) | connected (Outlook/Teams); — | 2026-07-19 |
+| 5 | Project / task tracking | Asana | mcp | connected | 2026-07-19 |
+| 6 | Meeting intelligence | Fireflies | mcp | connected | 2026-07-19 |
+| 7 | Knowledge / files | SharePoint, Supabase (PLM) | mcp | connected | 2026-07-19 |
 
 **Mechanism options:** `mcp` (MCP server), `script` (Python/Bash hitting an API, in `scripts/`), `export` (CSV/JSON dump pipeline), `key+ref` (`.env` key + `references/{tool}-api.md` guide), `not yet connected`.
 
