@@ -11,7 +11,7 @@ This is the source-of-truth file for your AIOS. Fill it in by typing, voice-past
 Identity, offer, ICP. One paragraph each is fine.
 
 ```
-[Your answer here]
+I'm Alvin, running Operations for AC Brands, the company behind Sweet July — Ayesha Curry's lifestyle brand — and its skincare line, Sweet July Skin. Sweet July Skin sells Caribbean/Jamaican-rooted skincare ("modern formulas, ancient wisdom") direct-to-consumer via sweetjuly.com and through retail partners like Sephora, Ulta, and Whole Foods. This AIOS is meant to become the operating system for the brand — starting as my tool for running day-to-day ops, but built so the knowledge and process are documented well enough to hand off (succession planning), not just personal productivity.
 ```
 
 ---
@@ -21,11 +21,25 @@ Identity, offer, ICP. One paragraph each is fine.
 An email, a LinkedIn post, a DM, a doc — anything that sounds like you when you're not trying. **Paste verbatim.** Do not type these mid-conversation with Claude — chat-shaped samples are worse than no samples (voice contamination).
 
 ```
-[Sample 1 — paste raw]
+Hi Brian,
+
+Sounds good! Understood.
+
+I will inform the team and lab.
+
+Best,
+Alvin
 ```
 
 ```
-[Sample 2 — paste raw]
+Purpose: Align demand, supply, inventory, and cash
+
+Agenda:
+  1.  Demand outlook (sales, promos)
+  2.  Supply & capacity review
+  3.  Inventory position & risks
+  4.  Financial implications
+  5.  Decisions & approvals
 ```
 
 ---
@@ -35,9 +49,8 @@ An email, a LinkedIn post, a DM, a doc — anything that sounds like you when yo
 Quarterly priorities. Not yearly aspirations. Things that, if not done by July, would make you say "I wasted Q2."
 
 ```
-1. [Priority 1]
-2. [Priority 2]
-3. [Priority 3]
+1. Hire a new Ops specialist and a Product Development specialist.
+2. Build out the AI-assisted skill and agent system to support the execution layer of the brand's operating tasks — Asana/task management, order management, inventory management, and the rest of the ops stack.
 ```
 
 ---
@@ -47,7 +60,7 @@ Quarterly priorities. Not yearly aspirations. Things that, if not done by July, 
 Multiple answers OK. Stripe? Skool? GoHighLevel? QuickBooks? A spreadsheet?
 
 ```
-[Your answer here]
+Shopify (sweetjuly.com) — primary revenue tracking for DTC.
 ```
 
 ---
@@ -57,7 +70,7 @@ Multiple answers OK. Stripe? Skool? GoHighLevel? QuickBooks? A spreadsheet?
 Email (which one — Gmail / Outlook)? Slack? Teams? DMs (Skool / Discord / iMessage)? Phone?
 
 ```
-[Your answer here]
+Outlook (email), Microsoft Teams, iMessage, Asana (for task-level comms/comments).
 ```
 
 ---
@@ -67,7 +80,7 @@ Email (which one — Gmail / Outlook)? Slack? Teams? DMs (Skool / Discord / iMes
 Granola? Otter? Fireflies? Google Drive? Notion? Dropbox? A folder on your desktop you keep meaning to organize?
 
 ```
-[Your answer here]
+Fireflies (meeting recordings/notes), SharePoint (docs), Supabase (PLM and structured data).
 ```
 
 ---
@@ -77,7 +90,7 @@ Granola? Otter? Fireflies? Google Drive? Notion? Dropbox? A folder on your deskt
 The single biggest time-suck or recurring drudgery. Plus where tasks/projects live (ClickUp / Asana / Linear / Notion / a notebook).
 
 ```
-[Your answer here]
+Asana is where everything lives — project/task management. The biggest time-suck is project management and supplier communication: chasing suppliers and updating tasks manually. (Note: extensive skill suite already exists for PD/Ops/Quality/Regulatory Asana automation — see references/ and skills list.)
 ```
 
 ---
