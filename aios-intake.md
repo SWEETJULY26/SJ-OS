@@ -70,7 +70,7 @@ Shopify (sweetjuly.com) — primary revenue tracking for DTC.
 Email (which one — Gmail / Outlook)? Slack? Teams? DMs (Skool / Discord / iMessage)? Phone?
 
 ```
-[Your answer here]
+Outlook (email), Microsoft Teams, iMessage, Asana (for task-level comms/comments).
 ```
 
 ---
