@@ -21,11 +21,25 @@ I'm Alvin, running Operations for AC Brands, the company behind Sweet July — A
 An email, a LinkedIn post, a DM, a doc — anything that sounds like you when you're not trying. **Paste verbatim.** Do not type these mid-conversation with Claude — chat-shaped samples are worse than no samples (voice contamination).
 
 ```
-[Sample 1 — paste raw]
+Hi Brian,
+
+Sounds good! Understood.
+
+I will inform the team and lab.
+
+Best,
+Alvin
 ```
 
 ```
-[Sample 2 — paste raw]
+Purpose: Align demand, supply, inventory, and cash
+
+Agenda:
+  1.  Demand outlook (sales, promos)
+  2.  Supply & capacity review
+  3.  Inventory position & risks
+  4.  Financial implications
+  5.  Decisions & approvals
 ```
 
 ---
