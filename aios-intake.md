@@ -80,7 +80,7 @@ Outlook (email), Microsoft Teams, iMessage, Asana (for task-level comms/comments
 Granola? Otter? Fireflies? Google Drive? Notion? Dropbox? A folder on your desktop you keep meaning to organize?
 
 ```
-[Your answer here]
+Fireflies (meeting recordings/notes), SharePoint (docs), Supabase (PLM and structured data).
 ```
 
 ---
