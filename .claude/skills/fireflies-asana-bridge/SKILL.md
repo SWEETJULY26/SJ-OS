@@ -1,6 +1,6 @@
 ---
 name: fireflies-asana-bridge
-description: "Universal Fireflies meeting intake for Sweet July Skin. Reads transcripts and posts action items to the right Asana queues per sjs-master/bridge_queue_contract.md — PD, Ops, Quality, Regulatory — plus PLM cross-flags. Use whenever Alvin references a recent meeting, asks \"what came out of that meeting\", \"log the action items from my call with KDC-One\", \"update Asana from yesterday's sync\", \"pull tasks from my Fireflies\". Auto-flags urgent items. Covers PD supplier calls, Ops calls (vendor reviews, S&OP, logistics, OC3PL standups), Quality (CAPA reviews, complaint triage, lab patterns, batch holds, recall, SAE), Regulatory (Pedrero syncs, retailer attestation, MoCRA/FDA, IL packets, label artwork), founder syncs, and internal meetings. Vendor / partner / contact / product recognition loaded live from Supabase wiki + PLM at run time. Splits multi-system items with cross-references. Sibling of asana-pd-manager."
+description: "Universal Fireflies meeting intake for Sweet July Skin. Reads transcripts and posts action items to the right Asana queues per references/architecture/bridge_queue_contract.md — PD, Ops, Quality, Regulatory — plus PLM cross-flags. Use whenever Alvin references a recent meeting, asks \"what came out of that meeting\", \"log the action items from my call with KDC-One\", \"update Asana from yesterday's sync\", \"pull tasks from my Fireflies\". Auto-flags urgent items. Covers PD supplier calls, Ops calls (vendor reviews, S&OP, logistics, OC3PL standups), Quality (CAPA reviews, complaint triage, lab patterns, batch holds, recall, SAE), Regulatory (Pedrero syncs, retailer attestation, MoCRA/FDA, IL packets, label artwork), founder syncs, and internal meetings. Vendor / partner / contact / product recognition loaded live from Supabase wiki + PLM at run time. Splits multi-system items with cross-references. Sibling of asana-pd-manager."
 ---
 
 # Fireflies → Asana Bridge
@@ -75,7 +75,7 @@ email and meeting intake.
 
 ### Sub-system label set
 
-This bridge posts to Asana queues. The umbrella router for each sub-system picks up. Canonical queue map: `sjs-master/bridge_queue_contract.md`.
+This bridge posts to Asana queues. The umbrella router for each sub-system picks up. Canonical queue map: `references/architecture/bridge_queue_contract.md`.
 
 | Label | Asana queue destination |
 |-------|------------------------|
@@ -300,7 +300,7 @@ carry their own additional labels.
 
 ## Connection points
 
-This bridge posts to Asana queues per the queue contract — it doesn't call destination skills directly. Canonical map: `sjs-master/bridge_queue_contract.md`.
+This bridge posts to Asana queues per the queue contract — it doesn't call destination skills directly. Canonical map: `references/architecture/bridge_queue_contract.md`.
 
 - **PD queue:** `pd`-labeled actions land in the named SJ SKIN project (or Formula Tracker for stage moves) and follow `asana-pd-manager/references/confirmation-protocol.md`.
 - **Ops queue:** `ops`-labeled actions land in the named Ops project (Purchasing / Inventory / S&OP / Logistics / OC3PL Order Management / SJ Shipping Dashboard) per signal subtype.
@@ -308,7 +308,7 @@ This bridge posts to Asana queues per the queue contract — it doesn't call des
 - **Regulatory queue:** `regulatory`-labeled actions land in SJS Regulatory Management (or SJS Reportable Events for SAE / recall).
 - **PLM:** `plm`-labeled signal cross-flags to `outlook-plm-bridge`, which owns the email-sourced PLM write through `plm-assistant`. Meeting-sourced PLM writes (formula approvals discussed live, batch records mentioned in passing) cross-flag to `asana-plm-bridge` for Asana-side staging.
 - **Outlook follow-ups:** "Send an email to..." action items get cross-flagged to `outlook-asana-bridge` for outbound staging.
-- **Margin / Intel / Founder (no queue):** These are direct-output skills with no Asana queue. The bridge does not call them — it lands the underlying data where they read it live (margin cost/MOQ → PLM via `outlook-plm-bridge`; intel/founder signal → surfaced to the operator and upstream rollups). Destination-skill names elsewhere in this file (margin-pressure-test, sjs-comp-intel, ayesha-weekly-briefing, etc.) mark routing intent, not a direct call. Per `sjs-master/bridge_queue_contract.md`.
+- **Margin / Intel / Founder (no queue):** These are direct-output skills with no Asana queue. The bridge does not call them — it lands the underlying data where they read it live (margin cost/MOQ → PLM via `outlook-plm-bridge`; intel/founder signal → surfaced to the operator and upstream rollups). Destination-skill names elsewhere in this file (margin-pressure-test, sjs-comp-intel, ayesha-weekly-briefing, etc.) mark routing intent, not a direct call. Per `references/architecture/bridge_queue_contract.md`.
 
 ### Multi-route is the default
 

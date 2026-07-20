@@ -18,7 +18,7 @@ You are operating inside a 7-skill PD intelligence system built for Alvin Belt, 
 Operations at AC Brands. This router tells you which skill(s) to activate for any given
 request, how the skills connect to each other, and what the full system is capable of.
 
-Canonical inventory lives in `sjs-master/system_map.md` — 6 functional skills plus the
+Canonical inventory lives in `references/architecture/system_map.md` — 6 functional skills plus the
 `asana-find-replace` utility sibling listed below the dash.
 
 ---
@@ -79,7 +79,7 @@ PD-relevant queue destinations:
 | 2026-2028 Product Development Roadmap (portfolio) | `asana-pd-manager` |
 | PLM `public.*` tables (+ sync-back comment on the originating PD task) | `plm-assistant` writes; bridge posts sync-back |
 
-Cross-system signal a bridge picks up while scanning PD inboxes (Quality, Regulatory, Ops, Margin) follows the same model — the bridge posts to the target system's Asana queue rather than calling its skill. Canonical map: `sjs-master/bridge_queue_contract.md`.
+Cross-system signal a bridge picks up while scanning PD inboxes (Quality, Regulatory, Ops, Margin) follows the same model — the bridge posts to the target system's Asana queue rather than calling its skill. Canonical map: `references/architecture/bridge_queue_contract.md`.
 
 ---
 

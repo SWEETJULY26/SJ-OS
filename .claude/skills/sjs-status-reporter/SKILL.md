@@ -184,15 +184,15 @@ LOOKING AHEAD
 ### Output Template 3: Slide Deck Outline
 
 Produce a structured outline Alvin can hand to a designer or use with the PPTX skill.
-Always reference SJS brand guidelines (Pava Brown, Bone, Soursop, Barlow Condensed +
-Nunito Sans) in the design notes.
+Always reference SJS brand guidelines (Pava Brown, Bone, Soursop, GT America Expanded +
+Adrianna) in the design notes. Defer to `sweet-july-skin-brand` for the canonical spec.
 
 ```
 SLIDE DECK OUTLINE — [Title]
 [Date] | [Audience]
 
 Brand notes: Bone (#f4f0e8) background, Pava Brown (#8a665a) headings,
-Soursop (#bcab83) dividers, Barlow Condensed for titles, Nunito Sans for body.
+Soursop (#bcab83) dividers, GT America Expanded for titles, Adrianna for body.
 Lignum Vitae flower motif as subtle watermark at ~24° rotation.
 
 SLIDE 1 — Cover
@@ -336,7 +336,7 @@ For posting to Asana → route through `asana-pd-manager` to post as a project s
 
 ## Connection points
 
-Bridge intake follows the queue contract at `sjs-master/bridge_queue_contract.md` — bridges post into the PD queues this skill aggregates from; this skill reads, never queues.
+Bridge intake follows the queue contract at `references/architecture/bridge_queue_contract.md` — bridges post into the PD queues this skill aggregates from; this skill reads, never queues.
 
 - **Receives from `asana-pd-manager`:** Asana task data, project RAG, Formula Tracker stages
 - **Receives from `fireflies-asana-bridge`:** Meeting action items and decisions

@@ -149,7 +149,7 @@ Amazon position is tracked as a quantity field per SKU rather than as a location
 
 ## Calls and integrations
 
-The skill goes through other skills for source access wherever one exists. Only Asana access is direct, matching the asana-pd-manager and purchasing-manager pattern (peer orchestrators each own their own Asana surface). Bridge intake follows the queue contract at `sjs-master/bridge_queue_contract.md` — bridges post into the AC Brands Inventory project; this skill picks up.
+The skill goes through other skills for source access wherever one exists. Only Asana access is direct, matching the asana-pd-manager and purchasing-manager pattern (peer orchestrators each own their own Asana surface). Bridge intake follows the queue contract at `references/architecture/bridge_queue_contract.md` — bridges post into the AC Brands Inventory project; this skill picks up.
 
 **Reads via:**
 - plm-assistant — positions, batches, locations, movements, components

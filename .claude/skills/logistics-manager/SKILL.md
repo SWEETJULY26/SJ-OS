@@ -245,7 +245,7 @@ for landed-cost calc when actual not yet booked.
 
 ## What you call
 
-Bridge intake follows the queue contract at `sjs-master/bridge_queue_contract.md` — bridges post into the Logistics project; this skill picks up. Calls below:
+Bridge intake follows the queue contract at `references/architecture/bridge_queue_contract.md` — bridges post into the Logistics project; this skill picks up. Calls below:
 
 - `plm-assistant` — every PLM read and write. Source of truth.
 - `outlook-asana-bridge` — inbound carrier emails into Asana tasks. Routes

@@ -1,6 +1,6 @@
 ---
 name: SJS PD projects
-description: Canonical list of in-scope Sweet July Skin PD projects in Asana — the 13 active SKUs, the Formula Development Tracker, and the portfolio. Used by asana-pd-manager and by sibling skills that need to resolve a SKU mention to an Asana project.
+description: Canonical list of in-scope Sweet July Skin PD projects in Asana — active SKU projects (looked up live, not enumerated here), the Formula Development Tracker, and the portfolio. Used by asana-pd-manager and by sibling skills that need to resolve a SKU mention to an Asana project.
 last_updated: 2026-05-17
 ---
 
