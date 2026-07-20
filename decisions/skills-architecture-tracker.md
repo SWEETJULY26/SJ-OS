@@ -103,10 +103,14 @@
 
 ### Master router — sjs-pd-system
 
-- [ ] **MR-1** System capabilities section incomplete — still open.
-- [ ] **MR-2** Routing missing entries — still open.
+- [x] **MR-1** Added 2026-07-20: the two missing text output types (portfolio audit/health-check, creative artwork tracker), the three real HTML dashboards + daily recap automation, and fixed a stale "13 active" SKU count and stale Barlow/Nunito font mentions found in this same file while making the pass.
+- [x] **MR-2** Added 2026-07-20: routing entries for portfolio audit, timing/cutover-risk MCP limitation, creative artwork tracker, and the daily PD recap.
 
-**2026-07-20 pass note:** Verified items above against current file state rather than trusting the April findings blindly — most had already been resolved in the 2026-05-17 modernization pass and just needed the checkbox updated. Two real bugs were introduced by the 2026-07-19 root-consolidation commit (dangling `sjs-master/*.md` references in `asana-pd-manager/references/cross-skill-handoffs.md` and `suppliers.md` — files outside `SKILL.md` that the original verification grep missed) and are now fixed; a broader repo-wide sweep afterward confirmed no other dangling references remain. Phase 3 is now down to: S3-2 (CDW artwork-tracking edge case, unverified), S5-3/S5-4/S5-5 (status reporter output types, build pattern, banned-words — S5-5 is low priority, internal meta-language not customer-facing copy), S6-1 (BOM worked example), MR-1/MR-2 (sjs-pd-system capabilities/routing sections).
+**Phase 3 is now complete** except S5-5 (low priority, deferred) and a new finding below.
+
+**New finding, out of scope for this pass:** `ac-brands-pd-system` (a *second* PD master router, org-level) still says "6 skills" while `sjs-pd-system` says "7" — the same stale-font and stale-13-count bugs were also present there and got fixed in this pass, but the deeper question — why two PD master routers exist claiming the same system, and whether that's deliberate (org-tier vs. brand-tier, like `sjs-master`/`ac-brands-master` elsewhere) or leftover duplication — needs a real answer before touching it further.
+
+**2026-07-20 pass note:** Verified items above against current file state rather than trusting the April findings blindly — most had already been resolved in the 2026-05-17 modernization pass and just needed the checkbox updated. Two real bugs were introduced by the 2026-07-19 root-consolidation commit (dangling `sjs-master/*.md` references in `asana-pd-manager/references/cross-skill-handoffs.md` and `suppliers.md` — files outside `SKILL.md` that the original verification grep missed) and are now fixed; a broader repo-wide sweep afterward confirmed no other dangling references remain. A separate mistake — wrongly claiming no PD HTML dashboard exists — was caught by Alvin and corrected after actually checking the `acb-thelanding` hub repo instead of just the skill's own docs.
 
 **New finding, out of scope for this pass:** `sjs-ingredient-lookup` (a Utility skill, not part of this PD tracker) also has a stale "13 products" claim in its SKILL.md. Worth checking against the live PLM product count next time that skill comes up.
 

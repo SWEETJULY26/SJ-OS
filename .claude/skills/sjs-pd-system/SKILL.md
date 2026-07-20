@@ -73,7 +73,7 @@ PD-relevant queue destinations:
 
 | Asana destination | Picked up by |
 |---|---|
-| Individual SKU projects (13 active) | `asana-pd-manager` |
+| Individual SKU projects (looked up live, not enumerated) | `asana-pd-manager` |
 | SJ SKIN – Formula Development Tracker | `asana-pd-manager` |
 | AC Brands PD + Ops Dashboard | `asana-pd-manager` |
 | 2026-2028 Product Development Roadmap (portfolio) | `asana-pd-manager` |
@@ -108,6 +108,10 @@ Use this table to route any request to the right skill(s):
 | "Generate a status update / report / deck" | `sjs-status-reporter` |
 | "What should I send to Sweet July this week?" | `sjs-status-reporter` |
 | "Draft a launch readiness report" | `sjs-status-reporter` |
+| "Portfolio audit / health check" | `sjs-status-reporter` (on-demand text) — for the standing dashboard, that's `pd-portfolio.html`, refreshed by the `pd-quarterly-rollup` Routine, not a chat request |
+| "What's the timing / cutover risk on [project]?" | `asana-pd-manager` — note the MCP limitation on that custom field (see its "Known MCP limitation" section) |
+| "Creative / artwork tracker status" | `sjs-status-reporter` |
+| "What came out of the daily PD recap?" | Composition of Skills 1, 2, 3, 5, 6 — see `references/architecture/daily_pd_recap.md`. This runs automatically at 2 PM PT; asking about it re-reads the same running log task rather than re-running the composition. |
 | "Log this PO acknowledgment to PLM" | `outlook-plm-bridge` |
 | "File this batch COA from the [vendor] email" | `outlook-plm-bridge` |
 | "Add the new [vendor] contact from yesterday's email" | `outlook-plm-bridge` |
@@ -163,7 +167,7 @@ Examples:
 **PLM project ID:** `ujkabbffvhpewpbttmmy` (Supabase)
 
 ### Core PD projects in scope
-- All SJ SKIN individual product projects (13 active)
+- All SJ SKIN individual product projects (looked up live via `asana_typeahead_search` / `asana_get_projects`, not a fixed count)
 - SJ SKIN – Formula Development Tracker (stage-gate: Intake → In Review → Signed Approvals → Revisions Required → Rejected)
 - AC Brands PD + Ops Dashboard
 
@@ -213,8 +217,17 @@ When Alvin asks "what can you do?" or "what does this system do?", surface this:
 - Launch readiness report (Ulta Beauty Marketplace June 2026)
 - Slide deck outline (PPTX-ready, SJS brand guidelines)
 - Infographic brief
+- Portfolio audit / health-check report (on-demand, text)
+- Creative artwork tracker status (on-demand, text — reads `Creative Requests` Asana + `public.brand_assets`)
 - All outputs in Sweet July Skin brand: Pava Brown, Bone, Soursop palette,
-  Barlow Condensed + Nunito Sans, warm Irie tone
+  GT America Expanded + Adrianna, warm Irie tone
+
+**Standing HTML dashboards (fed by scheduled Routines, not on-demand)**
+- `pd-portfolio.html` — quarterly portfolio rollup, fed by `pd-quarterly-rollup`
+- `pd-weekly.html` — weekly update, fed by `weekly-pd-update`
+- `pd-readiness-tracker.html` — monthly readiness tracker, fed by `pd-monthly-rollup`
+- `pd-system.html` — static PD system map
+- Daily 2 PM PT recap (composition of Skills 1, 2, 3, 5, 6) — see `references/architecture/daily_pd_recap.md`
 
 **Email → PLM Direct (`outlook-plm-bridge`)**
 - Scan Outlook for PLM-bound emails from known vendor domains

@@ -137,7 +137,7 @@ Examples:
 **PLM project ID:** `ujkabbffvhpewpbttmmy` (Supabase)
 
 ### Core PD projects in scope
-- All SJ SKIN individual product projects (13 active)
+- All SJ SKIN individual product projects (looked up live, not a fixed count)
 - SJ SKIN – Formula Development Tracker (stage-gate: Intake → In Review → Signed Approvals → Revisions Required → Rejected)
 - AC Brands PD + Ops Dashboard
 
@@ -188,7 +188,7 @@ When Alvin asks "what can you do?" or "what does this system do?", surface this:
 - Slide deck outline (PPTX-ready, SJS brand guidelines)
 - Infographic brief
 - All outputs in Sweet July Skin brand: Pava Brown, Bone, Soursop palette,
-  Barlow Condensed + Nunito Sans, warm Irie tone
+  GT America Expanded + Adrianna, warm Irie tone
 
 **Email → PLM Direct (Skill 6)** — NEW
 - Scan Outlook for PLM-bound emails from known vendor domains
