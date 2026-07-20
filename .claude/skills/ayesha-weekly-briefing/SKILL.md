@@ -407,7 +407,7 @@ each as tight.
 - `plm-assistant` — source of PLM Supabase reads
 - `sjs-status-reporter` — different audience (brand team, not founder); do not
   confuse the two
-- `ac-brands-pd-system` — master router; points here for Ayesha briefings
+- `sjs-pd-system` — master router; points here for Ayesha briefings
 
 ---
 
