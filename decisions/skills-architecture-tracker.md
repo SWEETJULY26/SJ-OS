@@ -91,8 +91,8 @@
 
 - [x] **S5-1** Brand spec wrong (see C-2) — fixed 2026-07-20.
 - [x] **S5-2** Hardcoded hex codes — checked against `sweet-july-skin-brand` canonical spec, they match. Not actually wrong.
-- [x] **S5-3** Added Output Templates 6 (Portfolio Audit / Health-Check) and 7 (Creative Artwork Tracker) 2026-07-20, sourced from real Asana project data (`Creative Requests`) and PLM (`public.brand_assets`). HTML dashboard is a genuine gap, not a doc fix — see S5-4.
-- [x] **S5-4** Documented 2026-07-20: no PD HTML dashboard exists yet (Quality/Regulatory have one, PD doesn't). Rather than fabricate a build pattern, pointed at the real working pattern (`quality-status-reporter`'s Netlify Function + `landing-hub-publish` POST + shared Hub shell) as the template to follow whenever that dashboard actually gets built. Building it is future work, not closed by this note.
+- [x] **S5-3** Added Output Templates 6 (Portfolio Audit / Health-Check) and 7 (Creative Artwork Tracker) 2026-07-20, sourced from real Asana project data (`Creative Requests`) and PLM (`public.brand_assets`).
+- [x] **S5-4** **Corrected 2026-07-20** — first pass wrongly claimed no PD HTML dashboard exists. Alvin flagged it; checking the `acb-thelanding` hub repo directly (not just skill files) found three live PD dashboards already in production: `pd-portfolio.html` (fed by `pd-quarterly-rollup`), `pd-weekly.html` (fed by `weekly-pd-update`), `pd-readiness-tracker.html` (fed by `pd-monthly-rollup`), plus `pd-system.html`. Documented the real build pattern (static JSON index + client-side fetch, published via the same `landing-hub-publish` mechanism as Quality/Regulatory) in `sjs-status-reporter/SKILL.md`. Lesson: verify against the actual target repo, not just the skill's own documentation, before concluding something doesn't exist.
 - [ ] **S5-5** Banned-words check — only internal meta-description language found ("comprehensive" describing a report type), not customer-facing output copy. Low priority.
 - [x] **S5-6** Skill 6 (outlook-plm-bridge) already referenced as a data source.
 

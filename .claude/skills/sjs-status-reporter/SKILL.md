@@ -302,7 +302,7 @@ PLM STATUS
 
 ### Output Template 6: Portfolio Audit / Health-Check Report
 
-Portfolio-wide sweep across every active PD project — not one SKU, the whole book. Pulls RAG status from each project's most recent status update title (see `asana-pd-manager` Job 6 title convention) rather than opening every project individually.
+Portfolio-wide sweep across every active PD project — not one SKU, the whole book. Pulls RAG status from each project's most recent status update title (see `asana-pd-manager` Job 6 title convention) rather than opening every project individually. This is an on-demand, in-chat text report — for the standing, scheduled portfolio dashboard, see the `pd-portfolio.html` hub dashboard in "Build pattern / HTML dashboards" below.
 
 ```
 SWEET JULY SKIN — PORTFOLIO HEALTH CHECK
@@ -368,15 +368,20 @@ When writing for internal AC Brands use:
 
 ---
 
-## Build pattern / HTML dashboard status
+## Build pattern / HTML dashboards
 
-Every output type above is text (chat, PPTX, DOCX, PDF via the doc-generation skills) — there is **no branded HTML dashboard for PD yet**, unlike Quality (`quality-dashboard.html`) and Regulatory (`regulatory-dashboard.html`), which both publish to the AC Brands landing hub. This is a real gap, not a documentation gap — building PD dashboard parity is a scoped feature, not a quick fix.
+PD already has three branded HTML dashboards live on the AC Brands landing hub — this skill's own documentation just never caught up to them. Corrected 2026-07-20 after checking the hub repo directly instead of trusting an assumption:
 
-If/when a PD HTML dashboard gets built, follow the pattern `quality-status-reporter` and `regulatory-status-reporter` already use, not a from-scratch approach:
-- Publish via POST to `https://acb-thelanding.netlify.app/.netlify/functions/landing-hub-publish` (never a direct git push) — see `quality-status-reporter/SKILL.md` "Publishing — authoritative override" for the exact contract (headers, body shape, size limits).
-- Reuse the shared Hub shell pattern (`Hub.renderHeader`/`renderNav`/`renderFooter`, `assets/includes/site-header.html`) rather than building new page chrome.
-- Back it with a Netlify Function (`netlify/functions/sjs-pd-rollup.js` following the `sjs-quality-rollup.js` spec shape) rather than a static snapshot, so the page stays live between refreshes.
-- Operator approval gate before every publish, same as Quality/Regulatory.
+| Dashboard | URL | Data source | Fed by |
+|---|---|---|---|
+| PD Portfolio | `pd-portfolio.html` | `data/pd-portfolio-index.json` | `pd-quarterly-rollup` scheduled Routine |
+| PD Weekly | `pd-weekly.html` | `data/pd-weekly-index.json` | `weekly-pd-update` scheduled Routine |
+| PD Readiness Tracker | `pd-readiness-tracker.html` | `data/pd-readiness-tracker-index.json` | `pd-monthly-rollup` scheduled Routine |
+| PD System Map | `pd-system.html` | static, hand-maintained | n/a |
+
+**Build pattern (differs slightly from Quality/Regulatory's per-request Netlify Function):** each dashboard is a thin static shell (`assets/js/<name>.js`) that fetches its own `data/<name>-index.json` client-side. The scheduled Routine that owns each dashboard computes the payload and publishes both the JSON and (on structural changes) the shell itself via POST to `https://acb-thelanding.netlify.app/.netlify/functions/landing-hub-publish` with the `x-hub-secret` header (`HUB_FUNCTION_SECRET` env var) — same publish mechanism as Quality/Regulatory, different rendering strategy (static JSON + client fetch, not a live Function per page load).
+
+This skill (`sjs-status-reporter`) is read as an instruction source by those three Routines but doesn't independently own or trigger the dashboard refresh — the scheduled-prompt (`scheduled-prompts/pd-quarterly-rollup.md` etc.) drives it. If Alvin asks for an ad hoc portfolio/weekly/readiness dashboard refresh outside the schedule, that's a manual run of the same scheduled-prompt content, not a new build.
 
 ## Output delivery
 
