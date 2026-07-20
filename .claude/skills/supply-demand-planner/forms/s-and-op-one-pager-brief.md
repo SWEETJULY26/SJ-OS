@@ -2,7 +2,7 @@
 
 This is what the skill hands sjs-status-reporter at the end of each monthly
 run. sjs-status-reporter wraps the content in Sweet July Skin brand
-(Pava Brown / Bone / Soursop, Barlow Condensed + Nunito Sans, warm Irie tone)
+(Pava Brown / Bone / Soursop, GT America Expanded + Adrianna, warm Irie tone)
 and produces the final one-pager.
 
 The brief is structured input for sjs-status-reporter, not the final output.
