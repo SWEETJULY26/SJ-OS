@@ -91,6 +91,8 @@ Update task name, notes, due date, assignee, completion status. Move tasks betwe
 
 Draft RAG color + written summary + next steps / blockers. Show draft, confirm, post.
 
+Title convention for the Asana project status update itself: `[RAG emoji] [Color], [Month Day], [Year] Update` (e.g. `🟢 Green, May 28, 2026 Update`). Match this exactly — it's how the portfolio-wide status sweep parses color state without opening every project.
+
 ```
 📊 Draft status update for: [Project name]
 Color: 🟡 Amber
@@ -152,6 +154,10 @@ See `references/cross-skill-handoffs.md` for the full table. Headline wires:
 - **Asana MCP:** `https://mcp.asana.com/sse`
 - **Operator email:** alvin@ac-brands.com
 
+### Known MCP limitation
+
+The Timing/Cutover Risk Notes custom field (GID `1211644347258861` — see `references/architecture/gids.md`) is not readable/writable through the Asana MCP connector. Reading or updating it requires the Asana Chrome extension directly. If a request needs this field, say so rather than silently skipping it or guessing at its value.
+
 ## When NOT to use this skill
 
 - **Multi-system orchestration** — that's `sjs-pd-system` (PD router) or `sjs-master` (brand router).
@@ -165,13 +171,14 @@ See `references/cross-skill-handoffs.md` for the full table. Headline wires:
 
 - `references/confirmation-protocol.md` — Rules 1–7. The contract sibling skills consume.
 - `references/role-map.md` — canonical PD-system role-map. Sibling PD skills reference this.
-- `references/pd-projects.md` — the 13 SKU projects + Formula Tracker + portfolio.
+- `references/pd-projects.md` — SKU projects (looked up live), Formula Tracker + portfolio.
 - `references/suppliers.md` — PD-side supplier routing (formula vs. component).
 - External partner / contact recognition — read live from Supabase wiki, not from a file. `public.wiki_pages WHERE page_type='contact'` (people) and `WHERE page_type='partner'` (service contractors, labs, 3PLs, tooling) carry the recognition layer. The four bridges load them at run time. (Retired `references/external-contacts.md` on 2026-05-26 — see `Bridge-and-System-Audit-2026-05-26.md` Priority 1.)
 - `references/stage-gate-procedure.md` — 5-stage Formula Tracker + IL Review Gate (SKN-OPS-008).
 - `references/cross-skill-handoffs.md` — every PD ↔ non-PD wire.
 - `references/trigger-phrases.md` — what fires this skill vs. a peer, with boundary phrases.
 - `references/gids-pointer.md` — pointer to the canonical Asana field GID cache.
+- `references/architecture/daily_pd_recap.md` — full prompt spec for the daily 2 PM PT recap automation this skill participates in (composition of Skills 1, 2, 3, 5, 6). `references/architecture/automations.md` indexes it and the Monday weekly briefing alongside every other recurring automation.
 
 ## Example interactions
 

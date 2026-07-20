@@ -1,12 +1,12 @@
 ---
 name: PD cross-skill handoffs
-description: Every wire between asana-pd-manager and a skill outside the PD system — outbound triggers PD fires, plus inbound reverse-handoffs PD receives from Quality, Regulatory, Margin, Intel, Ops, and Founder briefing. Sourced from sjs-master/system_map.md.
+description: Every wire between asana-pd-manager and a skill outside the PD system — outbound triggers PD fires, plus inbound reverse-handoffs PD receives from Quality, Regulatory, Margin, Intel, Ops, and Founder briefing. Sourced from references/architecture/system_map.md.
 last_updated: 2026-05-17
 ---
 
 # Cross-skill handoffs
 
-Every PD ↔ non-PD wire. Canonical inventory lives in `sjs-master/system_map.md` "Cross-system handoffs" section. This file is the PD-side filter — only the rows that involve asana-pd-manager.
+Every PD ↔ non-PD wire. Canonical inventory lives in `references/architecture/system_map.md` "Cross-system handoffs" section. This file is the PD-side filter — only the rows that involve asana-pd-manager.
 
 ## Outbound — handoffs PD triggers
 
@@ -90,4 +90,4 @@ The other PD skills all write into asana-pd-manager rather than acting as cross-
 
 ## Update protocol
 
-When `sjs-master/system_map.md` adds, removes, or changes a cross-system handoff that involves PD, mirror the change here. Bump `last_updated`. If the change shifts a Rule (e.g., a new HITL gate), also update `references/confirmation-protocol.md`.
+When `references/architecture/system_map.md` adds, removes, or changes a cross-system handoff that involves PD, mirror the change here. Bump `last_updated`. If the change shifts a Rule (e.g., a new HITL gate), also update `references/confirmation-protocol.md`.

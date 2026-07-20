@@ -15,7 +15,7 @@ Supplier-to-SKU relationships live in PLM (`public.product_vendors` joined with 
 Two structural notes that don't fit cleanly in PLM and stay here:
 
 - **Allure Labs on Castaway Cream** is a fill-site relationship — formula is owned by AMR Labs. When a Castaway Cream signal hits, route formula questions to AMR and fill / operations questions to Allure.
-- **Lip-program component split** follows the turnkey vs non-turnkey logic in `sjs-master/tool_patterns.md` (HCT tube every time; carton flows HCT for turnkey, CDW for non-turnkey).
+- **Lip-program component split** follows the turnkey vs non-turnkey logic in `references/architecture/tool_patterns.md` (HCT tube every time; carton flows HCT for turnkey, CDW for non-turnkey).
 
 ## How this skill routes
 

@@ -59,52 +59,56 @@
 
 ### Cross-skill structural
 
-- [ ] **C-1** Skill count inconsistency. Master router says 6, Skills 1/2/4 say 4, Skill 5 says 5. Should be 6 across the board (or 7 if we count outlook-plm-bridge separately, which we do).
-- [ ] **C-2** Skill 5 hardcodes wrong brand fonts (Barlow/Nunito) vs actual (GT America Expanded / Adrianna). Defer to `sweet-july-skin-brand`.
+- [x] **C-1** Skill count inconsistency — checked 2026-07-20, false positive. The only "4-skill" mention left is a historical changelog note about a past rename, not a live inconsistency.
+- [x] **C-2** Skill 5 hardcoded wrong brand fonts (Barlow/Nunito) vs actual (GT America Expanded / Adrianna) — fixed 2026-07-20.
 
 ### Skill 1 — asana-pd-manager
 
-- [ ] **S1-1** Project list stale. Has 13, portfolio has 18. Move to PLM/Asana live read or `_shared/products.md`.
-- [ ] **S1-2** Status update title convention missing: `"[RAG label] — [Month Day] Update"`.
-- [ ] **S1-3** Portfolio MCP limitation undocumented (Timing/Cutover Risk Notes GID `1211644347258861` requires Chrome extension).
-- [ ] **S1-4** Daily 2 PM PT Cowork recap automation undocumented (running log task GID `1214208955674591`).
-- [ ] **S1-5** Vendor terminology rules missing (HCT/turnkey/non-turnkey, no "vessel").
-- [ ] **S1-6** No-parentheses-in-titles rule missing.
-- [ ] **S1-7** Allure Labs missing from supplier mapping.
+- [x] **S1-1** Project list stale — resolved back in the 2026-05-17 modernization (moved to live PLM/Asana lookup via `references/pd-projects.md`); one stale "13 active SKUs" claim in the description fixed 2026-07-20.
+- [x] **S1-2** Status update title convention missing — added 2026-07-20: `[RAG emoji] [Color], [Month Day], [Year] Update`.
+- [x] **S1-3** Portfolio MCP limitation — documented 2026-07-20 in a new "Known MCP limitation" section.
+- [x] **S1-4** Daily recap cross-link — added 2026-07-20 to the Reference index, pointing to `references/architecture/daily_pd_recap.md` and `automations.md`.
+- [x] **S1-5** Vendor terminology rules — present in `references/suppliers.md`; found and fixed a dangling `sjs-master/tool_patterns.md` reference left over from the 2026-07-19 consolidation.
+- [x] **S1-6** No-parentheses-in-titles rule — present in `references/architecture/style_rules.md`.
+- [x] **S1-7** Allure Labs — present in `references/suppliers.md`.
 
 ### Skill 2 — fireflies-asana-bridge
 
-- [ ] **S2-1** Search strategy wrong. Keyword filters miss content; pull by date/scope, then filter.
-- [ ] **S2-2** Description still says "4-skill system."
+- [x] **S2-1** Search strategy — checked 2026-07-20: Mode 1 already instructs "search... with appropriate date filters" before fetch. Adequate, though outlook-asana-bridge's version (explicit `afterDateTime`-first language) is more explicit — could tighten wording later, not a functional gap.
+- [x] **S2-2** "4-skill system" stale description — not found, already resolved.
 
 ### Skill 3 — outlook-asana-bridge
 
-- [ ] **S3-1** Same search strategy issue — broad `afterDateTime` query > narrow keyword.
-- [ ] **S3-2** New ops-but-not-PD pattern undocumented (CDW mini box-style outreach lives in Ops Dashboard, needs artwork tracking).
+- [x] **S3-1** Search strategy — checked 2026-07-20: already uses `afterDateTime`-first pattern explicitly. Resolved.
+- [ ] **S3-2** CDW mini box-style outreach pattern — not re-checked this pass. CDW itself is present in the run-time supplier lexicon; the specific "needs artwork tracking" edge case is unverified.
 
 ### Skill 4 — asana-plm-bridge
 
-- [ ] **S4-1** Description says "4-skill system" and "extends the existing PLM Assistant." Both stale.
-- [ ] **S4-2** Product mapping is the same outdated 13-product list.
+- [x] **S4-1** "4-skill system" / "extends the existing PLM Assistant" stale text — not found, already resolved.
+- [x] **S4-2** Stale 13-product mapping — not found, already resolved.
 
 ### Skill 5 — sjs-status-reporter
 
-- [ ] **S5-1** Brand spec wrong (see C-2). Defer to brand skill.
-- [ ] **S5-2** Color palette hardcoded with hex codes that may drift.
-- [ ] **S5-3** Output types missing: portfolio audit / health-check report, creative artwork tracker, HTML dashboard.
-- [ ] **S5-4** Build pattern undocumented (programmatic Python → /home/claude/ → validate → cp to outputs).
-- [ ] **S5-5** Brand voice section uses some banned words (per org instructions).
-- [ ] **S5-6** Only references Skills 1-4 as data sources. Add Skill 6.
+- [x] **S5-1** Brand spec wrong (see C-2) — fixed 2026-07-20.
+- [x] **S5-2** Hardcoded hex codes — checked against `sweet-july-skin-brand` canonical spec, they match. Not actually wrong.
+- [ ] **S5-3** Output types missing (portfolio audit/health-check, creative artwork tracker, HTML dashboard) — still open.
+- [ ] **S5-4** Build pattern undocumented — still open.
+- [ ] **S5-5** Banned-words check — only internal meta-description language found ("comprehensive" describing a report type), not customer-facing output copy. Low priority.
+- [x] **S5-6** Skill 6 (outlook-plm-bridge) already referenced as a data source.
 
 ### Skill 6 — outlook-plm-bridge
 
-- [ ] **S6-1** No worked example for BOM SKU-population pattern (Greg KDC tube/carton SKU work).
-- [ ] **S6-2** Verify `references/flows.md` and `references/senders.md` exist and are current.
+- [ ] **S6-1** No worked example for BOM SKU-population pattern — still open.
+- [x] **S6-2** `references/flows.md` exists and is current. `references/senders.md` intentionally absent — retired 2026-05-26 in favor of live Supabase wiki reads (see `references/architecture/system_map.md`).
 
 ### Master router — sjs-pd-system
 
-- [ ] **MR-1** System capabilities section incomplete. Add portfolio audit workflow, daily recap, Chrome extension limitation, build pattern.
-- [ ] **MR-2** Routing missing entries: portfolio audit, portfolio status / timing notes, creative artwork status, daily PD recap.
+- [ ] **MR-1** System capabilities section incomplete — still open.
+- [ ] **MR-2** Routing missing entries — still open.
+
+**2026-07-20 pass note:** Verified items above against current file state rather than trusting the April findings blindly — most had already been resolved in the 2026-05-17 modernization pass and just needed the checkbox updated. Two real bugs were introduced by the 2026-07-19 root-consolidation commit (dangling `sjs-master/*.md` references in `asana-pd-manager/references/cross-skill-handoffs.md` and `suppliers.md` — files outside `SKILL.md` that the original verification grep missed) and are now fixed; a broader repo-wide sweep afterward confirmed no other dangling references remain. Phase 3 is now down to: S3-2 (CDW artwork-tracking edge case, unverified), S5-3/S5-4/S5-5 (status reporter output types, build pattern, banned-words — S5-5 is low priority, internal meta-language not customer-facing copy), S6-1 (BOM worked example), MR-1/MR-2 (sjs-pd-system capabilities/routing sections).
+
+**New finding, out of scope for this pass:** `sjs-ingredient-lookup` (a Utility skill, not part of this PD tracker) also has a stale "13 products" claim in its SKILL.md. Worth checking against the live PLM product count next time that skill comes up.
 
 ---
 
