@@ -80,7 +80,7 @@
 ### Skill 3 — outlook-asana-bridge
 
 - [x] **S3-1** Search strategy — checked 2026-07-20: already uses `afterDateTime`-first pattern explicitly. Resolved.
-- [ ] **S3-2** CDW mini box-style outreach pattern — not re-checked this pass. CDW itself is present in the run-time supplier lexicon; the specific "needs artwork tracking" edge case is unverified.
+- [x] **S3-2** CDW mini-box outreach — clarified by Alvin 2026-07-20: it's shipping packaging, not product development. Added an explicit `ops`-routing override to the classifier table so CDW mini-box correspondence doesn't get misclassified as `pd` via the general CDW supplier-domain signal.
 
 ### Skill 4 — asana-plm-bridge
 
@@ -91,14 +91,14 @@
 
 - [x] **S5-1** Brand spec wrong (see C-2) — fixed 2026-07-20.
 - [x] **S5-2** Hardcoded hex codes — checked against `sweet-july-skin-brand` canonical spec, they match. Not actually wrong.
-- [ ] **S5-3** Output types missing (portfolio audit/health-check, creative artwork tracker, HTML dashboard) — still open.
-- [ ] **S5-4** Build pattern undocumented — still open.
+- [x] **S5-3** Added Output Templates 6 (Portfolio Audit / Health-Check) and 7 (Creative Artwork Tracker) 2026-07-20, sourced from real Asana project data (`Creative Requests`) and PLM (`public.brand_assets`). HTML dashboard is a genuine gap, not a doc fix — see S5-4.
+- [x] **S5-4** Documented 2026-07-20: no PD HTML dashboard exists yet (Quality/Regulatory have one, PD doesn't). Rather than fabricate a build pattern, pointed at the real working pattern (`quality-status-reporter`'s Netlify Function + `landing-hub-publish` POST + shared Hub shell) as the template to follow whenever that dashboard actually gets built. Building it is future work, not closed by this note.
 - [ ] **S5-5** Banned-words check — only internal meta-description language found ("comprehensive" describing a report type), not customer-facing output copy. Low priority.
 - [x] **S5-6** Skill 6 (outlook-plm-bridge) already referenced as a data source.
 
 ### Skill 6 — outlook-plm-bridge
 
-- [ ] **S6-1** No worked example for BOM SKU-population pattern — still open.
+- [x] **S6-1** Added 2026-07-20, based on Alvin's clarification: the same vendor thread carries three distinct signal types that touch different tables — (1) SKU assignment (tube SKU usually named; carton SKU often separate, don't wait for both) → `UPDATE components.sku`; (2) artwork proof once approved → `INSERT public.attachments` (`entity_type='component'`, `category='Artwork'` — verified this is already a real, in-use convention, not invented); (3) everything else stays the original cost/spec Flow G pattern. Written up in `references/flows.md`.
 - [x] **S6-2** `references/flows.md` exists and is current. `references/senders.md` intentionally absent — retired 2026-05-26 in favor of live Supabase wiki reads (see `references/architecture/system_map.md`).
 
 ### Master router — sjs-pd-system

@@ -8,8 +8,9 @@ description: >
   for the brand team", "put together an executive summary", "create an infographic of where
   we stand", "what should I send to Sweet July this week", or any request to turn PD status
   into a formatted, shareable output. Covers all output types: written updates, slide decks,
-  infographics, executive summaries, product deep dives, and launch readiness reports.
-  Always applies Sweet July Skin brand guidelines automatically. Sibling of
+  infographics, executive summaries, product deep dives, launch readiness reports, portfolio
+  audit / health-check reports, and creative artwork tracker status. Always applies Sweet
+  July Skin brand guidelines automatically. Sibling of
   asana-pd-manager in the 7-skill PD system routed via sjs-pd-system — aggregates from
   asana-pd-manager, fireflies-asana-bridge, outlook-asana-bridge, asana-plm-bridge,
   and outlook-plm-bridge and produces the final branded output.
@@ -299,6 +300,57 @@ PLM STATUS
 
 ---
 
+### Output Template 6: Portfolio Audit / Health-Check Report
+
+Portfolio-wide sweep across every active PD project — not one SKU, the whole book. Pulls RAG status from each project's most recent status update title (see `asana-pd-manager` Job 6 title convention) rather than opening every project individually.
+
+```
+SWEET JULY SKIN — PORTFOLIO HEALTH CHECK
+[Date]
+
+SUMMARY
+[N] active projects | 🟢 [n] | 🟡 [n] | 🔴 [n] | [n] with no recent status update
+
+🔴 NEEDS ATTENTION
+[Project] — [RAG reason, 1 sentence] — Last update: [date]
+
+🟡 WATCHING
+[Project] — [RAG reason, 1 sentence]
+
+STALE / NO RECENT UPDATE
+[Project] — Last activity: [date] — [flag if this looks abandoned vs. just quiet]
+
+PORTFOLIO HYGIENE
+[Projects with zero tasks, duplicate/legacy projects worth archiving — surface, don't archive without confirmation]
+```
+
+- *Trigger:* "portfolio audit", "portfolio health check", "how's the whole portfolio looking"
+- *HITL:* Read-only report. No writes unless Alvin asks to act on a finding (e.g., archive a stale project — route that through `asana-pd-manager`).
+
+---
+
+### Output Template 7: Creative Artwork Tracker
+
+Tracks creative/artwork asset status per SKU or campaign — sourced from the `Creative Requests` Asana project and `public.brand_assets` in PLM (file metadata, tagged for the landing hub's asset browser).
+
+```
+SWEET JULY SKIN — CREATIVE ARTWORK TRACKER
+[Date] | [SKU / campaign scope]
+
+| Asset | Status | Owner | Due | Notes |
+|---|---|---|---|---|
+| [Label artwork] | [Not started / In progress / In review / Approved] | [Name] | [Date] | [Blocker if any] |
+
+BLOCKED / OVERDUE
+[Asset] — [reason] — Owner: [Name]
+```
+
+- *Trigger:* "artwork status", "creative tracker", "where are we on label artwork for [SKU]"
+- *Data source:* `Creative Requests` Asana project (owner: Ivy, Editorial/Design team) for task-level status; `public.brand_assets` for file-level metadata. This skill reads both; it does not own either.
+- *HITL:* Read-only report.
+
+---
+
 ## Brand voice reminders
 
 Every output should feel like AC Brands — warm, competent, and Irie. Never clinical or
@@ -315,6 +367,16 @@ When writing for internal AC Brands use:
 - Owners named explicitly on every action item
 
 ---
+
+## Build pattern / HTML dashboard status
+
+Every output type above is text (chat, PPTX, DOCX, PDF via the doc-generation skills) — there is **no branded HTML dashboard for PD yet**, unlike Quality (`quality-dashboard.html`) and Regulatory (`regulatory-dashboard.html`), which both publish to the AC Brands landing hub. This is a real gap, not a documentation gap — building PD dashboard parity is a scoped feature, not a quick fix.
+
+If/when a PD HTML dashboard gets built, follow the pattern `quality-status-reporter` and `regulatory-status-reporter` already use, not a from-scratch approach:
+- Publish via POST to `https://acb-thelanding.netlify.app/.netlify/functions/landing-hub-publish` (never a direct git push) — see `quality-status-reporter/SKILL.md` "Publishing — authoritative override" for the exact contract (headers, body shape, size limits).
+- Reuse the shared Hub shell pattern (`Hub.renderHeader`/`renderNav`/`renderFooter`, `assets/includes/site-header.html`) rather than building new page chrome.
+- Back it with a Netlify Function (`netlify/functions/sjs-pd-rollup.js` following the `sjs-quality-rollup.js` spec shape) rather than a static snapshot, so the page stays live between refreshes.
+- Operator approval gate before every publish, same as Quality/Regulatory.
 
 ## Output delivery
 
