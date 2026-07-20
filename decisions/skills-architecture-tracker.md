@@ -98,7 +98,7 @@
 
 ### Skill 6 — outlook-plm-bridge
 
-- [ ] **S6-1** No worked example for BOM SKU-population pattern — still open.
+- [x] **S6-1** Added 2026-07-20, based on Alvin's clarification: the same vendor thread carries three distinct signal types that touch different tables — (1) SKU assignment (tube SKU usually named; carton SKU often separate, don't wait for both) → `UPDATE components.sku`; (2) artwork proof once approved → `INSERT public.attachments` (`entity_type='component'`, `category='Artwork'` — verified this is already a real, in-use convention, not invented); (3) everything else stays the original cost/spec Flow G pattern. Written up in `references/flows.md`.
 - [x] **S6-2** `references/flows.md` exists and is current. `references/senders.md` intentionally absent — retired 2026-05-26 in favor of live Supabase wiki reads (see `references/architecture/system_map.md`).
 
 ### Master router — sjs-pd-system

@@ -171,6 +171,37 @@ Flow G — <component> unit_cost <old> → <new>   origin: <vendor quote / Alvin
   💰 margin cross-flag: <margin-pressure-test / walk-away> (if cost/MOQ/tariff moved)
 ```
 
+### Flow G sub-pattern — tube/carton SKU assignment vs. artwork proof
+
+The same vendor thread (e.g. KDC tube/carton correspondence) can carry three different kinds of signal that touch different tables. Decide which one you're looking at before acting — don't assume a single email settles everything:
+
+**1. SKU assignment (vendor names a tube SKU, and/or a carton SKU).**
+The tube SKU is the one that shows up most often; the carton SKU frequently comes in a *separate*, later email — don't wait for both, and don't treat a tube-only email as incomplete. Update only the component the email actually names:
+```sql
+UPDATE components SET sku = '<vendor SKU>', notes = notes || E'\n' || 'SKU confirmed <date> — <vendor>'
+WHERE id = '<tube or carton component uuid>';
+```
+
+**2. Artwork proof (supplier sends a proof; once Alvin/team signs off and it's sent back approved).**
+This is a document, not a field — it goes into `public.attachments`, not `components` directly. Existing real convention on this table: `entity_type = 'component'`, `attachment_type = 'file'`, `category = 'Artwork'`.
+```sql
+INSERT INTO public.attachments
+  (entity_type, entity_id, file_name, file_type, storage_path, attachment_type, category, notes, uploaded_by)
+VALUES
+  ('component', '<component uuid>', '<proof file name>', '<file type>', '<storage path once uploaded>',
+   'file', 'Artwork', 'Proof approved <date> — <context>', 'alvin@ac-brands.com');
+```
+Claude cannot upload the file to Supabase storage directly from this context (see the attachment-upload limitation noted elsewhere in this skill) — stage the INSERT with a placeholder `storage_path` and flag it for Alvin to complete the manual upload, same pattern as other PLM-bound attachments.
+
+**3. Generic BOM / meeting-related update (spec change, cost, timeline note) that isn't a SKU or an artwork proof** — that's the original Flow G cost/spec pattern above, not this sub-pattern.
+
+**Preview:**
+```
+Flow G (SKU) — <component> sku <old/blank> → <new>   origin: <vendor email>
+Flow G (artwork) — <component> artwork proof staged for PLM   origin: <vendor email>
+  ⚠️ Manual upload needed — storage_path is a placeholder until the file is actually uploaded
+```
+
 ---
 
 ## Flow H — Asana sync-back (always runs after A–G and I)

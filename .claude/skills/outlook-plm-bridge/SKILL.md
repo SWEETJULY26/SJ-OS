@@ -191,7 +191,7 @@ Each flow has full extraction logic, SQL queries, and confirmation-preview forma
 | D | Formula approval / rejection w/ document | UPDATE on `products.current_phase` + `outlook-asana-bridge` cross-flag for stage move |
 | E | Stability / compatibility / RIPT / PET test results | INSERT on `product_test_results` (one row per test event; `batch_id` null for pre-launch formula-level tests); **failing results auto-route to quality-lab-coordinator as the parent action** + URGENT flag + `outlook-asana-bridge` cross-flag for stage move |
 | F | Invoice reference inside PO correspondence (inbound only) | Note on the PO record; never enter banking details. Cost capture → **Flow I** |
-| G | BOM / component spec update / outbound spec-cost target | UPDATE on `components`; **any margin signal — cost shift, MOQ change, tariff, duty — cross-flags margin-pressure-test (and walk-away if the SKU is at the floor)** |
+| G | BOM / component spec update / outbound spec-cost target / tube-carton SKU assignment / artwork proof | UPDATE on `components` for cost/spec/SKU; INSERT on `attachments` for artwork proofs (`entity_type='component'`, `category='Artwork'`). **Any margin signal — cost shift, MOQ change, tariff, duty — cross-flags margin-pressure-test (and walk-away if the SKU is at the floor).** See `references/flows.md` Flow G sub-pattern for the SKU-vs-artwork decision logic. |
 | H | Asana sync-back (always runs after A–G and I) | Comment on the related Asana task with the PLM diff |
 | I | Vendor invoice intake (Ramp + direct) | Stage `vendor_invoices` INSERT with cost_category, regulatory_driver, linked_sku_id, po_link pre-classified; hand to purchasing-manager Job 9 for HITL multi-home routing |
 
