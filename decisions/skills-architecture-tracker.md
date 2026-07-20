@@ -251,3 +251,18 @@ Files revised:
 - [x] `daily_pd_recap.md` — rewritten as orchestration spec
 - [x] `monday_weekly_briefing.md` — rewritten as orchestration spec
 - [x] `system_map.md` — orchestration principle added near top
+
+---
+
+## Phase 5 — Deeper audit (2026-07-20, post Phase 3/4)
+
+Alvin asked for a systematic repo-wide sweep before committing to the Phase 4a agent decision. Wrote a script to check every `references/X.md` mention across all 58 skills against what actually exists (resolving both repo-root-relative and skill-relative paths correctly — first pass had a path-resolution bug that produced 61 false positives, re-verified down to 12 real candidates, then checked each by hand).
+
+**Findings:**
+- [x] **Real gap, fixed:** `plm-assistant/references/database-schema.md` was referenced by `plm-assistant` itself and by `sjs-margin-architect` but never created. Generated it from the live schema (`information_schema.columns` + foreign keys) — full table-by-table reference including which tables are schema-ready but not yet operationally populated (`outbound_orders`, `shipments`, `retailer_compliance_specs`, `vendor_invoices`, etc.).
+- [ ] **Real gap, not fixed — needs real research:** `sjs-retail-intel`'s own reference map promises `references/promo-calendars/ulta-annual.md` but the file (and the whole `promo-calendars/` directory) doesn't exist. This needs actual Ulta promo calendar data, not something to fabricate. Flagged for Alvin or whoever owns retail intel research.
+- **False positives, confirmed fine on inspection:** cross-skill references to `sjs-margin-architect/references/framework.md` (from walk-away/archetype-advisory/interactive-model/portfolio-review), `oc3pl-order-manager`↔`inventory-manager`'s mutual oos-file references, `outlook-asana-bridge`/`asana-pd-manager`'s historical "retired X on 2026-05-26" notes, `sjs-pd-system`'s informal (but locatable) reference to `asana-pd-manager/references/confirmation-protocol.md`.
+
+**New backlog item — evals:** Zero of the 58 skills have `evals/evals.json` or any eval coverage, even though `acb-skill-builder` ships a full working eval harness (with-skill vs. baseline subagent runs, quantitative assertions, benchmark viewer — see its `references/running-evals.md`). This is real tooling sitting unused, not a build-from-scratch problem. Scope TBD — 58 skills is a lot to eval at once; likely start with the highest-traffic ones (asana-pd-manager, the four bridges, capa-coordinator, complaint-and-event-handler) rather than all at once.
+
+**Noted, not acted on:** Alvin mentioned "graph engineering" as a way of thinking about agent orchestration (graph-based vs. sequential-loop) — relevant framing for whenever the Phase 4a agent-build decision gets made, not an immediate action item.
