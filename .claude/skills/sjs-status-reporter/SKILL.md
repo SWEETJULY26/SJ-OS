@@ -64,7 +64,7 @@ sources needed for the output type — don't over-fetch.
 | Launch readiness report | `asana-pd-manager` (all products, milestones) + `fireflies-asana-bridge` (recent meeting action items) + `outlook-asana-bridge` (supplier emails) |
 | Executive summary | `asana-pd-manager` (portfolio-level RAG) — keep it tight |
 | Infographic brief | `asana-pd-manager` (portfolio overview) — visual data only |
-| Slide deck outline | All sibling PD skills as needed — most comprehensive |
+| Slide deck outline | All sibling PD skills as needed — most complete |
 
 ### What to pull per source
 
@@ -266,7 +266,7 @@ RECOMMENDED ACTIONS THIS WEEK
 
 ### Output Template 5: Product Deep Dive
 
-Single-product comprehensive status.
+Single-product full status.
 
 ```
 SWEET JULY SKIN — PRODUCT DEEP DIVE

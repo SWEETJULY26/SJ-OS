@@ -93,7 +93,7 @@
 - [x] **S5-2** Hardcoded hex codes — checked against `sweet-july-skin-brand` canonical spec, they match. Not actually wrong.
 - [x] **S5-3** Added Output Templates 6 (Portfolio Audit / Health-Check) and 7 (Creative Artwork Tracker) 2026-07-20, sourced from real Asana project data (`Creative Requests`) and PLM (`public.brand_assets`).
 - [x] **S5-4** **Corrected 2026-07-20** — first pass wrongly claimed no PD HTML dashboard exists. Alvin flagged it; checking the `acb-thelanding` hub repo directly (not just skill files) found three live PD dashboards already in production: `pd-portfolio.html` (fed by `pd-quarterly-rollup`), `pd-weekly.html` (fed by `weekly-pd-update`), `pd-readiness-tracker.html` (fed by `pd-monthly-rollup`), plus `pd-system.html`. Documented the real build pattern (static JSON index + client-side fetch, published via the same `landing-hub-publish` mechanism as Quality/Regulatory) in `sjs-status-reporter/SKILL.md`. Lesson: verify against the actual target repo, not just the skill's own documentation, before concluding something doesn't exist.
-- [ ] **S5-5** Banned-words check — only internal meta-description language found ("comprehensive" describing a report type), not customer-facing output copy. Low priority.
+- [x] **S5-5** Fixed 2026-07-20 — replaced the two "comprehensive" instances (both internal meta-language) with "complete"/"full" per org writing-style rules.
 - [x] **S5-6** Skill 6 (outlook-plm-bridge) already referenced as a data source.
 
 ### Skill 6 — outlook-plm-bridge
@@ -106,7 +106,7 @@
 - [x] **MR-1** Added 2026-07-20: the two missing text output types (portfolio audit/health-check, creative artwork tracker), the three real HTML dashboards + daily recap automation, and fixed a stale "13 active" SKU count and stale Barlow/Nunito font mentions found in this same file while making the pass.
 - [x] **MR-2** Added 2026-07-20: routing entries for portfolio audit, timing/cutover-risk MCP limitation, creative artwork tracker, and the daily PD recap.
 
-**Phase 3 is now complete** except S5-5 (low priority, deferred) and a new finding below.
+**Phase 3 is now fully complete.**
 
 **RESOLVED 2026-07-20:** Alvin's call — no org-tier/brand-tier split needed for PD, just one router: `sjs-pd-system` under `sjs-master`. `ac-brands-pd-system` was a strictly older, less complete duplicate (6 skills vs. 7, numbered-style, missing everything added this session) — nothing worth preserving. It was also, unexpectedly, the *actual entry-point router* six live scheduled Routines used ("read this to confirm router state, then route through it") — not a dead file. Repointed all 6 Routines (`sjs-pd-morning-sweep`, `sjs-pd-midday-sweep`, `sjs-pd-eod-reconciliation`, `weekly-pd-update`, `pd-monthly-rollup`, `pd-quarterly-rollup`) plus `references/architecture/automations.md`, `ayesha-weekly-briefing/SKILL.md`, and `ac-brands-ops-system/SKILL.md` to `sjs-pd-system`, then removed `ac-brands-pd-system` entirely. No Routine recreation needed — these are scheduled-prompt content edits, not bootstrap-prompt changes, so the next fire picks up the new pointer automatically.
 
