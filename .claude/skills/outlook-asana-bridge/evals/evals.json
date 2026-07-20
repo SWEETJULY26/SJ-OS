@@ -1,0 +1,31 @@
+{
+  "skill_name": "outlook-asana-bridge",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Check my emails for any SJS updates from this week",
+      "expected_output": "Runs a folder-aware scan of Inbox + Sent Items (not just Inbox), classifies each email against the sub-system label set (pd/ops/quality/regulatory/margin/intel/founder), applies the quality > regulatory > ops > pd > margin > intel > founder priority order for multi-label emails, and presents the full Email Triage Report format (URGENT, QUALITY, REGULATORY, OPS/PD ACTION NEEDED, ACTION NEEDED — SENT, MARGIN, INTEL, FOUNDER BRIEFING, NO REPLY YET, PLM FLAGS sections) ending in 'Which should I push?' — without creating any Asana tasks yet.",
+      "files": [],
+      "expectations": [
+        "The output searches or reasons about both Inbox and Sent Items, not just Inbox",
+        "The output groups results using the Email Triage Report section headers (e.g. URGENT, QUALITY, REGULATORY, PLM FLAGS)",
+        "Emails with signal for more than one sub-system are split and cross-referenced rather than filed under a single label",
+        "The output ends by asking which items to push rather than creating Asana tasks unprompted",
+        "No Asana write (task creation, comment, or stage move) happens before user confirmation"
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "Allure Labs flagged a PET fail on Castaway Cream — log it",
+      "expected_output": "Finds the inbound Allure Labs email, classifies it as multi-label ([quality, pd, plm]) per the signal table, opens the quality-lab-coordinator OOS/OOT investigation as the PARENT action (safety wins the priority order), proposes a comment on the Castaway Cream PD task as a secondary/child action, and flags the PLM cross-reference to outlook-plm-bridge for the product test fields — all three cross-referencing each other, presented as a confirmation preview rather than an executed write.",
+      "files": [],
+      "expectations": [
+        "The email is classified with multiple labels (quality, pd, plm), not just one",
+        "Quality is treated as the parent action per the safety-first priority order, not pd",
+        "The proposed PLM cross-flag to outlook-plm-bridge is explicitly mentioned",
+        "The proposed actions cross-reference each other (parent links to children and vice versa)",
+        "The output is a confirmation preview, not a claim that the task/comment was already created"
+      ]
+    }
+  ]
+}

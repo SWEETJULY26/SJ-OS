@@ -1,0 +1,31 @@
+{
+  "skill_name": "outlook-plm-bridge",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Scan my inbox for PLM-bound emails this week",
+      "expected_output": "Runs a folder-aware scan of Inbox + Sent Items driven by the run-time vendor/partner/contact lexicon (not a static sender list), classifies each PLM-relevant email into Flows A-G or I, runs the non-PLM signal scan in parallel (Quality/Regulatory/Margin/Intel/Founder), and presents the full PLM Triage Report format (URGENT, PURCHASE ORDERS, BATCH/COA LOGS, VENDOR UPDATES, FORMULA APPROVALS, TEST RESULTS, INVOICES, VENDOR INVOICES, COMPONENT/BOM UPDATES, then QUALITY/REGULATORY/MARGIN cross-flags, then outlook-asana-bridge cross-flags) ending in 'Which should I push?' — without committing any PLM writes.",
+      "files": [],
+      "expectations": [
+        "The output searches or reasons about both Inbox and Sent Items, not just Inbox",
+        "Emails are classified into named flows (A through G, or I) rather than left unclassified",
+        "The non-PLM signal scan runs alongside the PLM classification (e.g. failing tests, Pedrero artifacts, cost changes get their own cross-flag section)",
+        "The output uses the PLM Triage Report section structure",
+        "No PLM INSERT/UPDATE is claimed as already committed — the output stages proposed writes for plm-assistant and waits for confirmation"
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "The KDC-One PO ack just came in — update PO #100336 in PLM",
+      "expected_output": "Finds the inbound KDC-One PO acknowledgment email, identifies this as Flow A (inbound = UPDATE, not INSERT), extracts the status/ship-date change, proposes the UPDATE on purchase_orders with a current-value → new-value preview (per the confirmation rules table — PLM UPDATE requires showing current → new value and confirming before handoff to plm-assistant), and notes the Asana sync-back comment that would post to the related PD task after the write commits.",
+      "files": [],
+      "expectations": [
+        "The proposal is an UPDATE on the existing PO, not an INSERT of a new PO record",
+        "The preview shows a current value → new value comparison rather than just the new value alone",
+        "The output states the write will be staged and handed to plm-assistant rather than committed directly via execute_sql",
+        "An Asana sync-back comment on the related PD task is mentioned as a follow-on step",
+        "The skill does not claim to have created a new Asana task (that is outlook-asana-bridge's job, not this skill's)"
+      ]
+    }
+  ]
+}

@@ -17,7 +17,7 @@ description: >
 
 # Outlook → Asana Bridge
 
-**Version:** v1.1 · **Last updated:** 2026-05-31 14:30 PT — Bridge audit remediation: reworked email scanning to be folder-aware against Alvin's per-domain Outlook folders (lexicon-driven sender search that spans all folders; never sort without a folder scope; explicit skip list); vendor discovery query now pulls contact emails so sender domains resolve (not just names); added `partner` to the Job 0 slug rule; marked the inline PD supplier list as examples (the lexicon is the source of truth). Prior 2026-05-26 12:49 PT — P4/P5 bridge audit remediation: version marker added. P1 (2026-05-26): run-time entity discovery replaced the hard-coded sender list (the 08:13 PT recap miss path).
+**Version:** v1.2 · **Last updated:** 2026-07-20 22:10 PT — Eval-driven fix from Alvin's review of the peer `outlook-plm-bridge` weekly-scan run (same shared folder-sweep design, so the same gap applied here): fixed OC3PL folder guidance (it's a direct Inbox subfolder, not nested — a "not found" search error is a lookup mismatch, not a missing folder) and added Pedrero Regulatory to the topic-folder sweep list (sender-domain matching alone misses forwards/CCs). Prior 2026-05-31 14:30 PT — Bridge audit remediation: reworked email scanning to be folder-aware against Alvin's per-domain Outlook folders (lexicon-driven sender search that spans all folders; never sort without a folder scope; explicit skip list); vendor discovery query now pulls contact emails so sender domains resolve (not just names); added `partner` to the Job 0 slug rule; marked the inline PD supplier list as examples (the lexicon is the source of truth). Prior 2026-05-26 12:49 PT — P4/P5 bridge audit remediation: version marker added. P1 (2026-05-26): run-time entity discovery replaced the hard-coded sender list (the 08:13 PT recap miss path).
 
 You are the universal email intake layer for AC Brands operations. Your job is to scan
 Outlook — both the Inbox and the Sent Items folder — for SJ SKIN relevant emails,
@@ -171,9 +171,14 @@ Apply it:
   confirmation signal, not the search mechanism, so a new entity is caught the moment it
   lands in the lexicon. The Inbox still gets a general classifier pass for anything
   unfiled or from a new address.
-- **Topic folders not keyed to a single sender** — sweep by name: OC3PL (incl. FWS,
-  Logiwa Daily Shipment Recap), Finance (Calm HR, Shopify Billing, Ramp), Commerce →
-  Thirteen Lune.
+- **Topic folders not keyed to a single sender** — sweep by name: **OC3PL** (incl. FWS,
+  Logiwa Daily Shipment Recap — this folder sits directly under Inbox, not nested under
+  Commerce or any other parent; if a `folderName` search errors "not found," that's a
+  lookup mismatch, not a missing folder — retry the exact name rather than skipping the
+  sweep), **Pedrero Regulatory** (Pedrero mail can arrive from addresses outside
+  `pedreroregulatory.com` — forwards, CCs — so the sender-domain signal alone misses
+  some; the folder sweep is the backstop), Finance (Calm HR, Shopify Billing, Ramp),
+  Commerce → Thirteen Lune.
 - **Sent mail:** `folderName: 'Sent Items'`, filter by recipient domain.
 - **Skip folders** (never sweep): Drafts, Deleted Items, Snoozed, Archive, Junk Email,
   Notes, RSS Feeds, Search Folders, Conversation History, Asana, Fireflies (read those via
