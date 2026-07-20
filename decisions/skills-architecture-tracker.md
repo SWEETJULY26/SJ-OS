@@ -116,17 +116,38 @@
 
 ---
 
+## Phase 4a — Real agent candidates (backlog, not yet built)
+
+Zero `.claude/agents/*.md` exist in this repo today — every skill so far is prose the same assistant reads inline. Alvin wants to incorporate real agents as a result of Phase 4 wiring. Candidates identified 2026-07-20, ranked by how much isolated judgment / multi-step reasoning they involve (the actual bar for "this deserves an agent, not just router prose"):
+
+1. **`pd-margin-handoff`** — PD concept approval → archetype-advisory → pressure-test → walk-away if it fails (X-1/X-2/X-3, already fully specified in `system_map.md`).
+2. **`quality-pd-reverse-flow`** — complaint trend / CAPA root cause = formulation → decide whether to open a PD reformulation task (X-5).
+3. **`il-review-gate`** — fires on every Signed Approvals stage move (SKN-OPS-008); real judgment call currently just prose in `asana-pd-manager` Job 3.
+4. **`sae-recall-triage`** — adverse event / recall classification with statutory clocks; high-stakes judgment currently inline in `complaint-and-event-handler`.
+5. **`capa-root-cause-analyst`** — the 5 Whys / Fishbone phase of the CAPA lifecycle; currently a prose walkthrough in `capa-coordinator`.
+6. **`vendor-scorecard-analyst`** — OOS/OOT signal → vendor flag thresholds → scorecard signal-back to `purchasing-manager`.
+7. **`ubm-retail-readiness`** — UBM launch window → `sjs-retail-intel` cohort/price-ladder → feeds Launch Readiness Report (X-4/X-7).
+8. **`comp-intel-digest-router`** — monthly competitive digest → decide what's pipeline-relevant → surface to the right people (X-6).
+9. **`email-signal-classifier`** — the master classifier logic currently duplicated across `outlook-asana-bridge`, `fireflies-asana-bridge`, `outlook-plm-bridge`; one shared agent would remove the copy-paste.
+10. **`margin-portfolio-quarterly-reviewer`** — reframe `sjs-margin-portfolio-review`'s quarterly sweep as an agent invoked at quarter-end rather than a skill Alvin has to remember to trigger.
+
+Decision deferred: which to build and in what order. Revisit after Phase 4 wiring lands, since the wiring work will clarify which handoffs actually need isolated agent context vs. simple router prose.
+
+---
+
 ## Phase 4 — Cross-system wiring (after PD refactor)
 
-- [ ] **X-1** PD → Margin: Concept approval should fire `sjs-margin-archetype-advisory` + `sjs-margin-pressure-test`. Wire in Skill 1.
-- [ ] **X-2** PD → Margin: Pressure-test fail routes to `sjs-margin-walk-away`. Wire path.
-- [ ] **X-3** PD → Margin: Quarterly portfolio review pulls from PD signed-off SKUs. Wire timing.
-- [ ] **X-4** PD → Retail intel: UBM-bound SKU should run through `sjs-retail-intel` for cohort + ladder. Wire trigger.
-- [ ] **X-5** Quality → PD: Complaint trends + CAPA formulation root cause should reverse-flow to PD. Wire placeholder.
-- [ ] **X-6** Comp intel → PD: Monthly trend digests should land in front of Nicole/Soraya as pipeline input. Wire reporting path.
-- [ ] **X-7** Skill 5 (Status Reporter) should pull from `sjs-retail-intel` for Launch Readiness benchmarks.
-- [ ] **X-8** Ayesha briefing pulls from PD Portfolio — Skill 1 documents this dependency. Slide 6 co-ownership with Nicole noted.
-- [ ] **X-9** All output-producing skills defer to `sweet-july-skin-brand` for fonts/colors/voice.
+- [x] **X-1** Already wired — `asana-pd-manager` "Outbound handoffs" already documents "Concept approval → `sjs-margin-archetype-advisory` then `sjs-margin-pressure-test`."
+- [x] **X-2** Already wired — same section: "Pressure-test fail → `sjs-margin-walk-away`."
+- [x] **X-3** Reviewed 2026-07-20 — `sjs-margin-portfolio-review` sweeps **every active SKU from PLM** each quarter, not just PD signed-off ones from the last 90 days. Broader and more correct than the original ask; not a gap.
+- [x] **X-4** Already wired — same `asana-pd-manager` section: "SKU heads to UBM listing → `sjs-retail-intel`."
+- [x] **X-5** Fixed 2026-07-20 — the receiving side (`asana-pd-manager`) already expected this, but neither source skill fired it. Added: `capa-coordinator`'s root-cause phase now hands off a reformulation task when root cause = formulation (plus a margin-pressure-test re-run once reformulation completes); `complaint-and-event-handler`'s trend analysis now separately flags formulation-pattern trends to PD even before a CAPA opens. Both frontmatter "hands off to" lines updated.
+- [x] **X-6** Fixed 2026-07-20 — added a PD handoff rule to `sjs-comp-intel`'s Cross-stream handoff rules: monthly digest category shifts stage as pipeline input via `sjs-status-reporter` to Perrine/Alvin/Soraya, Nicole consulting.
+- [x] **X-7** Fixed 2026-07-20 — added `sjs-retail-intel` as a Launch Readiness Report data source in `sjs-status-reporter`, plus a new "Retail Benchmark" section in the template output.
+- [x] **X-8** Already wired — `ayesha-weekly-briefing` explicitly documents its PD Portfolio pull for Slide 6.
+- [x] **X-9** Reviewed 2026-07-20 — the three real branded-output skills (`sjs-status-reporter`, `quality-status-reporter`, `regulatory-status-reporter`) already defer to `sweet-july-skin-brand`. `ayesha-weekly-briefing` doesn't need to: it only writes text bullets into an existing, pre-designed Canva template — no font/color/layout choices happen in this skill's scope, and its own "Voice and Format" section is intentionally Alvin's operational voice, not Sweet July Skin's customer-facing Irie voice (this is an internal founder briefing, not a brand deliverable). Not a gap.
+
+**Phase 4 is now fully wired** — 4 items were already correct on inspection, 3 needed real fixes, 2 were reviewed and found to be non-gaps (broader/different-but-correct design). Agent candidates from Phase 4a remain a deferred decision.
 
 ---
 
