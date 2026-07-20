@@ -91,6 +91,8 @@ Update task name, notes, due date, assignee, completion status. Move tasks betwe
 
 Draft RAG color + written summary + next steps / blockers. Show draft, confirm, post.
 
+Title convention for the Asana project status update itself: `[RAG emoji] [Color], [Month Day], [Year] Update` (e.g. `🟢 Green, May 28, 2026 Update`). Match this exactly — it's how the portfolio-wide status sweep parses color state without opening every project.
+
 ```
 📊 Draft status update for: [Project name]
 Color: 🟡 Amber
