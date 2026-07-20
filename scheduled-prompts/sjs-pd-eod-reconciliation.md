@@ -3,7 +3,7 @@
 Remote routine. Operate in America/Los_Angeles time. The skills repo is cloned at `/home/user/sj-os`.
 
 ## Skills to read and FOLLOW (plain files, not auto-registered — read them as instructions)
-- `/home/user/sj-os/.claude/skills/ac-brands-pd-system/SKILL.md`
+- `/home/user/sj-os/.claude/skills/sjs-pd-system/SKILL.md`
 - `/home/user/sj-os/.claude/skills/asana-pd-manager/SKILL.md`
 - `/home/user/sj-os/.claude/skills/fireflies-asana-bridge/SKILL.md`
 - `/home/user/sj-os/.claude/skills/outlook-asana-bridge/SKILL.md`
@@ -25,7 +25,7 @@ Do not write any local files or logs — the container is ephemeral.
 ## Task
 Run the AC Brands PD System reconciliation for the afternoon window (12 PM PT → now).
 
-Read /mnt/skills/user/ac-brands-pd-system/SKILL.md and route through it. Fire skills as warranted. Create, comment, and write to PLM the same way the 8 AM and 12 PM runs do.
+Read /home/user/sj-os/.claude/skills/sjs-pd-system/SKILL.md and route through it. Fire skills as warranted. Create, comment, and write to PLM the same way the 8 AM and 12 PM runs do.
 
 DEDUP: Before creating any task or comment, check Asana task GID 1214208955674591 (the running log) for prior runs today. Skip anything already actioned.
 

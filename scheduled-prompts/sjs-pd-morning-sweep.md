@@ -3,7 +3,7 @@
 Remote routine. Operate in America/Los_Angeles time. The skills repo is cloned at `/home/user/sj-os`.
 
 ## Skills to read and FOLLOW (plain files, not auto-registered — read them as instructions)
-- `/home/user/sj-os/.claude/skills/ac-brands-pd-system/SKILL.md`
+- `/home/user/sj-os/.claude/skills/sjs-pd-system/SKILL.md`
 - `/home/user/sj-os/.claude/skills/asana-pd-manager/SKILL.md`
 - `/home/user/sj-os/.claude/skills/fireflies-asana-bridge/SKILL.md`
 - `/home/user/sj-os/.claude/skills/outlook-asana-bridge/SKILL.md`
@@ -25,7 +25,7 @@ Do not write any local files or logs — the container is ephemeral.
 ## Task
 Run the AC Brands PD System reconciliation for the overnight window (5 PM PT yesterday → now).
 
-Read /mnt/skills/user/ac-brands-pd-system/SKILL.md to confirm router state, then route through it. Fire skills as warranted by the signals in the window:
+Read /home/user/sj-os/.claude/skills/sjs-pd-system/SKILL.md to confirm router state, then route through it. Fire skills as warranted by the signals in the window:
 
 - Skill 2 (fireflies-asana-bridge): pull transcripts in the window
 - Skill 3 (outlook-asana-bridge): scan inbox and Sent Items

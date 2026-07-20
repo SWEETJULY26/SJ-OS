@@ -323,7 +323,7 @@ sjs-retail-intel (signals into supply-demand-planner auto-adjustments).
 
 **Called by:** Operations directly through any trigger phrase; future System 6
 (Quality Management) and System 7 (Regulatory) skills as they come online; the
-PD router (ac-brands-pd-system) when a PD request crosses into Ops territory.
+PD router (sjs-pd-system) when a PD request crosses into Ops territory.
 
 **Doesn't duplicate:** PD task management (asana-pd-manager handles PD
 projects); margin work (sjs-margin-architect family); retail and competitive

@@ -16,12 +16,12 @@ All times are local (PT). Cron is 5-field `min hour dom month dow`. The schedule
 
 | Job id | Cron | Owner / routes through | Output |
 |---|---|---|---|
-| `sjs-pd-morning-sweep` | `0 8 * * 1-5` | ac-brands-pd-system, overnight window (5 PM prior day → now) | Recap comment on running log GID 1214208955674591; real-time URGENT comments |
+| `sjs-pd-morning-sweep` | `0 8 * * 1-5` | sjs-pd-system, overnight window (5 PM prior day → now) | Recap comment on running log GID 1214208955674591; real-time URGENT comments |
 | `sjs-regulatory-morning-sweep` | `10 8 * * 1-5` | sjs-regulatory-system / sjs-regulatory-sweep Job 1 | Silent unless one of the 7 urgency categories fires; posts to Regulatory Sweep Running Log |
 | `sjs-quality-morning-sweep` | `20 8 * * 1-5` (was `12 8`) | quality-manager morning pass | Quality running log |
 | `sjs-purchasing-morning-sweep` | `26 8 * * 1-5` | purchasing-manager | Purchasing running log |
-| `sjs-pd-midday-sweep` | `0 12 * * 1-5` | ac-brands-pd-system, midday window | Running log GID 1214208955674591 |
-| `sjs-pd-eod-reconciliation` | `0 16 * * 1-5` | ac-brands-pd-system, afternoon window (12 PM → now) + Skill 5 | 8-section payload, `pd_dashboard_runs` row, formatted comment on GID 1214208955674591 |
+| `sjs-pd-midday-sweep` | `0 12 * * 1-5` | sjs-pd-system, midday window | Running log GID 1214208955674591 |
+| `sjs-pd-eod-reconciliation` | `0 16 * * 1-5` | sjs-pd-system, afternoon window (12 PM → now) + Skill 5 | 8-section payload, `pd_dashboard_runs` row, formatted comment on GID 1214208955674591 |
 
 ### Weekly
 

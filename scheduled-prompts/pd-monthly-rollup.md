@@ -5,7 +5,7 @@ Remote routine. Operate in America/Los_Angeles time. The skills repo is cloned a
 ## Skills to read and FOLLOW (plain files, not auto-registered — read them as instructions)
 - `/home/user/sj-os/.claude/skills/sjs-status-reporter/SKILL.md`
 - `/home/user/sj-os/.claude/skills/asana-pd-manager/SKILL.md`
-- `/home/user/sj-os/.claude/skills/ac-brands-pd-system/SKILL.md`
+- `/home/user/sj-os/.claude/skills/sjs-pd-system/SKILL.md`
 Also read any reference files these cite under their skill dirs (e.g. `references/*.md`).
 
 ## Connectors
