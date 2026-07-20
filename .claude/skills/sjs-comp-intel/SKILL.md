@@ -68,6 +68,7 @@ CI is the connective tissue between the other four streams. Standing rules:
 - **To Margin Architecture**: any competitor pricing move that would invalidate a margin floor gets flagged within two weeks. Any competitor packaging or formula change that shifts category cost benchmarks goes to margin within a month.
 - **To Retail Performance Intelligence**: price ladder data lives in retail intel, not CI — consume and extend, don't rebuild. Monthly pricing surveillance feeds into retail intel's promo calendar. The retail intel 10 brand cohort is the canonical universe; CI's five is the deep watch tier inside it.
 - **To Consumer & Category Research**: trend digest feeds whitespace analysis. When C&C identifies a consumer gap, CI validates whether competitors are already addressing it. Claims direction flows from CI to C&C (what is every comp claiming) not the other way.
+- **To Product Development**: when the monthly trend digest surfaces a category shift (not routine noise — an actual competitive move that should change what PD builds next), stage it as pipeline input via `sjs-status-reporter`, addressed to Perrine (PD owner), Alvin (PD admin), and Soraya (Marketing Manager). Nicole consults. This is a monthly-cadence surface, not a per-digest one — don't stage it for every routine competitive update.
 
 Rules and exchange formats in `references/cross-references.md`.
 

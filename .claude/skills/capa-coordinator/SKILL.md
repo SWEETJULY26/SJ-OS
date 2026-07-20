@@ -1,6 +1,6 @@
 ---
 name: capa-coordinator
-description: Owns the corrective and preventive action lifecycle for Sweet July Skin per SKN-OPS-001. Use whenever an NCR, CAPA, root cause analysis, or non-conformance investigation is in play — opening, walking, verifying, or closing. Triggers include "open a CAPA", "open an NCR", "any open CAPAs", "draft a CAPA closeout", "root cause on [issue]", "5 Whys", "Fishbone", "log this OOS as an NCR", "convert this NCR", "any overdue NCRs". Operates the SJS CAPA Log Asana project. Walks SKN-OPS-001 phases verbatim, applies judgment within. Authors the working NCR Procedure pending SOP ratification. Status field carries SOP phase; Gate field carries HITL state. HITL split between Operator (intake, conversion, plan) and QA Lead (root cause, verification, effectiveness, close). Hands off to complaint-and-event-handler, purchasing-manager, regulatory-manager, quality-manager.
+description: Owns the corrective and preventive action lifecycle for Sweet July Skin per SKN-OPS-001. Use whenever an NCR, CAPA, root cause analysis, or non-conformance investigation is in play — opening, walking, verifying, or closing. Triggers include "open a CAPA", "open an NCR", "any open CAPAs", "draft a CAPA closeout", "root cause on [issue]", "5 Whys", "Fishbone", "log this OOS as an NCR", "convert this NCR", "any overdue NCRs". Operates the SJS CAPA Log Asana project. Walks SKN-OPS-001 phases verbatim, applies judgment within. Authors the working NCR Procedure pending SOP ratification. Status field carries SOP phase; Gate field carries HITL state. HITL split between Operator (intake, conversion, plan) and QA Lead (root cause, verification, effectiveness, close). Hands off to complaint-and-event-handler, purchasing-manager, regulatory-manager, quality-manager, and asana-pd-manager (when root cause is formulation).
 ---
 
 # CAPA Coordinator
@@ -78,9 +78,11 @@ Once an NCR converts, the skill assigns `CAPA-YYYY-NNN`, opens the CAPA file (th
 
 The skill captures the working RCA notes as a comment thread on the CAPA task. The final root cause statement is its own custom field — short, specific, attributable.
 
+**Formulation root cause → PD reformulation task.** If the approved root cause statement attributes the non-conformance to the formula itself (not packaging, not process, not a vendor spec deviation) — draft a reformulation task for `asana-pd-manager` referencing the CAPA number, and re-run `sjs-margin-pressure-test` on the affected SKU once reformulation completes, since a formula change can move cost. Stage this alongside the root cause statement rather than waiting for closeout — PD shouldn't wait on verification/effectiveness to start scoping the reformulation.
+
 - *Trigger:* NCR conversion approved (Job 2), "5 Whys on CAPA-YYYY-NNN", "Fishbone on CAPA-YYYY-NNN", "what's the root cause on CAPA-YYYY-NNN"
-- *Action:* Draft team. Walk RCA tool. Draft root cause statement.
-- *HITL:* Operator approves team. **QA Lead approves the root cause statement** (`Gate = Pending QA Lead` at v5.2).
+- *Action:* Draft team. Walk RCA tool. Draft root cause statement. If root cause = formulation, stage the `asana-pd-manager` reformulation handoff.
+- *HITL:* Operator approves team. **QA Lead approves the root cause statement** (`Gate = Pending QA Lead` at v5.2). Reformulation handoff goes out with the same approval — no separate gate.
 
 ### 4. Action plan: corrective and preventive (SKN-OPS-001 §5.3)
 

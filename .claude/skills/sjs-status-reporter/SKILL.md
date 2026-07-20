@@ -61,10 +61,10 @@ sources needed for the output type — don't over-fetch.
 |-------------|-----------|
 | Weekly portfolio update | `asana-pd-manager` (Asana — all PD projects, RAG status, stale flags) |
 | Product deep dive | `asana-pd-manager` (specific project tasks) + `outlook-asana-bridge` (recent emails) + `asana-plm-bridge` (PLM record) |
-| Launch readiness report | `asana-pd-manager` (all products, milestones) + `fireflies-asana-bridge` (recent meeting action items) + `outlook-asana-bridge` (supplier emails) |
+| Launch readiness report | `asana-pd-manager` (all products, milestones) + `fireflies-asana-bridge` (recent meeting action items) + `outlook-asana-bridge` (supplier emails) + `sjs-retail-intel` (cohort positioning + price ladder for UBM-bound SKUs) |
 | Executive summary | `asana-pd-manager` (portfolio-level RAG) — keep it tight |
 | Infographic brief | `asana-pd-manager` (portfolio overview) — visual data only |
-| Slide deck outline | All sibling PD skills as needed — most comprehensive |
+| Slide deck outline | All sibling PD skills as needed — most complete |
 
 ### What to pull per source
 
@@ -255,6 +255,9 @@ PRODUCT READINESS
 CRITICAL PATH
 [3–5 items that MUST be resolved to hit launch — ordered by urgency]
 
+RETAIL BENCHMARK (UBM-bound SKUs only — from `sjs-retail-intel`)
+[Product] — Cohort position: [summary] | Price ladder: [where it lands vs. cohort]
+
 RISKS
 [Risk] — Likelihood: [H/M/L] — Impact: [H/M/L] — Mitigation: [action]
 
@@ -266,7 +269,7 @@ RECOMMENDED ACTIONS THIS WEEK
 
 ### Output Template 5: Product Deep Dive
 
-Single-product comprehensive status.
+Single-product full status.
 
 ```
 SWEET JULY SKIN — PRODUCT DEEP DIVE
