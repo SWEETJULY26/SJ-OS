@@ -82,7 +82,7 @@ Regulatory queue destinations:
 | IL / Claims / Label sections of SJS Regulatory Management | `claims-il-and-label-keeper` |
 | PLM `public.*` tables (SKU, batch, formula records) | `plm-assistant` writes; bridge posts sync-back |
 
-A regulatory signal that originates in a Pedrero email or partner transcript lands in the right project automatically; `regulatory-manager` Job 1 intercepts `[Reg Flag Pending]` and fans out to the right sub-skill. Canonical map: `sjs-master/bridge_queue_contract.md`.
+A regulatory signal that originates in a Pedrero email or partner transcript lands in the right project automatically; `regulatory-manager` Job 1 intercepts `[Reg Flag Pending]` and fans out to the right sub-skill. Canonical map: `references/architecture/bridge_queue_contract.md`.
 
 ---
 

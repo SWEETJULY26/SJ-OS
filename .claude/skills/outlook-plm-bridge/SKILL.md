@@ -6,7 +6,7 @@ description: >
   vendor onboarding, stability/compat/RIPT/PET results, compliance docs, PO-bound
   invoices, BOM/component specs, plus universal vendor invoice cost capture via Ramp
   (Flow I). Also extracts non-PLM signal traveling alongside and posts to the right
-  Asana queue per sjs-master/bridge_queue_contract.md: failing tests + batch holds +
+  Asana queue per references/architecture/bridge_queue_contract.md: failing tests + batch holds +
   near-expiry to Quality (SJS Quality Management); Pedrero artifacts (IL packets,
   label artwork, attestation responses) to Regulatory; SAE / recall to SJS
   Reportable Events; Ramp invoices stage `vendor_invoices` and hand to
@@ -522,14 +522,14 @@ For every PLM-bound attachment:
 
 ## Connection points — how this skill fits the system
 
-This bridge writes to PLM via `plm-assistant` (sole writer) and posts cross-system signal into the Asana queues defined by the queue contract. It does not call destination skills directly. Canonical map: `sjs-master/bridge_queue_contract.md`.
+This bridge writes to PLM via `plm-assistant` (sole writer) and posts cross-system signal into the Asana queues defined by the queue contract. It does not call destination skills directly. Canonical map: `references/architecture/bridge_queue_contract.md`.
 
 - **Peer to `outlook-asana-bridge`:** Same inbox, different targets. Records and artifacts route here; tasks and decisions route to `outlook-asana-bridge`. Hybrid content splits with cross-flags on both sides.
 - **Complements `asana-plm-bridge`:** That bridge syncs Asana-known data into PLM. This bridge captures PLM-bound data before it ever lands in Asana — reducing noise in PD task comments.
 - **PD sync-back:** Every successful PLM write posts a `📦 PLM Sync` comment on the related Asana PD task (Flow H), keeping the circular loop intact.
 - **Quality queue:** Failing test results (Flow E failures), batch holds, near-expiry signals, NCR / non-conformance language, and complaint references land in SJS Quality Management (plus CAPA Log or Complaint Log if subtype is clear). PLM update becomes the cross-reference; Quality is the parent.
 - **Regulatory queue:** Pedrero artifacts (IL packets, label artwork, attestation responses) land in SJS Regulatory Management — not buried as generic "compliance docs" on the vendor record. SAE / FDA / state-filing signals land in SJS Reportable Events.
-- **Margin / Intel / Founder (no queue):** These are direct-output skills with no Asana queue. The bridge does not call them — it lands the underlying data where they read it live. Margin cost/MOQ/tariff/allowance/MAP pressure lands in PLM via Flow G (margin skills read PLM live); intel/founder signal is surfaced to the operator and upstream rollups via an `outlook-asana-bridge` cross-flag. Destination-skill names elsewhere in this file (margin-pressure-test, walk-away, sjs-comp-intel, sjs-retail-intel, ayesha-weekly-briefing, etc.) mark routing intent, not a direct call. Per `sjs-master/bridge_queue_contract.md`.
+- **Margin / Intel / Founder (no queue):** These are direct-output skills with no Asana queue. The bridge does not call them — it lands the underlying data where they read it live. Margin cost/MOQ/tariff/allowance/MAP pressure lands in PLM via Flow G (margin skills read PLM live); intel/founder signal is surfaced to the operator and upstream rollups via an `outlook-asana-bridge` cross-flag. Destination-skill names elsewhere in this file (margin-pressure-test, walk-away, sjs-comp-intel, sjs-retail-intel, ayesha-weekly-briefing, etc.) mark routing intent, not a direct call. Per `references/architecture/bridge_queue_contract.md`.
 - **Ramp invoices (Flow I) → Purchasing queue:** Every Flow I invoice hands off to `purchasing-manager` Job 9 via the AC Brands Purchasing queue for HITL classification, multi-home routing, and optional dispute trigger. `plm-assistant` commits the `vendor_invoices` row only after that HITL gate clears. Downstream rollups (`regulatory-manager` Jobs 8 + 9 and `regulatory-status-reporter` spend strip) read from committed rows.
 - **Status reporter:** Material BOM cost changes (Flow G) or failing test results (Flow E) affecting launch readiness flag into `sjs-status-reporter` aggregation via the SJS Quality Management / SJS Regulatory Management queues.
 

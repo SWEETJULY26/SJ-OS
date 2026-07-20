@@ -334,7 +334,7 @@ The PO Number lives in the task title; Vendor + PLM Link are field-direct. Invoi
 
 ## Calls and integrations
 
-The skill goes through other skills for source access wherever one exists. Only Asana access is direct, matching the asana-pd-manager pattern (peer orchestrators each own their own Asana surface). Bridge intake follows the queue contract at `sjs-master/bridge_queue_contract.md` — bridges post into the AC Brands Purchasing project (including Flow I Ramp invoices); this skill picks up.
+The skill goes through other skills for source access wherever one exists. Only Asana access is direct, matching the asana-pd-manager pattern (peer orchestrators each own their own Asana surface). Bridge intake follows the queue contract at `references/architecture/bridge_queue_contract.md` — bridges post into the AC Brands Purchasing project (including Flow I Ramp invoices); this skill picks up.
 
 **Reads via:**
 - plm-assistant — vendor lists, PO history, batch records, components, on-hand, `vendor_invoices` lookups when needed for operator queries

@@ -10,7 +10,7 @@ description: >
   Also triggers when sibling PD skills flag a ⚙️ PLM Bridge item. plm-assistant is
   the sole PLM writer; this bridge stages and confirms. While syncing, extracts
   cross-system signal and posts to the right Asana queue per
-  sjs-master/bridge_queue_contract.md — Quality (failing tests, batch holds,
+  references/architecture/bridge_queue_contract.md — Quality (failing tests, batch holds,
   near-expiry, complaints) and Regulatory (Pedrero artifacts, attestation responses,
   expiring compliance docs). PLM → Asana surface-back includes Quality and Regulatory
   flags, not just stock and phase. Sibling of asana-pd-manager in the PD system.
@@ -270,7 +270,7 @@ You own HITL approval. plm-assistant owns the commit and the audit-log entry.
 
 ## Connection points
 
-This bridge stages PLM writes (sole writer is `plm-assistant`) and posts sync-back comments to Asana PD tasks. Cross-system signal it extracts while syncing follows the queue contract — it posts to the target system's Asana queue rather than calling destination skills directly. Canonical map: `sjs-master/bridge_queue_contract.md`.
+This bridge stages PLM writes (sole writer is `plm-assistant`) and posts sync-back comments to Asana PD tasks. Cross-system signal it extracts while syncing follows the queue contract — it posts to the target system's Asana queue rather than calling destination skills directly. Canonical map: `references/architecture/bridge_queue_contract.md`.
 
 - **PLM writes:** All four Flows stage SQL through `plm-assistant`. Reads (SELECT) run direct against Supabase. The bridge never calls `execute_sql` for INSERT / UPDATE / DELETE.
 - **Inbound from Asana:** Formula Tracker stage moves to Signed Approvals trigger Flow 1; email-sourced approval / batch / supplier signal flagged by the two Outlook bridges and meeting-sourced signal flagged by `fireflies-asana-bridge` trigger Flows 1–3.
@@ -278,7 +278,7 @@ This bridge stages PLM writes (sole writer is `plm-assistant`) and posts sync-ba
 - **Cross-system signal extracted during sync:** Quality flags → Quality queue (SJS Quality Management). Regulatory flags → Regulatory queue (SJS Regulatory Management). Margin flags → PLM (margin skills read PLM live; no Asana queue for them). Ops, Intel, Founder follow the same queue contract.
 - **PLM Bridge flags from siblings:** When a sibling PD skill flags ⚙️ PLM Bridge on a task, that's this bridge's pickup signal.
 - **Purchasing-surface ledger (Flow 5):** `purchasing-manager` lifecycle state changes in the AC Brands Purchasing project — onboarding gate cleared (2C), vendor record created (2D), receipt closed (3E), discrepancy resolved (6C/Job 10), renewal closed (4B) — fire Flow 5 to write a ledger line to the `supplier/<slug>` wiki page. `purchasing-manager` never writes the wiki directly; all purchasing-driven wiki writes land here.
-- **Margin / Intel / Founder (no queue):** These are direct-output skills with no Asana queue. The bridge does not call them — it lands the underlying data where they read it live (margin cost/MOQ → PLM; intel/founder signal → surfaced to the operator and upstream rollups). Destination-skill names elsewhere in this file (margin-pressure-test, walk-away, sjs-comp-intel, ayesha-weekly-briefing, etc.) mark routing intent, not a direct call. Per `sjs-master/bridge_queue_contract.md`.
+- **Margin / Intel / Founder (no queue):** These are direct-output skills with no Asana queue. The bridge does not call them — it lands the underlying data where they read it live (margin cost/MOQ → PLM; intel/founder signal → surfaced to the operator and upstream rollups). Destination-skill names elsewhere in this file (margin-pressure-test, walk-away, sjs-comp-intel, ayesha-weekly-briefing, etc.) mark routing intent, not a direct call. Per `references/architecture/bridge_queue_contract.md`.
 
 ---
 

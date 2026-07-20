@@ -2,7 +2,7 @@
 name: outlook-asana-bridge
 description: >
   Universal Outlook email intake for Sweet July Skin. Scans Inbox + Sent Items and
-  posts work to the right Asana queues per sjs-master/bridge_queue_contract.md — PD,
+  posts work to the right Asana queues per references/architecture/bridge_queue_contract.md — PD,
   Ops, Quality, Regulatory — plus PLM cross-flags. Triggers on "check my emails for
   SJS updates", "log this to the Castaway project", "create a task from this supplier
   email", "what am I waiting on", "did I follow up with Vegelabs", "what did I commit
@@ -91,7 +91,7 @@ action shape all flow from that label set.
 
 ### Sub-system label set
 
-This bridge posts to Asana queues. The umbrella router for each sub-system picks up. Canonical queue map: `sjs-master/bridge_queue_contract.md`.
+This bridge posts to Asana queues. The umbrella router for each sub-system picks up. Canonical queue map: `references/architecture/bridge_queue_contract.md`.
 
 | Label | Asana queue destination |
 |-------|------------------------|
@@ -344,7 +344,7 @@ relevant attachment that should go into an Asana task:
 
 ## Connection points
 
-This bridge posts to Asana queues per the queue contract — it doesn't call destination skills directly. Canonical map: `sjs-master/bridge_queue_contract.md`.
+This bridge posts to Asana queues per the queue contract — it doesn't call destination skills directly. Canonical map: `references/architecture/bridge_queue_contract.md`.
 
 - **PD queue:** `pd`-labeled actions land in the named SJ SKIN project (or Formula Tracker for stage moves) and follow `asana-pd-manager/references/confirmation-protocol.md`.
 - **Ops queue:** `ops`-labeled actions land in the named Ops project (Purchasing / Inventory / S&OP / Logistics / OC3PL Order Management / SJ Shipping Dashboard) per signal subtype.
@@ -352,7 +352,7 @@ This bridge posts to Asana queues per the queue contract — it doesn't call des
 - **Regulatory queue:** `regulatory`-labeled actions land in SJS Regulatory Management (or SJS Reportable Events for SAE / recall).
 - **PLM:** `plm`-labeled signal cross-flags to `outlook-plm-bridge`, which owns email-sourced PLM writes through `plm-assistant`.
 - **Cross-bridge:** If an email is a follow-up to a meeting commitment ("I'll send you the approval doc"), `fireflies-asana-bridge` may have already opened the parent action; this bridge catches the email and posts to the same parent.
-- **Margin / Intel / Founder (no queue):** These are direct-output skills with no Asana queue. The bridge does not call them — it lands the underlying data where they read it live (margin cost/MOQ → PLM via `outlook-plm-bridge`; intel/founder signal → surfaced to the operator and upstream rollups). Destination-skill names elsewhere in this file (margin-pressure-test, sjs-comp-intel, ayesha-weekly-briefing, etc.) mark routing intent, not a direct call. Per `sjs-master/bridge_queue_contract.md`.
+- **Margin / Intel / Founder (no queue):** These are direct-output skills with no Asana queue. The bridge does not call them — it lands the underlying data where they read it live (margin cost/MOQ → PLM via `outlook-plm-bridge`; intel/founder signal → surfaced to the operator and upstream rollups). Destination-skill names elsewhere in this file (margin-pressure-test, sjs-comp-intel, ayesha-weekly-briefing, etc.) mark routing intent, not a direct call. Per `references/architecture/bridge_queue_contract.md`.
 
 ### Multi-route is the default
 

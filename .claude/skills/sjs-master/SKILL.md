@@ -16,7 +16,7 @@ description: >
 
 # Sweet July Skin — Master Router
 
-This is the brand-level routing layer for the Sweet July Skin skills system. It does one job: look at a request and either route it to the right sub-system router, or coordinate a cross-system handoff. It never holds canonical data — names, GIDs, products, vendors, brand spec, style rules — those live in the support files alongside this router and in PLM, where every skill reads them at runtime.
+This is the brand-level routing layer for the Sweet July Skin skills system. It does one job: look at a request and either route it to the right sub-system router, or coordinate a cross-system handoff. It never holds canonical data — names, GIDs, products, vendors, brand spec, style rules — those live in `references/architecture/` at the repo root and in PLM, where every skill reads them at runtime.
 
 The router runs **silently**. Don't announce which sub-system you're consulting; just deliver the answer.
 
@@ -24,14 +24,18 @@ The router runs **silently**. Don't announce which sub-system you're consulting;
 
 ## Read these at runtime
 
-Every session that activates this router should pull current state from the support files alongside this SKILL.md:
+Every session that activates this router should pull current state from `references/architecture/` at the repo root (paths below relative to repo root):
 
-- `system_map.md` — every skill, which system, dependencies
-- `bridge_queue_contract.md` — canonical map of bridge → Asana queue → router/skill that picks up
-- `gids.md` — Asana / PLM identifiers
-- `style_rules.md` — banned words, formatting, status update titles, vendor terminology
-- `tool_patterns.md` — Fireflies/Outlook/Asana/PLM working patterns, lip program vendor logic
-- `automations.md` — daily PD recap, weekly briefing, etc.
+- `references/architecture/system_map.md` — every skill, which system, dependencies
+- `references/architecture/bridge_queue_contract.md` — canonical map of bridge → Asana queue → router/skill that picks up
+- `references/architecture/gids.md` — Asana / PLM identifiers
+- `references/architecture/style_rules.md` — banned words, formatting, status update titles, vendor terminology
+- `references/architecture/tool_patterns.md` — Fireflies/Outlook/Asana/PLM working patterns, lip program vendor logic
+- `references/architecture/automations.md` — daily PD recap, weekly briefing, etc.
+- `references/architecture/daily_pd_recap.md` — full prompt spec for the 2 PM PT recap
+- `references/architecture/monday_weekly_briefing.md` — full prompt spec for the Monday briefing
+
+This folder is the cross-system canonical layer for the whole Sweet July Skin skills system — it absorbed what used to live only alongside this router (see `decisions/skills-architecture-tracker.md` for the migration history and open work). System-specific canonical files (Quality's role-map/SOP catalog, Regulatory's role-map/partner contacts, etc.) stay local to their own skill's `references/` — only genuinely cross-system facts live here.
 
 Vendors, products, suppliers, contacts, and partners are read live from Supabase, not from files:
 
@@ -124,7 +128,7 @@ Route to: `ac-brands-holiday-comms`. This is the only org-level skill that fires
 
 ## Cross-system handoffs
 
-When a single request triggers handoffs across systems, the master router coordinates the sequence. The handoff playbook lives in `system_map.md` under "Cross-system handoffs"; here are the most common paths.
+When a single request triggers handoffs across systems, the master router coordinates the sequence. The handoff playbook lives in `references/architecture/system_map.md` under "Cross-system handoffs"; here are the most common paths.
 
 ### Concept approval (PD → Margin)
 

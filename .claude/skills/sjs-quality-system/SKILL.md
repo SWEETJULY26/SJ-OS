@@ -83,7 +83,7 @@ Quality queue destinations:
 | Batch lifecycle sections of SJS Quality Management | `batch-lifecycle-tracker` |
 | PLM `public.*` tables (batches, complaints, lab records) | `plm-assistant` writes; bridge posts sync-back |
 
-A quality signal that originates in an end-customer email or supplier transcript lands in the right project automatically; the umbrella router picks it up and routes to the right sub-skill. Canonical map: `sjs-master/bridge_queue_contract.md`.
+A quality signal that originates in an end-customer email or supplier transcript lands in the right project automatically; the umbrella router picks it up and routes to the right sub-skill. Canonical map: `references/architecture/bridge_queue_contract.md`.
 
 ---
 

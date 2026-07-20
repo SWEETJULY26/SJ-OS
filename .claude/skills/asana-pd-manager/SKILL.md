@@ -10,7 +10,7 @@ The core engine of Sweet July Skin's PD system. Reads and writes every PD task, 
 
 ## Why this exists
 
-The PD system needs one place where Asana state is read, written, and confirmed against a consistent set of rules. Meeting intake, email intake, PLM sync, and branded outputs all sit alongside this skill in the 7-skill PD system per `sjs-master/system_map.md`, but every Asana-side write lands here. Centralizing the write contract — confirmation, role-based assignment, stage-gate logic, IL Review Gate — keeps PD signal coherent across the four bridges and one reporter.
+The PD system needs one place where Asana state is read, written, and confirmed against a consistent set of rules. Meeting intake, email intake, PLM sync, and branded outputs all sit alongside this skill in the 7-skill PD system per `references/architecture/system_map.md`, but every Asana-side write lands here. Centralizing the write contract — confirmation, role-based assignment, stage-gate logic, IL Review Gate — keeps PD signal coherent across the four bridges and one reporter.
 
 ## Design principles
 
@@ -201,5 +201,5 @@ See `references/cross-skill-handoffs.md` for the full table. Headline wires:
 
 ## History
 
-- **2026-05-17** — Modernized to umbrella pattern. Extracted inline catalogs (team roster, product list, supplier map, external partners, stage-gate procedure, confirmation rules, trigger phrases) to `references/`. Updated system-position from "Skill 1 of 4-skill circular system" to "core engine of the 7-skill PD system" per `sjs-master/system_map.md`. Marked SKN-OPS-008 as ratified (was "pending ratification" — `quality-manager/references/sop-catalog.md` showed ratified 2026-05-09). Added Design principles, Core jobs (numbered), When NOT to use, Reference index. Documented cross-system handoffs to Quality, Regulatory, Margin, Ops, Retail Intel, and inbound reverse-handoffs.
+- **2026-05-17** — Modernized to umbrella pattern. Extracted inline catalogs (team roster, product list, supplier map, external partners, stage-gate procedure, confirmation rules, trigger phrases) to `references/`. Updated system-position from "Skill 1 of 4-skill circular system" to "core engine of the 7-skill PD system" per `references/architecture/system_map.md`. Marked SKN-OPS-008 as ratified (was "pending ratification" — `quality-manager/references/sop-catalog.md` showed ratified 2026-05-09). Added Design principles, Core jobs (numbered), When NOT to use, Reference index. Documented cross-system handoffs to Quality, Regulatory, Margin, Ops, Retail Intel, and inbound reverse-handoffs.
 - **2026-05-09** — Original monolithic v1 (14KB SKILL.md, no references/).
