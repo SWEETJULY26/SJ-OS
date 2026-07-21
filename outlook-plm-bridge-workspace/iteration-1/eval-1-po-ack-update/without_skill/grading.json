@@ -1,0 +1,15 @@
+{
+  "expectations": [
+    {"text": "The proposal is an UPDATE on the existing PO, not an INSERT of a new PO record", "passed": true, "evidence": "Frames the change purely in terms of the existing record's 'status' field going from Sent to Acknowledged — never proposes a new row."},
+    {"text": "The preview shows a current value → new value comparison rather than just the new value alone", "passed": true, "evidence": "'Field: status — From: Sent — To: Acknowledged (or Confirmed...)'"},
+    {"text": "The output states the write will be staged and handed to plm-assistant rather than committed directly via execute_sql", "passed": false, "evidence": "States only 'No write was made to Supabase/PLM' — never mentions a staging/plm-assistant handoff concept or a sole-writer rule; doesn't demonstrate awareness that direct execute_sql writes are architecturally off-limits, just that none happened in this run."},
+    {"text": "An Asana sync-back comment on the related PD task is mentioned as a follow-on step", "passed": false, "evidence": "Asana is never mentioned anywhere in the output — no sync-back comment, no related PD task lookup."},
+    {"text": "The skill does not claim to have created a new Asana task", "passed": true, "evidence": "No Asana action is mentioned at all, so trivially no false claim is made."}
+  ],
+  "summary": {"passed": 3, "failed": 2, "total": 5, "pass_rate": 0.6},
+  "execution_metrics": {"errors_encountered": 0, "output_chars": 2500},
+  "timing": {"executor_duration_seconds": 94.9},
+  "eval_feedback": {
+    "overall": "Closest baseline result of the four eval pairs — a generic agent can reasonably infer 'PO ack = status UPDATE' on its own. What it still misses is the architecture-specific stuff: routing every write through plm-assistant rather than direct execute_sql, and posting the Asana sync-back comment that keeps the PD team in the loop. Those are exactly the parts a shared skill needs to encode since they're not things a generic agent would invent unprompted."}
+  }
+}

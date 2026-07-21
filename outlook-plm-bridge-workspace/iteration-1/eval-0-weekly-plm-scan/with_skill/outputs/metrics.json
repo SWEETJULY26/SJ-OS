@@ -1,0 +1,10 @@
+{
+  "tool_calls": {
+    "mcp__Microsoft_365__outlook_email_search": 25,
+    "mcp__Supabase__execute_sql": 6
+  },
+  "total_tool_calls": 31,
+  "errors_encountered": [
+    "mcp__Microsoft_365__outlook_email_search with folderName='OC3PL' returned NOT_FOUND ('Folder with name \"OC3PL\" not found') — folder-name sweep for OC3PL was not completed; OC3PL signal was still captured via the Ramp Orange County 3PL invoice notification."
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "expectations": [
+    {"text": "The email is classified with multiple labels (quality, pd, plm), not just one", "passed": false, "evidence": "No label system used anywhere; output speaks in terms of 'log it in Asana's SJS Quality Management project' without a pd or plm designation attached."},
+    {"text": "Quality is treated as the parent action per the safety-first priority order, not pd", "passed": false, "evidence": "Quality Management is named as the likely destination, but there's no explicit parent/secondary structure or priority-order reasoning — it's presented as a single flat proposal, not a multi-system routing decision."},
+    {"text": "The proposed PLM cross-flag to outlook-plm-bridge is explicitly mentioned", "passed": false, "evidence": "outlook-plm-bridge and any PLM cross-flag concept are never mentioned in the output."},
+    {"text": "The proposed actions cross-reference each other", "passed": false, "evidence": "Only one proposed action (a lab-finding-style task) is described; there is no secondary PD comment or PLM flag to cross-reference."},
+    {"text": "The output is a confirmation preview, not a claim that the task/comment was already created", "passed": true, "evidence": "'No writes to Asana, PLM, or Supabase' stated explicitly at the end."}
+  ],
+  "summary": {"passed": 1, "failed": 4, "total": 5, "pass_rate": 0.2},
+  "execution_metrics": {"errors_encountered": 0, "output_chars": 3100},
+  "timing": {"executor_duration_seconds": 79.5},
+  "claims": [
+    {"claim": "Allure Labs doesn't match the vendor Asana shows as responsible for Castaway Cream PET testing", "type": "factual", "verified": true, "evidence": "Independently reached the same conclusion as the with-skill run using raw Asana search — good general capability, but this catch came from ordinary due diligence, not from the skill's routing logic."}
+  ],
+  "eval_feedback": {
+    "overall": "Baseline correctly identifies where a quality issue like this would eventually land in Asana, and it independently caught the same vendor mismatch — general capability is solid. What it's missing is exactly what the skill is for: the multi-label classification, the parent/secondary split, and the PLM cross-flag. That gap is the whole point of this skill existing."
+  }
+}

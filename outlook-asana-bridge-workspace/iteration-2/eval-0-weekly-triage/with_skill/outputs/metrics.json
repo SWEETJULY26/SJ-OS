@@ -1,0 +1,42 @@
+{
+  "tool_calls": {
+    "Read": 1,
+    "ToolSearch": 3,
+    "mcp__Supabase__list_projects": 1,
+    "mcp__Supabase__execute_sql": 4,
+    "mcp__Microsoft_365__outlook_email_search": 9,
+    "mcp__Microsoft_365__read_resource": 4
+  },
+  "total_tool_calls": 22,
+  "errors_encountered": [
+    {
+      "tool": "mcp__Microsoft_365__outlook_email_search",
+      "param": "folderName: OC3PL",
+      "attempt": 1,
+      "error": "NOT_FOUND: Folder with name \"OC3PL\" not found.",
+      "resolution": "Retried per skill guidance (lookup mismatch, not missing folder) — retry also errored NOT_FOUND. Fell back to mail:///folders/ listing to get the folder's real ID, then read_resource by ID succeeded (575 items, folder confirmed to exist directly under Inbox)."
+    },
+    {
+      "tool": "mcp__Microsoft_365__outlook_email_search",
+      "param": "folderName: Pedrero Regulatory",
+      "attempt": 1,
+      "error": "NOT_FOUND: Folder with name \"Pedrero Regulatory\" not found.",
+      "resolution": "Same as above — retry also errored NOT_FOUND. Fell back to read_resource by folder ID, succeeded (56 items, folder confirmed to exist directly under Inbox)."
+    },
+    {
+      "tool": "mcp__Microsoft_365__outlook_email_search",
+      "param": "folderName: OC3PL",
+      "attempt": 2,
+      "error": "NOT_FOUND: Folder with name \"OC3PL\" not found.",
+      "resolution": "Confirmed this is a folderName-search tool limitation, not a missing/renamed folder. Worked around via read_resource by folder ID."
+    },
+    {
+      "tool": "mcp__Microsoft_365__outlook_email_search",
+      "param": "folderName: Pedrero Regulatory",
+      "attempt": 2,
+      "error": "NOT_FOUND: Folder with name \"Pedrero Regulatory\" not found.",
+      "resolution": "Same workaround via read_resource by folder ID."
+    }
+  ],
+  "notes": "Both OC3PL and Pedrero Regulatory topic-folder sweeps were completed successfully (not skipped, not reported as missing) after working around a folderName-search NOT_FOUND error via direct folder-ID read. OC3PL had real activity this week; Pedrero Regulatory legitimately had zero new items this week (last message 2026-05-19), corroborated by an empty sender-domain search on pedreroregulatory.com over the same window."
+}

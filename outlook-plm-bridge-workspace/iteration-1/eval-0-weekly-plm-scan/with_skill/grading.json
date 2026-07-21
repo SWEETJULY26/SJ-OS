@@ -1,0 +1,18 @@
+{
+  "expectations": [
+    {"text": "The output searches or reasons about both Inbox and Sent Items, not just Inbox", "passed": true, "evidence": "Header: 'Found 17 PLM-bound emails (14 received, 3 sent)'; includes 📤-marked sent items (e.g. Alvin's outbound F&A approval to KDC-One, PO #100310 deposit-invoice reply)."},
+    {"text": "Emails are classified into named flows (A through G, or I) rather than left unclassified", "passed": true, "evidence": "Explicit section headers 'PURCHASE ORDERS (Flow A)', 'FORMULA / ARTWORK APPROVALS (Flow D)', 'COMPONENT / BOM UPDATES (Flow G)', 'VENDOR UPDATES (Flow C)', 'VENDOR INVOICES — COST LEDGER (Flow I)', with each line item tagged INSERT/UPDATE."},
+    {"text": "The non-PLM signal scan runs alongside the PLM classification", "passed": true, "evidence": "Dedicated QUALITY CROSS-FLAGS, REGULATORY CROSS-FLAGS, MARGIN CROSS-FLAGS, and OUTLOOK-ASANA-BRIDGE CROSS-FLAGS sections are present and explain their empty/non-empty state (e.g. TikTok ad spend flagged as non-PLM signal)."},
+    {"text": "The output uses the PLM Triage Report section structure", "passed": true, "evidence": "Matches the skill's format closely: 🚨 URGENT, 📋 PURCHASE ORDERS, 📋 FORMULA APPROVALS, 📋 COMPONENT/BOM, 📋 VENDOR UPDATES, 📋 VENDOR INVOICES, cross-flag sections, ending in the 'Which should I push?' prompt."},
+    {"text": "No PLM INSERT/UPDATE is claimed as already committed", "passed": true, "evidence": "Closing line: 'Nothing was written to PLM, Asana, or anywhere else in this pass — this is the triage report only.'"}
+  ],
+  "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0},
+  "execution_metrics": {"errors_encountered": 0, "output_chars": 6800},
+  "timing": {"executor_duration_seconds": 186.8},
+  "claims": [
+    {"claim": "Several Ramp-sourced payees (Studebaker Brackett PLLC, Erin Entrup, LACY REDWAY INC., WILHELMINA INTERNATIONAL INC.) don't match any PLM vendor/partner/contact", "type": "process", "verified": true, "evidence": "Run correctly applied the 'surface unrecognized entities rather than drop them' rule from the skill's run-time entity discovery section instead of silently skipping or guessing."}
+  ],
+  "eval_feedback": {
+    "overall": "Full pass with substantive evidence. The run also self-reported its own coverage gaps (vendors with no contact_email on file, an unrecognized OC3PL folder name) rather than silently under-searching — a good sign the skill's instructions are being followed in spirit, not just pattern-matched."
+  }
+}

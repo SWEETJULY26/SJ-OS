@@ -1,0 +1,12 @@
+{
+  "eval_id": 0,
+  "eval_name": "weekly-triage",
+  "prompt": "Check my emails for any SJS updates from this week",
+  "assertions": [
+    "The output searches or reasons about both Inbox and Sent Items, not just Inbox",
+    "The output groups results using the Email Triage Report section headers (e.g. URGENT, QUALITY, REGULATORY, PLM FLAGS)",
+    "Emails with signal for more than one sub-system are split and cross-referenced rather than filed under a single label",
+    "The output ends by asking which items to push rather than creating Asana tasks unprompted",
+    "No Asana write (task creation, comment, or stage move) happens before user confirmation"
+  ]
+}

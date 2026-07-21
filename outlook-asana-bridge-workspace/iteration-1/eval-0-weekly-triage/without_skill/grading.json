@@ -1,0 +1,18 @@
+{
+  "expectations": [
+    {"text": "The output searches or reasons about both Inbox and Sent Items, not just Inbox", "passed": false, "evidence": "Output states 'Searched the Outlook inbox for messages...' and the closing 'Note on scope' section confirms only a plain Inbox read was done; Sent Items is never mentioned."},
+    {"text": "The output groups results using the Email Triage Report section headers", "passed": false, "evidence": "Uses ad hoc headers ('Needs your attention', 'Retail / Ulta', 'Meetings', 'Asana notification noise', 'Amazon marketplace') with no relationship to the skill's URGENT/QUALITY/REGULATORY/PLM FLAGS structure."},
+    {"text": "Emails with signal for more than one sub-system are split and cross-referenced rather than filed under a single label", "passed": false, "evidence": "No sub-system labels (pd/ops/quality/regulatory/etc.) are applied anywhere in the output; items are grouped by informal topic only."},
+    {"text": "The output ends by asking which items to push rather than creating Asana tasks unprompted", "passed": false, "evidence": "Output ends with 'Say the word if you want the actual action items pulled out of any of them' — an offer to do more reading, not the push/skip confirmation gate the skill defines."},
+    {"text": "No Asana write happens before user confirmation", "passed": true, "evidence": "No write was attempted; explicitly stated 'nothing was written to Asana or PLM'. Note: this assertion is non-discriminating here — the eval run's own instructions forbade writes for both configurations, so this would pass regardless of skill quality (see eval_feedback)."}
+  ],
+  "summary": {"passed": 1, "failed": 4, "total": 5, "pass_rate": 0.2},
+  "execution_metrics": {"errors_encountered": 0, "output_chars": 2800},
+  "timing": {"executor_duration_seconds": 104.3},
+  "eval_feedback": {
+    "suggestions": [
+      {"assertion": "No Asana write happens before user confirmation", "reason": "Both with-skill and baseline runs were instructed not to write, as a safety constraint for this eval batch. This assertion can't discriminate skill quality under that constraint — it will pass for any reasonably cautious agent. Worth replacing with something that tests the *content* of the proposed action instead."}
+    ],
+    "overall": "Baseline produces a genuinely useful, well-written inbox summary, but it's a different product entirely — no classification, no routing, no multi-system fan-out. This is the expected and correct gap: it's exactly what the skill's structured routing logic is supposed to add over a generic read."
+  }
+}

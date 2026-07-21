@@ -1,0 +1,16 @@
+{
+  "tool_calls": {
+    "Skill": 1,
+    "ToolSearch": 2,
+    "mcp__Microsoft_365__outlook_email_search": 4,
+    "mcp__Microsoft_365__read_resource": 2,
+    "mcp__Supabase__execute_sql": 2,
+    "Read": 1,
+    "Bash": 3,
+    "Write": 2
+  },
+  "total_tool_calls": 17,
+  "errors_encountered": [
+    "mcp__Microsoft_365__read_resource returned two email bodies exceeding the tool's max output token size (86,505 and 78,907 chars); worked around by having the harness save to file and grepping/slicing via Bash instead of Read."
+  ]
+}

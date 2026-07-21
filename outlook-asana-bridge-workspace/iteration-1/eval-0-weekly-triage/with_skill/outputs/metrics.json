@@ -1,0 +1,9 @@
+{
+  "tool_calls": {
+    "mcp__Supabase__list_projects": 1,
+    "mcp__Supabase__execute_sql": 4,
+    "mcp__Microsoft_365__outlook_email_search": 20
+  },
+  "total_tool_calls": 25,
+  "errors_encountered": []
+}

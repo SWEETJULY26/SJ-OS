@@ -1,0 +1,12 @@
+{
+  "eval_id": 0,
+  "eval_name": "weekly-plm-scan",
+  "prompt": "Scan my inbox for PLM-bound emails this week",
+  "assertions": [
+    "The output searches or reasons about both Inbox and Sent Items, not just Inbox",
+    "Emails are classified into named flows (A through G, or I) rather than left unclassified",
+    "The non-PLM signal scan runs alongside the PLM classification (e.g. failing tests, Pedrero artifacts, cost changes get their own cross-flag section)",
+    "The output uses the PLM Triage Report section structure",
+    "No PLM INSERT/UPDATE is claimed as already committed — the output stages proposed writes for plm-assistant and waits for confirmation"
+  ]
+}

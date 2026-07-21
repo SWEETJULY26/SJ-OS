@@ -1,0 +1,15 @@
+{
+  "expectations": [
+    {"text": "The proposal is an UPDATE on the existing PO, not an INSERT of a new PO record", "passed": true, "evidence": "'Flow A — PO #100336 [UPDATE]' with an explicit SQL comment 'UPDATE purchase_orders ... WHERE id = ...' — correctly identified inbound-ack direction maps to UPDATE per the skill's direction table."},
+    {"text": "The preview shows a current value → new value comparison rather than just the new value alone", "passed": true, "evidence": "Table of current field values plus a diff block: 'Status: Sent → Acknowledged', 'Requested ship date: 2026-05-08 → 2026-05-08 (unchanged...)'."},
+    {"text": "The output states the write will be staged and handed to plm-assistant rather than committed directly via execute_sql", "passed": true, "evidence": "'STAGED ONLY — not executed. plm-assistant is the sole writer, and only after Alvin confirms against a real source email.'"},
+    {"text": "An Asana sync-back comment on the related PD task is mentioned as a follow-on step", "passed": true, "evidence": "'Asana sync-back: [would post to the KDC/One tooling task in SJS Ops once confirmed]'"},
+    {"text": "The skill does not claim to have created a new Asana task", "passed": true, "evidence": "No Asana write is claimed; output explicitly states 'No PLM write, no Asana post, and no plm-assistant hand-off happened.'"}
+  ],
+  "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0},
+  "execution_metrics": {"errors_encountered": 0, "output_chars": 2900},
+  "timing": {"executor_duration_seconds": 112.7},
+  "eval_feedback": {
+    "overall": "Full pass, and it correctly refused to fabricate a source email for the ack — flagged the mismatch and produced an explicitly-labeled illustrative preview instead of pretending to have found real confirmation. That's the right failure mode for a system gating real PLM writes."
+  }
+}
