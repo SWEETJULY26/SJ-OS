@@ -1,0 +1,12 @@
+{
+  "tool_calls": {
+    "mcp__Microsoft_365__outlook_email_search": 4,
+    "mcp__Microsoft_365__read_resource": 5
+  },
+  "total_tool_calls": 9,
+  "errors_encountered": [
+    "outlook_email_search: VALIDATION_ERROR on first two calls — 'order' param is not supported with a free-text 'query' search; retried without 'order' and succeeded.",
+    "read_resource: 4 of 5 calls exceeded the tool's max output token size (bodies ranged 54k-263k chars) and were redirected to on-disk files; content was recovered via local Python/regex parsing of the saved files rather than a clean tool return. No data was lost, but this added extra local processing steps outside the MCP tool surface.",
+    "No live Asana or Supabase/PLM tool calls were made — task scope was Outlook email only, per instructions."
+  ]
+}

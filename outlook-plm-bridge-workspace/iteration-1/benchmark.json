@@ -1,0 +1,84 @@
+{
+  "metadata": {
+    "skill_name": "outlook-plm-bridge",
+    "skill_path": "/home/user/SJ-OS/.claude/skills/outlook-plm-bridge",
+    "executor_model": "claude-sonnet-5",
+    "analyzer_model": "claude-sonnet-5",
+    "timestamp": "2026-07-20T00:00:00Z",
+    "evals_run": [0, 1],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 0, "eval_name": "weekly-plm-scan", "configuration": "with_skill", "run_number": 1,
+      "result": {"pass_rate": 1.0, "passed": 5, "failed": 0, "total": 5, "time_seconds": 186.8, "tokens": 152391, "tool_calls": 36, "errors": 0},
+      "expectations": [
+        {"text": "Searches/reasons about both Inbox and Sent Items", "passed": true, "evidence": "17 PLM-bound emails: 14 received, 3 sent"},
+        {"text": "Classified into named flows (A-G, I)", "passed": true, "evidence": "Flow A/D/G/C/I sections with INSERT/UPDATE tags"},
+        {"text": "Non-PLM signal scan runs alongside", "passed": true, "evidence": "Dedicated Quality/Regulatory/Margin/outlook-asana-bridge cross-flag sections"},
+        {"text": "Uses PLM Triage Report structure", "passed": true, "evidence": "Matches skill's section format closely, ends on confirmation gate"},
+        {"text": "No PLM write claimed as committed", "passed": true, "evidence": "'Nothing was written to PLM, Asana, or anywhere else in this pass'"}
+      ],
+      "notes": ["Self-reported its own coverage gaps (vendors missing contact_email, an unrecognized OC3PL folder name) rather than silently under-searching.", "Correctly surfaced unrecognized Ramp payees (Studebaker Brackett, Erin Entrup, etc.) instead of guessing or dropping them, per the entity-discovery rule."]
+    },
+    {
+      "eval_id": 0, "eval_name": "weekly-plm-scan", "configuration": "without_skill", "run_number": 1,
+      "result": {"pass_rate": 0.2, "passed": 1, "failed": 4, "total": 5, "time_seconds": 59.6, "tokens": 62773, "tool_calls": 7, "errors": 0},
+      "expectations": [
+        {"text": "Searches/reasons about both Inbox and Sent Items", "passed": false, "evidence": "Inbox only, explicitly noted"},
+        {"text": "Classified into named flows (A-G, I)", "passed": false, "evidence": "Plain sender/subject/category table, no flow labels"},
+        {"text": "Non-PLM signal scan runs alongside", "passed": false, "evidence": "No separate cross-flag reasoning"},
+        {"text": "Uses PLM Triage Report structure", "passed": false, "evidence": "Generic Method/Result/Caveats structure"},
+        {"text": "No PLM write claimed as committed", "passed": true, "evidence": "'No database or Asana writes were made or proposed'"}
+      ],
+      "notes": ["Reached the same substantive conclusion (nothing PLM-bound this week) with 5x fewer tool calls and a quarter of the tokens — cheap and correct on this particular week, but only because there happened to be nothing to classify."]
+    },
+    {
+      "eval_id": 1, "eval_name": "po-ack-update", "configuration": "with_skill", "run_number": 1,
+      "result": {"pass_rate": 1.0, "passed": 5, "failed": 0, "total": 5, "time_seconds": 112.7, "tokens": 112023, "tool_calls": 18, "errors": 0},
+      "expectations": [
+        {"text": "UPDATE not INSERT", "passed": true, "evidence": "'Flow A — PO #100336 [UPDATE]' with matching SQL comment"},
+        {"text": "Current -> new value preview shown", "passed": true, "evidence": "Field table plus diff: 'Status: Sent -> Acknowledged'"},
+        {"text": "Staged and handed to plm-assistant, not direct execute_sql", "passed": true, "evidence": "'STAGED ONLY — not executed. plm-assistant is the sole writer'"},
+        {"text": "Asana sync-back mentioned as follow-on", "passed": true, "evidence": "'Asana sync-back: [would post to the KDC/One tooling task in SJS Ops once confirmed]'"},
+        {"text": "Does not claim to have created an Asana task", "passed": true, "evidence": "No Asana write claimed"}
+      ],
+      "notes": ["Refused to fabricate a source email for the ack, flagged the mismatch, and clearly labeled the preview as illustrative — the right failure mode for a system gating real PLM writes."]
+    },
+    {
+      "eval_id": 1, "eval_name": "po-ack-update", "configuration": "without_skill", "run_number": 1,
+      "result": {"pass_rate": 0.6, "passed": 3, "failed": 2, "total": 5, "time_seconds": 94.9, "tokens": 101573, "tool_calls": 19, "errors": 3},
+      "expectations": [
+        {"text": "UPDATE not INSERT", "passed": true, "evidence": "Frames change as existing record's status field changing"},
+        {"text": "Current -> new value preview shown", "passed": true, "evidence": "'Field: status — From: Sent — To: Acknowledged'"},
+        {"text": "Staged and handed to plm-assistant, not direct execute_sql", "passed": false, "evidence": "States only 'no write was made', with no mention of a staging/plm-assistant handoff or sole-writer rule"},
+        {"text": "Asana sync-back mentioned as follow-on", "passed": false, "evidence": "Asana never mentioned"},
+        {"text": "Does not claim to have created an Asana task", "passed": true, "evidence": "No Asana action attempted at all"}
+      ],
+      "notes": ["Closest baseline result of the four eval pairs — 'PO ack = status update' is inferable without the skill. What's missing is the architecture-specific plm-assistant routing rule and the Asana sync-back, neither of which a generic agent would invent unprompted."]
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {"mean": 1.0, "stddev": 0.0, "min": 1.0, "max": 1.0},
+      "time_seconds": {"mean": 149.75, "stddev": 52.4, "min": 112.7, "max": 186.8},
+      "tokens": {"mean": 132207.0, "stddev": 28546.0, "min": 112023, "max": 152391}
+    },
+    "without_skill": {
+      "pass_rate": {"mean": 0.4, "stddev": 0.2828, "min": 0.2, "max": 0.6},
+      "time_seconds": {"mean": 77.25, "stddev": 24.96, "min": 59.6, "max": 94.9},
+      "tokens": {"mean": 82173.0, "stddev": 27435.0, "min": 62773, "max": 101573}
+    },
+    "delta": {
+      "pass_rate": "+0.60",
+      "time_seconds": "+72.5",
+      "tokens": "+50034.0"
+    }
+  },
+  "notes": [
+    "Baseline scored highest (0.6) on the PO-ack-update eval, the case closest to something a generic agent could infer unassisted (a status field change). It scored lowest (0.2) on the open-ended weekly scan, where flow classification and cross-system extraction have no generic equivalent.",
+    "The 'no write claimed as committed' assertion is non-discriminating for the same reason as the sibling outlook-asana-bridge benchmark — both configs were constrained not to write.",
+    "With-skill token/time cost is meaningfully higher (60-90% more) — proportionate to genuinely broader work (lexicon-driven multi-vendor sweep, flow classification, non-PLM signal scan) rather than wasted effort.",
+    "Both with-skill runs demonstrated calibrated honesty — flagging when no real source email backed the scenario rather than fabricating one — which matters more here than in most skills, since this bridge gates real production-database writes."
+  ]
+}

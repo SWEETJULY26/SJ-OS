@@ -1,0 +1,14 @@
+{
+  "tool_calls": {
+    "mcp__Microsoft_365__outlook_email_search": 6,
+    "mcp__Supabase__list_projects": 1,
+    "mcp__Supabase__list_tables": 2,
+    "mcp__Supabase__execute_sql": 6
+  },
+  "total_tool_calls": 15,
+  "errors_encountered": [
+    "execute_sql: column \"order_date\" does not exist on purchase_orders (used wrong column name on first attempt)",
+    "execute_sql: column poi.po_id does not exist on purchase_order_items (correct FK column is purchase_order_id)",
+    "list_tables verbose=true output exceeded max tool-output token limit and was redirected to a file instead of returned inline"
+  ]
+}

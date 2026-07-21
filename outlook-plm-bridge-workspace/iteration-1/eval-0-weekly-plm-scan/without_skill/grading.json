@@ -1,0 +1,15 @@
+{
+  "expectations": [
+    {"text": "The output searches or reasons about both Inbox and Sent Items, not just Inbox", "passed": false, "evidence": "'Scope: Alvin's Outlook Inbox... Sent Items and other folders were not searched' stated explicitly."},
+    {"text": "Emails are classified into named flows (A through G, or I) rather than left unclassified", "passed": false, "evidence": "Output is a plain sender/subject/category table with no Flow A-G/I labeling anywhere."},
+    {"text": "The non-PLM signal scan runs alongside the PLM classification", "passed": false, "evidence": "No separate Quality/Regulatory/Margin/Intel/Founder cross-flag reasoning exists — everything is folded into one flat table."},
+    {"text": "The output uses the PLM Triage Report section structure", "passed": false, "evidence": "Uses a generic 'Method / Result / Caveats' structure, not the skill's report format."},
+    {"text": "No PLM INSERT/UPDATE is claimed as already committed", "passed": true, "evidence": "'No database or Asana writes were made or proposed' stated at the end."}
+  ],
+  "summary": {"passed": 1, "failed": 4, "total": 5, "pass_rate": 0.2},
+  "execution_metrics": {"errors_encountered": 0, "output_chars": 2400},
+  "timing": {"executor_duration_seconds": 59.6},
+  "eval_feedback": {
+    "overall": "Baseline correctly concluded there was nothing PLM-bound this week (matching what the with-skill run also found for Flow E/regulatory) and was honest about its own limitations ('no classification logic ... was applied'). The gap is structural, not a factual error — it's simply not doing flow classification or cross-system extraction, which is the actual job of this skill."
+  }
+}

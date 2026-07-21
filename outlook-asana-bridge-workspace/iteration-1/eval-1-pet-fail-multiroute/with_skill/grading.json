@@ -1,0 +1,18 @@
+{
+  "expectations": [
+    {"text": "The email is classified with multiple labels (quality, pd, plm), not just one", "passed": true, "evidence": "'Labels: quality, pd, plm' stated explicitly, tied back to the signal table row for 'PET fail' and the failing-lab-result action-shape row."},
+    {"text": "Quality is treated as the parent action per the safety-first priority order, not pd", "passed": true, "evidence": "'Primary (safety wins the parent slot): quality' — parent action opens in SJS Quality Management owned by quality-lab-coordinator; pd and plm are explicitly 'Secondary'."},
+    {"text": "The proposed PLM cross-flag to outlook-plm-bridge is explicitly mentioned", "passed": true, "evidence": "'Child action — PLM cross-flag: Route the PET test result to outlook-plm-bridge to update the product's test-result fields...'"},
+    {"text": "The proposed actions cross-reference each other", "passed": true, "evidence": "Explicit 'Cross-references' section: 'All three actions above reference each other: the parent Quality task links to the PD comment and the PLM flag; the PD comment links back to the parent; the PLM flag notes the source Quality task gid.'"},
+    {"text": "The output is a confirmation preview, not a claim that the task/comment was already created", "passed": true, "evidence": "Header states 'NOT executed (read-only run)' and closes with 'Say \"push it\"... and I'll create the parent task' — clearly gated on confirmation."}
+  ],
+  "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0},
+  "execution_metrics": {"errors_encountered": 0, "output_chars": 3600},
+  "timing": {"executor_duration_seconds": 81.2},
+  "claims": [
+    {"claim": "Allure Labs is not the vendor of record for Castaway Cream PET testing — AMR Labs is", "type": "factual", "verified": true, "evidence": "Cross-checked against the run's own Asana/vendor lookups; consistent with the baseline run independently reaching the same conclusion, corroborating it."}
+  ],
+  "eval_feedback": {
+    "overall": "Clean pass on all five assertions, and the run caught a genuine data-quality problem in the prompt itself (wrong vendor named) instead of fabricating a matching email — exactly the behavior you want before anything gets logged against a real quality record. No changes needed to this eval."
+  }
+}

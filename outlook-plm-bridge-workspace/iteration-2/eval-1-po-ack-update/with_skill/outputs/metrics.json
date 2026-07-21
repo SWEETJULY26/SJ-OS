@@ -1,0 +1,19 @@
+{
+  "tool_calls": {
+    "Read": 1,
+    "ToolSearch": 2,
+    "mcp__Supabase__execute_sql": 4,
+    "mcp__Microsoft_365__outlook_email_search": 14,
+    "mcp__Microsoft_365__read_resource": 2,
+    "Bash": 6,
+    "Write": 1
+  },
+  "total_tool_calls": 30,
+  "errors_encountered": [
+    "mcp__Microsoft_365__outlook_email_search: VALIDATION_ERROR - recipient filtering not supported with folderName set",
+    "mcp__Microsoft_365__outlook_email_search: VALIDATION_ERROR - free-text query not combinable with sender/date filters inside a named folder",
+    "mcp__Microsoft_365__read_resource: result exceeded max token size twice (full email bodies), worked around via Bash file slicing/grep on the persisted tool-result file",
+    "mcp__Microsoft_365__outlook_email_search: RATE_LIMITED (429 TooManyRequests) twice on the same query, succeeded on retry",
+    "mcp__Supabase__execute_sql: column poi.po_id does not exist on purchase_order_items (correct column is purchase_order_id) - fixed after checking information_schema.columns"
+  ]
+}

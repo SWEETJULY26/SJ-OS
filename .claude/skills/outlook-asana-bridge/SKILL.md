@@ -17,7 +17,7 @@ description: >
 
 # Outlook → Asana Bridge
 
-**Version:** v1.1 · **Last updated:** 2026-05-31 14:30 PT — Bridge audit remediation: reworked email scanning to be folder-aware against Alvin's per-domain Outlook folders (lexicon-driven sender search that spans all folders; never sort without a folder scope; explicit skip list); vendor discovery query now pulls contact emails so sender domains resolve (not just names); added `partner` to the Job 0 slug rule; marked the inline PD supplier list as examples (the lexicon is the source of truth). Prior 2026-05-26 12:49 PT — P4/P5 bridge audit remediation: version marker added. P1 (2026-05-26): run-time entity discovery replaced the hard-coded sender list (the 08:13 PT recap miss path).
+**Version:** v1.3 · **Last updated:** 2026-07-20 23:05 PT — Iteration-2 eval re-run confirmed the v1.2 fix holds and tightened the OC3PL/Pedrero folder guidance: two independent runs (on this skill and the peer `outlook-plm-bridge`) confirmed `outlook_email_search`'s `folderName` param reliably returns `NOT_FOUND` on both folders even though they're real and populated — retrying the same call doesn't help, so the guidance now specifies the actual working fallback (`read_resource` on `mail:///folders/` to get the folder ID, or a sender-domain backstop) instead of just "retry." Prior 2026-07-20 22:10 PT — Eval-driven fix from Alvin's review of the peer `outlook-plm-bridge` weekly-scan run (same shared folder-sweep design, so the same gap applied here): fixed OC3PL folder guidance (it's a direct Inbox subfolder, not nested — a "not found" search error is a lookup mismatch, not a missing folder) and added Pedrero Regulatory to the topic-folder sweep list (sender-domain matching alone misses forwards/CCs). Prior 2026-05-31 14:30 PT — Bridge audit remediation: reworked email scanning to be folder-aware against Alvin's per-domain Outlook folders (lexicon-driven sender search that spans all folders; never sort without a folder scope; explicit skip list); vendor discovery query now pulls contact emails so sender domains resolve (not just names); added `partner` to the Job 0 slug rule; marked the inline PD supplier list as examples (the lexicon is the source of truth). Prior 2026-05-26 12:49 PT — P4/P5 bridge audit remediation: version marker added. P1 (2026-05-26): run-time entity discovery replaced the hard-coded sender list (the 08:13 PT recap miss path).
 
 You are the universal email intake layer for AC Brands operations. Your job is to scan
 Outlook — both the Inbox and the Sent Items folder — for SJ SKIN relevant emails,
@@ -171,9 +171,21 @@ Apply it:
   confirmation signal, not the search mechanism, so a new entity is caught the moment it
   lands in the lexicon. The Inbox still gets a general classifier pass for anything
   unfiled or from a new address.
-- **Topic folders not keyed to a single sender** — sweep by name: OC3PL (incl. FWS,
-  Logiwa Daily Shipment Recap), Finance (Calm HR, Shopify Billing, Ramp), Commerce →
-  Thirteen Lune.
+- **Topic folders not keyed to a single sender** — sweep by name: **OC3PL** (incl. FWS,
+  Logiwa Daily Shipment Recap), **Pedrero Regulatory** (Pedrero mail can arrive from
+  addresses outside `pedreroregulatory.com` — forwards, CCs — so the sender-domain
+  signal alone misses some; the folder sweep is the backstop), Finance (Calm HR,
+  Shopify Billing, Ramp), Commerce → Thirteen Lune. Both OC3PL and Pedrero Regulatory
+  are real, populated folders that sit directly under Inbox, not nested — but
+  `outlook_email_search`'s `folderName` parameter reliably returns `NOT_FOUND` on both
+  (confirmed twice, not a fluke; likely a tool bug in the folder-name matcher, not a
+  real absence). Retrying the same `folderName` call does not fix it. When that
+  happens: (1) call `read_resource` on `mail:///folders/` to confirm the folder exists
+  and get its ID, then read it directly via `mail:///folders/{id}` — this works even
+  when `folderName` doesn't — or (2) if that's unavailable, backstop with a
+  sender-domain search instead (e.g. `oc3pl.com`, `pedreroregulatory.com`) so the sweep
+  isn't silently dropped. Don't report the folder as missing just because the
+  name-based search errored.
 - **Sent mail:** `folderName: 'Sent Items'`, filter by recipient domain.
 - **Skip folders** (never sweep): Drafts, Deleted Items, Snoozed, Archive, Junk Email,
   Notes, RSS Feeds, Search Folders, Conversation History, Asana, Fireflies (read those via

@@ -1,0 +1,65 @@
+{
+  "tool_calls": {
+    "Skill": 1,
+    "Read": 1,
+    "ToolSearch": 2,
+    "mcp__Supabase__execute_sql": 8,
+    "mcp__Microsoft_365__outlook_email_search": 33,
+    "mcp__Microsoft_365__read_resource": 3,
+    "Bash": 6,
+    "Monitor": 2
+  },
+  "total_tool_calls": 56,
+  "errors_encountered": [
+    {
+      "type": "RATE_LIMITED",
+      "tool": "mcp__Microsoft_365__read_resource",
+      "detail": "Graph API TooManyRequests (throttle.aad.ags.50RPM), retryAfterSeconds=60 — waited out inline via Monitor cooldown loop, then retried successfully",
+      "recoverable": true
+    },
+    {
+      "type": "RATE_LIMITED",
+      "tool": "mcp__Microsoft_365__outlook_email_search",
+      "detail": "Graph API TooManyRequests (throttle.aad.ags.50RPM), retryAfterSeconds=60 — waited out inline, then retried successfully",
+      "recoverable": true
+    },
+    {
+      "type": "NOT_FOUND",
+      "tool": "mcp__Microsoft_365__outlook_email_search",
+      "param": "folderName=OC3PL",
+      "detail": "Folder lookup returned NOT_FOUND twice despite OC3PL being a real, populated direct Inbox subfolder (575 messages, confirmed via read_resource mail:///folders/). Treated as a lookup mismatch per the fix note, not proof of absence — compensated with sender-domain search (oc3pl.com), which is folder-agnostic and successfully surfaced this week's OC3PL activity.",
+      "recoverable": true,
+      "compensated": true
+    },
+    {
+      "type": "NOT_FOUND",
+      "tool": "mcp__Microsoft_365__outlook_email_search",
+      "param": "folderName=Pedrero Regulatory",
+      "detail": "Folder lookup returned NOT_FOUND twice despite Pedrero Regulatory being a real, populated folder (56 messages, confirmed via read_resource mail:///folders/). Compensated with sender-domain search (pedreroregulatory.com) covering the full week — returned zero messages, a genuine clean result for this window, not a skipped check.",
+      "recoverable": true,
+      "compensated": true
+    },
+    {
+      "type": "NOT_FOUND",
+      "tool": "mcp__Microsoft_365__outlook_email_search",
+      "param": "folderName=FWS",
+      "detail": "Same lookup-mismatch pattern; FWS exists as a subfolder under OC3PL (1803 messages). Not separately re-swept by folder name since OC3PL sender-domain coverage and the FWS-domain outbound thread found in Sent Items already surfaced this week's FWS activity.",
+      "recoverable": true,
+      "compensated": true
+    },
+    {
+      "type": "NOT_FOUND",
+      "tool": "mcp__Microsoft_365__outlook_email_search",
+      "param": "folderName=Logiwa Daily Shipment Recap",
+      "detail": "Actual folder name per read_resource listing is 'Logiwa Daily Shipment Report' (118 messages) — the name in SKILL.md's topic-folder list doesn't exactly match the live folder name. Not re-swept this run since no Logiwa-specific PLM-bound content was in scope for this week's report; noting the name drift for the skill reference.",
+      "recoverable": true,
+      "compensated": false
+    }
+  ],
+  "verification_notes": {
+    "netsuite_removed": "confirmed — no NetSuite sender/domain search attempted at any point in this run; Flow I invoice recognition only exercised Ramp-path and direct-vendor-path logic",
+    "oc3pl_folder_recognition": "confirmed folder exists as a direct Inbox child (not nested); NOT_FOUND lookup treated as a tool-side mismatch and compensated via sender-domain sweep rather than abandoned",
+    "pedrero_folder_sweep": "attempted via folderName (NOT_FOUND, same mismatch pattern) and backstopped via sender-domain search (pedreroregulatory.com) for the full week window — returned zero results, a clean read for this period",
+    "hct_thread_read_to_end": "read full thread body (not just latest-message summary) for 'Lip Treatment Color match samples - Tube & UC'; confirmed proofs for Jamaican Cherry/Fig/Sorrel and Guava/Essential were already signed and returned earlier in the thread, and the most recent message (7/17) has moved on to tube-ready-date scheduling — not flagged as a pending signature item"
+  }
+}

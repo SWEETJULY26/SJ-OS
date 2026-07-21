@@ -1,0 +1,12 @@
+{
+  "eval_id": 1,
+  "eval_name": "pet-fail-multiroute",
+  "prompt": "Allure Labs flagged a PET fail on Castaway Cream — log it",
+  "assertions": [
+    "The email is classified with multiple labels (quality, pd, plm), not just one",
+    "Quality is treated as the parent action per the safety-first priority order, not pd",
+    "The proposed PLM cross-flag to outlook-plm-bridge is explicitly mentioned",
+    "The proposed actions cross-reference each other (parent links to children and vice versa)",
+    "The output is a confirmation preview, not a claim that the task/comment was already created"
+  ]
+}

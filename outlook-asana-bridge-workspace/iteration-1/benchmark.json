@@ -1,0 +1,84 @@
+{
+  "metadata": {
+    "skill_name": "outlook-asana-bridge",
+    "skill_path": "/home/user/SJ-OS/.claude/skills/outlook-asana-bridge",
+    "executor_model": "claude-sonnet-5",
+    "analyzer_model": "claude-sonnet-5",
+    "timestamp": "2026-07-20T00:00:00Z",
+    "evals_run": [0, 1],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 0, "eval_name": "weekly-triage", "configuration": "with_skill", "run_number": 1,
+      "result": {"pass_rate": 1.0, "passed": 5, "failed": 0, "total": 5, "time_seconds": 117.9, "tokens": 163954, "tool_calls": 34, "errors": 0},
+      "expectations": [
+        {"text": "Searches/reasons about both Inbox and Sent Items", "passed": true, "evidence": "21 emails found: 16 received, 5 sent-item commitments"},
+        {"text": "Uses Email Triage Report section headers", "passed": true, "evidence": "URGENT/QUALITY/PD/OPS/SENT/NO REPLY YET/PLM FLAGS headers present"},
+        {"text": "Multi-label emails split and cross-referenced", "passed": true, "evidence": "KDC-One email labeled pd+ops; Element Packaging labeled ops+plm with PLM FLAGS cross-ref"},
+        {"text": "Ends asking which to push, no unprompted writes", "passed": true, "evidence": "'Which should I push? (say \"all\", list numbers, or \"skip\")'"},
+        {"text": "No Asana write before confirmation", "passed": true, "evidence": "Entire output is a proposal"}
+      ],
+      "notes": ["Zero regulatory/margin/intel/founder signal this week, so those report sections were untested with real content."]
+    },
+    {
+      "eval_id": 0, "eval_name": "weekly-triage", "configuration": "without_skill", "run_number": 1,
+      "result": {"pass_rate": 0.2, "passed": 1, "failed": 4, "total": 5, "time_seconds": 104.3, "tokens": 126470, "tool_calls": 19, "errors": 2},
+      "expectations": [
+        {"text": "Searches/reasons about both Inbox and Sent Items", "passed": false, "evidence": "Inbox only, explicitly noted"},
+        {"text": "Uses Email Triage Report section headers", "passed": false, "evidence": "Ad hoc headers, no relation to skill format"},
+        {"text": "Multi-label emails split and cross-referenced", "passed": false, "evidence": "No labels applied at all"},
+        {"text": "Ends asking which to push, no unprompted writes", "passed": false, "evidence": "Offers to dig deeper instead of a push/skip gate"},
+        {"text": "No Asana write before confirmation", "passed": true, "evidence": "No write attempted (non-discriminating under this eval's constraints)"}
+      ],
+      "notes": ["Well-written generic inbox summary, but no classification or routing logic — the expected gap."]
+    },
+    {
+      "eval_id": 1, "eval_name": "pet-fail-multiroute", "configuration": "with_skill", "run_number": 1,
+      "result": {"pass_rate": 1.0, "passed": 5, "failed": 0, "total": 5, "time_seconds": 81.2, "tokens": 147586, "tool_calls": 17, "errors": 0},
+      "expectations": [
+        {"text": "Multi-label classification (quality, pd, plm)", "passed": true, "evidence": "'Labels: quality, pd, plm' stated explicitly"},
+        {"text": "Quality is parent per safety-first order", "passed": true, "evidence": "'Primary (safety wins the parent slot): quality'"},
+        {"text": "PLM cross-flag to outlook-plm-bridge mentioned", "passed": true, "evidence": "Explicit routing instruction to outlook-plm-bridge"},
+        {"text": "Actions cross-reference each other", "passed": true, "evidence": "Explicit 'Cross-references' section linking all three"},
+        {"text": "Confirmation preview, not executed", "passed": true, "evidence": "'NOT executed (read-only run)'"}
+      ],
+      "notes": ["Also caught that Allure Labs is not Castaway Cream's real PET-testing vendor (AMR Labs) instead of fabricating a matching email."]
+    },
+    {
+      "eval_id": 1, "eval_name": "pet-fail-multiroute", "configuration": "without_skill", "run_number": 1,
+      "result": {"pass_rate": 0.2, "passed": 1, "failed": 4, "total": 5, "time_seconds": 79.5, "tokens": 144821, "tool_calls": 13, "errors": 0},
+      "expectations": [
+        {"text": "Multi-label classification (quality, pd, plm)", "passed": false, "evidence": "No label system used"},
+        {"text": "Quality is parent per safety-first order", "passed": false, "evidence": "Flat single proposal, no parent/secondary structure"},
+        {"text": "PLM cross-flag to outlook-plm-bridge mentioned", "passed": false, "evidence": "Never mentioned"},
+        {"text": "Actions cross-reference each other", "passed": false, "evidence": "Only one proposed action exists"},
+        {"text": "Confirmation preview, not executed", "passed": true, "evidence": "No writes made"}
+      ],
+      "notes": ["Independently caught the same vendor mismatch as the with-skill run via raw Asana search — solid general capability, but missing the routing structure that's the point of the skill."]
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {"mean": 1.0, "stddev": 0.0, "min": 1.0, "max": 1.0},
+      "time_seconds": {"mean": 99.55, "stddev": 25.95, "min": 81.2, "max": 117.9},
+      "tokens": {"mean": 155770.0, "stddev": 11574.6, "min": 147586, "max": 163954}
+    },
+    "without_skill": {
+      "pass_rate": {"mean": 0.2, "stddev": 0.0, "min": 0.2, "max": 0.2},
+      "time_seconds": {"mean": 91.9, "stddev": 17.54, "min": 79.5, "max": 104.3},
+      "tokens": {"mean": 135645.5, "stddev": 12977.7, "min": 126470, "max": 144821}
+    },
+    "delta": {
+      "pass_rate": "+0.80",
+      "time_seconds": "+7.65",
+      "tokens": "+20124.5"
+    }
+  },
+  "notes": [
+    "The 'no write happens before confirmation' assertion passed in every run regardless of configuration — it was a constraint imposed on the eval itself (both configs were told not to write), so it doesn't discriminate skill quality. Consider replacing it with a content-correctness check in the next iteration.",
+    "With-skill pass rate is 100% across both evals vs. 20% baseline — the gap is structural (classification labels, priority-order parent/secondary routing, PLM cross-flagging), not a close call.",
+    "With-skill runs cost more tokens and time than baseline (~15% more tokens, comparable-to-higher time) — expected, since the skill does meaningfully more work (folder-aware multi-domain search, classification, cross-referencing) than a generic read.",
+    "Both configurations independently caught the same vendor-mismatch in eval 1 (Allure Labs vs. AMR Labs) — that catch reflects general model capability, not something to credit to the skill specifically."
+  ]
+}

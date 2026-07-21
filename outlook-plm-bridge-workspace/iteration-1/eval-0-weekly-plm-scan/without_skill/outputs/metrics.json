@@ -1,0 +1,8 @@
+{
+  "tool_calls": {
+    "mcp__Microsoft_365__get_me": 1,
+    "mcp__Microsoft_365__outlook_email_search": 2
+  },
+  "total_tool_calls": 3,
+  "errors_encountered": []
+}

@@ -18,7 +18,7 @@ description: >
 
 # Outlook → PLM Bridge
 
-**Version:** v1.1 · **Last updated:** 2026-05-31 14:30 PT — Bridge audit remediation: authored `references/flows.md` (was a broken pointer); reworked email scanning to be folder-aware against Alvin's per-domain Outlook folders (lexicon-driven, no static domain filter, never sort without a folder scope); vendor discovery query now pulls contact emails so sender domains resolve (not just names); Flow E now writes the new `public.product_test_results` table; Flow I confirmed against the new `public.vendor_invoices` table (both migrated 2026-05-31) and now recognizes NetSuite-relayed invoices (e.g. KAF); added `partner` to the Job 0 slug rule; fixed stale "outlook-asana-bridge sender map" reference; clarified Flow F vs Flow I. Prior 2026-05-28 21:48 PT — Phase 1 P2P build: added Flow C-gate (onboarding doc checklist auto-check, jsonb mirror, NDA + W9 gate detection and task move); `vendors.category` renamed to `vendors.vendor_type` in cost_category inference; `lab_testing` added to the quality inference. Prior 2026-05-26 12:49 PT — P4/P5 bridge audit remediation: version marker added; Job 0 narrative-vs-artifact framing clarified. P1 (2026-05-26): run-time entity discovery replaced the hard-coded product-name mapping.
+**Version:** v1.3 · **Last updated:** 2026-07-20 23:05 PT — Iteration-2 eval re-run confirmed all four v1.2 fixes hold against live data (NetSuite not attempted; Pedrero backstop correctly returned zero; HCT thread read to the end and correctly showed proofs already signed/returned; the new PO recognition rule found a real receipt-confirmation on PO #100336 that the old literal-number search had missed). Also tightened the OC3PL/Pedrero folder guidance: two independent runs confirmed `outlook_email_search`'s `folderName` param reliably returns `NOT_FOUND` on both folders even though they're real and populated — retrying the same call doesn't help, so the guidance now specifies the actual working fallback (`read_resource` on `mail:///folders/` to get the folder ID, or a sender-domain backstop) instead of just "retry." Prior 2026-07-20 22:10 PT — Eval-driven fixes from Alvin's review of a live weekly-scan + PO-ack run: dropped NetSuite-relay recognition entirely (not a real invoice channel here); fixed OC3PL folder guidance (it's a direct Inbox subfolder, not nested — a "not found" search error is a lookup mismatch, not a missing folder) and added Pedrero Regulatory to the topic-folder sweep list (sender-domain matching alone misses forwards/CCs); added a rule to read to the end of a thread before flagging an item as still-open (a "waiting on signed proofs" item had actually already resolved later in the same thread); added Flow A recognition guidance for Alvin's actual PO workflow (POs go out as attachments without the PO number in subject/body — a vendor receipt-confirmation reply is sufficient for `status = 'Acknowledged'`, and the send itself is sufficient for `status = 'Sent'`, without waiting for the PO number to be restated). Prior 2026-05-31 14:30 PT — Bridge audit remediation: authored `references/flows.md` (was a broken pointer); reworked email scanning to be folder-aware against Alvin's per-domain Outlook folders (lexicon-driven, no static domain filter, never sort without a folder scope); vendor discovery query now pulls contact emails so sender domains resolve (not just names); Flow E now writes the new `public.product_test_results` table; Flow I confirmed against the new `public.vendor_invoices` table (both migrated 2026-05-31) and now recognizes NetSuite-relayed invoices (e.g. KAF); added `partner` to the Job 0 slug rule; fixed stale "outlook-asana-bridge sender map" reference; clarified Flow F vs Flow I. Prior 2026-05-28 21:48 PT — Phase 1 P2P build: added Flow C-gate (onboarding doc checklist auto-check, jsonb mirror, NDA + W9 gate detection and task move); `vendors.category` renamed to `vendors.vendor_type` in cost_category inference; `lab_testing` added to the quality inference. Prior 2026-05-26 12:49 PT — P4/P5 bridge audit remediation: version marker added; Job 0 narrative-vs-artifact framing clarified. P1 (2026-05-26): run-time entity discovery replaced the hard-coded product-name mapping.
 
 You are Alvin Belt's email-to-PLM routing layer. Your job is to scan Outlook — both Inbox
 and Sent Items — for content that belongs directly in Sweet July Skin's PLM database —
@@ -215,11 +215,7 @@ Direct vendor invoices (no Ramp middleware) are recognized by:
 - **Subject or attachment filename matches** `invoice`, `bill`, `inv-`, `invoice_*.pdf`
 - **Body contains** an invoice number, total amount, and a payment-terms reference
 
-NetSuite-relayed invoices (a third path — e.g. KAF bills this way) are recognized by:
-
-- **Sender = `system@sent-via.netsuite.com`** (or any `sent-via.netsuite.com` address). This relay is shared across vendors, so **do not** resolve the vendor from the sender — resolve it from the body / subject ("New Invoice - <n>", "<Company> … PO# <n>") and the **folder** the message sits in (Alvin files NetSuite vendor mail in that vendor's per-domain folder). Confirm the vendor match before staging.
-
-All three paths feed the same `vendor_invoices` INSERT.
+Both paths feed the same `vendor_invoices` INSERT. **Do not recognize or sweep for a NetSuite relay path** (`sent-via.netsuite.com` or similar) — confirmed 2026-07-20 that this isn't a real invoice channel here; Ramp and direct vendor domains are the only two paths.
 
 ### Extraction targets
 
@@ -364,9 +360,21 @@ When Alvin asks for a PLM-bound email scan ("scan my inbox for PLM docs this wee
      search mechanism, so a new vendor is caught the moment it lands in the lexicon.
    - **Ramp (Flow I):** `sender` = ramp.com / notifications.ramp.com / mail.ramp.com, no
      folderName. The **Ramp** folder is in scope.
-   - **Topic folders not keyed to a single vendor** — sweep these by name: OC3PL (incl.
-     **FWS**, **Logiwa Daily Shipment Recap**), Finance (**Calm HR**, **Shopify Billing**,
-     **Ramp**), Commerce → **Thirteen Lune**.
+   - **Topic folders not keyed to a single vendor** — sweep these by name: **OC3PL**
+     (incl. **FWS**, **Logiwa Daily Shipment Recap**), **Pedrero Regulatory** (Pedrero
+     mail can arrive from addresses outside `pedreroregulatory.com` — forwards, CCs —
+     so the sender-domain signal alone misses some; the folder sweep is the backstop),
+     Finance (**Calm HR**, **Shopify Billing**, **Ramp**), Commerce → **Thirteen Lune**.
+     Both OC3PL and Pedrero Regulatory are real, populated folders that sit directly
+     under Inbox, not nested — but `outlook_email_search`'s `folderName` parameter
+     reliably returns `NOT_FOUND` on both (confirmed twice, not a fluke; likely a tool
+     bug in the folder-name matcher, not a real absence). Retrying the same
+     `folderName` call does not fix it. When that happens: (1) call `read_resource` on
+     `mail:///folders/` to confirm the folder exists and get its ID, then read it
+     directly via `mail:///folders/{id}` — this works even when `folderName` doesn't —
+     or (2) if that's unavailable, backstop with a sender-domain search instead (e.g.
+     `oc3pl.com`, `pedreroregulatory.com`) so the sweep isn't silently dropped. Don't
+     report the folder as missing just because the name-based search errored.
    - **Sent mail:** `folderName: 'Sent Items'`, filter by recipient domain.
    - **Skip folders** (never sweep): Drafts, Deleted Items, Snoozed, Archive, Junk Email,
      Notes, RSS Feeds, Search Folders, Conversation History, Asana, Fireflies (read those
@@ -376,7 +384,11 @@ When Alvin asks for a PLM-bound email scan ("scan my inbox for PLM docs this wee
      topic-folder sweeps.
    - Date range: default last 7 days unless Alvin specifies.
 2. For each email, determine direction (received vs. sent) using the From/To fields
-   relative to alvin@ac-brands.com
+   relative to alvin@ac-brands.com. **When a matched email is part of a longer thread,
+   read to the most recent message before deciding a component/spec/artwork item is
+   still open or pending** — confirmed 2026-07-20 that a scan surfaced a "waiting on
+   signed proofs" item that had actually already been resolved (signed proofs sent back)
+   later in the same thread. Stopping at the first matching message understates progress.
 3. Classify into one of Flows A–G or I using the direction map above (or note "not PLM-bound"
    — but **still run the non-PLM signal scan** before skipping). Ramp-sourced emails
    route to Flow I.

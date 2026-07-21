@@ -1,0 +1,18 @@
+{
+  "expectations": [
+    {"text": "The output searches or reasons about both Inbox and Sent Items, not just Inbox", "passed": true, "evidence": "Header states 'Found 21 SJ SKIN-relevant emails (16 received, 5 sent-item commitments worth flagging)' and includes an ACTION NEEDED — SENT section plus a NO REPLY YET section built from Sent Items."},
+    {"text": "The output groups results using the Email Triage Report section headers (e.g. URGENT, QUALITY, REGULATORY, PLM FLAGS)", "passed": true, "evidence": "Uses 🚨 URGENT, 🩺 QUALITY, 📌 PD/OPS ACTION NEEDED, 📤 ACTION NEEDED — SENT, 🕒 NO REPLY YET, ⚙️ PLM FLAGS headers matching the skill's report format. Regulatory/Margin/Intel/Founder headers are omitted since their counts were 0 that week — a minor deviation worth flagging (see eval_feedback)."},
+    {"text": "Emails with signal for more than one sub-system are split and cross-referenced rather than filed under a single label", "passed": true, "evidence": "KDC-One F&A email is labeled 'pd, ops' with cross-references to both PD and Ops projects; Element Packaging PO email is labeled 'ops, plm' and separately listed under PLM FLAGS; Essex Testing invoice is cross-referenced between QUALITY and PLM FLAGS."},
+    {"text": "The output ends by asking which items to push rather than creating Asana tasks unprompted", "passed": true, "evidence": "Final line: 'Which should I push? (say \"all\", list numbers, or \"skip\")'"},
+    {"text": "No Asana write (task creation, comment, or stage move) happens before user confirmation", "passed": true, "evidence": "Entire output is framed as proposed actions; no tool-call evidence of a write, and the report explicitly ends on the confirmation gate."}
+  ],
+  "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0},
+  "execution_metrics": {"total_tool_calls": null, "errors_encountered": 0, "output_chars": 4200},
+  "timing": {"executor_duration_seconds": 117.9},
+  "eval_feedback": {
+    "suggestions": [
+      {"assertion": "The output groups results using the Email Triage Report section headers", "reason": "This run had zero regulatory/margin/intel/founder signal, so it's untested whether the skill actually renders those headers with real content — the eval got lucky that this week's mail didn't need them. A future eval case should force at least one non-PD/Ops/Quality label to actually exercise those sections."}
+    ],
+    "overall": "Assertions passed cleanly and the evidence is substantive (real classification logic visible, not just a matching keyword)."
+  }
+}

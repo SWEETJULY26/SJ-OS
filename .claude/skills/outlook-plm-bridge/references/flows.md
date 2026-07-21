@@ -15,6 +15,22 @@ Full extraction logic, staged-write SQL, and confirmation-preview formats for ea
 
 **Inbound (vendor acknowledges / updates an existing PO) → UPDATE.**
 Extract: PO number, new status, confirmed or revised ship date, any line-item changes.
+
+**Recognition note (confirmed with Alvin 2026-07-20):** Alvin typically sends POs as PDF
+attachments rather than restating the PO number in the subject or body — so don't rely
+on a literal PO-number text match to find the original send or the vendor's reply.
+Match on vendor + rough timing + attachment filename instead, and treat these as
+sufficient signal on their own, without waiting for the vendor to repeat the PO number:
+- **A vendor reply that reads as a receipt confirmation** ("received," "confirming
+  receipt," "got it," a thanks with no open question) **is sufficient to set
+  `status = 'Acknowledged'`** — don't hold out for the vendor to restate a new ship date
+  or the PO number itself.
+- **The act of Alvin sending the PO is sufficient to set `status = 'Sent'`** on the
+  outbound INSERT — no separate confirmation step is needed for that transition.
+Alvin may start naming POs in the subject/body going forward, which will make the text
+match easier, but the attachment-based / reply-based recognition above should stay the
+primary path since past correspondence won't have that.
+
 1. `SELECT id, po_number, status, requested_ship_date FROM purchase_orders WHERE po_number = '<n>'` — resolve the PO and show current values.
 2. Stage:
    ```sql

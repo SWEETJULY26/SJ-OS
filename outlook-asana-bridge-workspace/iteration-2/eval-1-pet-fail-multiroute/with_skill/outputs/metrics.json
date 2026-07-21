@@ -1,0 +1,10 @@
+{
+  "tool_calls": {
+    "mcp__Microsoft_365__outlook_email_search": 2,
+    "mcp__Asana__search_tasks": 1,
+    "mcp__Supabase__execute_sql": 2,
+    "mcp__Supabase__list_projects": 0
+  },
+  "total_tool_calls": 5,
+  "errors_encountered": 0
+}
