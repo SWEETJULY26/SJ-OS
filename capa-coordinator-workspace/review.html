@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #faf9f5;
+      --surface: #ffffff;
+      --border: #e8e6dc;
+      --text: #141413;
+      --text-muted: #b0aea5;
+      --accent: #d97757;
+      --accent-hover: #c4613f;
+      --green: #788c5d;
+      --green-bg: #eef2e8;
+      --red: #c44;
+      --red-bg: #fceaea;
+      --header-bg: #141413;
+      --header-text: #faf9f5;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .header .instructions {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+    .header .progress {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      text-align: right;
+    }
+
+    /* ---- Main content ---- */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ---- Sections ---- */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex-shrink: 0;
+    }
+    .section-header {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .section-body {
+      padding: 1rem;
+    }
+
+    /* ---- Config badge ---- */
+    .config-badge {
+      display: inline-block;
+      padding: 0.2rem 0.625rem;
+      border-radius: 9999px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-left: 0.75rem;
+      vertical-align: middle;
+    }
+    .config-badge.config-primary {
+      background: rgba(33, 150, 243, 0.12);
+      color: #1976d2;
+    }
+    .config-badge.config-baseline {
+      background: rgba(255, 193, 7, 0.15);
+      color: #f57f17;
+    }
+
+    /* ---- Prompt ---- */
+    .prompt-text {
+      white-space: pre-wrap;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* ---- Outputs ---- */
+    .output-file {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .output-file + .output-file {
+      margin-top: 1rem;
+    }
+    .output-file-header {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .output-file-header .dl-btn {
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+    .output-file-header .dl-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+    .output-file-content {
+      padding: 0.75rem;
+      overflow-x: auto;
+    }
+    .output-file-content pre {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    .output-file-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .output-file-content iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+    .output-file-content table {
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      width: 100%;
+    }
+    .output-file-content table td,
+    .output-file-content table th {
+      border: 1px solid var(--border);
+      padding: 0.375rem 0.5rem;
+      text-align: left;
+    }
+    .output-file-content table th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+    .output-file-content .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    .output-file-content .download-link:hover {
+      background: var(--border);
+    }
+    .empty-state {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* ---- Feedback ---- */
+    .prev-feedback {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.625rem 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .prev-feedback-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+    .feedback-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      resize: vertical;
+      color: var(--text);
+    }
+    .feedback-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .feedback-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      min-height: 1.1em;
+    }
+
+    /* ---- Grades (collapsible) ---- */
+    .grades-toggle {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .grades-toggle:hover {
+      color: var(--accent);
+    }
+    .grades-toggle .arrow {
+      margin-right: 0.5rem;
+      transition: transform 0.15s;
+      font-size: 0.75rem;
+    }
+    .grades-toggle .arrow.open {
+      transform: rotate(90deg);
+    }
+    .grades-content {
+      display: none;
+      margin-top: 0.75rem;
+    }
+    .grades-content.open {
+      display: block;
+    }
+    .grades-summary {
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .grade-badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .grade-pass { background: var(--green-bg); color: var(--green); }
+    .grade-fail { background: var(--red-bg); color: var(--red); }
+    .assertion-list {
+      list-style: none;
+    }
+    .assertion-item {
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8125rem;
+    }
+    .assertion-item:last-child { border-bottom: none; }
+    .assertion-status {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .assertion-status.pass { color: var(--green); }
+    .assertion-status.fail { color: var(--red); }
+    .assertion-evidence {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      padding-left: 1.5rem;
+    }
+
+    /* ---- View tabs ---- */
+    .view-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 2rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .view-tab {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .view-tab:hover { color: var(--text); }
+    .view-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .view-panel { display: none; }
+    .view-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+    /* ---- Benchmark view ---- */
+    .benchmark-view {
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .benchmark-table {
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8125rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .benchmark-table th, .benchmark-table td {
+      padding: 0.625rem 0.75rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+    .benchmark-table th {
+      font-family: 'Poppins', sans-serif;
+      background: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .benchmark-table tr:hover { background: var(--bg); }
+    .benchmark-table tr.benchmark-row-with { background: rgba(33, 150, 243, 0.06); }
+    .benchmark-table tr.benchmark-row-without { background: rgba(255, 193, 7, 0.06); }
+    .benchmark-table tr.benchmark-row-with:hover { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-without:hover { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-table tr.benchmark-row-avg { font-weight: 600; border-top: 2px solid var(--border); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-with { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-without { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-delta-positive { color: var(--green); font-weight: 600; }
+    .benchmark-delta-negative { color: var(--red); font-weight: 600; }
+    .benchmark-notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .benchmark-notes h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    .benchmark-notes ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+    .benchmark-notes li {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      margin-bottom: 0.375rem;
+    }
+    .benchmark-empty {
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 3rem;
+    }
+
+    /* ---- Navigation ---- */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .done-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .done-btn:hover {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .done-btn.ready {
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+    .done-btn.ready:hover {
+      background: var(--accent-hover);
+    }
+    /* ---- Done overlay ---- */
+    .done-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .done-overlay.visible {
+      display: flex;
+    }
+    .done-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem 3rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+    }
+    .done-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .done-card p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .done-card .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .done-card button {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .done-card button:hover {
+      background: var(--bg);
+    }
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 200;
+    }
+    .toast.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" style="height:100vh; display:flex; flex-direction:column;">
+    <div class="header">
+      <div>
+        <h1>Eval Review: <span id="skill-name"></span></h1>
+        <div class="instructions">Review each output and leave feedback below. Navigate with arrow keys or buttons. When done, copy feedback and paste into Claude Code.</div>
+      </div>
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- View tabs (only shown when benchmark data exists) -->
+    <div class="view-tabs" id="view-tabs" style="display:none;">
+      <button class="view-tab active" onclick="switchView('outputs')">Outputs</button>
+      <button class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
+    </div>
+
+    <!-- Outputs panel (qualitative review) -->
+    <div class="view-panel active" id="panel-outputs">
+    <div class="main">
+      <!-- Prompt -->
+      <div class="section">
+        <div class="section-header">Prompt <span class="config-badge" id="config-badge" style="display:none;"></span></div>
+        <div class="section-body">
+          <div class="prompt-text" id="prompt-text"></div>
+        </div>
+      </div>
+
+      <!-- Outputs -->
+      <div class="section">
+        <div class="section-header">Output</div>
+        <div class="section-body" id="outputs-body">
+          <div class="empty-state">No output files found</div>
+        </div>
+      </div>
+
+      <!-- Previous Output (collapsible) -->
+      <div class="section" id="prev-outputs-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="togglePrevOutputs()">
+            <span class="arrow" id="prev-outputs-arrow">&#9654;</span>
+            Previous Output
+          </div>
+        </div>
+        <div class="grades-content" id="prev-outputs-content"></div>
+      </div>
+
+      <!-- Grades (collapsible) -->
+      <div class="section" id="grades-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="toggleGrades()">
+            <span class="arrow" id="grades-arrow">&#9654;</span>
+            Formal Grades
+          </div>
+        </div>
+        <div class="grades-content" id="grades-content"></div>
+      </div>
+
+      <!-- Feedback -->
+      <div class="section">
+        <div class="section-header">Your Feedback</div>
+        <div class="section-body">
+          <textarea
+            class="feedback-textarea"
+            id="feedback"
+            placeholder="What do you think of this output? Any issues, suggestions, or things that look great?"
+          ></textarea>
+          <div class="feedback-status" id="feedback-status"></div>
+          <div class="prev-feedback" id="prev-feedback" style="display:none;">
+            <div class="prev-feedback-label">Previous feedback</div>
+            <div id="prev-feedback-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav" id="outputs-nav">
+      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592; Previous</button>
+      <button class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
+      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next &#8594;</button>
+    </div>
+    </div><!-- end panel-outputs -->
+
+    <!-- Benchmark panel (quantitative stats) -->
+    <div class="view-panel" id="panel-benchmark">
+      <div class="benchmark-view" id="benchmark-content">
+        <div class="benchmark-empty">No benchmark data available. Run a benchmark to see quantitative results here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Done overlay -->
+  <div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+      <h2>Review Complete</h2>
+      <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
+      <div class="btn-row">
+        <button onclick="closeDoneDialog()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---- Embedded data (injected by generate_review.py) ----
+    const EMBEDDED_DATA = {"skill_name": "capa-coordinator", "runs": [{"id": "eval-0-complaint-trend-handoff-pava-toner-with_skill", "prompt": "complaint-and-event-handler just handed off a task into the SJS CAPA Log titled '[CAPA Pending \u2014 capa-coordinator] Pava Toner Lot 26-02 \u2014 4 Skin Reactions complaints in 21 days'. The brief in the comment says: pattern is itching + redness, all consumers reported within 48h of first use, all from DTC channel, no SAE-level events. complaint-and-event-handler recommends scope = single-lot CAPA, suspected vendor: Element (FOA-ROSE component lot R26-008). Walk this through to the action plan stage. Don't actually write to Asana \u2014 draft the NCR record, severity call, NCR\u2192CAPA conversion decision, root cause analysis approach, and corrective + preventive action plans as a markdown plan I can approve.", "eval_id": 0, "outputs": [{"name": "output.md", "type": "text", "content": "# CAPA Coordinator \u2014 Draft Plan for Approval\n**Source handoff:** `[CAPA Pending \u2014 capa-coordinator] Pava Toner Lot 26-02 \u2014 4 Skin Reactions complaints in 21 days` (from complaint-and-event-handler)\n**Prepared:** 2026-07-21 | **Status:** Draft \u2014 nothing written to Asana. Approve/edit each gated decision below.\n\nNo prior CAPA/NCR history found for Element Packaging or Pava Toner (checked wiki pages `supplier/element` and `sku/pava-toner` \u2014 neither exists yet; checked SJS CAPA Log for existing NCR/CAPA numbers this year \u2014 none found, so this opens as `NCR-2026-001`, confirm against live Asana count before commit). PLM confirms Element Packaging is an active vendor and Pava Toner (SKU `988357`) is an active product; the FOA-ROSE component record wasn't found by name/lot in PLM's `components` table \u2014 flagging as a data gap, not a blocker, since the complaint brief already names the suspected lot.\n\n---\n\n## 1. NCR Record (SKN-OPS-005 \u00a73.2)\n\n| Field | Value |\n|---|---|\n| NCR number | **NCR-2026-001** *(pending confirmation against live count \u2014 first NCR this skill has drafted for either party)* |\n| Date opened | 2026-07-21 |\n| Reporter | complaint-and-event-handler (system handoff) |\n| Source | `complaint-trend` |\n| Category | Product |\n| SKU(s) affected | Pava Toner (SKU 988357) |\n| Batch / lot code(s) | Lot 26-02 |\n| Vendor | Element Packaging \u2014 suspected component: FOA-ROSE, vendor lot R26-008 |\n| Description | 4 DTC-channel complaints in 21 days against Pava Toner Lot 26-02. Consistent pattern: itching and redness, all onset within 48 hours of first use. No SAE-level events reported (no medical intervention, no hospitalization). complaint-and-event-handler's working theory points to the FOA-ROSE component (Element, vendor lot R26-008) as the suspected contributing material \u2014 this is a hypothesis to test in RCA, not yet an established root cause. |\n| Evidence | 4 linked complaint task IDs (from complaint-and-event-handler's log \u2014 pull gids at intake approval), consumer-reported onset timing, channel = DTC for all 4 |\n| Suspected severity | **Major** (see \u00a72 below) |\n| Containment action taken | *Not yet confirmed as of this handoff.* Recommend: quarantine remaining Lot 26-02 inventory (DTC + any retail allocation) pending investigation, and flag Lot 26-02 in Shopify/Logiwa to stop further fulfillment from that lot. **This needs an explicit containment answer from Operator before intake closes** \u2014 the brief doesn't say whether Lot 26-02 stock has been held. |\n\n**Open question for Operator before I commit intake:** has Lot 26-02 been held/quarantined yet? If not, that's the first action, ahead of anything else in this plan.\n\n---\n\n## 2. Severity Call\n\n**Recommendation: Major**, not Critical, not Minor.\n\nReasoning against SKN-OPS-005 \u00a73.3 bands:\n- **Not Minor** \u2014 this is a batch-linked complaint cluster (4 complaints, same lot, 21 days), not an isolated single-unit event. \u00a73.3 names \"single-batch complaint cluster\" as a Major trigger explicitly.\n- **Not Critical** \u2014 no medical-intervention SAE, no FDA observation, no retailer chargeback, and this isn't a repeat NCR on the same batch (first NCR on this lot). The brief is explicit that there are no SAE-level events.\n- **Major fits**: quality impact that can't be absorbed without action, but doesn't cross into direct safety/recall territory as currently scoped.\n\nConsistent with the \"err high\" guidance in \u00a73.3 \u2014 if the complaint count climbs past 4, or an SAE-level report comes in on this lot, this gets re-read as Critical and the CAPA timeline compresses. Flagging that trigger now so it's not missed.\n\n**SLA that follows from Major:** NCR review within 10 business days; NCR\u2192CAPA conversion within 10 business days of NCR open (i.e., by **2026-08-04**).\n\n---\n\n## 3. NCR Review (SKN-OPS-005 \u00a74.1) and NCR\u2192CAPA Conversion Decision\n\nWalking the \u00a74.1 checklist:\n\n1. **Description specific enough?** Yes \u2014 pattern (itching/redness), timing (48h onset), channel (DTC), count (4/21 days), suspected material all captured.\n2. **Severity consistent with \u00a73.3?** Yes, per \u00a72 above.\n3. **Existing open CAPA on this root cause?** None found \u2014 no prior CAPA/NCR history on Element or Pava Toner in the CAPA Log or the wiki. This is a fresh thread, not a recurrence.\n4. **Pattern across recent closed NCRs?** No comparison data available (first NCR touching either party). Recommend the wiki gets written back once this closes so the next Element- or Pava Toner-linked event has history to check against.\n5. **Containment confirmed?** **Not yet \u2014 see the open question in \u00a71.** Recommend holding conversion approval until containment is confirmed, per \u00a74.1 item 5 (\"if not, drive containment first; the NCR can wait\"). I'm drafting the conversion decision below on the assumption containment gets confirmed promptly, since the complaint pattern and Major severity clearly warrant it \u2014 but flagging that this is technically out of sequence per the SOP if containment isn't nailed down first.\n\n**Decision: Convert to CAPA.** Required at Major severity per \u00a74.2(A). Assign **CAPA-2026-001** *(same numbering caveat as NCR \u2014 confirm against live count)*.\n\n**Gate:** NCR\u2192CAPA conversion requires QA Lead sign-off (Perrine). This decision is staged `Gate = Pending QA Lead` \u2014 routing to Perrine for approval before the CAPA file opens.\n\n---\n\n## 4. CAPA Opening\n\n```\nCAPA Number: CAPA-2026-001\nLinked NCR: NCR-2026-001\nDate opened: 2026-07-21\nSeverity: Major\nSource: complaint-trend\nCategory: Product\n\nLinked records:\n- Batch: Pava Toner Lot 26-02 (PLM product id c762529c-b587-49b4-b9e3-5c0a1e2af714, SKU 988357)\n- Vendor: Element Packaging (suspected \u2014 FOA-ROSE component, vendor lot R26-008)\n- SKU: 988357 \u2014 Pava Toner\n- Source task: [CAPA Pending \u2014 capa-coordinator] Pava Toner Lot 26-02 \u2014 4 Skin Reactions complaints in 21 days (complaint-and-event-handler handoff)\n\nInvestigation team (proposed \u2014 Operator confirms):\n- Operator \u2014 Alvin Belt (Lead)\n- Voice of Customer \u2014 Nicole Iturbe (advisor \u2014 complaint-driven CAPA)\n- Department Manager (Vendor-driven) \u2014 Purchasing lead, to review Element's FOA-ROSE R26-008 lot record and COA\n- QA Lead \u2014 Perrine (root cause sign-off gate)\n\nStatement of non-conformance: Four DTC-channel consumers reported itching and redness within 48 hours of first use of Pava Toner Lot 26-02, all within a 21-day window (2026-07-21 review). No SAE-level events. Suspected contributing material: FOA-ROSE component from Element Packaging, vendor lot R26-008.\n```\n\n---\n\n## 5. Root Cause Analysis Approach\n\n**Tool selection: Fishbone first, then 5 Whys on the strongest branch.**\n\nWhy Fishbone over 5 Whys as the starting tool: this isn't a single-chain event (like a mislabeled batch) \u2014 it's a cluster of independent consumer reactions with a suspected but unconfirmed material link. That's exactly the \"systemic pattern, multiple contributing factors\" case the RCA reference calls out for Fishbone over 5 Whys. Once Fishbone identifies the strongest branch (likely Material or Method, given the vendor-lot hypothesis), follow up with 5 Whys on that branch to get to an attributable root cause.\n\n**Fishbone prompts to walk with the investigation team:**\n\n| Category | Prompt |\n|---|---|\n| Manpower | Did anyone change in formulation, filling, or QC sign-off around Lot 26-02's production run? Any handoff gaps? |\n| Method | Does the current incoming-inspection or formulation-release process test for irritant potential on new component lots, or only visual/COA review? Was Lot 26-02 released on COA review alone? |\n| Machine | Any equipment or mixing-process changes for this batch run vs. prior Pava Toner lots? |\n| Material | Is FOA-ROSE vendor lot R26-008 confirmed as an input to Lot 26-02 via BOM/batch record (not yet verified in PLM as of this draft)? Any change in Element's sourcing, formulation, or supplier-of-supplier for this lot vs. prior lots that didn't generate complaints? |\n| Measurement | Did the COA for R26-008 report anything unusual (pH, concentration, contaminant) that incoming inspection didn't flag as material? |\n| Environment | Any seasonal, climate, or shipping-condition factor specific to this lot's component delivery or finished-good storage? |\n\n**Data gap to close before/during RCA:** confirm in PLM (via plm-assistant) that FOA-ROSE vendor lot R26-008 is actually the BOM-linked component for Pava Toner Lot 26-02 \u2014 this wasn't independently verified against PLM records in this draft (the component wasn't found by name/lot search in the `components` table; it may be filed under a different SKU/lot naming convention). This is foundational to the vendor-driven hypothesis and should be the team's first checkpoint, not an assumption carried into the Fishbone.\n\n**Gate:** Root cause statement requires QA Lead (Perrine) sign-off before Action Plan (Job 4) can proceed. RCA verbatim walk gets captured as a comment thread on the CAPA task per the standard artifact format; only the final statement goes in the `Root Cause Statement` field.\n\n---\n\n## 6. Action Plan (drafted pending root cause \u2014 structure ready, content is placeholder until RCA lands)\n\nPer SKN-OPS-001 \u00a75.3, both plans are normally drafted *after* root cause is approved. Since this task asked to walk through to the action-plan stage, here is the plan **scaffold** with the most likely actions given the current hypothesis (vendor material, single-lot scope) \u2014 treat the specific actions as a starting draft the investigation team will firm up once RCA confirms the actual root cause, not a final commitment.\n\n### Corrective Actions (addresses the immediate non-conformance)\n\n| # | Action | Owner | Due | Evidence required | Status |\n|---|---|---|---|---|---|\n| C1 | Confirm containment: hold/quarantine remaining Lot 26-02 inventory across DTC and any retail allocation; stop further fulfillment from this lot in Logiwa/Shopify | Operator \u2014 Alvin Belt | 2026-07-23 | Inventory hold confirmation + Logiwa/Shopify SKU-lot block screenshot | Open |\n| C2 | Pull and review Element's COA for FOA-ROSE vendor lot R26-008 against spec | Purchasing lead | 2026-07-28 | COA on file + written comparison against spec | Open |\n| C3 | Confirm via PLM/BOM that R26-008 is the actual component lot in Lot 26-02's batch record (close the data gap flagged in \u00a75) | Purchasing lead + plm-assistant | 2026-07-25 | PLM batch-to-component trace, screenshotted or linked | Open |\n| C4 | Direct outreach to the 4 complainants confirming investigation is open (coordinate with complaint-and-event-handler \u2014 this is their \u00a74.E corrective-action lane, not a CAPA write) | complaint-and-event-handler (cross-reference only) | \u2014 | \u2014 | Cross-referenced, not owned here |\n\n### Preventive Actions (addresses underlying cause \u2014 firm up once root cause lands)\n\n| # | Action | Owner | Due | Evidence required | SOP impact | Status |\n|---|---|---|---|---|---|---|\n| P1 | If Material/Method branch confirms \u2014 add an irritant-risk or expanded QC check for new/changed component lots on skin-contact SKUs, not just COA review | QA Lead \u2014 Perrine | TBD post-RCA | Updated incoming-inspection checklist | Likely SOP-NNN revision (incoming inspection procedure) | Open |\n| P2 | If vendor-sourcing change is implicated \u2014 build a trigger so vendor sourcing/formulation changes at Element propagate to Quality for review before release (mirrors the RCA reference's own worked example for exactly this failure pattern) | Purchasing lead + QA Lead | TBD post-RCA | Documented review-trigger process | Likely New SOP or SOP-NNN revision | Open |\n\nAny preventive action that lands on \"SOP-NNN revision\" or \"New SOP\" auto-stages a `[SOP Revision Pending \u2014 quality-manager]` task once approved \u2014 flagging that now so it's expected, not a surprise at Job 4 commit.\n\n---\n\n## 7. Handoffs staged (not committed \u2014 for visibility)\n\n- **6a, close-the-loop:** once this CAPA closes, comment back on the originating complaint-and-event-handler task with the closeout summary + CAPA number.\n- **6c, vendor scorecard signal:** this is vendor-driven (Source = complaint-trend, suspected category = vendor). If RCA confirms Element/R26-008 as root cause, stage a `[Vendor Scorecard Signal]` comment on Element's purchasing-manager record with the CAPA number and root cause, once root cause is confirmed \u2014 not before.\n- **6d, regulatory feed:** no SAE, no recall trigger per the brief \u2014 no regulatory flag staged. Re-evaluate if complaint count or severity changes.\n\n---\n\n## What I need from you to proceed\n\n1. **Confirm containment status on Lot 26-02** \u2014 held or not, and where. This is the one item that's out of sequence in this draft (\u00a71, \u00a73).\n2. **Approve NCR-2026-001 intake** (Operator gate) \u2014 confirm the number against the live CAPA Log count before I write anything.\n3. **Approve severity = Major** (\u00a72).\n4. **Approve NCR\u2192CAPA conversion decision** \u2014 routes to Perrine (QA Lead) for sign-off (\u00a73).\n5. **Confirm investigation team** (\u00a74) \u2014 Purchasing lead name for the Department Manager slot.\n6. **Approve RCA approach** (Fishbone \u2192 5 Whys) and the PLM verification checkpoint (\u00a75) before the team convenes.\n7. Once root cause lands and Perrine signs off, I'll firm up the Action Plan (\u00a76) actions and owners for your approval \u2014 the current table is a draft scaffold, not a commitment.\n\nNothing above has been written to Asana. This is the full draft for your review.\n"}], "grading": {"expectations": [{"text": "NCR intake fields + reasoned severity call (Major)", "passed": true, "evidence": "Severity Major reasoned explicitly against \u00a73.3 bands ('not Minor... not Critical... Major fits')."}, {"text": "Walks \u00a74.1 review checklist and recommends conversion under correct SLA", "passed": true, "evidence": "5-point checklist walked; '10 business days... by 2026-08-04' SLA stated."}, {"text": "Drafts CAPA cover block and reasoned RCA tool recommendation", "passed": true, "evidence": "Full CAPA-2026-001 cover block; Fishbone-then-5-Whys recommended with explicit systemic-vs-single-chain reasoning."}, {"text": "Corrective/preventive plans with owner+timeline+evidence, SOP-impact flagged", "passed": true, "evidence": "C1-C4/P1-P2 tables with owner/due/evidence columns; P1/P2 flagged for [SOP Revision Pending \u2014 quality-manager]."}, {"text": "HITL gates named explicitly, no writes committed", "passed": true, "evidence": "'Gate = Pending QA Lead' named at conversion and RCA sign-off; explicit 'nothing above has been written to Asana'."}, {"text": "Cross-references source complaint-and-event-handler task", "passed": true, "evidence": "Source task named throughout and in the handoffs section (6a)."}], "summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.0}, "timing": {"executor_duration_seconds": 150.8}, "eval_feedback": {"overall": "Caught that containment status was never actually confirmed in the source brief and refused to let conversion proceed silently past that gap \u2014 a real, correct instance of the skill's own 'containment confirmed?' checklist item doing its job."}}}, {"id": "eval-0-complaint-trend-handoff-pava-toner-without_skill", "prompt": "complaint-and-event-handler just handed off a task into the SJS CAPA Log titled '[CAPA Pending \u2014 capa-coordinator] Pava Toner Lot 26-02 \u2014 4 Skin Reactions complaints in 21 days'. The brief in the comment says: pattern is itching + redness, all consumers reported within 48h of first use, all from DTC channel, no SAE-level events. complaint-and-event-handler recommends scope = single-lot CAPA, suspected vendor: Element (FOA-ROSE component lot R26-008). Walk this through to the action plan stage. Don't actually write to Asana \u2014 draft the NCR record, severity call, NCR\u2192CAPA conversion decision, root cause analysis approach, and corrective + preventive action plans as a markdown plan I can approve.", "eval_id": 0, "outputs": [{"name": "output.md", "type": "text", "content": "# CAPA Intake Plan \u2014 Pava Toner Lot 26-02 (Draft for Approval)\n\n**Source handoff:** complaint-and-event-handler \u2192 capa-coordinator\n**Task title:** [CAPA Pending \u2014 capa-coordinator] Pava Toner Lot 26-02 \u2014 4 Skin Reactions complaints in 21 days\n**Prepared:** 2026-07-21\n**Status:** DRAFT \u2014 nothing written to Asana. Awaiting Alvin's approval before any record is created or moved.\n\n---\n\n## 1. Intake Summary (as received)\n\n- Product: Pava Toner\n- Lot: 26-02\n- Signal: 4 skin-reaction complaints in 21 days\n- Pattern: itching + redness, onset within 48h of first use\n- Channel: all 4 from DTC\n- Severity flag from handler: no SAE-level events reported\n- Suspected contributing component: FOA-ROSE, vendor Element, component lot R26-008\n- Handler's recommended scope: single-lot CAPA\n\nI'm treating the handler's classification (non-SAE) and scope recommendation as inputs to validate, not as settled facts \u2014 the coordinator role re-checks severity and scope independently before committing resources.\n\n## 2. NCR Record (Draft)\n\n| Field | Value |\n|---|---|\n| NCR ID | NCR-2026-XXXX (assigned on creation) |\n| Title | Pava Toner Lot 26-02 \u2014 Skin reaction complaint cluster |\n| Product / SKU | Pava Toner |\n| Affected lot(s) | 26-02 (finished good) |\n| Suspected component | FOA-ROSE, vendor Element, component lot R26-008 |\n| Date opened | 2026-07-21 |\n| Source | complaint-and-event-handler handoff (SJ Skin Complaint Log) |\n| Non-conformance description | 4 consumer complaints of itching and redness, each with onset within 48 hours of first use, all reported through the DTC channel, within a 21-day window, all tied to Lot 26-02. No SAE-level events reported to date. |\n| Quantity/scope affected | Single finished-good lot (26-02) pending root cause confirmation on whether the issue is lot-specific or component/vendor-wide |\n| Immediate containment considered | See Section 5 (Corrective \u2014 Containment) |\n| Linked records | SJ Skin Complaint Log entries (4), pending SJS Reportable Events check (Section 3) |\n| Status (SOP phase) | Intake / Pending Severity & Conversion Decision |\n| Gate (HITL state) | Awaiting Operator approval to proceed to Conversion Decision |\n\n## 3. Severity Call\n\n**Working severity: Moderate.**\n\nReasoning:\n- Frequency: 4 complaints in 21 days on a single lot is a real cluster, not an isolated one-off. That alone raises this above \"log and monitor.\"\n- Clinical picture: itching and redness with 48-hour onset is consistent with an irritant or allergic contact reaction \u2014 not benign, but also not the profile of a serious adverse event (no reports of blistering, swelling beyond application site, medical treatment sought, or systemic symptoms per the brief).\n- Channel concentration: all 4 from DTC is useful signal \u2014 it could mean DTC is where volume/exposure is concentrated for this lot, or it could mean retail hasn't surfaced complaints yet (lag) or retail received a different sub-lot. This needs a check before ruling anything out.\n- No SAE-level events: I'm accepting the handler's SAE determination as a reasonable first pass, but this CAPA should independently confirm no SAE criteria are met (per adverse-event-and-recall-reporter's classification logic) rather than just inherit the label. That confirmation is a required step before this severity call is finalized \u2014 see Section 3a.\n\n**Severity does NOT currently support:**\n- Full recall trigger (no SAE, no batch-wide signal established yet, no retailer/regulatory pressure noted)\n- \"Low\" / no-action classification (frequency and pattern are too consistent to file as noise)\n\n**Recommended severity: Moderate \u2014 single-lot CAPA justified, with an explicit trigger for escalation to Major/multi-lot if any of the conditions in Section 3a are hit.**\n\n### 3a. Escalation triggers (if any occur, severity escalates before this plan proceeds further)\n- A 5th complaint on Lot 26-02, or any complaint on a different Pava Toner lot with the same symptom pattern\n- Any complaint that meets SAE criteria (medical attention sought, symptoms beyond application site, hospitalization, etc.) \u2014 route immediately to adverse-event-and-recall-reporter for SAE classification, do not hold inside this CAPA\n- Confirmation that component lot R26-008 shipped into other finished-good lots or other SKUs beyond Pava Toner 26-02\n- Retail channel (Sephora/Ulta/Whole Foods) surfaces a matching complaint \u2014 would break the \"DTC-only\" containment assumption\n\n## 4. NCR \u2192 CAPA Conversion Decision\n\n**Decision: Convert to CAPA.**\n\nRationale against typical conversion criteria:\n- Recurrence: 4 events in 21 days on one lot clears a \"pattern, not isolated\" bar\n- Consumer safety relevance: skin reactions on a leave-on/apply-to-skin product are a legitimate safety and brand-trust issue even without SAE status\n- Traceable suspected cause: a specific incoming component (FOA-ROSE, Element, lot R26-008) is implicated, which is investigable and gives root cause analysis a concrete starting hypothesis rather than a vague \"customer sensitivity\" catch-all\n- Vendor exposure: if root cause confirms the component, this has purchasing and vendor-quality implications beyond this one lot\n\n**Scope decision: Single-lot CAPA, with a scoping checkpoint before corrective action is finalized.**\n\nI'm agreeing with the handler's single-lot recommendation as the starting scope, but flagging that scope should be revisited once two facts are confirmed during root cause work:\n1. Whether component lot R26-008 was used exclusively in Pava Toner Lot 26-02, or also in other finished-good lots/SKUs (purchasing-manager / PLM component-to-batch traceability)\n2. Whether Element has other open quality signals on FOA-ROSE (vendor performance history)\n\nIf either comes back positive, scope should widen to multi-lot or vendor-level CAPA before corrective actions are finalized \u2014 flagged explicitly in Section 6 as a decision gate, not something to quietly expand later.\n\n## 5. Root Cause Analysis Approach\n\n**Method: 5 Whys, structured around the ingredient/formulation hypothesis, with a Fishbone as backup if 5 Whys dead-ends or reveals multiple contributing factors.**\n\n5 Whys chosen over Fishbone as the primary tool because there's already a concrete leading hypothesis (a specific incoming component from a specific vendor lot) rather than an open field of possible causes \u2014 5 Whys is the right tool when you have a thread to pull, Fishbone is better when you're mapping an unknown cause space. If the 5 Whys line breaks down (e.g., the component tests clean), I'd pivot to a Fishbone covering Material / Method / Machine / Man / Environment to avoid tunnel vision on the vendor.\n\n**Draft 5 Whys thread (to be filled in with actual investigation, not assumed):**\n\n1. Why are consumers reporting itching/redness after using Pava Toner Lot 26-02? \u2192 Reaction pattern and 48h onset is consistent with an irritant/sensitizer effect from a topical ingredient.\n2. Why would this lot specifically trigger reactions when prior lots reportedly did not? \u2192 Suspected variance tied to FOA-ROSE component, lot R26-008, sourced from Element.\n3. Why would component lot R26-008 differ from prior accepted lots? \u2192 To be determined: check incoming COA/COI for R26-008 against spec and against prior accepted lots' COAs; check for any formulation or process deviation logged on Lot 26-02's batch record.\n4. Why would a spec deviation (if found) have passed incoming QC/release? \u2192 To be determined: review incoming inspection records for R26-008 \u2014 were all required tests run, and were results in-spec at the time of release?\n5. Why would the system allow an out-of-spec or borderline component to reach production without catching it? \u2192 To be determined: this is the systemic question that preventive action needs to answer regardless of what the earlier Whys reveal.\n\n**Data/records to pull before root cause can be finalized (not yet done \u2014 this is the investigation plan):**\n- Batch/production record for Pava Toner Lot 26-02\n- Incoming inspection + COA/COI for component lot R26-008 (Element)\n- PLM component-to-batch trace: confirm which finished-good lot(s) used R26-008\n- Element vendor history: any other complaints, deviations, or CAPAs tied to FOA-ROSE or this vendor in the trailing 12 months (purchasing-manager)\n- The 4 underlying complaint records themselves (symptom detail, photos if provided, product usage reported, any batch/lot confirmation from the consumer side)\n- Retail channel complaint check for Pava Toner in the same window, to confirm the DTC-only pattern isn't a reporting artifact\n\n**Owner of root cause execution:** QA Lead (per CAPA gate split \u2014 Operator owns intake/conversion/plan approval, QA Lead owns root cause, verification, effectiveness, and close).\n\n## 6. Corrective Action Plan (Draft)\n\nCorrective action addresses this specific occurrence \u2014 Lot 26-02 and the immediate exposure.\n\n1. **Containment (immediate, pending approval):** Place remaining on-hand units of Lot 26-02 on hold across DTC inventory pending root cause outcome. Route hold/release decision to batch-lifecycle-tracker per its hold protocol \u2014 this CAPA does not execute the hold itself, it triggers the request.\n2. **Component quarantine:** Flag remaining on-hand inventory of Element component lot R26-008 for hold pending investigation, and check whether any other finished-good lot consumed the same component lot (PLM trace, via inventory-manager/purchasing-manager).\n3. **Consumer-facing response:** Confirm with complaint-and-event-handler that each of the 4 complainants has received first-response guidance per SKN-OPS-002/003 (this sits with the handler, not duplicated here, but conversion should not proceed without confirming it happened).\n4. **Vendor notification:** If root cause implicates the component, issue a formal non-conformance notice to Element referencing lot R26-008, request their internal deviation investigation and COA re-verification \u2014 routed through purchasing-manager as the vendor-facing owner.\n5. **Disposition of held stock:** Once root cause is confirmed, determine disposition (release, rework if applicable \u2014 unlikely for a finished toner, or scrap) for both the finished-good hold and the component hold.\n\nCorrective actions 1 and 2 are containment moves that should not wait for the full root cause to close \u2014 recommend executing these on approval of this plan, in parallel with the investigation, rather than sequencing them after Section 5 completes.\n\n## 7. Preventive Action Plan (Draft)\n\nPreventive action addresses recurrence \u2014 this component, this vendor, and the broader intake system.\n\n1. **Incoming QC tightening (if root cause confirms component variance):** Add or tighten an incoming test parameter for FOA-ROSE from Element that would have caught the deviation in lot R26-008, rather than relying solely on COA acceptance.\n2. **Vendor requalification trigger:** If Element's investigation reveals a process gap on their end, open a vendor corrective action request and consider a requalification or increased incoming-inspection frequency for FOA-ROSE for a defined trial period (e.g., next 3 lots receive 100% inspection instead of standard sampling).\n3. **Complaint-to-CAPA latency check:** As a systemic side note \u2014 confirm the time from 1st complaint to CAPA handoff was within target per SKN-OPS-002; if the 3rd or 4th complaint is what triggered the pattern recognition, consider whether the complaint log's trend-detection threshold should trigger earlier (e.g., at 2-3 complaints on a single lot within a rolling window) rather than waiting for 4.\n4. **Cross-SKU check:** If FOA-ROSE is used in other Sweet July Skin SKUs beyond Pava Toner, confirm whether those SKUs draw from the same component lot pool and need a parallel watch, even without complaints yet.\n\nPreventive action 1 and 2 are contingent on what root cause actually finds \u2014 they're staged here as the likely paths, not pre-committed actions. If root cause instead points to something outside the component (e.g., a formulation stability issue independent of this vendor, or a labeling/usage-instruction gap), this section needs to be rewritten around the actual finding rather than forced into the vendor-fault narrative the initial hypothesis suggests.\n\n## 8. Status Field / Gate Recommendation (for Asana, once approved)\n\n- **Status (SOP phase):** Move from \"Pending\" to \"NCR Opened \u2014 Root Cause In Progress\" upon approval\n- **Gate (HITL state):** Operator gate clears on approval of this plan (intake + conversion + corrective/preventive plan approved); next gate is QA Lead sign-off on root cause findings before this can move toward verification and close\n- **Immediate next actions once approved:** (a) create the NCR/CAPA record and populate fields per Section 2, (b) trigger containment holds per Section 6.1\u20136.2, (c) hand root cause execution to QA Lead per Section 5\n\n## 9. Open Questions for Alvin\n\n1. Approve single-lot scope as starting point, with the widen-if-triggered condition in Section 4 \u2014 or start broader (multi-lot / vendor-level) given Element is named directly?\n2. Approve containment holds (finished-good Lot 26-02 + component lot R26-008) to run in parallel with root cause, rather than waiting?\n3. Any reason to fast-track a direct Element notification now versus waiting for root cause to confirm the component before contacting the vendor?\n\n---\n*This document is a draft plan only. No Asana record has been created, no task has been moved, and no hold has been executed. All actions above require explicit approval before execution.*\n"}], "grading": {"expectations": [{"text": "NCR intake fields + reasoned severity call (Major)", "passed": false, "evidence": "Severity labeled 'Moderate' \u2014 not a value in the defined Critical/Major/Minor band system; reasoning is sound but the label itself is off-schema."}, {"text": "Walks \u00a74.1 review checklist under correct SLA", "passed": false, "evidence": "Conversion decision reasoned in prose, not a numbered checklist walk; no SLA date given."}, {"text": "CAPA cover block + reasoned RCA tool", "passed": false, "evidence": "No structured CAPA cover block; RCA tool (5 Whys) is reasoned but picks the opposite tool from the skill's own systemic-pattern heuristic without acknowledging the tradeoff."}, {"text": "Corrective/preventive with owner+timeline+evidence, SOP-flag", "passed": false, "evidence": "Actions listed in prose without owner/timeline/evidence columns; no SOP-revision auto-stage mechanic mentioned."}, {"text": "HITL gates explicitly named", "passed": true, "evidence": "Does name 'Operator gate' and 'QA Lead sign-off on root cause findings' correctly, if informally."}, {"text": "Cross-references source task", "passed": true, "evidence": "Explicitly frames itself as evaluating the handler's handoff."}], "summary": {"passed": 2, "failed": 4, "total": 6, "pass_rate": 0.33}, "timing": {"executor_duration_seconds": 81.6}, "eval_feedback": {"overall": "The invented 'Moderate' severity value is the most concrete miss \u2014 it doesn't exist in the SOP's severity vocabulary, which is exactly the kind of schema drift the skill exists to prevent."}}}, {"id": "eval-1-ncr-no-escalate-vendor-receipt-with_skill", "prompt": "Got a single-unit vendor receipt failure: HCT shipped 50 units of the Pava Toner cap (component HCT-CAP-007), one of them arrived with a hairline crack visible on inspection. Caught at receiving, the cracked unit was quarantined, the other 49 passed. HCT has no recurrence pattern in the last 12 months. Open this as an NCR \u2014 and walk me through whether this needs a CAPA or closes without one. Don't write to Asana, draft the plan.", "eval_id": 1, "outputs": [{"name": "output.md", "type": "text", "content": "# NCR Draft \u2014 HCT Cap Receipt, Single-Unit Crack (DRAFT ONLY \u2014 not written to Asana)\n\nPer your instruction, nothing below has been committed to Asana. This is the drafted record and the escalation walk-through for your (Operator) review. Numbering shown as placeholder pending an Asana check for the current NCR sequence \u2014 confirm before commit.\n\n## 1. NCR record (draft)\n\n| Field | Value |\n|---|---|\n| NCR number | `NCR-2026-0XX` *(placeholder \u2014 assign on approval after checking highest existing NCR-2026 number in SJS CAPA Log)* |\n| Date opened | 2026-07-21 |\n| Reporter | Receiving inspector (name TBD \u2014 fill in who caught it) |\n| Source | vendor-receipt |\n| Category | Vendor |\n| SKU(s) affected | Pava Toner |\n| Component | HCT-CAP-007 (cap component) |\n| Batch / lot code(s) | Not yet linked \u2014 pull the receiving lot/PO from PLM if you want this tied to a batch record |\n| Vendor | HCT |\n| Description | HCT shipped 50 units of HCT-CAP-007 (Pava Toner cap) against [PO #]. At incoming inspection, 1 of 50 units showed a visible hairline crack. The remaining 49 units passed inspection. |\n| Evidence | Receiving inspection notes / photo of cracked unit (attach when available) |\n| Suspected severity | **Minor** (see \u00a73.3 read below) |\n| Containment action taken | Cracked unit quarantined at receiving. Remaining 49 units released to stock as passed. No further containment needed \u2014 the failure was caught before it reached production or a customer-facing batch. |\n\n## 2. Severity read (SKN-OPS-005 \u00a73.3)\n\nMinor: \"Isolated, contained, no recurrence pattern, no compliance exposure.\" Triggers listed include \"single-unit cosmetic defect... already corrected.\"\n\nThis fits Minor cleanly:\n- **Isolated** \u2014 1 of 50 units, not a full-batch or systemic defect.\n- **Contained** \u2014 caught at receiving inspection, before it entered production or shipped. Quarantine already executed.\n- **No recurrence pattern** \u2014 you noted HCT has no NCR history in the last 12 months. That's the pattern check called for in NCR Procedure \u00a74.1.4.\n- **No compliance/safety exposure** \u2014 a cracked cap caught at receiving carries no safety, labeling, or regulatory angle. It never reached a batch or a customer.\n\nNone of the Critical or Major triggers apply (no safety/recall/regulatory angle, no full-batch OOS, no vendor-systemic pattern, no repeat-NCR-same-root-cause).\n\n## 3. Escalation decision: Convert to CAPA vs. Close \u2014 No CAPA\n\nWalking NCR Procedure \u00a74.2's three branches:\n\n**A. Convert to CAPA** \u2014 required for Critical/Major, *permitted* for Minor. Not required here. You could still choose to open one if you wanted to push HCT on packaging QC upstream, but nothing in this record obligates it.\n\n**B. Close \u2014 No CAPA** \u2014 this is the branch that fits. Permitted for Minor, and this NCR checks every box: contained at receiving, no recurrence, no compliance exposure. Recommended path.\n\n**C. Hold for more information** \u2014 not needed. You have everything: quantity, defect type, containment, vendor history. No open question to hold on.\n\n**Recommendation: Close \u2014 No CAPA.**\n\n### Draft justification (NCR Procedure \u00a75 \u2014 required fields for Closed-No-CAPA)\n\n- **Why no CAPA:** Single-unit hairline crack in a 50-unit component shipment, caught and quarantined at receiving before any production or customer exposure. Meets Minor criteria per SKN-OPS-005 \u00a73.3 (isolated, contained, no recurrence, no compliance exposure). No systemic vendor or process failure indicated by one unit in one shipment.\n- **What containment resolved:** Cracked unit quarantined at receiving; remaining 49 units inspected and passed, released to stock. Loop closed at intake \u2014 no further action needed to protect product or customer.\n- **Trend exposure:** HCT has no recurrence pattern in the trailing 12 months (per your input). No open or recent NCRs against HCT reviewed that would indicate a developing pattern. *(If you want, I can pull HCT's supplier wiki page / NCR history live to confirm this before you sign off \u2014 I did not run that query since you asked for the plan only.)*\n- **Reviewer:** Operator (Alvin Belt) \u2014 pending QA Lead (Perrine) awareness per the monthly Closed-No-CAPA review cadence (\u00a75: reviewed monthly by Operator, quarterly by QA Lead \u2014 not a blocking sign-off on close itself, since Minor Close-No-CAPA doesn't gate through QA Lead the way NCR\u2192CAPA conversion does).\n\n## 4. What happens on approval (if you approve this plan)\n\n1. Assign real `NCR-2026-NNN` number (check current sequence in SJS CAPA Log first).\n2. Create the task in **NCR Open**, then move to **NCR Closed (No CAPA)** section with the justification fields above written to the record.\n3. Set `Status = Closed-No-CAPA`, `Source = vendor-receipt`, `Severity = Minor`.\n4. **Vendor scorecard signal (\u00a76c):** Since this is vendor-driven (HCT), stage a `[Vendor Scorecard Signal]` comment on the relevant purchasing-manager HCT record noting the single-unit defect \u2014 informational, not a CAPA trigger, but keeps HCT's receiving-inspection record complete for scorecard purposes. Purchasing-manager owns the actual scorecard write.\n5. No SOP revision, no regulatory flag, no batch-lifecycle handoff \u2014 none of those apply to a contained single-unit component defect.\n6. Retained per \u00a76 (3 years post-batch-expiration).\n\n## 5. Open items before I commit anything\n\n- Need the PO number and receiving lot to fully populate the record.\n- Need the receiving inspector's name for the Reporter field.\n- Confirm you want the HCT vendor-scorecard signal staged, or skip it since this is a single unit with no pattern.\n\nSay \"approved\" (with any corrections) and I'll write this to Asana \u2014 number, fields, section placement, and the vendor scorecard comment-back.\n"}], "grading": {"expectations": [{"text": "NCR intake fields + Minor severity per \u00a73.3", "passed": true, "evidence": "'Suspected severity: Minor (see \u00a73.3 read below)' with each Minor criterion matched explicitly."}, {"text": "Walks \u00a74.1 checklist explicitly item-by-item", "passed": true, "evidence": "'Isolated... Contained... No recurrence pattern... No compliance/safety exposure' matched line by line against \u00a73.3 triggers."}, {"text": "Recommends Close \u2014 No CAPA per \u00a74.2/\u00a75", "passed": true, "evidence": "'Recommendation: Close \u2014 No CAPA' with branches A/B/C explicitly walked and B selected."}, {"text": "Drafts required \u00a75 justification fields", "passed": true, "evidence": "Why no CAPA / what containment resolved / trend exposure / reviewer \u2014 all four fields drafted discretely."}, {"text": "Does NOT invoke RCA tools or draft action plans", "passed": true, "evidence": "No Fishbone/5 Whys or action-plan tables \u2014 correctly out of scope for a no-escalate NCR."}, {"text": "Names correct HITL gate for no-escalate justification", "passed": true, "evidence": "Operator + monthly/quarterly QA Lead review cadence named correctly per \u00a75."}], "summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.0}, "timing": {"executor_duration_seconds": 49.8}}}, {"id": "eval-1-ncr-no-escalate-vendor-receipt-without_skill", "prompt": "Got a single-unit vendor receipt failure: HCT shipped 50 units of the Pava Toner cap (component HCT-CAP-007), one of them arrived with a hairline crack visible on inspection. Caught at receiving, the cracked unit was quarantined, the other 49 passed. HCT has no recurrence pattern in the last 12 months. Open this as an NCR \u2014 and walk me through whether this needs a CAPA or closes without one. Don't write to Asana, draft the plan.", "eval_id": 1, "outputs": [{"name": "output.md", "type": "text", "content": "# NCR Draft Plan \u2014 HCT-CAP-007 Hairline Crack at Receiving\n\n**Note:** This is a draft plan only. Nothing has been written to Asana.\n\n## 1. NCR Intake (proposed record)\n\n| Field | Value |\n|---|---|\n| Title | Hairline crack \u2014 HCT-CAP-007 (Pava Toner cap), 1 of 50 units |\n| Source | Receiving inspection |\n| Vendor | HCT |\n| Component | HCT-CAP-007 (Pava Toner cap) |\n| Quantity received | 50 |\n| Quantity affected | 1 |\n| Quantity passed | 49 |\n| Defect type | Hairline crack, visible on visual inspection |\n| Disposition | Quarantined (affected unit) |\n| Detection point | Receiving |\n| Date | 2026-07-21 (today, pending actual receiving date) |\n\n## 2. Should this open as an NCR?\n\nYes. Any nonconforming material caught at receiving should get an NCR record even if the disposition is simple \u2014 it's the mechanism that creates the paper trail, closes the loop on the quarantined unit, and feeds the vendor quality history HCT builds up over time. Opening it costs almost nothing and means the data exists later if a pattern shows up.\n\n## 3. Does this need a CAPA, or can it close without one?\n\n**Recommendation: Close the NCR without a CAPA.** Here's the reasoning, walked through:\n\n**Severity \u2014 low.** A single cracked cap is a component-level cosmetic/mechanical defect, not a safety, efficacy, or regulatory issue. It doesn't touch the finished product's formula, claims, or labeling.\n\n**Containment \u2014 already worked.** Receiving inspection is the system doing its job. The defect was caught before the cap reached production or a customer. There's no shipped-product exposure, no downstream containment action needed (no WIP or finished goods to sweep, no field action).\n\n**Scope \u2014 contained to one unit.** 1 out of 50 (2%) is within normal supplier variability for a mechanical component like an injection-molded cap. It's not a lot-wide or batch-wide failure \u2014 49 of 50 passed inspection clean.\n\n**Recurrence \u2014 none.** HCT has no defect pattern on this component (or with this vendor generally) over the trailing 12 months. That's the deciding factor. A CAPA is warranted when there's a *pattern* \u2014 repeat occurrences, a systemic vendor process problem, or a defect rate trending up. One isolated, caught-at-the-gate unit with a clean 12-month history doesn't meet that bar.\n\n**What CAPA would require instead:** If this were the second or third hairline-crack incident from HCT on this cap in the trailing 12 months, or if the defect rate on this lot were higher (say, several units in the 50, suggesting a mold or tooling issue), or if it had slipped past receiving into WIP/finished goods, that would flip the answer \u2014 root cause investigation (5 Whys or fishbone on HCT's molding/QC process) and a corrective action (tooling fix, incoming inspection AQL tightening, vendor corrective action request) would be warranted.\n\n## 4. Proposed NCR close-out path\n\n1. Log the NCR with the details above, disposition = quarantine/scrap the single unit (reject and return-to-vendor or scrap per standard component reject handling \u2014 confirm which HCT uses).\n2. Note in the vendor history: 1 hairline-crack unit, 50-unit shipment, no CAPA triggered, no recurrence in trailing 12 months.\n3. Close the NCR at \"no CAPA required\" \u2014 reasoning: isolated incident, caught at receiving, no recurrence pattern, low severity, no safety/regulatory dimension.\n4. No notification to HCT is required beyond standard reject reporting on this PO line \u2014 this isn't a rate or pattern issue that needs a formal vendor corrective action request.\n5. Recommend keeping a running count of HCT-CAP-007 defect incidents (rolling 12-month view) so that if a second or third instance shows up, the pattern is visible immediately and triggers the CAPA conversation at that point rather than starting from zero.\n\n## Bottom line\n\nOpen the NCR (record it), disposition the single unit as quarantined/rejected, and close the NCR without a CAPA. The facts \u2014 one unit out of fifty, caught at the gate, no safety issue, no vendor recurrence in 12 months \u2014 don't meet the bar for root cause investigation and corrective action. Keep an eye on HCT-CAP-007 going forward; a second occurrence changes the calculus.\n"}], "grading": {"expectations": [{"text": "NCR fields + Minor severity per \u00a73.3", "passed": false, "evidence": "Says 'severity \u2014 low' \u2014 sound reasoning but doesn't use the defined 'Minor' label or cite \u00a73.3."}, {"text": "Walks \u00a74.1 checklist explicitly item-by-item", "passed": false, "evidence": "Reasoning bundled in prose, not a discrete checklist walk."}, {"text": "Recommends Close \u2014 No CAPA", "passed": true, "evidence": "'Recommendation: Close the NCR without a CAPA' with solid reasoning."}, {"text": "Drafts required \u00a75 justification fields discretely", "passed": false, "evidence": "Justification is prose, not structured as the four required fields."}, {"text": "Does NOT invoke RCA/action plans", "passed": true, "evidence": "Correctly stays out of RCA territory."}, {"text": "Names correct HITL gate", "passed": false, "evidence": "No reviewer role or gate named at all."}], "summary": {"passed": 2, "failed": 4, "total": 6, "pass_rate": 0.33}, "timing": {"executor_duration_seconds": 36.4}}}, {"id": "eval-2-full-lifecycle-batch-stability-fail-with_skill", "prompt": "A pre-v5.4 batch-lifecycle-tracker handoff just landed in SJS CAPA Log: '[CAPA Request \u2014 batch-lifecycle-tracker] Soursop Vit C Lot 25-09 \u2014 3-month accelerated stability fail on Vitamin C assay (89% of label claim, spec is \u226595%)'. This is a Critical NCR \u2014 stability failure on an active batch already in market at Ulta and DTC. Walk the FULL CAPA lifecycle: NCR open, conversion to CAPA, root cause analysis (recommend the right tool), corrective + preventive actions, verification, effectiveness review, and closeout. Show me what each phase produces, who approves each gate, and what handoffs fire on close. Don't actually write to Asana \u2014 draft as a complete walkthrough I can review before we run it for real.", "eval_id": 2, "outputs": [{"name": "output.md", "type": "text", "content": "# CAPA Full Lifecycle Walkthrough (DRAFT \u2014 no Asana writes made)\n\n**Source signal:** `[CAPA Request \u2014 batch-lifecycle-tracker]` Soursop Vit C Lot 25-09 \u2014 3-month accelerated stability fail on Vitamin C assay (89% of label claim, spec \u226595%)\n**Why this is urgent:** batch is active in market at Ulta and DTC. Everything below is staged for your review per SKN-OPS-001, walked phase by phase. Nothing commits until you say go.\n\n**Immediate flag, outside CAPA's lane:** the in-market exposure means two decisions need to happen today, in parallel with CAPA intake, and neither belongs to this skill:\n- **Hold/release on Lot 25-09** \u2014 batch-lifecycle-tracker's call (SKN-OPS-007), not CAPA's. CAPA receives the fail signal; it doesn't decide whether the batch gets pulled or held.\n- **Recall scoping** \u2014 if this is assessed as a labeling/potency violation on product already sold, complaint-and-event-handler owns recall trigger and SAE/reportability screening (SKN-OPS-002/003). CAPA's containment field captures whatever's been done, but the recall call itself sits with that skill.\n\nBoth should be running now, independent of the CAPA clock below. I'll draft the cross-flags in Phase 6 for when this closes, but flagging here so it's not read as CAPA \"handling\" the batch or the recall.\n\n---\n\n## Phase 1 \u2014 NCR Open (SKN-OPS-001 \u00a75.1, SKN-OPS-005 \u00a73)\n\n**Produces:** a drafted NCR record, staged for Operator approval. On approval, the skill assigns `NCR-2026-0NN` (exact number set at the highest existing 2026 NCR + 1, checked at write time), creates the task in **NCR Open**, and writes these fields:\n\n| Field | Draft value |\n|---|---|\n| NCR number | NCR-2026-0NN *(assigned on approval)* |\n| Date opened | 2026-07-21 |\n| Reporter | batch-lifecycle-tracker (system handoff) |\n| Source | lab-OOS |\n| Category | Product |\n| SKU(s) affected | Soursop Vit C [serum/SKU code \u2014 confirm exact SKU via plm-assistant] |\n| Batch / lot code | 25-09 (linked PLM batch record) |\n| Vendor | TBD \u2014 pulled from batch BOM via plm-assistant once formulation/packaging suppliers are confirmed as in-scope for RCA |\n| Description | 3-month accelerated stability pull on Lot 25-09 returned a Vitamin C assay result of 89% of label claim against a \u226595% spec. Batch is active in market (Ulta, DTC). |\n| Evidence | Accelerated stability test report (3-month timepoint) \u2014 link pending from batch-lifecycle-tracker/lab |\n| Suspected severity | **Critical** \u2014 see rationale below |\n| Containment action taken | Pending confirmation from batch-lifecycle-tracker: has the batch been held? This field cannot close as \"none yet\" given in-market exposure \u2014 flagging for immediate operator follow-up alongside NCR approval |\n\n**Severity rationale (SKN-OPS-005 \u00a73.3):** Critical band triggers include direct safety/label-claim exposure and recall risk. An 89%-of-claim potency result on a product already at retail and DTC is exactly this \u2014 a label claim failure with recall exposure, not a contained lab miss. Reads should err high per \u00a73.3; this reads Critical.\n\n**HITL \u2014 Operator approves intake.** Approval assigns the NCR number, creates the task, and moves it to NCR Open. *(Not yet approved \u2014 awaiting your go-ahead.)*\n\n---\n\n## Phase 2 \u2014 NCR Review and Escalation Decision (SKN-OPS-001 \u00a75.2, SKN-OPS-005 \u00a74)\n\n**Produces:** a drafted review + decision record.\n\n**\u00a74.1 checklist walk:**\n1. *Description specific enough?* Yes \u2014 assay result, spec, timepoint, and market exposure are all stated.\n2. *Severity consistent with \u00a73.3?* Yes, Critical confirmed above.\n3. *Existing open CAPA on this root cause?* Unconfirmed \u2014 recommend a check against open CAPAs tagged Source = lab-OOS or Category = Product for Soursop Vit C or related Vitamin C SKUs before opening a new file, to catch a duplicate or a pattern.\n4. *Pattern across recent NCRs?* Recommend pulling the Soursop Vit C SKU wiki page and any prior stability NCRs on this SKU or formulation family before RCA \u2014 if this is a second stability miss, it changes the RCA tool choice (see Phase 3).\n5. *Containment confirmed?* No \u2014 outstanding per Phase 1. This should not sit waiting on CAPA process; flagging again for immediate parallel action.\n\n**Decision: Convert to CAPA.** Required for Critical per \u00a74.2(A) \u2014 assign `CAPA-2026-0NN`, linked to `NCR-2026-0NN`.\n\n**SLA:** Critical NCR\u2192CAPA conversion required within 5 business days of NCR open (2026-07-21) \u2014 target conversion by **2026-07-28**.\n\n**HITL \u2014 two gates here:**\n- Operator approves the review decision (convert vs. close vs. hold) \u2014 drafted above as convert.\n- **QA Lead (Perrine) approves the NCR\u2192CAPA conversion** \u2014 `Gate = Pending QA Lead` on the task until she signs off. This is the audit-trail gate SKN-OPS-005 exists to protect.\n\n---\n\n## Phase 3 \u2014 CAPA Opening, Team Formation, Root Cause Analysis (SKN-OPS-001 \u00a75.2)\n\n**Produces:** the CAPA cover block, a proposed investigation team, and the RCA artifact (tool walk + root cause statement).\n\n### CAPA cover block (draft)\n\n```\nCAPA Number: CAPA-2026-0NN\nLinked NCR: NCR-2026-0NN\nDate opened: 2026-07-21 (pending conversion approval)\nSeverity: Critical\nSource: lab-OOS\nCategory: Product\n\nLinked records:\n- Batch: Lot 25-09, Soursop Vit C [PLM batch ID \u2014 pull via plm-assistant]\n- Vendor: TBD pending BOM pull\n- SKU: Soursop Vit C [SKU code \u2014 pull via plm-assistant]\n- Source task: [CAPA Request \u2014 batch-lifecycle-tracker] Asana gid \u2014 pending\n\nInvestigation team: [see below]\n\nStatement of non-conformance: Lot 25-09 of Soursop Vit C failed its 3-month\naccelerated stability pull on Vitamin C assay, returning 89% of label claim\nagainst a \u226595% spec. Batch is active in market at Ulta and DTC.\n```\n\n### Proposed investigation team\n\nVitamin C potency loss under accelerated stability is a formulation/packaging/process question first, vendor question second (unless a raw material or component defect surfaces). Draft team:\n\n- **QA Lead (Perrine)** \u2014 Lead\n- **PD/Formulation** \u2014 owns the antioxidant system and stability protocol design for this SKU\n- **Purchasing** \u2014 pulled in if the RCA implicates the ascorbic-acid raw material lot or the packaging vendor's oxygen barrier spec\n- **Operator (you)** \u2014 oversight, cross-functional unblock\n\n*HITL \u2014 Operator confirms team composition before RCA work starts.*\n\n### Root cause analysis \u2014 recommended tool: **Fishbone, followed by 5 Whys on the strongest branch**\n\nPer `references/rca-tools.md`'s default selection rule: single-event/single-chain issues get 5 Whys; systemic or multi-factor issues get Fishbone first. A Vitamin C potency failure at 3 months can trace to several independent or interacting causes \u2014 antioxidant system robustness, packaging oxygen ingress, fill-process air exposure, storage/handling deviation, or an analytical method issue at the lab. That's multi-factor by nature, so Fishbone for breadth, then 5 Whys on whichever branch reads strongest, matches the tool's own guidance for exactly this shape of failure.\n\n**Fishbone scaffold (prompts only \u2014 team fills in):**\n\n| Category | Prompt |\n|---|---|\n| Manpower | Who ran the fill, and who logged the stability pull? Any training gaps on handling ascorbic-acid-based formulas? |\n| Method | Was the accelerated stability protocol (temp/humidity/duration) correct for this formulation? Was fill-line SOP followed without deviation? |\n| Machine | Any equipment issue at fill \u2014 dosing accuracy, headspace/air exposure, capping torque affecting seal integrity? |\n| Material | Was the ascorbic acid / antioxidant raw material within spec and from the expected lot/vendor? Any change in raw material sourcing before this batch? |\n| Measurement | Was the assay method validated and consistent with prior batches? Any change in analytical method or lab? |\n| Environment | Any deviation in batch's storage conditions pre-stability-pull? Any packaging change (jar/bottle, liner) that altered the oxygen barrier? |\n\nOnce populated, identify the strongest branch and cross-category links, then run 5 Whys on that branch per the standard prompt structure (Why 1 \u2192 Why 5, stop at a process/system-level answer, not \"human error\" or a name).\n\n**Root cause statement:** *not drafted \u2014 this is where the team's actual investigation goes. The skill will not invent a root cause.* Placeholder field, populated once the team completes the walk.\n\n**HITL \u2014 two gates:**\n- Operator approves the team.\n- **QA Lead approves the final root cause statement** \u2014 `Gate = Pending QA Lead`. This can't be signed off until the Fishbone/5-Whys work is actually done; nothing here is pre-filled.\n\n---\n\n## Phase 4 \u2014 Corrective and Preventive Action Plans (SKN-OPS-001 \u00a75.3)\n\n**Produces:** two action-plan tables, both tied to whatever root cause statement clears Phase 3. Drafted here as placeholder structure \u2014 real actions can't be written until root cause is approved.\n\n### Corrective Action Plan (draft structure)\n\n| # | Action | Owner | Due | Evidence required | Status |\n|---|---|---|---|---|---|\n| C1 | [e.g., re-test remaining Lot 25-09 retain samples for confirmation; assess whether other in-market lots of this SKU are at risk] | QA Lead | TBD | Retest results | Open |\n| C2 | [e.g., correct the identified process/formulation gap for future batches of this SKU] | PD/Formulation | TBD | Updated batch record / revised spec | Open |\n\n### Preventive Action Plan (draft structure)\n\n| # | Action | Owner | Due | Evidence required | SOP impact | Status |\n|---|---|---|---|---|---|---|\n| P1 | [e.g., if root cause is protocol-related \u2014 revise accelerated stability protocol for antioxidant-system SKUs] | QA Lead | TBD | Revised protocol doc | Likely SOP-NNN revision | Open |\n| P2 | [e.g., if root cause is packaging-related \u2014 tighten incoming oxygen-barrier verification for this component] | Purchasing | TBD | Updated incoming inspection checklist | Possible SOP revision | Open |\n\nAny preventive action landing on \"SOP-NNN revision\" or \"New SOP\" auto-stages a `[SOP Revision Pending \u2014 quality-manager]` task carrying the proposed change \u2014 this fires automatically once P-actions are finalized, no separate approval needed for the staging itself (the SOP change still goes through quality-manager's ratification cycle).\n\n**HITL \u2014 Operator approves both plans** once root cause is in hand and actions are filled in for real.\n\n---\n\n## Phase 5 \u2014 Implementation Tracking, Verification, Effectiveness Review (SKN-OPS-001 \u00a75.4\u2013\u00a75.5)\n\n**Implementation tracking (read-only):** as C1/C2/P1/P2 owners post completion with evidence attached, the skill keeps the status table current and pings on overdue \u2014 1 day overdue: owner ping; 5 days: owner + Operator; 10 days: escalates to QA Lead via `[Pending QA Lead \u2014 Overdue Action]`. No HITL gate here \u2014 informational only.\n\n**Verification record (drafted once all actions report complete):**\n\n```\nVerification \u2014 CAPA-2026-0NN \u2014 [date]\nC1: [completion date] \u2014 [verifier] \u2014 [evidence link] \u2014 Verified \u2713 / Not verified\nC2: [completion date] \u2014 [verifier] \u2014 [evidence link] \u2014 Verified \u2713 / Not verified\nP1: [completion date] \u2014 [verifier] \u2014 [evidence link] \u2014 Verified \u2713 / Not verified\nP2: [completion date] \u2014 [verifier] \u2014 [evidence link] \u2014 Verified \u2713 / Not verified\n\nAll actions completed as planned: [Yes/No]\nVerifier: QA Lead (Perrine)\n```\n\n**HITL \u2014 QA Lead approves verification** (`Gate = Pending QA Lead`). Verification answers \"did the actions happen,\" not \"did it work.\"\n\n**Effectiveness review \u2014 window and what it checks:**\n\nSeverity is Critical, so the effectiveness window is **90 days from last action completion** \u2014 the longest window on the books, appropriate given this is an in-market potency failure. Drafted structure:\n\n```\nEffectiveness Review \u2014 CAPA-2026-0NN \u2014 [date, 90 days post last action completion]\n\nOriginal root cause statement: [pulled from Phase 3]\nEffectiveness window: 90 days (Critical)\n\nLeading indicators reviewed:\n- Next production batch(es) of Soursop Vit C \u2014 3-month accelerated stability\n  assay result, pulled via plm-assistant\n- Any near-expiry or routine stability checks on remaining in-market Lot 25-09\n  units, if not fully pulled\n- Confirmation the SOP/process change (if any) is actually in use on the\n  production floor \u2014 not just documented\n\nRecurrence check: has the same non-conformance (Vitamin C assay below spec at\naccelerated stability) recurred on any batch since the corrective action\ncompleted? Yes/No\n\nEffectiveness verdict: Effective / Partially effective / Not effective\nReviewer: QA Lead (Perrine)\n```\n\nIf the verdict comes back Partially or Not effective, the CAPA does **not** close \u2014 it reopens at Investigation (Phase 3) with the failed-effectiveness result logged as new evidence, and the cycle runs again.\n\n**HITL \u2014 QA Lead approves the effectiveness verdict** (`Gate = Pending QA Lead`).\n\n---\n\n## Phase 6 \u2014 Closeout, Documentation, Handoffs (SKN-OPS-001 \u00a75.6)\n\n**Only reachable once verification AND effectiveness both clear.** Produces:\n\n**Closeout summary (4-line, drafted at close):**\n\n```\nCAPA-2026-0NN closeout ([date]):\n- Source event: Lot 25-09 Soursop Vit C \u2014 3-month accelerated stability fail,\n  Vitamin C assay 89% vs. \u226595% spec\n- Root cause: [from Phase 3]\n- Actions taken: [from Phase 4, corrective + preventive]\n- Effectiveness verdict: Effective \u2014 [evidence summary]\n```\n\n**Documentation check:** confirms every required artifact is attached before staging close \u2014 NCR record, RCA thread, action plans, verification record, effectiveness review. Retention: 3 years post-batch-expiration.\n\n**Handoffs that fire on close \u2014 all four checked for applicability:**\n\n- **6a. Close-the-loop on the originating record.** Comment on the source `[CAPA Request \u2014 batch-lifecycle-tracker]` task with the closeout summary and CAPA number, so batch-lifecycle-tracker sees the loop closed on Lot 25-09. *Applies \u2014 always fires here since the source is a batch-lifecycle-tracker handoff.*\n- **6b. SOP revision feed.** If any P-action came out of Phase 4 tagged SOP-NNN revision or New SOP, a `[SOP Revision Pending \u2014 quality-manager]` task carries the proposed change into the ratification queue. *Likely applies* \u2014 a stability protocol or incoming-spec change is a plausible outcome of this RCA.\n- **6c. Vendor scorecard signal.** Only fires if Source resolves to vendor-receipt or vendor-systemic. Current Source is lab-OOS; this fires only if the RCA implicates a specific raw-material or packaging vendor as root cause. *Conditional \u2014 depends on Phase 3 findings.*\n- **6d. Regulatory feed.** A potency/label-claim failure on in-market product is a plausible reportability trigger \u2014 cosmetic GMP deviation, and depending on recall outcome, a filing obligation. Pre-v6, this stages as `[Reg Flag Pending \u2014 regulatory-manager]` inside SJS CAPA Log rather than a live handoff. *Recommend flagging as applicable* given the market exposure, for the Operator/QA Lead to confirm at close.\n\nAlso worth restating: **this closeout does not stand in for the recall/SAE decision.** If complaint-and-event-handler's recall or SAE process is still open when this CAPA is ready to close, the closeout comment lets them know CAPA is done, but the recall/reportability call runs on its own track and its own approvals.\n\n**HITL \u2014 QA Lead approves the close.** On approval: all four handoffs (as applicable) commit, Status \u2192 Closed, Gate \u2192 Open, task moves to the Closed section.\n\n---\n\n## Summary \u2014 gate map\n\n| Phase | Operator gate | QA Lead gate |\n|---|---|---|\n| 1. NCR intake | Approve intake | \u2014 |\n| 2. NCR review/escalation | Approve decision | Approve NCR\u2192CAPA conversion |\n| 3. CAPA open/RCA | Approve team | Approve root cause statement |\n| 4. Action plan | Approve corrective + preventive plans | \u2014 |\n| 5. Implementation | (read-only, no gate) | Approve verification; approve effectiveness verdict |\n| 6. Closeout | \u2014 | Approve close |\n\nRole-holders: Operator = Alvin Belt. QA Lead = Perrine.\n\n## What's staged vs. what's real right now\n\nNothing above has been written to Asana. No NCR or CAPA number has actually been assigned \u2014 those get pulled from the live highest-existing-number check at first real write. No fields, comments, or handoff tasks have been created. This is the complete walkthrough for review; say go and Phase 1 intake goes live first, with the containment/hold question surfaced to batch-lifecycle-tracker in parallel, not gated behind CAPA's clock.\n"}], "grading": {"expectations": [{"text": "NCR opens Critical with correct reasoning", "passed": true, "evidence": "'Critical band triggers include direct safety/label-claim exposure and recall risk... reads Critical.'"}, {"text": "RCA tool reasoned, scaffold actually provided", "passed": true, "evidence": "Fishbone reasoning + full 6-category prompt table provided for the team to fill in."}, {"text": "Corrective/preventive with owners/dates/evidence, SOP-impact flagged", "passed": true, "evidence": "C1/C2/P1/P2 tables with owner/due/evidence columns; SOP-revision auto-stage mechanic named explicitly."}, {"text": "Effectiveness review applies Critical's 90-day window correctly", "passed": true, "evidence": "'the effectiveness window is 90 days from last action completion... appropriate given this is an in-market potency failure.'"}, {"text": "All six phases walked, HITL gates named at right phase", "passed": true, "evidence": "Full gate-map table at the end naming Operator vs QA Lead per phase."}, {"text": "Closeout flags regulatory feed correctly, defers batch hold/release", "passed": true, "evidence": "6d flagged as 'recommend flagging as applicable given market exposure'; explicitly defers hold/release to batch-lifecycle-tracker throughout."}], "summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.0}, "timing": {"executor_duration_seconds": 120.0}, "eval_feedback": {"overall": "Comprehensive and correctly refused to let the CAPA process appear to 'own' the batch-hold or recall decision \u2014 explicitly separated those onto their own tracks up front, which is exactly the scope boundary the skill defines."}}}, {"id": "eval-2-full-lifecycle-batch-stability-fail-without_skill", "prompt": "A pre-v5.4 batch-lifecycle-tracker handoff just landed in SJS CAPA Log: '[CAPA Request \u2014 batch-lifecycle-tracker] Soursop Vit C Lot 25-09 \u2014 3-month accelerated stability fail on Vitamin C assay (89% of label claim, spec is \u226595%)'. This is a Critical NCR \u2014 stability failure on an active batch already in market at Ulta and DTC. Walk the FULL CAPA lifecycle: NCR open, conversion to CAPA, root cause analysis (recommend the right tool), corrective + preventive actions, verification, effectiveness review, and closeout. Show me what each phase produces, who approves each gate, and what handoffs fire on close. Don't actually write to Asana \u2014 draft as a complete walkthrough I can review before we run it for real.", "eval_id": 2, "outputs": [{"name": "output.md", "type": "text", "content": "# CAPA Walkthrough \u2014 Soursop Vit C Lot 25-09, Accelerated Stability Fail (Draft, Not Yet Written to Asana)\n\nTrigger: batch-lifecycle-tracker handoff in SJS CAPA Log \u2014 \"[CAPA Request \u2014 batch-lifecycle-tracker] Soursop Vit C Lot 25-09 \u2014 3-month accelerated stability fail on Vitamin C assay (89% of label claim, spec is \u226595%).\"\n\nClassification going in: Critical NCR. The batch is live at Ulta and DTC, so this isn't a paperwork exercise \u2014 every phase below assumes market exposure and moves on a compressed clock.\n\n## Phase 1 \u2014 NCR Intake and Open\n\n**What it produces:** A new NCR record in the SJS CAPA Log with:\n- Source: batch-lifecycle-tracker (automated handoff from stability monitoring)\n- Product/Lot: Soursop Vitamin C Serum, Lot 25-09\n- Non-conformance: 3-month accelerated stability assay result 89% of label claim vs. \u226595% spec\n- Initial severity flag: Critical (active market batch, potency failure, retail + DTC channels)\n- Containment question raised immediately: is Lot 25-09 still shipping from OC3PL, and is any downstream stock at Ulta DCs or on the DTC site sellable pending investigation?\n\n**Approval gate:** Operator (Alvin or delegate) reviews intake within 24 hours for a Critical-flagged NCR. This gate confirms the NCR is real, correctly scoped to one lot (not conflated with other SKUs/lots), and decides whether to request an immediate hold on Lot 25-09 as a parallel containment action \u2014 that hold request routes to batch-lifecycle-tracker, not through this CAPA record itself.\n\n**Handoff fired at this step:** A hold recommendation to batch-lifecycle-tracker for Lot 25-09 (and any sibling lots on the same fill run, if applicable) pending root cause. This is a containment action, logged as a cross-reference on the NCR, not a CAPA action yet \u2014 CAPA actions don't start until conversion.\n\n## Phase 2 \u2014 Conversion: NCR \u2192 CAPA\n\n**What it produces:** A decision record on whether this NCR escalates to a full CAPA. For a Critical NCR with market exposure, conversion is close to automatic, but the record still needs to state why: recurring risk (stability failures can indicate formulation, packaging, or process drift that will recur in future lots), regulatory exposure (potency below claim on a marketed cosmetic has labeling and possibly MoCRA implications), and channel exposure (Sephora/Ulta/Whole Foods relationships at stake).\n\nOnce converted, the record gets:\n- A CAPA number\n- Scope statement: this CAPA covers Lot 25-09's Vitamin C assay failure at 3-month accelerated stability; it does not automatically cover other SKUs unless root cause implicates a shared ingredient, process, or supplier\n- Status field set to the CAPA phase (Root Cause in Progress)\n\n**Approval gate:** Operator approves the conversion and scope statement. This is where the Operator also decides urgency posture \u2014 given the Critical flag, this should trigger parallel-tracking with complaint-and-event-handler (any customer complaints tied to this lot?) and potentially regulatory-manager if a market withdrawal or retailer notification becomes likely.\n\n**Handoffs fired at this step:**\n- Cross-flag to complaint-and-event-handler: check whether any open or closed complaints on Soursop Vit C map to Lot 25-09, since a potency failure could explain efficacy complaints already on file.\n- Cross-flag to regulatory-manager (staged, not sent): flag that a Critical stability failure on an in-market batch may require a retailer attestation update or MoCRA adverse-event review, pending root cause outcome. This is informational at this stage \u2014 no filing action yet.\n\n## Phase 3 \u2014 Root Cause Analysis\n\n**Recommended tool: Fishbone (Ishikawa), not 5 Whys.**\n\nReasoning: 5 Whys works best on a single linear causal chain with one clear failure point. A Vitamin C potency drop over accelerated stability is a classic multi-variable degradation problem \u2014 Vitamin C (ascorbic acid and its derivatives) is notoriously sensitive to oxidation, pH, temperature, light exposure, and packaging barrier properties, and any of those alone or in combination could explain an 89%-of-claim result. Fishbone forces the investigation to check all plausible categories before converging, which matters here because jumping straight to one \"why\" chain risks missing a contributing factor (e.g., blaming the antioxidant package when the real driver is a packaging barrier change).\n\n**Fishbone categories to work through for this failure:**\n- **Materials:** Was the Vitamin C raw material (or stabilized derivative) from the qualified lot/vendor, within spec on COA, and within its own shelf life at time of use? Any recent supplier change or raw material lot substitution?\n- **Formula/Process:** Any deviation in mixing time, temperature, or order of addition during manufacture of Lot 25-09? Was pH verified in-process and does it match the validated range for ascorbic acid stability?\n- **Packaging:** Is this lot using the qualified primary packaging (bottle/pump barrier, opacity, oxygen ingress)? Any packaging component change, vendor change, or lot-to-lot variance in barrier performance?\n- **Environment/Storage:** Was the batch stored and transported within spec temperature/light conditions between manufacture and the 3-month pull? Any cold-chain or warehouse exception logged?\n- **Testing/Measurement:** Is the assay method validated and was it run correctly \u2014 instrument calibration, standard curve, sample handling? A measurement artifact should be ruled out before treating this as a true formulation failure.\n- **People/Method:** Any deviation from the stability protocol itself \u2014 pull timing, sample prep, chain of custody from OC3PL or the stability chamber to the lab?\n\n**What this phase produces:** A completed Fishbone diagram (or structured equivalent) attached to the CAPA record, a stated root cause (or ranked short list if inconclusive), and supporting evidence \u2014 COAs, batch record excerpts, in-process pH/temp logs, packaging spec docs, assay method validation reference.\n\n**Approval gate:** QA Lead approves the root cause conclusion. For a Critical CAPA, QA Lead sign-off should include an explicit statement on whether root cause is confirmed or still probable, since that determines how aggressive the corrective action needs to be (e.g., \"probable root cause: packaging barrier lot variance\" might justify action on packaging alone, but if unconfirmed, corrective action needs to cover the top 2\u20133 candidates).\n\n## Phase 4 \u2014 Corrective and Preventive Actions\n\n**What it produces:** Two linked action sets:\n\n**Corrective (fixes this failure/this lot and immediate exposure):**\n- Disposition decision on remaining Lot 25-09 inventory across OC3PL, DTC, and retail (Ulta) \u2014 hold confirmed, and a decision on pull-from-shelf vs. sell-through-with-monitoring depending on severity of the potency gap and whether efficacy claims are at risk\n- Retest or extended investigation on retained samples from Lot 25-09 to confirm the assay result isn't an outlier\n- If root cause points to a specific input (raw material lot, packaging lot), quarantine any unused inventory of that same input\n\n**Preventive (stops recurrence in future lots):**\n- If raw material: tighten incoming COA review or add an internal verification assay for Vitamin C potency/stability markers before release to production\n- If packaging: requalify the barrier packaging spec, or add an accelerated-stability check tied specifically to packaging lot changes\n- If process: update the batch record/work instruction with the corrected parameter (e.g., pH range, mix time) and retrain production staff\n- If measurement: revalidate the assay method or retrain lab technicians on sample handling\n\nEach action gets an owner, a due date, and links back to the specific root cause finding it addresses.\n\n**Approval gate:** Operator approves the action plan for feasibility, cost, and timeline (can we actually execute this against active production schedules and supplier relationships). QA Lead approves the plan for technical adequacy (does it actually address the confirmed root cause, and does the corrective side adequately cover market risk).\n\n**Handoffs fired at this step:**\n- purchasing-manager, if root cause implicates a raw material or packaging vendor \u2014 this triggers a supplier corrective action request (SCAR) or at minimum a vendor performance flag and COA review tightening.\n- inventory-manager, for the hold/disposition execution on remaining Lot 25-09 stock and any quarantined input material.\n- complaint-and-event-handler stays looped in if any complaints were confirmed tied to this lot in Phase 2 \u2014 corrective action here should reference whether customer-facing remediation (refunds, replacement) is warranted.\n\n## Phase 5 \u2014 Verification\n\n**What it produces:** Evidence that the corrective actions were actually implemented as planned \u2014 not that they worked yet, just that they happened. For this CAPA: confirmation that Lot 25-09 disposition was executed (hold/pull carried out at OC3PL and retail), confirmation that the raw material or packaging quarantine was executed, confirmation that any updated work instruction or spec was actually issued and acknowledged by the relevant team, confirmation that revised incoming inspection or assay steps are live.\n\n**Approval gate:** QA Lead verifies each action against its stated completion criteria and signs off action-by-action. Any action not fully implemented gets kicked back with a revised due date rather than waved through.\n\n## Phase 6 \u2014 Effectiveness Review\n\n**What it produces:** A determination made after enough time/data has passed that the preventive action actually works \u2014 this is the step people skip and shouldn't. For this CAPA, effectiveness proof looks like: the next production lot(s) using the corrected process/spec/material pass 3-month accelerated stability on Vitamin C assay within spec, and ideally a real-time stability data point trending in the right direction as it becomes available. If the preventive action was a tightened incoming raw material check, effectiveness proof includes at least one to two supplier lots processed under the new check with no potency-related rejects.\n\nGiven the Critical severity here, effectiveness review should not close on a single passing data point alone \u2014 QA Lead should require at least one full accelerated stability cycle on a post-fix lot before calling it proven, given how sensitive Vitamin C stability data can be to sample-to-sample variance.\n\n**Approval gate:** QA Lead approves the effectiveness determination. If the data doesn't support effectiveness, the CAPA reopens the action-plan phase rather than closing \u2014 this is a loop-back point, not a dead end.\n\n## Phase 7 \u2014 Closeout\n\n**What it produces:** A closeout record summarizing the full trail \u2014 root cause, actions taken, verification evidence, effectiveness evidence \u2014 signed and dated, with the CAPA status field moved to Closed and the Gate field cleared of HITL holds.\n\n**Approval gate:** QA Lead signs the technical closeout. Operator gives final sign-off given the Critical/market-exposure nature of this one \u2014 Critical CAPAs with retail and DTC exposure should get Operator-level closeout visibility even though QA Lead owns most of the lifecycle from root cause forward.\n\n**Handoffs fired at close:**\n- regulatory-manager: final notification that the CAPA is closed, with a summary suitable for a retailer attestation response (Ulta may ask about corrective action on a stability-related issue) and for MoCRA recordkeeping if this rises to a reportable pattern.\n- purchasing-manager: closes out any SCAR or vendor flag opened in Phase 4, or converts it into an ongoing vendor monitoring item if the root cause was supplier-side.\n- inventory-manager: confirms final disposition of the held/quarantined material is closed out (destroyed, returned to vendor, or released, as applicable).\n- batch-lifecycle-tracker: notified that the hold on Lot 25-09 is resolved per the CAPA outcome (either permanent removal from market or release, per the disposition decision made in Phase 4).\n- complaint-and-event-handler: notified of closure so any linked complaint records can reference the resolved CAPA in their own closeout.\n\n## Summary of Gate Ownership\n\n| Phase | Approval Gate Owner |\n|---|---|\n| NCR Open | Operator |\n| Conversion to CAPA | Operator |\n| Root Cause Analysis | QA Lead |\n| Corrective/Preventive Action Plan | Operator (feasibility) + QA Lead (technical adequacy) |\n| Verification | QA Lead |\n| Effectiveness Review | QA Lead |\n| Closeout | QA Lead (technical) + Operator (final, given Critical/market exposure) |\n\n## What This Draft Does Not Include\n\nThis is a walkthrough only \u2014 nothing above has been written to Asana. No hold has actually been requested from batch-lifecycle-tracker, no cross-flags have been sent to complaint-and-event-handler, regulatory-manager, purchasing-manager, or inventory-manager, and no root cause work has actually started. Before running this for real, confirm: (1) whether Lot 25-09 should be held immediately in parallel with intake rather than waiting on Phase 1 approval, given it's already at Ulta and DTC, and (2) whether any customer complaints already on file should be pulled before conversion so the CAPA scope statement reflects known complaint signal from the start.\n"}], "grading": {"expectations": [{"text": "NCR opens Critical with correct reasoning", "passed": true, "evidence": "'Classification going in: Critical NCR' with market-exposure reasoning given."}, {"text": "RCA tool reasoned, scaffold provided", "passed": true, "evidence": "Fishbone recommended with detailed category-by-category reasoning, matching the skill's own heuristic despite not having read it."}, {"text": "Corrective/preventive with owners/dates/evidence, SOP-flag", "passed": false, "evidence": "Actions discussed narratively; no owner/date/evidence table and no SOP-revision auto-stage naming convention."}, {"text": "Effectiveness review applies correct 90-day window", "passed": false, "evidence": "Says effectiveness shouldn't rest on one data point but never states the specific 90-day Critical window."}, {"text": "All phases walked with HITL gates named", "passed": true, "evidence": "7-phase walkthrough with a gate-ownership table at the end."}, {"text": "Closeout flags regulatory feed, defers batch hold/release", "passed": true, "evidence": "Regulatory-manager notification and batch-lifecycle-tracker hold-resolution both named as closeout handoffs; explicitly doesn't decide the hold itself."}], "summary": {"passed": 4, "failed": 2, "total": 6, "pass_rate": 0.67}, "timing": {"executor_duration_seconds": 73.1}, "eval_feedback": {"overall": "Strongest baseline result of the ten evals \u2014 general domain reasoning about CAPA/RCA/stability failures carries most of the way here. What's still missing is the specific quantitative rule (90-day window) and the exact SOP-driven naming conventions, which only the skill encodes."}}}], "previous_feedback": {}, "previous_outputs": {}, "benchmark": {"metadata": {"skill_name": "capa-coordinator", "skill_path": "/home/user/SJ-OS/.claude/skills/capa-coordinator", "executor_model": "claude-sonnet-5", "analyzer_model": "claude-sonnet-5", "timestamp": "2026-07-21T00:00:00Z", "evals_run": [0, 1, 2], "runs_per_configuration": 1}, "runs": [{"eval_id": 0, "eval_name": "complaint-trend-handoff-pava-toner", "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 6, "failed": 0, "total": 6, "time_seconds": 150.8, "tokens": 95319, "tool_calls": 26, "errors": 0}}, {"eval_id": 0, "eval_name": "complaint-trend-handoff-pava-toner", "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.33, "passed": 2, "failed": 4, "total": 6, "time_seconds": 81.6, "tokens": 52580, "tool_calls": 3, "errors": 0}}, {"eval_id": 1, "eval_name": "ncr-no-escalate-vendor-receipt", "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 6, "failed": 0, "total": 6, "time_seconds": 49.8, "tokens": 68746, "tool_calls": 6, "errors": 0}}, {"eval_id": 1, "eval_name": "ncr-no-escalate-vendor-receipt", "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.33, "passed": 2, "failed": 4, "total": 6, "time_seconds": 36.4, "tokens": 49172, "tool_calls": 3, "errors": 0}}, {"eval_id": 2, "eval_name": "full-lifecycle-batch-stability-fail", "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 6, "failed": 0, "total": 6, "time_seconds": 120.0, "tokens": 85346, "tool_calls": 9, "errors": 0}}, {"eval_id": 2, "eval_name": "full-lifecycle-batch-stability-fail", "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.67, "passed": 4, "failed": 2, "total": 6, "time_seconds": 73.1, "tokens": 52299, "tool_calls": 3, "errors": 0}}], "run_summary": {"with_skill": {"pass_rate": {"mean": 1.0, "stddev": 0.0, "min": 1.0, "max": 1.0}, "time_seconds": {"mean": 106.9, "stddev": 43.1, "min": 49.8, "max": 150.8}, "tokens": {"mean": 83137.0, "stddev": 11151.1, "min": 68746, "max": 95319}}, "without_skill": {"pass_rate": {"mean": 0.443, "stddev": 0.157, "min": 0.33, "max": 0.67}, "time_seconds": {"mean": 63.7, "stddev": 19.8, "min": 36.4, "max": 81.6}, "tokens": {"mean": 51350.3, "stddev": 1554.9, "min": 49172, "max": 52299}}, "delta": {"pass_rate": "+0.557", "time_seconds": "+43.2", "tokens": "+31786.7"}}, "notes": ["REAL BUG in one baseline run: eval-0's baseline drafted a severity label of 'Moderate' \u2014 a value that doesn't exist in SKN-OPS-005's Critical/Major/Minor band system. Not an eval artifact; this is exactly the kind of schema drift the skill exists to prevent, and it happened without the model realizing it was inventing a value.", "Baseline scored best (0.67) on the full-lifecycle eval, where general CAPA/RCA domain knowledge carries most of the way \u2014 it independently reasoned to Fishbone over 5 Whys and named the right handoffs. It scored worst on the two evals requiring specific procedural mechanics (\u00a74.1 checklist structure, \u00a75 justification field format, the [SOP Revision Pending] auto-stage convention) that only the skill encodes.", "With-skill runs used dramatically more tool calls (6-26 vs. 3 flat for every baseline run) \u2014 baseline never queried live PLM/Asana/wiki context at all across any of the three evals, reasoning purely from the prompt text. That's a meaningful blind spot for a skill whose whole job is cross-referencing live records."]}};
+
+    // ---- State ----
+    let feedbackMap = {};  // run_id -> feedback text
+    let currentIndex = 0;
+    let visitedRuns = new Set();
+
+    // ---- Init ----
+    async function init() {
+      // Load saved feedback from server — but only if this isn't a fresh
+      // iteration (indicated by previous_feedback being present). When
+      // previous feedback exists, the feedback.json on disk is stale from
+      // the prior iteration and should not pre-fill the textareas.
+      const hasPrevious = Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0
+        || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
+      if (!hasPrevious) {
+        try {
+          const resp = await fetch("/api/feedback");
+          const data = await resp.json();
+          if (data.reviews) {
+            for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
+          }
+        } catch { /* first run, no feedback yet */ }
+      }
+
+      document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
+      showRun(0);
+
+      // Wire up feedback auto-save
+      const textarea = document.getElementById("feedback");
+      let saveTimeout = null;
+      textarea.addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+        document.getElementById("feedback-status").textContent = "";
+        saveTimeout = setTimeout(() => saveCurrentFeedback(), 800);
+      });
+    }
+
+    // ---- Navigation ----
+    function navigate(delta) {
+      const newIndex = currentIndex + delta;
+      if (newIndex >= 0 && newIndex < EMBEDDED_DATA.runs.length) {
+        saveCurrentFeedback();
+        showRun(newIndex);
+      }
+    }
+
+    function updateNavButtons() {
+      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("next-btn").disabled =
+        currentIndex === EMBEDDED_DATA.runs.length - 1;
+    }
+
+    // ---- Show a run ----
+    function showRun(index) {
+      currentIndex = index;
+      const run = EMBEDDED_DATA.runs[index];
+
+      // Progress
+      document.getElementById("progress").textContent =
+        `${index + 1} of ${EMBEDDED_DATA.runs.length}`;
+
+      // Prompt
+      document.getElementById("prompt-text").textContent = run.prompt;
+
+      // Config badge
+      const badge = document.getElementById("config-badge");
+      const configMatch = run.id.match(/(with_skill|without_skill|new_skill|old_skill)/);
+      if (configMatch) {
+        const config = configMatch[1];
+        const isBaseline = config === "without_skill" || config === "old_skill";
+        badge.textContent = config.replace(/_/g, " ");
+        badge.className = "config-badge " + (isBaseline ? "config-baseline" : "config-primary");
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+      }
+
+      // Outputs
+      renderOutputs(run);
+
+      // Previous outputs
+      renderPrevOutputs(run);
+
+      // Grades
+      renderGrades(run);
+
+      // Previous feedback
+      const prevFb = (EMBEDDED_DATA.previous_feedback || {})[run.id];
+      const prevEl = document.getElementById("prev-feedback");
+      if (prevFb) {
+        document.getElementById("prev-feedback-text").textContent = prevFb;
+        prevEl.style.display = "block";
+      } else {
+        prevEl.style.display = "none";
+      }
+
+      // Feedback
+      document.getElementById("feedback").value = feedbackMap[run.id] || "";
+      document.getElementById("feedback-status").textContent = "";
+
+      updateNavButtons();
+
+      // Track visited runs and promote done button when all visited
+      visitedRuns.add(index);
+      const doneBtn = document.getElementById("done-btn");
+      if (visitedRuns.size >= EMBEDDED_DATA.runs.length) {
+        doneBtn.classList.add("ready");
+      }
+
+      // Scroll main content to top
+      document.querySelector(".main").scrollTop = 0;
+    }
+
+    // ---- Render outputs ----
+    function renderOutputs(run) {
+      const container = document.getElementById("outputs-body");
+      container.innerHTML = "";
+
+      const outputs = run.outputs || [];
+      if (outputs.length === 0) {
+        container.innerHTML = '<div class="empty-state">No output files</div>';
+        return;
+      }
+
+      for (const file of outputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        // Always show file header with download link
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const content = document.createElement("div");
+        content.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          content.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          content.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          content.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(content, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          content.appendChild(a);
+        } else if (file.type === "error") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          pre.style.color = "var(--red)";
+          content.appendChild(pre);
+        }
+
+        fileDiv.appendChild(content);
+        container.appendChild(fileDiv);
+      }
+    }
+
+    // ---- XLSX rendering via SheetJS ----
+    function renderXlsx(container, b64Data) {
+      try {
+        const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
+        const wb = XLSX.read(raw, { type: "array" });
+
+        for (let i = 0; i < wb.SheetNames.length; i++) {
+          const sheetName = wb.SheetNames[i];
+          const ws = wb.Sheets[sheetName];
+
+          if (wb.SheetNames.length > 1) {
+            const sheetLabel = document.createElement("div");
+            sheetLabel.style.cssText =
+              "font-weight:600; font-size:0.8rem; color:#b0aea5; margin-top:0.5rem; margin-bottom:0.25rem;";
+            sheetLabel.textContent = "Sheet: " + sheetName;
+            container.appendChild(sheetLabel);
+          }
+
+          const htmlStr = XLSX.utils.sheet_to_html(ws, { editable: false });
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = htmlStr;
+          container.appendChild(wrapper);
+        }
+      } catch (err) {
+        container.textContent = "Error rendering spreadsheet: " + err.message;
+      }
+    }
+
+    // ---- Grades ----
+    function renderGrades(run) {
+      const section = document.getElementById("grades-section");
+      const content = document.getElementById("grades-content");
+
+      if (!run.grading) {
+        section.style.display = "none";
+        return;
+      }
+
+      const grading = run.grading;
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("grades-arrow").classList.remove("open");
+
+      const summary = grading.summary || {};
+      const expectations = grading.expectations || [];
+
+      let html = '<div style="padding: 1rem;">';
+
+      // Summary line
+      const passRate = summary.pass_rate != null
+        ? Math.round(summary.pass_rate * 100) + "%"
+        : "?";
+      const badgeClass = summary.pass_rate >= 0.8 ? "grade-pass" : summary.pass_rate >= 0.5 ? "" : "grade-fail";
+      html += '<div class="grades-summary">';
+      html += '<span class="grade-badge ' + badgeClass + '">' + passRate + '</span>';
+      html += '<span>' + (summary.passed || 0) + ' passed, ' + (summary.failed || 0) + ' failed of ' + (summary.total || 0) + '</span>';
+      html += '</div>';
+
+      // Assertions list
+      html += '<ul class="assertion-list">';
+      for (const exp of expectations) {
+        const statusClass = exp.passed ? "pass" : "fail";
+        const statusIcon = exp.passed ? "\u2713" : "\u2717";
+        html += '<li class="assertion-item">';
+        html += '<span class="assertion-status ' + statusClass + '">' + statusIcon + '</span>';
+        html += '<span>' + escapeHtml(exp.text) + '</span>';
+        if (exp.evidence) {
+          html += '<div class="assertion-evidence">' + escapeHtml(exp.evidence) + '</div>';
+        }
+        html += '</li>';
+      }
+      html += '</ul>';
+
+      html += '</div>';
+      content.innerHTML = html;
+    }
+
+    function toggleGrades() {
+      const content = document.getElementById("grades-content");
+      const arrow = document.getElementById("grades-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Previous outputs (collapsible) ----
+    function renderPrevOutputs(run) {
+      const section = document.getElementById("prev-outputs-section");
+      const content = document.getElementById("prev-outputs-content");
+      const prevOutputs = (EMBEDDED_DATA.previous_outputs || {})[run.id];
+
+      if (!prevOutputs || prevOutputs.length === 0) {
+        section.style.display = "none";
+        return;
+      }
+
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("prev-outputs-arrow").classList.remove("open");
+
+      // Render the files into the content area
+      content.innerHTML = "";
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "1rem";
+
+      for (const file of prevOutputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const fc = document.createElement("div");
+        fc.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          fc.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          fc.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          fc.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(fc, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          fc.appendChild(a);
+        }
+
+        fileDiv.appendChild(fc);
+        wrapper.appendChild(fileDiv);
+      }
+
+      content.appendChild(wrapper);
+    }
+
+    function togglePrevOutputs() {
+      const content = document.getElementById("prev-outputs-content");
+      const arrow = document.getElementById("prev-outputs-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Feedback (saved to server -> feedback.json) ----
+    function saveCurrentFeedback() {
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // Build reviews array from map
+      const reviews = [];
+      for (const [run_id, feedback] of Object.entries(feedbackMap)) {
+        if (feedback.trim()) {
+          reviews.push({ run_id, feedback, timestamp: new Date().toISOString() });
+        }
+      }
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviews, status: "in_progress" }),
+      }).then(() => {
+        document.getElementById("feedback-status").textContent = "Saved";
+      }).catch(() => {
+        // Static mode or server unavailable — no-op on auto-save,
+        // feedback will be downloaded on final submit
+        document.getElementById("feedback-status").textContent = "Will download on submit";
+      });
+    }
+
+    // ---- Done ----
+    function showDoneDialog() {
+      // Save current textarea to feedbackMap (but don't POST yet)
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // POST once with status: complete — include ALL runs so the model
+      // can distinguish "no feedback" (looks good) from "not reviewed"
+      const reviews = [];
+      const ts = new Date().toISOString();
+      for (const r of EMBEDDED_DATA.runs) {
+        reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
+      }
+      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      }).then(() => {
+        document.getElementById("done-overlay").classList.add("visible");
+      }).catch(() => {
+        // Server not available (static mode) — download as file
+        const blob = new Blob([payload], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feedback.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById("done-overlay").classList.add("visible");
+      });
+    }
+
+    function closeDoneDialog() {
+      // Reset status back to in_progress
+      saveCurrentFeedback();
+      document.getElementById("done-overlay").classList.remove("visible");
+    }
+
+    // ---- Toast ----
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // ---- Keyboard nav ----
+    document.addEventListener("keydown", (e) => {
+      // Don't capture when typing in textarea
+      if (e.target.tagName === "TEXTAREA") return;
+
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        navigate(-1);
+      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        navigate(1);
+      }
+    });
+
+    // ---- Util ----
+    function getDownloadUri(file) {
+      if (file.data_uri) return file.data_uri;
+      if (file.data_b64) return "data:application/octet-stream;base64," + file.data_b64;
+      if (file.type === "text") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
+      return "#";
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ---- View switching ----
+    function switchView(view) {
+      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      document.querySelector(`[onclick="switchView('${view}')"]`).classList.add("active");
+      document.getElementById("panel-" + view).classList.add("active");
+    }
+
+    // ---- Benchmark rendering ----
+    function renderBenchmark() {
+      const data = EMBEDDED_DATA.benchmark;
+      if (!data) return;
+
+      // Show the tabs
+      document.getElementById("view-tabs").style.display = "flex";
+
+      const container = document.getElementById("benchmark-content");
+      const summary = data.run_summary || {};
+      const metadata = data.metadata || {};
+      const notes = data.notes || [];
+
+      let html = "";
+
+      // Header
+      html += "<h2 style='font-family: Poppins, sans-serif; margin-bottom: 0.5rem;'>Benchmark Results</h2>";
+      html += "<p style='color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;'>";
+      if (metadata.skill_name) html += "<strong>" + escapeHtml(metadata.skill_name) + "</strong> &mdash; ";
+      if (metadata.timestamp) html += metadata.timestamp + " &mdash; ";
+      if (metadata.evals_run) html += "Evals: " + metadata.evals_run.join(", ") + " &mdash; ";
+      html += (metadata.runs_per_configuration || "?") + " runs per configuration";
+      html += "</p>";
+
+      // Summary table
+      html += '<table class="benchmark-table">';
+
+      function fmtStat(stat, pct) {
+        if (!stat) return "—";
+        const suffix = pct ? "%" : "";
+        const m = pct ? (stat.mean * 100).toFixed(0) : stat.mean.toFixed(1);
+        const s = pct ? (stat.stddev * 100).toFixed(0) : stat.stddev.toFixed(1);
+        return m + suffix + " ± " + s + suffix;
+      }
+
+      function deltaClass(val) {
+        if (!val) return "";
+        const n = parseFloat(val);
+        if (n > 0) return "benchmark-delta-positive";
+        if (n < 0) return "benchmark-delta-negative";
+        return "";
+      }
+
+      // Discover config names dynamically (everything except "delta")
+      const configs = Object.keys(summary).filter(k => k !== "delta");
+      const configA = configs[0] || "config_a";
+      const configB = configs[1] || "config_b";
+      const labelA = configA.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const labelB = configB.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const a = summary[configA] || {};
+      const b = summary[configB] || {};
+      const delta = summary.delta || {};
+
+      html += "<thead><tr><th>Metric</th><th>" + escapeHtml(labelA) + "</th><th>" + escapeHtml(labelB) + "</th><th>Delta</th></tr></thead>";
+      html += "<tbody>";
+
+      html += "<tr><td><strong>Pass Rate</strong></td>";
+      html += "<td>" + fmtStat(a.pass_rate, true) + "</td>";
+      html += "<td>" + fmtStat(b.pass_rate, true) + "</td>";
+      html += '<td class="' + deltaClass(delta.pass_rate) + '">' + (delta.pass_rate || "—") + "</td></tr>";
+
+      // Time (only show row if data exists)
+      if (a.time_seconds || b.time_seconds) {
+        html += "<tr><td><strong>Time (s)</strong></td>";
+        html += "<td>" + fmtStat(a.time_seconds, false) + "</td>";
+        html += "<td>" + fmtStat(b.time_seconds, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.time_seconds) + '">' + (delta.time_seconds ? delta.time_seconds + "s" : "—") + "</td></tr>";
+      }
+
+      // Tokens (only show row if data exists)
+      if (a.tokens || b.tokens) {
+        html += "<tr><td><strong>Tokens</strong></td>";
+        html += "<td>" + fmtStat(a.tokens, false) + "</td>";
+        html += "<td>" + fmtStat(b.tokens, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.tokens) + '">' + (delta.tokens || "—") + "</td></tr>";
+      }
+
+      html += "</tbody></table>";
+
+      // Per-eval breakdown (if runs data available)
+      const runs = data.runs || [];
+      if (runs.length > 0) {
+        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a, b) => a - b);
+
+        html += "<h3 style='font-family: Poppins, sans-serif; margin-bottom: 0.75rem;'>Per-Eval Breakdown</h3>";
+
+        const hasTime = runs.some(r => r.result && r.result.time_seconds != null);
+        const hasErrors = runs.some(r => r.result && r.result.errors > 0);
+
+        for (const evalId of evalIds) {
+          const evalRuns = runs.filter(r => r.eval_id === evalId);
+          const evalName = evalRuns[0] && evalRuns[0].eval_name ? evalRuns[0].eval_name : "Eval " + evalId;
+
+          html += "<h4 style='font-family: Poppins, sans-serif; margin: 1rem 0 0.5rem; color: var(--text);'>" + escapeHtml(evalName) + "</h4>";
+          html += '<table class="benchmark-table">';
+          html += "<thead><tr><th>Config</th><th>Run</th><th>Pass Rate</th>";
+          if (hasTime) html += "<th>Time (s)</th>";
+          if (hasErrors) html += "<th>Crashes During Execution</th>";
+          html += "</tr></thead>";
+          html += "<tbody>";
+
+          // Group by config and render with average rows
+          const configGroups = [...new Set(evalRuns.map(r => r.configuration))];
+          for (let ci = 0; ci < configGroups.length; ci++) {
+            const config = configGroups[ci];
+            const configRuns = evalRuns.filter(r => r.configuration === config);
+            if (configRuns.length === 0) continue;
+
+            const rowClass = ci === 0 ? "benchmark-row-with" : "benchmark-row-without";
+            const configLabel = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+
+            for (const run of configRuns) {
+              const r = run.result || {};
+              const prClass = r.pass_rate >= 0.8 ? "benchmark-delta-positive" : r.pass_rate < 0.5 ? "benchmark-delta-negative" : "";
+              html += '<tr class="' + rowClass + '">';
+              html += "<td>" + configLabel + "</td>";
+              html += "<td>" + run.run_number + "</td>";
+              html += '<td class="' + prClass + '">' + ((r.pass_rate || 0) * 100).toFixed(0) + "% (" + (r.passed || 0) + "/" + (r.total || 0) + ")</td>";
+              if (hasTime) html += "<td>" + (r.time_seconds != null ? r.time_seconds.toFixed(1) : "—") + "</td>";
+              if (hasErrors) html += "<td>" + (r.errors || 0) + "</td>";
+              html += "</tr>";
+            }
+
+            // Average row
+            const rates = configRuns.map(r => (r.result || {}).pass_rate || 0);
+            const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+            const avgPrClass = avgRate >= 0.8 ? "benchmark-delta-positive" : avgRate < 0.5 ? "benchmark-delta-negative" : "";
+            html += '<tr class="benchmark-row-avg ' + rowClass + '">';
+            html += "<td>" + configLabel + "</td>";
+            html += "<td>Avg</td>";
+            html += '<td class="' + avgPrClass + '">' + (avgRate * 100).toFixed(0) + "%</td>";
+            if (hasTime) {
+              const times = configRuns.map(r => (r.result || {}).time_seconds).filter(t => t != null);
+              html += "<td>" + (times.length ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(1) : "—") + "</td>";
+            }
+            if (hasErrors) html += "<td></td>";
+            html += "</tr>";
+          }
+          html += "</tbody></table>";
+
+          // Per-assertion detail for this eval
+          const runsWithExpectations = {};
+          for (const config of configGroups) {
+            runsWithExpectations[config] = evalRuns.filter(r => r.configuration === config && r.expectations && r.expectations.length > 0);
+          }
+          const hasAnyExpectations = Object.values(runsWithExpectations).some(runs => runs.length > 0);
+          if (hasAnyExpectations) {
+            // Collect all unique assertion texts across all configs
+            const allAssertions = [];
+            const seen = new Set();
+            for (const config of configGroups) {
+              for (const run of runsWithExpectations[config]) {
+                for (const exp of (run.expectations || [])) {
+                  if (!seen.has(exp.text)) {
+                    seen.add(exp.text);
+                    allAssertions.push(exp.text);
+                  }
+                }
+              }
+            }
+
+            html += '<table class="benchmark-table" style="margin-top: 0.5rem;">';
+            html += "<thead><tr><th>Assertion</th>";
+            for (const config of configGroups) {
+              const label = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              html += "<th>" + escapeHtml(label) + "</th>";
+            }
+            html += "</tr></thead><tbody>";
+
+            for (const assertionText of allAssertions) {
+              html += "<tr><td>" + escapeHtml(assertionText) + "</td>";
+
+              for (const config of configGroups) {
+                html += "<td>";
+                for (const run of runsWithExpectations[config]) {
+                  const exp = (run.expectations || []).find(e => e.text === assertionText);
+                  if (exp) {
+                    const cls = exp.passed ? "benchmark-delta-positive" : "benchmark-delta-negative";
+                    const icon = exp.passed ? "\u2713" : "\u2717";
+                    html += '<span class="' + cls + '" title="Run ' + run.run_number + ': ' + escapeHtml(exp.evidence || "") + '">' + icon + "</span> ";
+                  } else {
+                    html += "— ";
+                  }
+                }
+                html += "</td>";
+              }
+              html += "</tr>";
+            }
+            html += "</tbody></table>";
+          }
+        }
+      }
+
+      // Notes
+      if (notes.length > 0) {
+        html += '<div class="benchmark-notes">';
+        html += "<h3>Analysis Notes</h3>";
+        html += "<ul>";
+        for (const note of notes) {
+          html += "<li>" + escapeHtml(note) + "</li>";
+        }
+        html += "</ul></div>";
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ---- Start ----
+    init();
+    renderBenchmark();
+  </script>
+</body>
+</html>

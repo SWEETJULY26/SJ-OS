@@ -1,0 +1,21 @@
+{
+  "tool_calls": {
+    "mcp__Asana-c313a468__asana_list_workspaces": 1,
+    "mcp__Asana-c313a468__asana_get_projects_for_workspace": 1,
+    "mcp__Asana-c313a468__asana_get_project": 1,
+    "mcp__Asana-c313a468__asana_get_project_sections": 2,
+    "mcp__Asana-c313a468__asana_get_tasks": 2,
+    "mcp__Asana-c313a468__asana_search_tasks": 1
+  },
+  "total_tool_calls": 8,
+  "errors_encountered": [
+    {
+      "tool": "mcp__Asana-c313a468__asana_get_project_sections",
+      "error": "Input validation error: missing required project_id parameter (first call omitted it)"
+    },
+    {
+      "tool": "mcp__Asana-c313a468__asana_get_tasks",
+      "error": "result (90,446 characters) exceeds maximum allowed tokens — fetching all tasks in the AC Brands PD Dashboard project without a section filter was too large; recovered by scoping to the Rollover/Risks section instead"
+    }
+  ]
+}

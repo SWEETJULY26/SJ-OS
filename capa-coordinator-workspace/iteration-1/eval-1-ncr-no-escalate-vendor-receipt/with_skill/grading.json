@@ -1,0 +1,12 @@
+{
+  "expectations": [
+    {"text": "NCR intake fields + Minor severity per §3.3", "passed": true, "evidence": "'Suspected severity: Minor (see §3.3 read below)' with each Minor criterion matched explicitly."},
+    {"text": "Walks §4.1 checklist explicitly item-by-item", "passed": true, "evidence": "'Isolated... Contained... No recurrence pattern... No compliance/safety exposure' matched line by line against §3.3 triggers."},
+    {"text": "Recommends Close — No CAPA per §4.2/§5", "passed": true, "evidence": "'Recommendation: Close — No CAPA' with branches A/B/C explicitly walked and B selected."},
+    {"text": "Drafts required §5 justification fields", "passed": true, "evidence": "Why no CAPA / what containment resolved / trend exposure / reviewer — all four fields drafted discretely."},
+    {"text": "Does NOT invoke RCA tools or draft action plans", "passed": true, "evidence": "No Fishbone/5 Whys or action-plan tables — correctly out of scope for a no-escalate NCR."},
+    {"text": "Names correct HITL gate for no-escalate justification", "passed": true, "evidence": "Operator + monthly/quarterly QA Lead review cadence named correctly per §5."}
+  ],
+  "summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.0},
+  "timing": {"executor_duration_seconds": 49.8}
+}

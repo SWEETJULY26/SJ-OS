@@ -1,0 +1,11 @@
+{
+  "expectations": [
+    {"text": "Classifies as Skin Reactions (correct live enum)", "passed": false, "evidence": "Invents its own category label 'Product complaint — adverse skin reaction' rather than the system's real field option."},
+    {"text": "Recommends first-response per type-to-action map", "passed": false, "evidence": "Drafts a full customer-facing email instead of a type-map-driven recommendation."},
+    {"text": "Explicitly checks/flags SAE keyword threshold", "passed": false, "evidence": "Raises SAE-adjacent questions but never resolves whether this crosses the threshold — leaves it as 'pending triage' rather than concluding below-threshold."},
+    {"text": "Names the section move", "passed": false, "evidence": "No section/queue concept mentioned at all."},
+    {"text": "States HITL, no writes", "passed": true, "evidence": "'I have not written anything to Asana. This is the plan for your review.'"}
+  ],
+  "summary": {"passed": 1, "failed": 4, "total": 5, "pass_rate": 0.2},
+  "timing": {"executor_duration_seconds": 38.7}
+}

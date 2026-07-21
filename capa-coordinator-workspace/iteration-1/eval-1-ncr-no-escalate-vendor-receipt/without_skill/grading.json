@@ -1,0 +1,12 @@
+{
+  "expectations": [
+    {"text": "NCR fields + Minor severity per §3.3", "passed": false, "evidence": "Says 'severity — low' — sound reasoning but doesn't use the defined 'Minor' label or cite §3.3."},
+    {"text": "Walks §4.1 checklist explicitly item-by-item", "passed": false, "evidence": "Reasoning bundled in prose, not a discrete checklist walk."},
+    {"text": "Recommends Close — No CAPA", "passed": true, "evidence": "'Recommendation: Close the NCR without a CAPA' with solid reasoning."},
+    {"text": "Drafts required §5 justification fields discretely", "passed": false, "evidence": "Justification is prose, not structured as the four required fields."},
+    {"text": "Does NOT invoke RCA/action plans", "passed": true, "evidence": "Correctly stays out of RCA territory."},
+    {"text": "Names correct HITL gate", "passed": false, "evidence": "No reviewer role or gate named at all."}
+  ],
+  "summary": {"passed": 2, "failed": 4, "total": 6, "pass_rate": 0.33},
+  "timing": {"executor_duration_seconds": 36.4}
+}

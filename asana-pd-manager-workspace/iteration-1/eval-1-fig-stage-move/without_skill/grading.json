@@ -1,0 +1,12 @@
+{
+  "expectations": [
+    {"text": "Stage move identified as going to Signed Approvals specifically", "passed": false, "evidence": "Confirms no section named 'Signed Approvals' exists anywhere, but can't confidently map it to a specific target — offers three uncertain guesses."},
+    {"text": "IL Review Gate side-effect explicitly previewed", "passed": false, "evidence": "No knowledge of the IL Review Gate concept at all — not mentioned."},
+    {"text": "Regulatory inbound task prefix mentioned", "passed": false, "evidence": "Not mentioned."},
+    {"text": "Framed as a Rule 1 confirmation preview", "passed": false, "evidence": "No formal confirmation-preview structure; ends with unstructured recommendations."},
+    {"text": "No Asana write before confirmation", "passed": true, "evidence": "Zero write calls made, explicitly noted."}
+  ],
+  "summary": {"passed": 1, "failed": 4, "total": 5, "pass_rate": 0.2},
+  "timing": {"executor_duration_seconds": 128.8},
+  "eval_feedback": {"overall": "Baseline independently corroborates the same 'Signed Approvals doesn't exist' finding via raw search — strong signal this is real, not a skill artifact. But baseline has zero awareness of the IL Review Gate atomic side-effect, which is the actual point of routing this through asana-pd-manager."}
+}

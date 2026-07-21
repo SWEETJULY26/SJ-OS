@@ -1,0 +1,13 @@
+{
+  "expectations": [
+    {"text": "Recognizes SAE keywords, invokes SKN-OPS-002 explicitly (not an invented tree)", "passed": true, "evidence": "'Description matches SAE trigger language directly... This routes straight into Job 4 — SKN-OPS-002.'"},
+    {"text": "Drafts SAE Report Form per §5.1", "passed": true, "evidence": "Full Appendix A field table drafted (Product, Batch/Lot, Event date, etc.)."},
+    {"text": "Frames Initial Assessment (§5.3) as operator-decision gate", "passed": true, "evidence": "'This is the step the SOP puts in your hands... your call on whether this is SAE-confirmed.'"},
+    {"text": "Stages investigation team ask (§5.4)", "passed": true, "evidence": "Product Safety Officer / QA lead / PD formula owner roster staged with an explicit HITL checkpoint."},
+    {"text": "Raises reportability flag for regulatory-manager handoff", "passed": true, "evidence": "Staged '[Reg Flag Pending — regulatory-manager]' task with the correct MoCRA-adjacent framing."},
+    {"text": "References SOP by section, commits no writes", "passed": true, "evidence": "§5.1 through §5.8 all cited by number; explicit 'Does not write anything to Asana' closing section."}
+  ],
+  "summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.0},
+  "timing": {"executor_duration_seconds": 76.6},
+  "eval_feedback": {"overall": "Textbook execution of the skill's own design principle — surfaced the SKN-OPS-002 §5.3 content gap (no formal triage tree) explicitly rather than inventing scoring logic, exactly as the skill's 'Why this exists' section prescribes."}
+}

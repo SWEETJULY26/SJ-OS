@@ -1,0 +1,13 @@
+{
+  "expectations": [
+    {"text": "NCR intake fields + reasoned severity call (Major)", "passed": false, "evidence": "Severity labeled 'Moderate' — not a value in the defined Critical/Major/Minor band system; reasoning is sound but the label itself is off-schema."},
+    {"text": "Walks §4.1 review checklist under correct SLA", "passed": false, "evidence": "Conversion decision reasoned in prose, not a numbered checklist walk; no SLA date given."},
+    {"text": "CAPA cover block + reasoned RCA tool", "passed": false, "evidence": "No structured CAPA cover block; RCA tool (5 Whys) is reasoned but picks the opposite tool from the skill's own systemic-pattern heuristic without acknowledging the tradeoff."},
+    {"text": "Corrective/preventive with owner+timeline+evidence, SOP-flag", "passed": false, "evidence": "Actions listed in prose without owner/timeline/evidence columns; no SOP-revision auto-stage mechanic mentioned."},
+    {"text": "HITL gates explicitly named", "passed": true, "evidence": "Does name 'Operator gate' and 'QA Lead sign-off on root cause findings' correctly, if informally."},
+    {"text": "Cross-references source task", "passed": true, "evidence": "Explicitly frames itself as evaluating the handler's handoff."}
+  ],
+  "summary": {"passed": 2, "failed": 4, "total": 6, "pass_rate": 0.33},
+  "timing": {"executor_duration_seconds": 81.6},
+  "eval_feedback": {"overall": "The invented 'Moderate' severity value is the most concrete miss — it doesn't exist in the SOP's severity vocabulary, which is exactly the kind of schema drift the skill exists to prevent."}
+}

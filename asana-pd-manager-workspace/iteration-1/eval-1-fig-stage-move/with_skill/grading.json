@@ -1,0 +1,12 @@
+{
+  "expectations": [
+    {"text": "Stage move identified as going to Signed Approvals specifically", "passed": true, "evidence": "Explicitly targets the closest live match ('Approved') while clearly stating the intent is the 'Signed Approvals' stage, and asks Alvin to confirm the naming equivalence."},
+    {"text": "IL Review Gate side-effect explicitly previewed", "passed": true, "evidence": "'IL Status custom field would flip: null → \"Pending IL Review\"' shown in the Rule 1 preview."},
+    {"text": "Regulatory inbound task prefix mentioned in the atomic preview", "passed": true, "evidence": "'[IL Review Pending — claims-il-and-label-keeper]' task creation detailed step by step."},
+    {"text": "Framed as Rule 1 confirmation preview, not executed", "passed": true, "evidence": "'STOPPING HERE, NOT EXECUTED' plus a 'Proceed?' gate."},
+    {"text": "No Asana write before confirmation", "passed": true, "evidence": "No write tool calls made; explicitly stated."}
+  ],
+  "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0},
+  "timing": {"executor_duration_seconds": 102.8},
+  "eval_feedback": {"overall": "Real finding, not a false positive: the live Asana workspace has no section literally named 'Signed Approvals' — the skill's own reference doc (stage-gate-procedure.md) is stale against the actual project structure. The run correctly refused to fire the IL Review Gate on what might be a no-op move without flagging it first. This is a genuine doc/reality mismatch worth fixing in the skill, independent of the eval."}
+}

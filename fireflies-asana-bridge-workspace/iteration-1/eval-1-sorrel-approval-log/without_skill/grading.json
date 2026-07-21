@@ -1,0 +1,12 @@
+{
+  "expectations": [
+    {"text": "Classified with both pd label and plm cross-flag", "passed": false, "evidence": "No label system used; no plm cross-flag mentioned at all."},
+    {"text": "Proposed action is specifically a Formula Tracker stage move on the Sorrel task", "passed": false, "evidence": "Found only a downstream execution project, not the actual Formula Development Tracker record the with-skill run located."},
+    {"text": "PLM cross-flag explicitly mentioned", "passed": false, "evidence": "Not mentioned anywhere."},
+    {"text": "Confirmation preview, not a claim it already happened", "passed": true, "evidence": "No write made; explicitly stated."},
+    {"text": "If no real transcript found, says so plainly", "passed": true, "evidence": "Names the closest real event (Resurrection Bomb approval) and flags the likely mix-up."}
+  ],
+  "summary": {"passed": 2, "failed": 3, "total": 5, "pass_rate": 0.4},
+  "timing": {"executor_duration_seconds": 119.0},
+  "eval_feedback": {"overall": "Baseline missed the actual Formula Development Tracker record entirely — a meaningful miss, since that's the system of record the skill is built to reach."}
+}

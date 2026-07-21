@@ -1,0 +1,13 @@
+{
+  "expectations": [
+    {"text": "NCR opens Critical with correct reasoning", "passed": true, "evidence": "'Critical band triggers include direct safety/label-claim exposure and recall risk... reads Critical.'"},
+    {"text": "RCA tool reasoned, scaffold actually provided", "passed": true, "evidence": "Fishbone reasoning + full 6-category prompt table provided for the team to fill in."},
+    {"text": "Corrective/preventive with owners/dates/evidence, SOP-impact flagged", "passed": true, "evidence": "C1/C2/P1/P2 tables with owner/due/evidence columns; SOP-revision auto-stage mechanic named explicitly."},
+    {"text": "Effectiveness review applies Critical's 90-day window correctly", "passed": true, "evidence": "'the effectiveness window is 90 days from last action completion... appropriate given this is an in-market potency failure.'"},
+    {"text": "All six phases walked, HITL gates named at right phase", "passed": true, "evidence": "Full gate-map table at the end naming Operator vs QA Lead per phase."},
+    {"text": "Closeout flags regulatory feed correctly, defers batch hold/release", "passed": true, "evidence": "6d flagged as 'recommend flagging as applicable given market exposure'; explicitly defers hold/release to batch-lifecycle-tracker throughout."}
+  ],
+  "summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.0},
+  "timing": {"executor_duration_seconds": 120.0},
+  "eval_feedback": {"overall": "Comprehensive and correctly refused to let the CAPA process appear to 'own' the batch-hold or recall decision — explicitly separated those onto their own tracks up front, which is exactly the scope boundary the skill defines."}
+}

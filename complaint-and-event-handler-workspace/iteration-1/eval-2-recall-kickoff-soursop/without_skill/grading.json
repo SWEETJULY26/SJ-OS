@@ -1,0 +1,13 @@
+{
+  "expectations": [
+    {"text": "Recognizes kickoff, walks SKN-OPS-003 rather than auto-firing", "passed": false, "evidence": "Treats this as a serious situation and doesn't execute anything, but never cites SKN-OPS-003 or its structure; some lines read as directive ('Immediate ask: hold...') rather than a staged SOP walk."},
+    {"text": "Drafts §4.A/§4.B before comms", "passed": false, "evidence": "No phase structure; jumps directly to drafting internal/retailer/customer notices in the same pass as the signal summary."},
+    {"text": "Drafts customer notification in multiple forms", "passed": true, "evidence": "Internal notice, retailer hold notice, and customer notice are all drafted (draft only, not sent)."},
+    {"text": "Drafts §4.D return/disposal plan with oc3pl-order-manager handoff", "passed": false, "evidence": "No disposal or return-logistics plan; no oc3pl-order-manager handoff named."},
+    {"text": "Stages CAPA brief for capa-coordinator", "passed": false, "evidence": "CAPA and capa-coordinator are never mentioned."},
+    {"text": "Names cross-functional asks with owners + explicit gates, no comms sent", "passed": true, "evidence": "Ends with open questions and confirms nothing was sent or executed, though not a structured owner table."}
+  ],
+  "summary": {"passed": 2, "failed": 4, "total": 6, "pass_rate": 0.33},
+  "timing": {"executor_duration_seconds": 180.0},
+  "eval_feedback": {"overall": "Critically, baseline never checked whether 'lot 24-11' actually exists in PLM or the Complaint Log — it accepted the batch number at face value. The with-skill run caught that this batch number doesn't match any real record. That's a meaningful miss on a recall workflow specifically, where acting on an unverified batch number is a real risk."}
+}

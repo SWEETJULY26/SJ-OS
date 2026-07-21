@@ -1,0 +1,13 @@
+{
+  "expectations": [
+    {"text": "Recognizes SAE, invokes SKN-OPS-002 (not invented tree)", "passed": false, "evidence": "Correctly recognizes the event as serious but invents its own generic triage framework rather than referencing any internal SOP."},
+    {"text": "Drafts SAE Report Form per §5.1", "passed": false, "evidence": "No report form drafted."},
+    {"text": "Frames Initial Assessment as operator-gate", "passed": true, "evidence": "'Get whoever owns your regulatory/quality function to confirm the classification formally; don't self-diagnose this one' — matches the substance even without citing §5.3."},
+    {"text": "Stages investigation team ask", "passed": false, "evidence": "Lists who 'needs to know' generically, not a staged team-composition ask."},
+    {"text": "Raises reportability flag for regulatory-manager handoff", "passed": false, "evidence": "Mentions notifying 'quality/regulatory lead' generically; doesn't name the regulatory-manager → adverse-event-and-recall-reporter chain or stage a [Reg Flag Pending] task."},
+    {"text": "References SOP by section, no writes committed", "passed": false, "evidence": "Zero internal SOP citations; commits no writes (implicit, advice-only)."}
+  ],
+  "summary": {"passed": 1, "failed": 5, "total": 6, "pass_rate": 0.17},
+  "timing": {"executor_duration_seconds": 34.0},
+  "eval_feedback": {"overall": "Baseline correctly identified the MoCRA 15-business-day FDA reporting clock from general regulatory knowledge — a genuinely useful fact the with-skill run didn't surface. But it never touches the actual internal SOP structure, which is the entire point of routing this through the skill."}
+}

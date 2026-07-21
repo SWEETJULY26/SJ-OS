@@ -1,0 +1,13 @@
+{
+  "expectations": [
+    {"text": "NCR intake fields + reasoned severity call (Major)", "passed": true, "evidence": "Severity Major reasoned explicitly against §3.3 bands ('not Minor... not Critical... Major fits')."},
+    {"text": "Walks §4.1 review checklist and recommends conversion under correct SLA", "passed": true, "evidence": "5-point checklist walked; '10 business days... by 2026-08-04' SLA stated."},
+    {"text": "Drafts CAPA cover block and reasoned RCA tool recommendation", "passed": true, "evidence": "Full CAPA-2026-001 cover block; Fishbone-then-5-Whys recommended with explicit systemic-vs-single-chain reasoning."},
+    {"text": "Corrective/preventive plans with owner+timeline+evidence, SOP-impact flagged", "passed": true, "evidence": "C1-C4/P1-P2 tables with owner/due/evidence columns; P1/P2 flagged for [SOP Revision Pending — quality-manager]."},
+    {"text": "HITL gates named explicitly, no writes committed", "passed": true, "evidence": "'Gate = Pending QA Lead' named at conversion and RCA sign-off; explicit 'nothing above has been written to Asana'."},
+    {"text": "Cross-references source complaint-and-event-handler task", "passed": true, "evidence": "Source task named throughout and in the handoffs section (6a)."}
+  ],
+  "summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.0},
+  "timing": {"executor_duration_seconds": 150.8},
+  "eval_feedback": {"overall": "Caught that containment status was never actually confirmed in the source brief and refused to let conversion proceed silently past that gap — a real, correct instance of the skill's own 'containment confirmed?' checklist item doing its job."}
+}

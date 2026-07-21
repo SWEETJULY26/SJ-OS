@@ -1,0 +1,10 @@
+{
+  "expectations": [
+    {"text": "Uses the three named categories (AT RISK/BLOCKED, STALE, OVERDUE)", "passed": true, "evidence": "Output uses exactly '🔴 AT RISK / BLOCKED', '🟡 STALE (7+ days no update)', '⚠️ OVERDUE' headers."},
+    {"text": "STALE items identified as 7+ days no update", "passed": true, "evidence": "Each STALE bullet states days since last update (e.g. '~55 days ago')."},
+    {"text": "Highlights-only, one-line if empty", "passed": true, "evidence": "No padding; closes with a single summary line about the long tail rather than narrating."},
+    {"text": "No Asana write made/proposed", "passed": true, "evidence": "Explicitly 'Live Asana reads, no writes (Job 1)'."}
+  ],
+  "summary": {"passed": 4, "failed": 0, "total": 4, "pass_rate": 1.0},
+  "timing": {"executor_duration_seconds": 163.0}
+}

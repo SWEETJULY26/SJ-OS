@@ -1,0 +1,13 @@
+{
+  "expectations": [
+    {"text": "Recognizes explicit kickoff, walks SKN-OPS-003 rather than auto-firing", "passed": true, "evidence": "'This is the explicit kickoff phrase SKN-OPS-003 requires. Recall workflow (Job 5) is now walking' with every §4.A-§4.F section cited by number."},
+    {"text": "Drafts §4.A issue summary and §4.B scope before comms", "passed": true, "evidence": "Both sections fully drafted, sequenced before any customer-facing content."},
+    {"text": "Drafts customer notification in multiple forms per §4.C", "passed": true, "evidence": "Email, phone script, and letter all named as pending drafts, run through sweet-july-skin-brand for tone."},
+    {"text": "Drafts §4.D return/disposal plan with oc3pl-order-manager handoff", "passed": true, "evidence": "Return label process explicitly routed to oc3pl-order-manager; disposal routed through plm-assistant."},
+    {"text": "Stages CAPA brief for capa-coordinator per §4.E, not opened directly", "passed": true, "evidence": "Full CAPA brief drafted with explicit note that capa-coordinator is live and gets the direct handoff."},
+    {"text": "Names cross-functional asks with owners, explicit HITL gates, no comms sent", "passed": true, "evidence": "6 named gates (G1-G6) plus a consolidated owner table; 'No comms sent. No Asana fields written.'"}
+  ],
+  "summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.0},
+  "timing": {"executor_duration_seconds": 200.0},
+  "eval_feedback": {"overall": "Caught a genuine blocking data problem before proceeding: neither PLM nor the Complaint Log has any batch matching the literal string 'lot 24-11' — the run refused to scope a recall on an unverified batch number and correctly stopped at Gate 1 rather than guessing. This is exactly the caution a recall workflow needs."}
+}

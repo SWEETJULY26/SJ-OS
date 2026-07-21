@@ -1,0 +1,11 @@
+{
+  "expectations": [
+    {"text": "Uses the three named categories (AT RISK/BLOCKED, STALE, OVERDUE)", "passed": false, "evidence": "Uses informal headers ('Open items in Rollover/Risks', 'Overdue milestones', 'Other overdue') with no relation to the skill's three-category format."},
+    {"text": "STALE items identified as 7+ days no update", "passed": false, "evidence": "No stale-specific category or day-count threshold applied anywhere."},
+    {"text": "Highlights-only, one-line if empty", "passed": false, "evidence": "Long narrative prose with a 'Bottom line' essay section, not a highlights format."},
+    {"text": "No Asana write made/proposed", "passed": true, "evidence": "Explicitly read-only, no write attempted."}
+  ],
+  "summary": {"passed": 1, "failed": 3, "total": 4, "pass_rate": 0.25},
+  "timing": {"executor_duration_seconds": 98.5},
+  "eval_feedback": {"overall": "Baseline found real, useful risk signal (e.g. the Pineapple Punch pilot milestone chain) but with no structural format and no stale-flagging logic — exactly the gap the skill's Job 1/Job 8 formatting exists to close."}
+}
