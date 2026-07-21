@@ -1,0 +1,12 @@
+{
+  "eval_id": 1,
+  "eval_name": "fig-stage-move",
+  "prompt": "Move the Fig lip treatment to Signed Approvals",
+  "assertions": [
+    "Stage move is identified as going to Signed Approvals specifically",
+    "IL Review Gate side-effect is explicitly previewed (IL Status flip to Pending IL Review)",
+    "Regulatory inbound task with '[IL Review Pending — claims-il-and-label-keeper]' prefix is mentioned as part of the atomic preview",
+    "Framed as a Rule 1 confirmation preview, not an already-executed change",
+    "No Asana write before confirmation"
+  ]
+}

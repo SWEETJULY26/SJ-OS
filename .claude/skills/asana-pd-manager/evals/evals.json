@@ -1,0 +1,30 @@
+{
+  "skill_name": "asana-pd-manager",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "What's at risk in PD right now?",
+      "expected_output": "Pulls tasks across all SJ SKIN PD projects and returns the Job 1 highlights-only format (🔴 AT RISK/BLOCKED, 🟡 STALE 7+ days no update, ⚠️ OVERDUE), pulling in Job 8's proactive stale-flagging rather than a generic status dump. Says so in one line if nothing qualifies rather than padding.",
+      "files": [],
+      "expectations": [
+        "The output uses the three named categories (AT RISK/BLOCKED, STALE, OVERDUE) rather than an unstructured project list",
+        "STALE items are specifically identified as 7+ days with no update, not just 'old'",
+        "The output stays highlights-only (no padding/narration) and says so in one line if a category is empty",
+        "No Asana write is made or proposed — this is a read-only rollup"
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "Move the Fig lip treatment to Signed Approvals",
+      "expected_output": "Recognizes this as a Job 2 Formula Tracker stage-gate move and previews the full atomic side-effect per Job 3 (IL Review Gate auto-fire): the stage move itself, IL Status flipping to 'Pending IL Review', and a new inbound task being created in SJS Regulatory Management with the '[IL Review Pending — claims-il-and-label-keeper]' prefix — all as one Rule 1 confirmation preview, not executed until approved.",
+      "files": [],
+      "expectations": [
+        "The stage move is identified as going to Signed Approvals specifically (not just 'a stage move')",
+        "The IL Review Gate side-effect is explicitly previewed as part of the same action — IL Status flip to Pending IL Review",
+        "The regulatory inbound task with the '[IL Review Pending — claims-il-and-label-keeper]' prefix is mentioned as part of the atomic preview",
+        "The output frames this as a confirmation preview per Rule 1, not as an already-executed change",
+        "No Asana write is made before confirmation"
+      ]
+    }
+  ]
+}

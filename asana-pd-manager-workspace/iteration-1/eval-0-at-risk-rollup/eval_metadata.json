@@ -1,0 +1,11 @@
+{
+  "eval_id": 0,
+  "eval_name": "at-risk-rollup",
+  "prompt": "What's at risk in PD right now?",
+  "assertions": [
+    "Uses the three named categories (AT RISK/BLOCKED, STALE, OVERDUE) rather than an unstructured project list",
+    "STALE items are specifically identified as 7+ days with no update, not just 'old'",
+    "Output stays highlights-only and says so in one line if a category is empty",
+    "No Asana write is made or proposed"
+  ]
+}

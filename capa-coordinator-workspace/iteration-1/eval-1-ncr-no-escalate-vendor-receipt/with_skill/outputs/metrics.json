@@ -1,0 +1,9 @@
+{
+  "tool_calls": {
+    "Read": 2,
+    "Bash": 1,
+    "Write": 2
+  },
+  "total_tool_calls": 5,
+  "errors_encountered": 0
+}

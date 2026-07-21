@@ -1,0 +1,13 @@
+{
+  "eval_id": 0,
+  "eval_name": "complaint-trend-handoff-pava-toner",
+  "prompt": "complaint-and-event-handler just handed off a task into the SJS CAPA Log titled '[CAPA Pending — capa-coordinator] Pava Toner Lot 26-02 — 4 Skin Reactions complaints in 21 days'. The brief in the comment says: pattern is itching + redness, all consumers reported within 48h of first use, all from DTC channel, no SAE-level events. complaint-and-event-handler recommends scope = single-lot CAPA, suspected vendor: Element (FOA-ROSE component lot R26-008). Walk this through to the action plan stage. Don't actually write to Asana — draft the NCR record, severity call, NCR→CAPA conversion decision, root cause analysis approach, and corrective + preventive action plans as a markdown plan I can approve.",
+  "assertions": [
+    "Opens an NCR with required intake fields (source=complaint-trend, category, SKU=Pava Toner, batch=Lot 26-02, vendor=Element) and a severity call (Major) with §3.3 reasoning",
+    "Walks the §4.1 review checklist and recommends NCR→CAPA conversion under the correct severity-band SLA",
+    "Drafts a CAPA cover block and recommends an RCA tool (Fishbone vs 5 Whys) with stated reasoning, not just picking one",
+    "Drafts corrective + preventive action plans with owner role + timeline + evidence, flagging any SOP-impact preventive action for [SOP Revision Pending — quality-manager]",
+    "Explicitly names the HITL gates (Operator vs Pending QA Lead) and does not commit any writes",
+    "Cross-references back to the complaint-and-event-handler source task"
+  ]
+}

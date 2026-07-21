@@ -1,0 +1,8 @@
+{
+  "tool_calls": {
+    "mcp__Fireflies__fireflies_get_transcripts": 1,
+    "mcp__Asana__get_my_tasks": 1
+  },
+  "total_tool_calls": 2,
+  "errors_encountered": 0
+}
