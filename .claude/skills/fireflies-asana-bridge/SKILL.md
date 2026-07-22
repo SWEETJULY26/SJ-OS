@@ -5,7 +5,7 @@ description: "Universal Fireflies meeting intake for Sweet July Skin. Reads tran
 
 # Fireflies → Asana Bridge
 
-**Version:** v1.0 · **Last updated:** 2026-05-26 12:49 PT — P4/P5 bridge audit remediation: version marker added. P1 (2026-05-26): run-time entity discovery replaced hard-coded people tables.
+**Version:** v1.1 · **Last updated:** 2026-07-21 09:15 PT — Cost rescope, driven by an eval run hitting 172K tokens on a routine weekly catch-up (this skill runs daily, so that cost is a real problem, not a one-off): switched the default fetch to `fireflies_get_summary` instead of a full `fireflies_fetch` per meeting, with full-transcript fetch reserved for genuinely ambiguous or high-stakes items; sized the default catch-up window to the actual ask instead of a flat 7 days every time; rewrote the Action Item Report to drop the redundant meeting-by-meeting recap, omit empty sections, and cap each item to one line. Prior v1.0 2026-05-26 12:49 PT — P4/P5 bridge audit remediation: version marker added. P1 (2026-05-26): run-time entity discovery replaced hard-coded people tables.
 
 You are the universal meeting intake layer for AC Brands operations. Your job is to read
 Fireflies transcripts, extract every action item / decision / signal that matters for
@@ -22,11 +22,40 @@ fan-out.
 
 ## How you connect
 
-- **Fireflies MCP:** `https://api.fireflies.ai/mcp` — use `fireflies_get_transcripts`,
-  `fireflies_fetch`, and `fireflies_search` to retrieve meeting data
+- **Fireflies MCP:** `https://api.fireflies.ai/mcp` — use `fireflies_get_transcripts` and
+  `fireflies_search` to find meetings, `fireflies_get_summary` as the default read for
+  each meeting's content, and `fireflies_fetch` (full transcript) only when the summary
+  isn't enough — see "Fetch strategy — summary first" below. This distinction is the
+  single biggest lever on this skill's cost; don't skip it.
 - **Asana MCP:** `https://mcp.asana.com/sse` — use Asana tools to create tasks, add
   comments, and update projects. All writes follow the confirmation contract at
   `asana-pd-manager/references/confirmation-protocol.md`.
+
+## Fetch strategy — summary first (confirmed with Alvin 2026-07-21)
+
+This skill runs daily. A full-transcript fetch per meeting is the dominant cost driver —
+an 8-meeting week pulling full transcripts for every one of them is what drove a single
+catch-up run to 172K tokens. Default to the cheap read; only pay for the expensive one
+when there's an actual reason to.
+
+1. **List meetings** for the requested window via `fireflies_get_transcripts` /
+   `fireflies_search` — titles, participants, duration, timestamps. No content fetch yet.
+2. **Pull the summary** for each meeting via `fireflies_get_summary` (Fireflies' own
+   AI-generated overview + action items). Classify and extract off the summary first.
+   Most meetings resolve completely at this step — routine standups, status syncs, and
+   check-ins rarely need more than the summary to classify and extract action items.
+3. **Fall back to the full transcript (`fireflies_fetch`) only when:**
+   - The summary is genuinely ambiguous about who owns an action item or what the actual
+     ask was (not just "brief" — actually unclear)
+   - The summary hits an urgency/quality/regulatory signal (SAE language, recall
+     trigger, OOS/OOT, Pedrero/MoCRA, a named dollar/cost figure needing exact wording)
+     where getting it slightly wrong has real consequences
+   - Alvin asks for something the summary can't answer (exact wording of a commitment,
+     a specific number, a quote)
+4. **Never fetch full transcripts for every meeting "just in case."** If a meeting's
+   summary gives you title, attendees, and a clear action-item list, that's enough —
+   don't re-derive it from the raw transcript to be thorough. Thoroughness here means
+   covering every meeting in the window, not re-reading every word of each one.
 
 ---
 
@@ -137,9 +166,19 @@ All four cross-reference each other.
 ### Mode 1: Manual catch-up
 Triggered when Alvin asks to pull action items from a specific meeting or time period.
 
+**Window sizing (confirmed with Alvin 2026-07-21 — this skill runs daily, size the
+window to the actual ask, don't default to a flat 7 days every time):**
+- "What came out of today's meetings" / "catch me up" with no period stated → since the
+  last time this skill ran today, or just today's meetings if this is the first run
+- "Yesterday's sync" / "this morning's call" → that specific day or meeting
+- "Catch me up on this week's meetings" (explicit "week") → trailing 7 days
+- A named meeting or date range → exactly that
+
 1. Search Fireflies for the relevant transcript(s) using `fireflies_search` or
-   `fireflies_get_transcripts` with appropriate date filters
-2. Fetch the full transcript with `fireflies_fetch`
+   `fireflies_get_transcripts` with date filters sized per the rule above
+2. Pull each meeting's summary via `fireflies_get_summary` — **not** the full transcript.
+   Only call `fireflies_fetch` for a specific meeting when the fetch-strategy triggers
+   above actually apply to it (see "Fetch strategy — summary first")
 3. Extract and present the Action Item Report (see format below)
 4. Wait for Alvin to confirm which items to push to Asana
 
@@ -184,58 +223,54 @@ through the master classifier to determine its label set and destination.
 
 ## Action Item Report format
 
-Present this before pushing anything. Group by primary label and show the full label
-set + cross-references for each item.
+**Rescoped 2026-07-21 for daily use — brevity is a requirement, not a nice-to-have.**
+The old format opened with a full meeting-by-meeting recap and then walked all nine
+sub-system sections even when most had nothing in them, with a full sentence or two per
+bullet. That's what pushed a single run to 172K tokens. New rules:
+
+- **No meeting-by-meeting recap before the classified sections.** The classified
+  sections below are the report — don't restate the same content twice.
+- **Omit a section entirely if it has nothing in it.** Don't render "None this week"
+  with an explanation. If PD/Ops/Quality/Regulatory are the only sections with content,
+  those are the only sections shown.
+- **One line per item.** `[Item] — [Owner] — [Due, if any] — [primary label] →
+  [destination]`. Cross-refs to a secondary label go on the same line
+  (`+ plm cross-flag`), not a separate indented line. Save the second line only for an
+  item flagged URGENT, where a short reason clause is worth the extra line.
+- **Meeting names appear once, as a source tag at the end of the line in parentheses**,
+  not as a section header of their own — `(SJ Ops Standup, 7/20)`.
 
 ```
-📋 Meeting: [Meeting title / participants / date]
-Duration: [X min]
-Meeting-level labels: [pd, ops, quality, ...]
-
-🚨 URGENT (needs immediate action)
-• [Action item] — Owner: [Name] | Due: [date if mentioned]
-  Labels: [primary] + [secondary, ...]
-  → Parent: [destination skill — e.g., quality-lab-coordinator]
-  → Cross-refs: [`outlook-plm-bridge` cross-flag, PD task link, etc.]
+🚨 URGENT
+• [Item] — [Owner] — [Due] — [why it's urgent, one clause] ([Meeting], [date])
 
 🩺 QUALITY
-• [Action item / decision] — Owner: [Name] | Due: [date]
-  → quality-lab-coordinator / batch-lifecycle-tracker / capa-coordinator /
-    complaint-and-event-handler / adverse-event-and-recall-reporter
-  → Cross-refs: [PLM, PD, Ops links if applicable]
+• [Item] — [Owner] — [Due] — → [destination skill] [+ cross-flag if any] ([Meeting], [date])
 
 📜 REGULATORY
-• [Action item / decision] — Owner: [Name] | Due: [date]
-  → claims-il-and-label-keeper / regulatory-manager
-  → Cross-refs: [if any]
+• [Item] — [Owner] — [Due] — → [destination skill] ([Meeting], [date])
 
-📌 OPS / PD ACTION ITEMS
-• [Action item] — Owner: [Name] | Due: [date if mentioned] | Project: [SJ SKIN project]
-  Labels: [...]
+📌 OPS / PD
+• [Item] — [Owner] — [Due] — [Project] ([Meeting], [date])
 
-💬 DECISIONS (log as comments)
-• [Decision made] → Add to: [task/project name]
+💬 DECISIONS
+• [Decision] → [task/project] ([Meeting], [date])
 
-📊 STATUS SIGNALS (may need project status update)
-• [Issue or blocker raised] → Affects: [project name] | Suggested RAG: [R/A/G]
+📊 STATUS
+• [Signal] → [project], suggested [R/A/G] ([Meeting], [date])
 
 💰 MARGIN
-• [Cost / MOQ / tariff / allowance discussion]
-  → margin-pressure-test / walk-away
+• [Item] → margin-pressure-test / walk-away ([Meeting], [date])
 
-🔭 INTEL
-• [Competitor / retail / press mention]
-  → sjs-comp-intel / sjs-retail-intel
-
-👤 FOUNDER BRIEFING
-• [Items routed to ayesha-weekly-briefing — Ayesha asks, founder-relevant signals]
-
-⚙️ PLM FLAGS (cross-flag to `outlook-plm-bridge` — owns the actual write)
-• [Formula approval / batch info / supplier data / cost target / spec sheet]
+🔭 INTEL / 👤 FOUNDER / ⚙️ PLM FLAGS
+• One line each, same pattern — omit any of these three if empty.
 
 ---
 Which of these should I push? (say "all", list numbers, or "skip")
 ```
+
+Only sections with real content render. On a routine day this report should be well
+under a screen's worth of text, not a multi-page document.
 
 ---
 
