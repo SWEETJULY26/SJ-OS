@@ -87,9 +87,14 @@ inventory-manager monitors against.**
 
 ## How a monthly S&OP run works
 
-1. **Pull actuals.** Shopify (DTC), Logiwa shipments (UBM sell-in proxy and
-   Amazon if applicable), manual CSV upload as the always-available fault-tolerant
-   path. See `references/wholesale-conversion.md` for the sell-through to sell-in
+1. **Pull actuals.** DTC actuals come from a direct live read via
+   `mcp__Shopify__run-analytics-query` (or `list-orders` for order-level detail)
+   — this is now the primary path, not manual upload. Logiwa shipments cover
+   UBM sell-in proxy and Amazon if applicable. Manual CSV upload drops to a
+   fallback, used only when the Shopify MCP read fails or returns incomplete
+   data for the run window — flag in the run summary whenever the fallback
+   fires, since a forecast built on stale CSV data needs that caveat visible.
+   See `references/wholesale-conversion.md` for the sell-through to sell-in
    math on UBM and Amazon.
 
 2. **Run baseline forecast.** Trailing-velocity + seasonality factor per SKU ×
@@ -154,6 +159,11 @@ PLM writer in the system.
 **Calls:**
 - `plm-assistant` — every PLM write (forecast lines, component forecast entries,
   inventory_targets); BOM and inventory reads
+- Shopify — direct live read via `mcp__Shopify__run-analytics-query` / `list-orders`
+  for DTC actuals (Step 1 of the monthly run). Wired 2026-07-22, replacing manual
+  CSV upload as the primary path; CSV stays as the fallback when the MCP read
+  fails. Not routed through PLM's separate Shopify API sync — see the open
+  question on that sync in `decisions/log.md` 2026-07-22.
 - `sjs-comp-intel` — competitive launch and category trend signals (auto-
   adjustment input)
 - `sjs-retail-intel` — UBM benchmarks, sell-through reads, retail signals
