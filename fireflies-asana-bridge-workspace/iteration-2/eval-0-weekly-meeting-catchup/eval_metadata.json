@@ -1,0 +1,12 @@
+{
+  "eval_id": 0,
+  "eval_name": "weekly-meeting-catchup",
+  "prompt": "Catch me up on this week's meetings",
+  "assertions": [
+    "Multiple meetings/transcripts from the past week are covered, not just one",
+    "Urgent items surfaced in their own section before the general list (Mode 2)",
+    "Uses the skill's Action Item Report section structure, not a flat meeting-by-meeting recap",
+    "Multi-label items are split and cross-referenced",
+    "No Asana write happens before the 'which should I push?' confirmation"
+  ]
+}
