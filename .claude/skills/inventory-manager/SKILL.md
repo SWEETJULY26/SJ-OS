@@ -40,7 +40,7 @@ These shape every action the skill takes. They are not negotiable on a per-task 
 Cross-channel on-hand surfacing across all modeled locations. Pull from PLM as source of truth, cross-reference Logiwa and Shopify for OC3PL position, surface positions at contract manufacturers and retailer DCs as recorded in PLM.
 
 - *Trigger:* "what's on hand for [SKU]", "where's our stock", "show position by location", "how much [product] do we have at [location]", "give me a position snapshot"
-- *Action:* Pull positions via plm-assistant. Compose response with on-hand, allocated, available, broken out by location and by batch where relevant.
+- *Action:* Pull positions via plm-assistant. For the Shopify location specifically, call `mcp__Shopify__get-inventory-levels` directly (live read, not routed through PLM) and label it as the Shopify-reported figure alongside PLM's. Compose response with on-hand, allocated, available, broken out by location and by batch where relevant.
 - *HITL:* none — read-only.
 
 ### 2. Receiving (PO closeout)
@@ -64,7 +64,7 @@ Records every movement between any two modeled locations as a PLM movement entry
 Diff PLM vs. Shopify vs. Logiwa per SKU at OC3PL. On-demand and weekly with the health report.
 
 - *Trigger:* "reconcile inventory", "three-way diff", "are we in sync", weekly health report run
-- *Action:* Pull OC3PL position from each source. Diff per SKU. Variance over the configured tolerance opens `[Position Variance] SKU — Location`. Description holds the three numbers, deltas, batch breakdown, and last sync timestamps.
+- *Action:* Pull PLM position via plm-assistant, Logiwa position per existing sync, and Shopify position via a direct live call to `mcp__Shopify__get-inventory-levels` (do not read Shopify's number back out of PLM — PLM's existing Shopify figure may itself be stale; see the open architecture question logged in `decisions/log.md` 2026-07-22 re: PLM's separate Shopify API sync). Diff per SKU across the three. Variance over the configured tolerance opens `[Position Variance] SKU — Location`. Description holds the three numbers, deltas, batch breakdown, and last sync timestamps — including which of the three sources (PLM's own Shopify-sync figure vs. this skill's direct MCP read) each Shopify number came from, until the architecture question resolves.
 - *HITL:* Operations decides correction direction. On approval, plm-assistant adjusts PLM to truth — which usually means trusting Logiwa as physical reality, but may mean trusting PLM if the sync drifted in the other direction.
 
 ### 5. Low-stock and out-of-stock signal routing
@@ -158,6 +158,7 @@ The skill goes through other skills for source access wherever one exists. Only 
 - fireflies-asana-bridge — call action items related to inventory
 - Asana — direct read of own tasks in Ops Dashboard → Inventory Management, plus multi-homed tasks
 - OC3PL OOS Shortage Sheet — direct CSV fetch from a link-shareable Google Sheet (see references/oos-shortage-sheet.md)
+- Shopify — direct live read via `mcp__Shopify__get-inventory-levels` for Job 1 (position keeping) and Job 4 (three-way reconciliation). Added 2026-07-22 to replace inferring the Shopify number from whatever PLM's separate Shopify API sync last landed. That PLM↔Shopify API sync still exists and still feeds the landing hub inventory dashboard — this direct MCP read is additive, not a replacement for it yet. Whether the API sync is still needed now that the MCP connector exists is an open architecture question, logged in `decisions/log.md` 2026-07-22, not resolved here.
 
 **Writes via:**
 - plm-assistant — all PLM writes (batch creation, location changes, movement entries, adjustments, write-offs, return dispositions)

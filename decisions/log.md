@@ -47,3 +47,17 @@ Keep it terse. Future-you will thank present-you for capturing the *why*, not ju
 **Status:** System-specific canonical files (Quality's role-map/SOP catalog, Regulatory's role-map/partner contacts, etc.) deliberately stayed local to their own skill's `references/` — only genuinely cross-system facts moved. No live Routine needed to change: scheduled-prompts only hardcode paths to each skill's top-level `SKILL.md`, and the deeper file reads are driven by `SKILL.md` content, which Routines re-read fresh on every clone.
 
 ---
+
+## 2026-07-22 — Wire direct Shopify MCP reads into inventory-manager and supply-demand-planner
+
+**Decision:** Both skills now call Shopify directly via MCP instead of relying on PLM or manual upload for Shopify-sourced data. `inventory-manager` calls `mcp__Shopify__get-inventory-levels` for Job 1 (position keeping) and Job 4 (three-way reconciliation) — previously the Shopify side of that math had no defined live source at all. `supply-demand-planner` calls `mcp__Shopify__run-analytics-query` / `list-orders` for DTC actuals in Step 1 of the monthly S&OP run — previously "Shopify" was named as a source but the only concretely wired mechanism was manual CSV upload; CSV now drops to a fallback used only when the MCP read fails, and the run summary must flag it whenever that happens.
+
+**Why:** Alvin scoped this as the two skills where Shopify data actually feeds live decisions (inventory position/reconciliation, demand forecasting) — as opposed to oc3pl-order-manager (Logiwa is already authoritative there) or sjs-status-reporter (PD-only, inherits inventory data downstream instead). S&OP was the sharper gap of the two: a monthly forecast that drives buy recommendations was running on whatever CSV got uploaded, not on live sales data.
+
+**Alternatives considered:** Leaving supply-demand-planner on CSV-primary (rejected — no reason to prefer a manual upload over a live MCP read now that one exists); routing the new reads through PLM's existing Shopify sync instead of a direct MCP call (deferred — see open question below).
+
+**Owner:** Alvin.
+
+**Open question raised during this work (not resolved, needs its own scoping pass):** PLM currently syncs to Shopify via a separate API integration, which feeds the landing hub's inventory dashboard. Now that Shopify has a direct MCP connector into Claude, does the PLM↔Shopify API sync still pull its weight, or should some/all of that data path move to direct MCP reads instead? This is a bigger build than the two-skill wiring above — touches the landing hub's data pipeline, not just a skill's read source — and needs its own scoping conversation before any change. For now, both syncs coexist: PLM's API sync keeps feeding the landing hub unchanged, and the two skills above read Shopify directly and separately. Flagged in both skills' SKILL.md so the duplication is visible until this resolves.
+
+---
