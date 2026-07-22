@@ -1,0 +1,13 @@
+{
+  "expectations": [
+    {"text": "NCR opens Critical with correct reasoning", "passed": true, "evidence": "'Classification going in: Critical NCR' with market-exposure reasoning given."},
+    {"text": "RCA tool reasoned, scaffold provided", "passed": true, "evidence": "Fishbone recommended with detailed category-by-category reasoning, matching the skill's own heuristic despite not having read it."},
+    {"text": "Corrective/preventive with owners/dates/evidence, SOP-flag", "passed": false, "evidence": "Actions discussed narratively; no owner/date/evidence table and no SOP-revision auto-stage naming convention."},
+    {"text": "Effectiveness review applies correct 90-day window", "passed": false, "evidence": "Says effectiveness shouldn't rest on one data point but never states the specific 90-day Critical window."},
+    {"text": "All phases walked with HITL gates named", "passed": true, "evidence": "7-phase walkthrough with a gate-ownership table at the end."},
+    {"text": "Closeout flags regulatory feed, defers batch hold/release", "passed": true, "evidence": "Regulatory-manager notification and batch-lifecycle-tracker hold-resolution both named as closeout handoffs; explicitly doesn't decide the hold itself."}
+  ],
+  "summary": {"passed": 4, "failed": 2, "total": 6, "pass_rate": 0.67},
+  "timing": {"executor_duration_seconds": 73.1},
+  "eval_feedback": {"overall": "Strongest baseline result of the ten evals — general domain reasoning about CAPA/RCA/stability failures carries most of the way here. What's still missing is the specific quantitative rule (90-day window) and the exact SOP-driven naming conventions, which only the skill encodes."}
+}

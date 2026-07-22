@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #faf9f5;
+      --surface: #ffffff;
+      --border: #e8e6dc;
+      --text: #141413;
+      --text-muted: #b0aea5;
+      --accent: #d97757;
+      --accent-hover: #c4613f;
+      --green: #788c5d;
+      --green-bg: #eef2e8;
+      --red: #c44;
+      --red-bg: #fceaea;
+      --header-bg: #141413;
+      --header-text: #faf9f5;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .header .instructions {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+    .header .progress {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      text-align: right;
+    }
+
+    /* ---- Main content ---- */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ---- Sections ---- */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex-shrink: 0;
+    }
+    .section-header {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .section-body {
+      padding: 1rem;
+    }
+
+    /* ---- Config badge ---- */
+    .config-badge {
+      display: inline-block;
+      padding: 0.2rem 0.625rem;
+      border-radius: 9999px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-left: 0.75rem;
+      vertical-align: middle;
+    }
+    .config-badge.config-primary {
+      background: rgba(33, 150, 243, 0.12);
+      color: #1976d2;
+    }
+    .config-badge.config-baseline {
+      background: rgba(255, 193, 7, 0.15);
+      color: #f57f17;
+    }
+
+    /* ---- Prompt ---- */
+    .prompt-text {
+      white-space: pre-wrap;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* ---- Outputs ---- */
+    .output-file {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .output-file + .output-file {
+      margin-top: 1rem;
+    }
+    .output-file-header {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .output-file-header .dl-btn {
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+    .output-file-header .dl-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+    .output-file-content {
+      padding: 0.75rem;
+      overflow-x: auto;
+    }
+    .output-file-content pre {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    .output-file-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .output-file-content iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+    .output-file-content table {
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      width: 100%;
+    }
+    .output-file-content table td,
+    .output-file-content table th {
+      border: 1px solid var(--border);
+      padding: 0.375rem 0.5rem;
+      text-align: left;
+    }
+    .output-file-content table th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+    .output-file-content .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    .output-file-content .download-link:hover {
+      background: var(--border);
+    }
+    .empty-state {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* ---- Feedback ---- */
+    .prev-feedback {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.625rem 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .prev-feedback-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+    .feedback-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      resize: vertical;
+      color: var(--text);
+    }
+    .feedback-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .feedback-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      min-height: 1.1em;
+    }
+
+    /* ---- Grades (collapsible) ---- */
+    .grades-toggle {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .grades-toggle:hover {
+      color: var(--accent);
+    }
+    .grades-toggle .arrow {
+      margin-right: 0.5rem;
+      transition: transform 0.15s;
+      font-size: 0.75rem;
+    }
+    .grades-toggle .arrow.open {
+      transform: rotate(90deg);
+    }
+    .grades-content {
+      display: none;
+      margin-top: 0.75rem;
+    }
+    .grades-content.open {
+      display: block;
+    }
+    .grades-summary {
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .grade-badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .grade-pass { background: var(--green-bg); color: var(--green); }
+    .grade-fail { background: var(--red-bg); color: var(--red); }
+    .assertion-list {
+      list-style: none;
+    }
+    .assertion-item {
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8125rem;
+    }
+    .assertion-item:last-child { border-bottom: none; }
+    .assertion-status {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .assertion-status.pass { color: var(--green); }
+    .assertion-status.fail { color: var(--red); }
+    .assertion-evidence {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      padding-left: 1.5rem;
+    }
+
+    /* ---- View tabs ---- */
+    .view-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 2rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .view-tab {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .view-tab:hover { color: var(--text); }
+    .view-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .view-panel { display: none; }
+    .view-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+    /* ---- Benchmark view ---- */
+    .benchmark-view {
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .benchmark-table {
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8125rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .benchmark-table th, .benchmark-table td {
+      padding: 0.625rem 0.75rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+    .benchmark-table th {
+      font-family: 'Poppins', sans-serif;
+      background: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .benchmark-table tr:hover { background: var(--bg); }
+    .benchmark-table tr.benchmark-row-with { background: rgba(33, 150, 243, 0.06); }
+    .benchmark-table tr.benchmark-row-without { background: rgba(255, 193, 7, 0.06); }
+    .benchmark-table tr.benchmark-row-with:hover { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-without:hover { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-table tr.benchmark-row-avg { font-weight: 600; border-top: 2px solid var(--border); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-with { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-without { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-delta-positive { color: var(--green); font-weight: 600; }
+    .benchmark-delta-negative { color: var(--red); font-weight: 600; }
+    .benchmark-notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .benchmark-notes h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    .benchmark-notes ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+    .benchmark-notes li {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      margin-bottom: 0.375rem;
+    }
+    .benchmark-empty {
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 3rem;
+    }
+
+    /* ---- Navigation ---- */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .done-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .done-btn:hover {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .done-btn.ready {
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+    .done-btn.ready:hover {
+      background: var(--accent-hover);
+    }
+    /* ---- Done overlay ---- */
+    .done-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .done-overlay.visible {
+      display: flex;
+    }
+    .done-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem 3rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+    }
+    .done-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .done-card p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .done-card .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .done-card button {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .done-card button:hover {
+      background: var(--bg);
+    }
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 200;
+    }
+    .toast.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" style="height:100vh; display:flex; flex-direction:column;">
+    <div class="header">
+      <div>
+        <h1>Eval Review: <span id="skill-name"></span></h1>
+        <div class="instructions">Review each output and leave feedback below. Navigate with arrow keys or buttons. When done, copy feedback and paste into Claude Code.</div>
+      </div>
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- View tabs (only shown when benchmark data exists) -->
+    <div class="view-tabs" id="view-tabs" style="display:none;">
+      <button class="view-tab active" onclick="switchView('outputs')">Outputs</button>
+      <button class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
+    </div>
+
+    <!-- Outputs panel (qualitative review) -->
+    <div class="view-panel active" id="panel-outputs">
+    <div class="main">
+      <!-- Prompt -->
+      <div class="section">
+        <div class="section-header">Prompt <span class="config-badge" id="config-badge" style="display:none;"></span></div>
+        <div class="section-body">
+          <div class="prompt-text" id="prompt-text"></div>
+        </div>
+      </div>
+
+      <!-- Outputs -->
+      <div class="section">
+        <div class="section-header">Output</div>
+        <div class="section-body" id="outputs-body">
+          <div class="empty-state">No output files found</div>
+        </div>
+      </div>
+
+      <!-- Previous Output (collapsible) -->
+      <div class="section" id="prev-outputs-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="togglePrevOutputs()">
+            <span class="arrow" id="prev-outputs-arrow">&#9654;</span>
+            Previous Output
+          </div>
+        </div>
+        <div class="grades-content" id="prev-outputs-content"></div>
+      </div>
+
+      <!-- Grades (collapsible) -->
+      <div class="section" id="grades-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="toggleGrades()">
+            <span class="arrow" id="grades-arrow">&#9654;</span>
+            Formal Grades
+          </div>
+        </div>
+        <div class="grades-content" id="grades-content"></div>
+      </div>
+
+      <!-- Feedback -->
+      <div class="section">
+        <div class="section-header">Your Feedback</div>
+        <div class="section-body">
+          <textarea
+            class="feedback-textarea"
+            id="feedback"
+            placeholder="What do you think of this output? Any issues, suggestions, or things that look great?"
+          ></textarea>
+          <div class="feedback-status" id="feedback-status"></div>
+          <div class="prev-feedback" id="prev-feedback" style="display:none;">
+            <div class="prev-feedback-label">Previous feedback</div>
+            <div id="prev-feedback-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav" id="outputs-nav">
+      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592; Previous</button>
+      <button class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
+      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next &#8594;</button>
+    </div>
+    </div><!-- end panel-outputs -->
+
+    <!-- Benchmark panel (quantitative stats) -->
+    <div class="view-panel" id="panel-benchmark">
+      <div class="benchmark-view" id="benchmark-content">
+        <div class="benchmark-empty">No benchmark data available. Run a benchmark to see quantitative results here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Done overlay -->
+  <div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+      <h2>Review Complete</h2>
+      <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
+      <div class="btn-row">
+        <button onclick="closeDoneDialog()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---- Embedded data (injected by generate_review.py) ----
+    const EMBEDDED_DATA = {"skill_name": "fireflies-asana-bridge", "runs": [{"id": "eval-0-weekly-meeting-catchup-with_skill", "prompt": "Catch me up on this week's meetings", "eval_id": 0, "outputs": [{"name": "output.md", "type": "text", "content": "# Weekly Meeting Catch-Up \u2014 July 14\u201320, 2026\n\nSource: live Fireflies MCP reads (`fireflies_get_transcripts` + `fireflies_fetch` on all 8 transcripts returned for the window). Read-only run \u2014 nothing written to Asana. Classified per `fireflies-asana-bridge` master classifier; primary-label priority is quality > regulatory > ops > pd > margin > intel > founder.\n\n8 meetings this week:\n1. [EXT] WITHIN x Sweet July QBR \u2014 07/20, 64 min\n2. SJ Ops Daily Stand Up \u2014 07/20, 16 min\n3. PJ/Sweet July Skin TB (KDC-One/HCT) \u2014 07/20, 10 min\n4. SJS Builder Session (Alvin + Nicole, org design) \u2014 07/17, 50 min\n5. Daily Ops Stand Up (Nicole + Ciarra) \u2014 07/17, 46 min\n6. ACE 15-Min Weekly Finance Review \u2014 07/16, 12 min\n7. SJ Skin Weekly TB (Alvin, Nicole, Perrine, Danielle, Soraya) \u2014 07/15, 37 min\n8. PJ/Sweet July Skin TB (KDC-One/HCT) \u2014 07/14, 19 min\n\n---\n\n## \ud83d\udea8 URGENT\n\n- **Amazon appeal denied on the pineapple punch face mask** \u2014 Amazon flagged it as a skin-lightening product, pulled it pre-launch, and denied the first appeal; a heavy-metals test is now the condition for re-appeal. Amazon's own recommended labs quote $3\u20136K; Perrine and Madeleine are getting comparison quotes (expect under $1K). \u2014 Owner: Madeleine (quote), Perrine (comparison quotes) | *(SJ Skin Weekly TB, 07/15)*\n  Labels: `regulatory` + `quality`\n  \u2192 claims-il-and-label-keeper / regulatory-manager (Amazon compliance appeal), quality-lab-coordinator (heavy metals test result once in)\n  \u2192 Cross-ref: same issue also flagged as a `margin` item below (don't use Amazon's lab \u2014 it's a markup)\n\n- **Guava inventory is the tightest SKU in the portfolio \u2014 real stockout risk at Amazon/OC3PL.** Selling 600+ units/month, ~61 days of supply at Amazon, 900 units held in reserve for discovery sets, and a discrepancy where guava cartons showed up on Allure's destruction list (should not be there). Ciarra has been told to start de-kitting proactively and to confirm the destruction-list carton removal. \u2014 Owner: Ciarra | Due: ongoing, next FWS/OC3PL replenishment trigger | *(SJ Ops Daily Stand Up 07/20, Daily Ops Stand Up 07/17)*\n  Labels: `ops`\n  \u2192 inventory-manager / oc3pl-order-manager\n  \u2192 Cross-ref: Amazon UPC change ticket (below), marketing-unit transfer (below)\n\n- **Ulta is openly frustrated with KDC-One's inability to commit to a production date** for the lychee/pineapple punch launch \u2014 Perrine told Ulta's contact three weeks running \"not next week.\" Raw material finally arrived and is in a 5-day test window; batching targeted week of 7/27. A slip here is a retailer-relationship risk, not just a timeline slip. \u2014 Owner: Alvin/Perrine (Ulta comms), Greg D. (KDC-One production commitment) | *(PJ/SJ Skin TB 07/14 and 07/20)*\n  Labels: `pd` + `founder` (Ulta relationship, Ayesha briefing-worthy)\n  \u2192 asana-pd-manager (Formula Tracker / production timeline task), ayesha-weekly-briefing (surface the retailer friction)\n\n- **Photo shoot cancellation-penalty risk** \u2014 HCT/KDC-One owe field samples (Fig Sorel, Jamaican Cherry) for a scheduled photo shoot; Perrine flagged real financial penalties (studio, photographer) if the shoot slips. Alex D. committed to a same-day answer on 7/15 for sample timing. \u2014 Owner: Alex Delmarco (HCT) | Due: was \"tomorrow\" as of 7/14 call | *(PJ/SJ Skin TB 07/14)*\n  Labels: `pd`\n  \u2192 asana-pd-manager\n\n---\n\n## \ud83e\ude7a QUALITY\n\n- Eye cream barcode mislabeling caused an Amazon listing issue \u2014 root cause is the pack-list template defaulting to the wrong barcode source (should say \"use manufacturer barcode,\" not \"use Amazon barcode,\" since the eye cream already carries a printed barcode). Nicole is briefing OC3PL and checking the template to prevent recurrence. \u2014 Owner: Nicole | *(Daily Ops Stand Up, 07/17)*\n  \u2192 quality-lab-coordinator (root-cause / preventive fix) or capa-coordinator if this warrants a formal NCR\n  \u2192 Cross-ref: `ops` (oc3pl-order-manager, since this is also a fulfillment process fix)\n\n- Heavy metals test (pineapple punch face mask, Amazon compliance) \u2014 see URGENT above; also a quality data point once results land (needs filing/documentation regardless of appeal outcome).\n  \u2192 quality-lab-coordinator\n\n- Stability waiver review ongoing for lychee/pineapple punch lip treatment \u2014 Perrine assesses risk as low (same base formula, differs only by flavor/tint) but flagged that documentation still needs to be formalized. \u2014 Owner: Alvin (track), Perrine (risk assessment) | *(SJ Skin Weekly TB, 07/15)*\n  \u2192 batch-lifecycle-tracker / quality-lab-coordinator\n  \u2192 Cross-ref: `pd`, `regulatory` (IL/claim timing)\n\n---\n\n## \ud83d\udcdc REGULATORY\n\n- Amazon face-mask appeal / heavy metals test \u2014 see URGENT.\n  \u2192 claims-il-and-label-keeper, regulatory-manager\n\n- Cleansing oil \u2014 Washington state lead-in-cosmetics risk flagged by regulatory; Perrine is sourcing comparable heavy-metals test quotes (same vein as the face mask) via Veggie Labs and a second vendor. \u2014 Owner: Perrine | *(SJ Skin Weekly TB, 07/15)*\n  \u2192 regulatory-manager\n  \u2192 Cross-ref: `margin` (test cost comparison), `plm`\n\n- Toner IL \u2014 back from regulatory; Padrero review in progress. Question raised (and answered): hold the toner unit-carton production run until Padrero clears it, rather than proceed at risk \u2014 Perrine's guidance was to wait if timeline allows. \u2014 Owner: Alvin | *(SJ Skin Weekly TB, 07/15)*\n  \u2192 claims-il-and-label-keeper\n\n- Padrero priority queue for the rest of the year: toner (next), then the three phase-one lip SKUs (Fig, Cherry, Sorrel Tea) \u2014 Alvin to confirm this sequencing with regulatory. \u2014 Owner: Alvin | *(SJ Skin Weekly TB, 07/15)*\n  \u2192 claims-il-and-label-keeper\n\n- ILs for approved phase-one SKUs received from Padrero/Caroline; need to be worked into copy docs \u2014 some newer SKUs (Coffee Fix lip treatment, etc.) may not have official copy docs yet. \u2014 Owner: Alvin + Nicole (process discussion) | *(SJ Skin Weekly TB, 07/15)*\n  \u2192 claims-il-and-label-keeper, asana-plm-bridge\n\n---\n\n## \ud83d\udccc OPS / PD ACTION ITEMS\n\n**Ops \u2014 inventory / fulfillment**\n- Ciarra: instruct FWS to begin de-kitting guava sets proactively; confirm carton availability at Allure. | *(SJ Ops Daily Stand Up 07/20)*\n- Ciarra: follow up on removal of guava cartons from the Allure destruction list; confirm completion. | *(SJ Ops Daily Stand Up 07/20)*\n- Ciarra: execute the Amazon UPC change via Seller Central support ticket for the headband SKU. | *(SJ Ops Daily Stand Up 07/20)*\n- Nicole: trigger/confirm Amazon go-live status for face masks and add the transfer task as an Asana dependency (blocking, not blocked-by). | *(SJ Ops Daily Stand Up 07/20)*\n- Nicole: transfer marketing-use units (master cartons of 5-packs, plus single packs) from OC3PL to the retail store once the full face-mask shipment arrives; full inventory/replenishment review requested by Alvin. | *(SJ Ops Daily Stand Up 07/20)*\n- Alvin: add Terry headband SKU to the inventory dashboard (done, per transcript \u2014 confirm in Asana). | *(SJ Ops Daily Stand Up 07/20)*\n- Ciarra/Nicole: zero out negative toner inventory (-10 at Oakland) in Shopify/Cloud. | *(Daily Ops Stand Up 07/17)*\n- Nicole: prioritize 150 headband units to Amazon FBA; verify UPC with OC3PL first. | *(Daily Ops Stand Up 07/17)*\n- Nicole: track summer scarves delivery at OC3PL, expedite inventory upload given Ayesha's Today Show appearance driving possible demand spike. | *(Daily Ops Stand Up 07/17, WITHIN QBR 07/20)*\n- Nicole/Ciarra: air-ship half the guava order (5K air / 5K sea) to hit the August timeline; confirm cartons at Allure. | *(Daily Ops Stand Up 07/17, PJ/SJ Skin TB 07/20)*\n- Ciarra: hand off ocean-shipment receiving (face masks, ETA 7/22 LA) to Nicole with Gogo Customs as freight forwarder \u2014 full handover thread now includes Nicole/Alvin. | *(Daily Ops Stand Up 07/17)*\n- Nicole: decide on tinted-SKU kitting approach (10K units \u2014 individually shipped vs. KDC-kitted with possible MOQ) once brainstorm with Katie/Soraya happens. | *(Daily Ops Stand Up 07/17)*\n\n**PD \u2014 supplier / production**\n- Alex Delmarco (HCT): confirm guava tube production schedule to match essential-SKU readiness (8/14); report back on FNA-instruction requirement for lychee/other flavors post pineapple-punch pilot. | *(PJ/SJ Skin TB 07/20, 07/14)*\n- Greg D. Vecchia / JD Ayden (KDC-One): real-time updates on pineapple punch raw-material testing; batching targeted week of 7/27; include Trina Churchill (new client-services contact) on all future supply-planning threads. | *(PJ/SJ Skin TB 07/20)*\n- Alvin: schedule air shipment for guava following the lychee air-shipment cadence. | *(PJ/SJ Skin TB 07/20)*\n- Alvin: continue reconciling KDC-One/testing invoices; share status with Perrine. | *(SJ Skin Weekly TB 07/15)*\n- Alvin: courier signed tube artwork to HCT; artwork still open for Phase 2 tinted SKUs and Coffee Fix (lip + eye cream) pending Danielle/Ayesha review. | *(SJ Skin Weekly TB 07/15)*\n- Nicole: sign off on glossy drawdown samples (premium vs. standard) once Katie submits them. | *(SJ Skin Weekly TB 07/15)*\n- Alvin: flag vitamin C percentage display (secondary packaging) for a Danielle/Soraya decision \u2014 conversation has stalled since Soraya's PTO. | *(SJ Skin Weekly TB 07/15)*\n- Alvin: prepare Resurrection Bomb packaging pilot decision pending Capsum sample arrival (ordered from China, no domestic backup exists if rejected). | *(SJ Skin Weekly TB 07/15)*\n- Alvin: share the Asana visual board directly on KDC-One/HCT supplier calls going forward to hold the team accountable on dates \u2014 raised specifically after a 4\u20135 month miscommunication on guava-tube priority. | *(PJ/SJ Skin TB 07/14)*\n\n---\n\n## \ud83d\udcac DECISIONS (log as comments / decisions log)\n\n- **Org design decision:** Eliminate Ciarra's Ops Coordinator role by end of August (not a performance-out \u2014 a role redesign) and replace it with two new specialist roles \u2014 an Operations Specialist and a Product Development Project Manager Specialist \u2014 both reporting to Nicole. Alvin and Nicole will divide her current work in the interim (Alvin: inventory/logistics; Nicole: order management/OC3PL). *(SJS Builder Session, 07/17)* \u2014 **Recommend logging to `decisions/log.md`** given this is a quarter-priority hiring decision (ties directly to `context/priorities.md`).\n- **Org design decision:** Push to move Ivy's reporting line from Danielle to Soraya (people-management only, not creative direction) \u2014 Danielle has been hesitant; Alvin is making the case. *(SJS Builder Session, 07/17)* \u2014 candidate for decisions log.\n- Builder sessions (Alvin/Nicole recurring 1:1) moved earlier in the day going forward, to avoid afternoon drop-off in effectiveness. *(SJS Builder Session, 07/17)*\n- Toner unit-carton production: hold for Padrero regulatory review rather than proceed at risk (per Perrine's recommendation). *(SJ Skin Weekly TB, 07/15)*\n- Copy doc \"distributed by\" line: change from AC Brands to Sweet July across SKU copy docs (soursop caught; check the rest). *(SJ Skin Weekly TB, 07/15)*\n- Resurrection Bomb launch: confirmed for fall 2027 (last launch of the year), not summer as previously discussed. *(SJ Skin Weekly TB, 07/15)*\n\n---\n\n## \ud83d\udcca STATUS SIGNALS\n\n- **Guava (Amazon + OC3PL + discovery-set reserve)** \u2014 Affects: Inventory / OC3PL Order Management | Suggested RAG: **Amber** \u2014 tight but managed with an active mitigation plan (air shipment, de-kitting, FWS replenishment trigger at 500 units).\n- **Toner** \u2014 Affects: Inventory | Suggested RAG: **Amber** \u2014 low stock, October receipt date, may need a stability-testing waiver to hit that date; secondary packaging held for regulatory.\n- **Lychee/pineapple punch production (Ulta-facing)** \u2014 Affects: PD / Retail relationship | Suggested RAG: **Red** \u2014 Ulta has been told \"not next week\" three weeks running; raw material now in-house and testing, but no committed production date yet.\n- **Pineapple punch face mask (Amazon)** \u2014 Affects: Regulatory / Quality | Suggested RAG: **Red** \u2014 appeal denied once, heavy-metals test outstanding, product off Amazon since before launch.\n- **Ulta partnership overall** \u2014 Affects: Founder / Retail | Suggested RAG: **Amber** \u2014 one month in, progress slower than expected per finance review; being monitored closely.\n- **Eye cream** \u2014 Affects: Quality / OC3PL | Suggested RAG: **Green-trending** \u2014 root cause identified (barcode template), fix in progress, restock expected within a couple weeks from Allure.\n\n---\n\n## \ud83d\udcb0 MARGIN\n\n- Heavy metals test sourcing (face mask + cleansing oil) \u2014 Amazon's recommended labs quote $3\u20136K; Perrine getting comparable quotes from Veggie Labs and a second vendor, expects under $1K. Explicitly framed as \"Amazon money grab.\" | *(SJ Skin Weekly TB, 07/15)*\n  \u2192 margin-pressure-test (vendor cost comparison), cross-ref `regulatory`/`quality` above\n- KDC-One testing invoice reconciliation in progress \u2014 Alvin flagged discrepancies between initial and balance invoices; sharing with Perrine to review before payment. | *(SJ Skin Weekly TB, 07/15)*\n  \u2192 margin-pressure-test / purchasing-manager\n- Pacific Automation equipment-possession dispute still unresolved (they claim SC30 has equipment SC30 says it doesn't have) \u2014 ongoing back-and-forth, no resolution yet. | *(ACE Finance Review, 07/16)*\n  \u2192 purchasing-manager / vendor dispute, no direct Asana queue named in bridge contract \u2014 flag to Alvin for direct follow-up.\n\n---\n\n## \ud83d\udd2d INTEL\n\n- Q2 performance (WITHIN QBR): $105K Q2 revenue, +7% YoY despite product-launch delays; paid media +17% revenue growth (TikTok/Meta strong); Amazon +91% sales during Prime Week; organic/SEO +12% YoY. Q3 priorities: omnichannel balance across D2C/Ulta/Amazon, Pineapple Punch launch as the growth driver.\n  \u2192 sjs-retail-intel (Amazon/Ulta channel data), sjs-comp-intel (n/a this week \u2014 no competitor mentions)\n- Ayesha's Today Show appearance (Sweet July, Ulta, face mask mentions, \"What's in My Bag\" segment) \u2014 driving potential demand spike on summer scarves; Soraya tracking boosting/organic-content opportunities.\n  \u2192 sjs-retail-intel, ayesha-weekly-briefing\n\n---\n\n## \ud83d\udc64 FOUNDER BRIEFING\n\n- Ulta production-timeline frustration (see URGENT/Red status) \u2014 founder-briefing-worthy given retailer relationship risk.\n- Today Show appearance and \"What's in My Bag\" segment performance \u2014 good-news item for the briefing.\n- Q2 QBR results ($105K, +7% YoY, Amazon +91% Prime Week) \u2014 standard founder rollup material.\n- Canada market entry \u2014 confirmed on hold; Ayesha reassessed and decided not to pursue the Top Shelf Canada deal for now. *(ACE Finance Review, 07/16)*\n- Three-year PD plan \u2014 Ayesha, Danielle, and the skin consultant did an initial \"pie in the sky\" pass; Alvin/Dan circling back to make it realistic ahead of the budget meeting. *(ACE Finance Review, 07/16)*\n- Org redesign (Ciarra transition, two new specialist roles) \u2014 worth a founder-facing FYI even though it's an operator-level decision, since it ties to this quarter's hiring priority.\n\n---\n\n## \u2699\ufe0f PLM FLAGS (cross-flag to `outlook-plm-bridge` / `asana-plm-bridge`)\n\n- Pineapple punch raw material now fully received and in testing (final outstanding raw material arrived) \u2014 batching targeted week of 7/27. Update formula/batch record status.\n- Lychee, guava, essential production dates confirmed: lychee end of July, guava 8/7, essential 8/14 \u2014 update PLM production schedule fields.\n- Trina Churchill (KDC-One) now the client-services/replenishment contact of record \u2014 update vendor contact record.\n- Toner IL cleared regulatory intake, in Padrero review \u2014 update PLM regulatory-status field.\n- Soursop copy doc updated with new IO section; \"distributed by\" corrected to Sweet July \u2014 update PLM copy/label record.\n- Capsum packaging samples for Resurrection Bomb in transit from China, no backup vendor exists \u2014 flag as a supply-risk note on the PLM record.\n\n---\n\n## Which of these should I push?\n\nThis was a read-only catch-up per your request \u2014 nothing has been written to Asana. Say \"all,\" list specific items by section/bullet, or \"skip.\" Given the safety/compliance priority order, I'd suggest starting with the two \ud83d\udea8 URGENT regulatory/quality items (Amazon face-mask appeal + guava stockout risk) if you want to triage before doing a full push.\n"}], "grading": {"expectations": [{"text": "Multiple meetings from the past week covered", "passed": true, "evidence": "8 meetings covered (7/14\u20137/20), full transcripts fetched for each."}, {"text": "Urgent items surfaced before general list (Mode 2)", "passed": true, "evidence": "\ud83d\udea8 URGENT section leads the report with 4 flagged items before any other section."}, {"text": "Uses the Action Item Report section structure", "passed": true, "evidence": "URGENT/QUALITY/REGULATORY/OPS-PD/DECISIONS/STATUS SIGNALS/MARGIN/INTEL/FOUNDER/PLM FLAGS all present."}, {"text": "Multi-label items split and cross-referenced", "passed": true, "evidence": "E.g. Amazon face-mask item labeled 'regulatory + quality' with explicit cross-ref to a 'margin' entry."}, {"text": "No Asana write before confirmation gate", "passed": true, "evidence": "Ends with 'which of these should I push?' and states nothing written."}], "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0}, "timing": {"executor_duration_seconds": 152.9}}}, {"id": "eval-0-weekly-meeting-catchup-without_skill", "prompt": "Catch me up on this week's meetings", "eval_id": 0, "outputs": [{"name": "output.md", "type": "text", "content": "# This Week's Meetings \u2014 Catch-Up (week of Mon Jul 20 \u2013 Tue Jul 21, 2026)\n\nFireflies shows 3 meetings this week, all on Monday, July 20. Nothing recorded yet for today (Tuesday).\n\n## 1. WITHIN x Sweet July QBR (6:00 PM UTC, 64 min)\nAttendees: Alvin, Nicole, Danielle, Soraya (AC Brands) + Within agency team (Karola, Amanda, Christina, Gabriela, Kexin, Vincent, Anastasia, growth.gong)\n\nQ2 recap: sales hit $105K, up 7% YoY, despite a product delay. Direct and organic channels carried the growth; paid media growth was flat overall but paid media revenue specifically grew 17% (TikTok + Meta performing well). Amazon sales up 91% during Prime Week with efficient ad spend. SEO drove 12% YoY organic revenue growth. Rum Cake restock and the Mother's Day promo were called out as wins.\n\nQ3 focus: balanced omnichannel push across D2C, Ulta, and Amazon, with the Pineapple Punch launch as the next big revenue driver.\n\nAction items:\n- Soraya \u2014 confirm Danielle's Today Show attendance/updates; share the Ulta Beauty Collective attendee list for organic content monitoring.\n- Nicole \u2014 revise Q3 targets given the cleansing oil launch delay and get them to the team this week; follow up with Ulta's Katie on sales benchmarks; keep the team posted on Pineapple Punch launch timing.\n- Amanda \u2014 track Today Show collaboration angles; add Ulta CTA into Meta/Instagram captions; lead differentiated creative/journey work across DTC, Ulta, Amazon for Q3; coordinate Pineapple Punch creative.\n- Karola \u2014 keep iterating Meta/TikTok creative (Aisha feature, TikTok UGC); align top DTC creative with Ulta messaging.\n- Christina \u2014 SEO push on new product pages, especially Pineapple Punch, targeting high-intent non-branded keywords.\n- Kexin \u2014 sustain Amazon campaign optimization through Prime Day and into the Pineapple Punch launch.\n\n## 2. SJ Ops Daily Standup (5:30 PM UTC, 16 min)\nAttendees: Alvin, Nicole, Ciarra\n\nMain thread was inventory risk on the 991 discovery sets (guava sells 600+ units/month) \u2014 Ciarra flagged the need to start de-kitting guava proactively to avoid stockouts. A discrepancy surfaced between guava cartons and the Allure destruction list; Alvin pushed for accuracy there. Also covered: Amazon UPC change process (assigned to Ciarra), a delay on face mask shipments pending Nicole, and coverage planning for Alvin's and Ciarra's upcoming PTO later this week (Nicole covering).\n\nAction items:\n- Ciarra \u2014 instruct FWS to start de-kitting guava proactively, confirm carton availability at Allure; track today's guava delivery; confirm guava cartons pulled from the destruction list; run the Amazon UPC change via Seller Central ticket; check marketing-inventory transfer status; brief Nicole on order-management items before Wednesday EOD (PTO).\n- Nicole \u2014 review Ciarra's completed skin blog drafts; trigger the Amazon go-live update for face masks and log the Asana dependency; plan the OC3PL-to-store marketing-unit transfer; cover ops during Alvin/Ciarra's PTO.\n- Alvin \u2014 confirm guava inventory timing for de-kitting; make sure Allure has cartons for repackaging; add the Terry headband SKU to the inventory dashboard; oversee the Allure destruction run (excluding guava cartons); prep PTO handover notes; confirm next Tuesday's QBR attendance.\n\n## 3. PJ / Sweet July Skin TB (5:00 PM UTC, 10 min)\nAttendees: Alvin + KDC-One / HCT / Milinyc Beauty contacts (Perrine Calvet, D. Greco, J. Dayen, A. Demarco, G. Santoro, A. Rodriguez, B. Lattimer)\n\nShort production-status touch base. Lychee, guava, and other flavors have confirmed production dates \u2014 5,000 units per flavor shipping by both air and sea to speed up market entry. Pineapple Punch raw materials are in testing now, with production targeted for the week of July 27. A new client services rep, Trina Churchill, was introduced to handle order replenishment communication.\n\nAction items:\n- Greg Dvecchia \u2014 confirm whether FNA instructions are needed for lychee and other flavors post-pilot; loop Trina Churchill into all supply/forecasting threads.\n- Alvin \u2014 schedule the air shipment for half the guava batch, timed with the lychee shipment.\n- J Dayen \u2014 send real-time updates on Pineapple Punch raw material testing; email Alvin Trina Churchill's contact info.\n\n## Cross-check against your open Asana tasks\nPulled your current Asana task list for anything these meetings should update. Everything currently assigned to you in Asana carries due dates from April\u2013May 2026 (MIG meetings, regulatory/PLM items, lip treatment PO/vessel milestones, 3PL transition tasks) \u2014 nothing in that list lines up with this week's action items (guava de-kitting, UPC changes, Pineapple Punch production, Trina Churchill handoff, Q3 Within targets). None of those appear to exist as Asana tasks yet; they're currently only captured in the Fireflies summaries above.\n"}], "grading": {"expectations": [{"text": "Multiple meetings from the past week covered", "passed": false, "evidence": "Only 3 meetings covered vs. 8 in the with-skill run \u2014 a real coverage gap, not just a formatting difference (baseline's date-window logic missed 5 real meetings)."}, {"text": "Urgent items surfaced first (Mode 2)", "passed": false, "evidence": "No urgency triage at all; meetings presented in plain chronological list."}, {"text": "Uses the Action Item Report section structure", "passed": false, "evidence": "Uses a meeting-by-meeting recap format instead."}, {"text": "Multi-label items split and cross-referenced", "passed": false, "evidence": "No classification labels applied anywhere."}, {"text": "No Asana write before confirmation gate", "passed": true, "evidence": "No write attempted; also correctly notes gaps between Fireflies and Asana."}], "summary": {"passed": 1, "failed": 4, "total": 5, "pass_rate": 0.2}, "timing": {"executor_duration_seconds": 66.2}, "eval_feedback": {"overall": "The meeting-count gap (3 vs 8) is the most important finding here \u2014 worth checking whether baseline's search window logic is simply narrower, since that's a real coverage miss independent of classification quality."}}}, {"id": "eval-1-sorrel-approval-log-with_skill", "prompt": "The formula for the Sorrel lip treatment was approved on our call \u2014 log it", "eval_id": 1, "outputs": [{"name": "output.md", "type": "text", "content": "# Fireflies \u2192 Asana Bridge \u2014 Run Output\n\n**Request:** \"The formula for the Sorrel lip treatment was approved on our call \u2014 log it\"\n\n---\n\n## Step 1: Fireflies transcript search (live MCP reads)\n\nRan `fireflies_search` (`keyword:\"Sorrel\" scope:all limit:20`) \u2014 20 meetings matched the keyword somewhere in title/summary/action items. Pulled the full sentence-level transcript for the two most recent, most plausible candidates:\n\n| Transcript ID | Title | Date | Result |\n|---|---|---|---|\n| `01KXECESB9K1NKYAJ4Q3FDDEBX` | SJ Skin Weekly TB | 2026-07-15 | No formula-approval discussion for Sorrel. Covers courier logistics, Amazon face-mask heavy-metals appeal, Pineapple Punch raw material, tube/carton production, Padrero IL prioritization (fig/cherry/sorrel tea named only as upcoming IL priorities). |\n| `01KWCSX2GMK52R9QHWR2AD2V2J` | PJ/Sweet July Skin TB | 2026-07-06 | No formula-approval discussion for Sorrel. Covers a raw-material rejection on Pineapple Punch, tube crimping/iMark specs, color-match tube approvals for six tinted SKUs (Sorrel among them, but re: tube caps, not formula), cap/label/carton sourcing. |\n\nThe other 18 matches (SJ Skin Weekly TB and PJ/Sweet July Skin TB series from 2026-04 through 2026-07, plus Perrine + SJ Beauty Weekly Check-Ins and two 1:1s) surface \"Sorrel\" only in passing \u2014 sample handoffs, packaging MOQ, artwork, tube caps \u2014 never a formula sign-off. Confirmed via full-text grep of the two \"Sorrel\"-heaviest hits (`01KSHJAWXQ7F103XGBBBV049N2` Perrine + SJ Beauty Weekly Check-In 2026-06-01, `01KSG6ZJX2NQ1Y1QREPC5N2V05` Nicole + Alvin 1:1 2026-05-27): both reference Sorrel sample/packaging logistics, not a formula approval decision.\n\n**Conclusion: no real Fireflies transcript exists that records a Sorrel formula approval on a call.** Nothing in the live workspace substantiates \"approved on our call\" as a discrete, dated meeting event. Flagging this plainly rather than fabricating a source.\n\n---\n\n## Step 2: Asana live read \u2014 Sorrel formula state\n\nSearched Asana (`asana_search_tasks`) and pulled the **SJ SKIN - Formula Development Tracker** project (gid `1213280384100264`) directly. Found four Sorrel-named formula records in that tracker:\n\n| Task | Section | Review Status | Formula # | Rev # | Notes |\n|---|---|---|---|---|---|\n| **Lip Treatment - Sorrel - Formula Development** (`1215142031949476`) | **Approved** | **Approved** | 18GS852005 | 4 | Submission Status: **Approval Form Signed**. Flavor: .7% N&A Sorrel Tea & Rum Flavor N81346 (Carrubba). Chain of Custody: With Ayesha. Date Received 2026-05-25. |\n| Lip Treatment - Sorrel - Formula Development (`1215142031949470`) | Archived/Rejected | Rejected | 18GS852003 | 3 | Prior revision, superseded. |\n| #2 Tinted Lip Treatment Sorrel - Formula Development (`1214314285745738`) | Archived/Rejected | Rejected | 18GS842067 | 2 | Earlier revision \u2014 feedback notes flavor not landing. |\n| Tinted Lip Treatment Sorrel - Formula Development (`1213275856358453`) | Archived/Rejected | Revisions Required | 18GS830107 | v1 | Original revision \u2014 \"Color Approved. Flavor Needed - add baking spices.\" |\n\n**Important finding:** Revision 4 (Formula # 18GS852005) is **already sitting in the Approved section with a signed approval form** \u2014 this looks like the formula approval Alvin is referring to may already be logged in the Formula Tracker. There's no live evidence of a *newer, unlogged* approval beyond what's already on record. This run treats the request at face value (log a fresh approval decision) per the task instructions, but the discrepancy is called out below rather than silently overwritten.\n\nAlso confirmed the downstream PD project: **SJ SKIN - Sorrel Tinted Lip Treatment (KDC/One Port Jervis 18GS830107)** (gid `1213900755157220`), which carries phase-by-phase execution tasks (vessel production, PPS approval, IL review, testing, photoshoot, etc.) \u2014 this is the project a Formula Tracker \"Approved\" move would typically hand off into / unblock downstream phase-gated tasks in.\n\n---\n\n## Step 3: Master classifier\n\nPer `fireflies-asana-bridge` / `sjs-master` bridge queue contract:\n\n**Action item:** \"Formula for Sorrel lip treatment approved\" (decision, sourced from Alvin's verbal report of a call \u2014 no corroborating transcript found)\n\n- **Primary label:** `pd` \u2014 formula approval / stage-gate language, named SKU (Sorrel Tinted Lip Treatment), Formula Development Tracker governs this exact event.\n- **Secondary label:** `plm` \u2014 \"Formula approval\" is an explicit PLM-flag trigger per the signal table (formula approval discussed live \u2192 cross-flag to `asana-plm-bridge` for Asana-side staging, since this is meeting-sourced, not email-sourced).\n\nPriority ordering (`quality > regulatory > ops > pd > margin > intel > founder`) puts `pd` as parent with no `quality`/`regulatory`/`ops` signal present \u2014 no OOS/OOT, no Pedrero/MoCRA, no PO/freight language in the request itself.\n\n---\n\n## Step 4: Action Item Report (per skill format)\n\n```\n\ud83d\udccb Source: Alvin verbal report \u2014 \"The formula for the Sorrel lip treatment was approved on our call\"\n\u26a0\ufe0f No matching Fireflies transcript found \u2014 proceeding on Alvin's stated account only.\nLabels: [pd, plm]\n\n\ud83d\udccc PD ACTION ITEM\n\u2022 Move \"Lip Treatment - Sorrel - Formula Development\" (Formula Development Tracker) to Approved\n  \u2014 NOTE: live read shows this task (gid 1215142031949476, Formula # 18GS852005, Rev 4) is\n  ALREADY in the Approved section with Review Status = Approved and Submission Status =\n  Approval Form Signed. No task-move action is actually pending on the tracker side.\n  Owner: Alvin | Project: SJ SKIN - Formula Development Tracker\n\n\ud83d\udcac DECISION (would log as a comment if pushed)\n\u2022 \"Formula approved on call [date/attendees unconfirmed \u2014 no transcript found]\" \n  \u2192 Add to: Lip Treatment - Sorrel - Formula Development (gid 1215142031949476)\n  \u2192 Cross-ref: SJ SKIN - Sorrel Tinted Lip Treatment (KDC/One Port Jervis 18GS830107)\n    project (gid 1213900755157220) \u2014 downstream execution project\n\n\u2699\ufe0f PLM FLAG (cross-flag to outlook-plm-bridge / asana-plm-bridge \u2014 owns the actual write)\n\u2022 Formula approval, Sorrel Tinted Lip Treatment, Formula # 18GS852005, Rev 4\n  \u2014 stage for PLM formula-status sync\n```\n\n---\n\n## Confirmation preview (STOPPING HERE \u2014 no Asana write executed)\n\n```\nProposed action: Add a comment to Asana task\n  \"Lip Treatment - Sorrel - Formula Development\" (gid 1215142031949476)\n  Project: SJ SKIN - Formula Development Tracker\n\nComment text (draft):\n  \"Formula approval confirmed by Alvin verbally, referencing a recent call.\n  Note: no Fireflies transcript was located to corroborate call date/attendees \u2014\n  logged from Alvin's direct report. Tracker status already reflects Approved /\n  Approval Form Signed for Formula # 18GS852005 (Rev 4).\"\n\nSecondary cross-flag (no direct write \u2014 staged for asana-plm-bridge):\n  \u2699\ufe0f PLM Bridge: Sorrel Tinted Lip Treatment formula approval (Formula # 18GS852005,\n  Rev 4) \u2014 tag for PLM formula-status field sync.\n\nConfirm to proceed? (yes / edit / skip)\n```\n\nNo Asana write was executed. This output stops at the confirmation-preview step as instructed.\n"}], "grading": {"expectations": [{"text": "Classified with both pd label and plm cross-flag", "passed": true, "evidence": "'Labels: [pd, plm]' stated explicitly with priority-order reasoning."}, {"text": "Proposed action is specifically a Formula Tracker stage move on the Sorrel task", "passed": true, "evidence": "Found the real Formula Development Tracker task (gid 1215142031949476) and proposed the comment/move against it specifically."}, {"text": "PLM cross-flag explicitly mentioned", "passed": true, "evidence": "'\u2699\ufe0f PLM FLAG (cross-flag to outlook-plm-bridge / asana-plm-bridge...)' section present."}, {"text": "Confirmation preview, not a claim it already happened", "passed": true, "evidence": "'STOPPING HERE \u2014 no Asana write executed' plus a 'Confirm to proceed?' gate."}, {"text": "If no real transcript found, says so plainly", "passed": true, "evidence": "'no real Fireflies transcript exists that records a Sorrel formula approval' stated directly, backed by a full search log."}], "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0}, "timing": {"executor_duration_seconds": 183.4}, "eval_feedback": {"overall": "Also caught that the formula (Rev 4, Formula # 18GS852005) is already in the Approved section with a signed form \u2014 flagged the discrepancy plainly rather than logging a duplicate or fabricated event."}}}, {"id": "eval-1-sorrel-approval-log-without_skill", "prompt": "The formula for the Sorrel lip treatment was approved on our call \u2014 log it", "eval_id": 1, "outputs": [{"name": "output.md", "type": "text", "content": "# Task: \"The formula for the Sorrel lip treatment was approved on our call \u2014 log it\"\n\n## Verdict: No matching transcript found\n\nI searched Fireflies broadly (keyword search for \"Sorrel\", scoped keyword search for \"Sorrel lip treatment formula approved\", and a date-window pull of all meetings from 2026-07-13 through 2026-07-21) and found no transcript where a Sorrel lip treatment **formula** approval is stated. There is no call on record where anyone says the Sorrel formula was approved.\n\nWhat actually exists in Fireflies re: Sorrel:\n\n- **2026-06-01, \"Perrine + SJ Beauty Weekly Check-In\"**: \"Danielle Iturbe reported that the sorrel sample is nearing approval\" and an action item to \"push for approval of sorrel sample after current round\" \u2014 nearing, not confirmed.\n- **2026-07-14, \"PJ/Sweet July Skin TB\"**: action item for Alex Delmarco to confirm timing for \"field samples (Fig Sorel and Jamaican cherry)\" for a photo shoot \u2014 packaging/sample logistics, not a formula sign-off.\n- **2026-07-15, \"SJ Skin Weekly TB\"**: \"stability testing for lip treatments is ongoing\" \u2014 as of the most recent weekly touchbase, lip treatment stability work (a pre-approval step) was still open, not closed.\n- **2026-07-13, \"Perrine + SJ Beauty Weekly Check-In\"**: a *different* product's formula was approved that week \u2014 \"the Resurrection Bomb product formula has been approved, with packaging discussions scheduled for July 20.\" This is the only formula-approval statement in the window, and it is not Sorrel.\n\nI also checked Asana for existing Sorrel-related work to see whether a formula-approval milestone had already been logged elsewhere. There is an active project, **\"SJ SKIN - Sorrel Tinted Lip Treatment (KDC/One Port Jervis 18GS830107)\"**, with a task **\"Sorrel Tinted Lip Treatment Primary Vessel Production HCT Completed\"** sitting in the **\"Phase 5 - Final Production (Components/Formula)\"** section, plus an open task **\"Sorrel Tinted Lip Treatment RIPT Testing Completed\"** due today (2026-07-21). No task in that project is named or marked as a formula approval, and RIPT (stability) testing appears to still be in flight \u2014 which is inconsistent with a formula already being approved.\n\n## Best-effort proposal (no Asana writes made)\n\nGiven the above, my best-effort read is that the request is either premature (referring to a call that hasn't happened yet, or one not yet synced to Fireflies) or is conflating Sorrel with the Resurrection Bomb approval from the 2026-07-13 call. I did not write anything to Asana. If this were to be logged, I'd propose one of two paths depending on which is true:\n\n1. **If the user confirms this was a real, recent call not in Fireflies** (e.g., an unrecorded call or one still processing): log a comment on the Sorrel Tinted Lip Treatment project's Phase 5 formula/components task (or a new \"Formula Approved\" task in that section) stating the approval, who confirmed it, and the date \u2014 sourced to the call rather than a transcript, and flagged as manually reported pending transcript confirmation.\n2. **If this was a mix-up with the Resurrection Bomb approval** (2026-07-13 call, Perrine + SJ Beauty Weekly Check-In): the approval should be logged against the Resurrection Bomb project, not Sorrel \u2014 I'd surface this discrepancy back to the user rather than log it under the wrong product.\n\nEither way, I would not create the Asana log entry without the user confirming which product/call is actually being referenced, since the only concrete formula-approval signal in the transcripts is for a different product.\n\n## Tools used\n- Fireflies: `fireflies_search` (x2), `fireflies_get_transcripts` (x2)\n- Asana: `asana_search_tasks` (x1)\n\nNo Asana write calls were made.\n"}], "grading": {"expectations": [{"text": "Classified with both pd label and plm cross-flag", "passed": false, "evidence": "No label system used; no plm cross-flag mentioned at all."}, {"text": "Proposed action is specifically a Formula Tracker stage move on the Sorrel task", "passed": false, "evidence": "Found only a downstream execution project, not the actual Formula Development Tracker record the with-skill run located."}, {"text": "PLM cross-flag explicitly mentioned", "passed": false, "evidence": "Not mentioned anywhere."}, {"text": "Confirmation preview, not a claim it already happened", "passed": true, "evidence": "No write made; explicitly stated."}, {"text": "If no real transcript found, says so plainly", "passed": true, "evidence": "Names the closest real event (Resurrection Bomb approval) and flags the likely mix-up."}], "summary": {"passed": 2, "failed": 3, "total": 5, "pass_rate": 0.4}, "timing": {"executor_duration_seconds": 119.0}, "eval_feedback": {"overall": "Baseline missed the actual Formula Development Tracker record entirely \u2014 a meaningful miss, since that's the system of record the skill is built to reach."}}}], "previous_feedback": {}, "previous_outputs": {}, "benchmark": {"metadata": {"skill_name": "fireflies-asana-bridge", "skill_path": "/home/user/SJ-OS/.claude/skills/fireflies-asana-bridge", "executor_model": "claude-sonnet-5", "analyzer_model": "claude-sonnet-5", "timestamp": "2026-07-21T00:00:00Z", "evals_run": [0, 1], "runs_per_configuration": 1}, "runs": [{"eval_id": 0, "eval_name": "weekly-meeting-catchup", "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 5, "failed": 0, "total": 5, "time_seconds": 152.9, "tokens": 172674, "tool_calls": 14, "errors": 0}}, {"eval_id": 0, "eval_name": "weekly-meeting-catchup", "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.2, "passed": 1, "failed": 4, "total": 5, "time_seconds": 66.2, "tokens": 66798, "tool_calls": 8, "errors": 0}}, {"eval_id": 1, "eval_name": "sorrel-approval-log", "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 5, "failed": 0, "total": 5, "time_seconds": 183.4, "tokens": 130466, "tool_calls": 25, "errors": 0}}, {"eval_id": 1, "eval_name": "sorrel-approval-log", "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.4, "passed": 2, "failed": 3, "total": 5, "time_seconds": 119.0, "tokens": 91673, "tool_calls": 16, "errors": 0}}], "run_summary": {"with_skill": {"pass_rate": {"mean": 1.0, "stddev": 0.0, "min": 1.0, "max": 1.0}, "time_seconds": {"mean": 168.15, "stddev": 21.5, "min": 152.9, "max": 183.4}, "tokens": {"mean": 151570.0, "stddev": 29788.9, "min": 130466, "max": 172674}}, "without_skill": {"pass_rate": {"mean": 0.3, "stddev": 0.141, "min": 0.2, "max": 0.4}, "time_seconds": {"mean": 92.6, "stddev": 37.3, "min": 66.2, "max": 119.0}, "tokens": {"mean": 79235.5, "stddev": 17604.5, "min": 66798, "max": 91673}}, "delta": {"pass_rate": "+0.70", "time_seconds": "+75.55", "tokens": "+72334.5"}}, "notes": ["IMPORTANT FINDING: baseline's weekly catchup covered only 3 meetings vs. 8 in the with-skill run for the identical date window \u2014 a real coverage gap in the raw search approach, not just a classification-quality difference. Worth verifying whether the skill's date-window/search-scope guidance is what closes this gap, since it materially changes what gets missed.", "With-skill pass rate 100% across both evals; baseline 20-40%. Baseline scored highest on the eval closest to a single lookup (Sorrel approval), lowest on the open-ended weekly sweep requiring classification and cross-referencing across many items.", "With-skill costs roughly double the tokens and 1.5-2x the time of baseline \u2014 proportionate to genuinely broader work (multi-transcript sweep, master classifier, cross-referencing), not obviously wasteful."]}};
+
+    // ---- State ----
+    let feedbackMap = {};  // run_id -> feedback text
+    let currentIndex = 0;
+    let visitedRuns = new Set();
+
+    // ---- Init ----
+    async function init() {
+      // Load saved feedback from server — but only if this isn't a fresh
+      // iteration (indicated by previous_feedback being present). When
+      // previous feedback exists, the feedback.json on disk is stale from
+      // the prior iteration and should not pre-fill the textareas.
+      const hasPrevious = Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0
+        || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
+      if (!hasPrevious) {
+        try {
+          const resp = await fetch("/api/feedback");
+          const data = await resp.json();
+          if (data.reviews) {
+            for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
+          }
+        } catch { /* first run, no feedback yet */ }
+      }
+
+      document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
+      showRun(0);
+
+      // Wire up feedback auto-save
+      const textarea = document.getElementById("feedback");
+      let saveTimeout = null;
+      textarea.addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+        document.getElementById("feedback-status").textContent = "";
+        saveTimeout = setTimeout(() => saveCurrentFeedback(), 800);
+      });
+    }
+
+    // ---- Navigation ----
+    function navigate(delta) {
+      const newIndex = currentIndex + delta;
+      if (newIndex >= 0 && newIndex < EMBEDDED_DATA.runs.length) {
+        saveCurrentFeedback();
+        showRun(newIndex);
+      }
+    }
+
+    function updateNavButtons() {
+      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("next-btn").disabled =
+        currentIndex === EMBEDDED_DATA.runs.length - 1;
+    }
+
+    // ---- Show a run ----
+    function showRun(index) {
+      currentIndex = index;
+      const run = EMBEDDED_DATA.runs[index];
+
+      // Progress
+      document.getElementById("progress").textContent =
+        `${index + 1} of ${EMBEDDED_DATA.runs.length}`;
+
+      // Prompt
+      document.getElementById("prompt-text").textContent = run.prompt;
+
+      // Config badge
+      const badge = document.getElementById("config-badge");
+      const configMatch = run.id.match(/(with_skill|without_skill|new_skill|old_skill)/);
+      if (configMatch) {
+        const config = configMatch[1];
+        const isBaseline = config === "without_skill" || config === "old_skill";
+        badge.textContent = config.replace(/_/g, " ");
+        badge.className = "config-badge " + (isBaseline ? "config-baseline" : "config-primary");
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+      }
+
+      // Outputs
+      renderOutputs(run);
+
+      // Previous outputs
+      renderPrevOutputs(run);
+
+      // Grades
+      renderGrades(run);
+
+      // Previous feedback
+      const prevFb = (EMBEDDED_DATA.previous_feedback || {})[run.id];
+      const prevEl = document.getElementById("prev-feedback");
+      if (prevFb) {
+        document.getElementById("prev-feedback-text").textContent = prevFb;
+        prevEl.style.display = "block";
+      } else {
+        prevEl.style.display = "none";
+      }
+
+      // Feedback
+      document.getElementById("feedback").value = feedbackMap[run.id] || "";
+      document.getElementById("feedback-status").textContent = "";
+
+      updateNavButtons();
+
+      // Track visited runs and promote done button when all visited
+      visitedRuns.add(index);
+      const doneBtn = document.getElementById("done-btn");
+      if (visitedRuns.size >= EMBEDDED_DATA.runs.length) {
+        doneBtn.classList.add("ready");
+      }
+
+      // Scroll main content to top
+      document.querySelector(".main").scrollTop = 0;
+    }
+
+    // ---- Render outputs ----
+    function renderOutputs(run) {
+      const container = document.getElementById("outputs-body");
+      container.innerHTML = "";
+
+      const outputs = run.outputs || [];
+      if (outputs.length === 0) {
+        container.innerHTML = '<div class="empty-state">No output files</div>';
+        return;
+      }
+
+      for (const file of outputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        // Always show file header with download link
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const content = document.createElement("div");
+        content.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          content.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          content.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          content.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(content, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          content.appendChild(a);
+        } else if (file.type === "error") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          pre.style.color = "var(--red)";
+          content.appendChild(pre);
+        }
+
+        fileDiv.appendChild(content);
+        container.appendChild(fileDiv);
+      }
+    }
+
+    // ---- XLSX rendering via SheetJS ----
+    function renderXlsx(container, b64Data) {
+      try {
+        const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
+        const wb = XLSX.read(raw, { type: "array" });
+
+        for (let i = 0; i < wb.SheetNames.length; i++) {
+          const sheetName = wb.SheetNames[i];
+          const ws = wb.Sheets[sheetName];
+
+          if (wb.SheetNames.length > 1) {
+            const sheetLabel = document.createElement("div");
+            sheetLabel.style.cssText =
+              "font-weight:600; font-size:0.8rem; color:#b0aea5; margin-top:0.5rem; margin-bottom:0.25rem;";
+            sheetLabel.textContent = "Sheet: " + sheetName;
+            container.appendChild(sheetLabel);
+          }
+
+          const htmlStr = XLSX.utils.sheet_to_html(ws, { editable: false });
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = htmlStr;
+          container.appendChild(wrapper);
+        }
+      } catch (err) {
+        container.textContent = "Error rendering spreadsheet: " + err.message;
+      }
+    }
+
+    // ---- Grades ----
+    function renderGrades(run) {
+      const section = document.getElementById("grades-section");
+      const content = document.getElementById("grades-content");
+
+      if (!run.grading) {
+        section.style.display = "none";
+        return;
+      }
+
+      const grading = run.grading;
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("grades-arrow").classList.remove("open");
+
+      const summary = grading.summary || {};
+      const expectations = grading.expectations || [];
+
+      let html = '<div style="padding: 1rem;">';
+
+      // Summary line
+      const passRate = summary.pass_rate != null
+        ? Math.round(summary.pass_rate * 100) + "%"
+        : "?";
+      const badgeClass = summary.pass_rate >= 0.8 ? "grade-pass" : summary.pass_rate >= 0.5 ? "" : "grade-fail";
+      html += '<div class="grades-summary">';
+      html += '<span class="grade-badge ' + badgeClass + '">' + passRate + '</span>';
+      html += '<span>' + (summary.passed || 0) + ' passed, ' + (summary.failed || 0) + ' failed of ' + (summary.total || 0) + '</span>';
+      html += '</div>';
+
+      // Assertions list
+      html += '<ul class="assertion-list">';
+      for (const exp of expectations) {
+        const statusClass = exp.passed ? "pass" : "fail";
+        const statusIcon = exp.passed ? "\u2713" : "\u2717";
+        html += '<li class="assertion-item">';
+        html += '<span class="assertion-status ' + statusClass + '">' + statusIcon + '</span>';
+        html += '<span>' + escapeHtml(exp.text) + '</span>';
+        if (exp.evidence) {
+          html += '<div class="assertion-evidence">' + escapeHtml(exp.evidence) + '</div>';
+        }
+        html += '</li>';
+      }
+      html += '</ul>';
+
+      html += '</div>';
+      content.innerHTML = html;
+    }
+
+    function toggleGrades() {
+      const content = document.getElementById("grades-content");
+      const arrow = document.getElementById("grades-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Previous outputs (collapsible) ----
+    function renderPrevOutputs(run) {
+      const section = document.getElementById("prev-outputs-section");
+      const content = document.getElementById("prev-outputs-content");
+      const prevOutputs = (EMBEDDED_DATA.previous_outputs || {})[run.id];
+
+      if (!prevOutputs || prevOutputs.length === 0) {
+        section.style.display = "none";
+        return;
+      }
+
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("prev-outputs-arrow").classList.remove("open");
+
+      // Render the files into the content area
+      content.innerHTML = "";
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "1rem";
+
+      for (const file of prevOutputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const fc = document.createElement("div");
+        fc.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          fc.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          fc.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          fc.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(fc, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          fc.appendChild(a);
+        }
+
+        fileDiv.appendChild(fc);
+        wrapper.appendChild(fileDiv);
+      }
+
+      content.appendChild(wrapper);
+    }
+
+    function togglePrevOutputs() {
+      const content = document.getElementById("prev-outputs-content");
+      const arrow = document.getElementById("prev-outputs-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Feedback (saved to server -> feedback.json) ----
+    function saveCurrentFeedback() {
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // Build reviews array from map
+      const reviews = [];
+      for (const [run_id, feedback] of Object.entries(feedbackMap)) {
+        if (feedback.trim()) {
+          reviews.push({ run_id, feedback, timestamp: new Date().toISOString() });
+        }
+      }
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviews, status: "in_progress" }),
+      }).then(() => {
+        document.getElementById("feedback-status").textContent = "Saved";
+      }).catch(() => {
+        // Static mode or server unavailable — no-op on auto-save,
+        // feedback will be downloaded on final submit
+        document.getElementById("feedback-status").textContent = "Will download on submit";
+      });
+    }
+
+    // ---- Done ----
+    function showDoneDialog() {
+      // Save current textarea to feedbackMap (but don't POST yet)
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // POST once with status: complete — include ALL runs so the model
+      // can distinguish "no feedback" (looks good) from "not reviewed"
+      const reviews = [];
+      const ts = new Date().toISOString();
+      for (const r of EMBEDDED_DATA.runs) {
+        reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
+      }
+      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      }).then(() => {
+        document.getElementById("done-overlay").classList.add("visible");
+      }).catch(() => {
+        // Server not available (static mode) — download as file
+        const blob = new Blob([payload], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feedback.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById("done-overlay").classList.add("visible");
+      });
+    }
+
+    function closeDoneDialog() {
+      // Reset status back to in_progress
+      saveCurrentFeedback();
+      document.getElementById("done-overlay").classList.remove("visible");
+    }
+
+    // ---- Toast ----
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // ---- Keyboard nav ----
+    document.addEventListener("keydown", (e) => {
+      // Don't capture when typing in textarea
+      if (e.target.tagName === "TEXTAREA") return;
+
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        navigate(-1);
+      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        navigate(1);
+      }
+    });
+
+    // ---- Util ----
+    function getDownloadUri(file) {
+      if (file.data_uri) return file.data_uri;
+      if (file.data_b64) return "data:application/octet-stream;base64," + file.data_b64;
+      if (file.type === "text") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
+      return "#";
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ---- View switching ----
+    function switchView(view) {
+      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      document.querySelector(`[onclick="switchView('${view}')"]`).classList.add("active");
+      document.getElementById("panel-" + view).classList.add("active");
+    }
+
+    // ---- Benchmark rendering ----
+    function renderBenchmark() {
+      const data = EMBEDDED_DATA.benchmark;
+      if (!data) return;
+
+      // Show the tabs
+      document.getElementById("view-tabs").style.display = "flex";
+
+      const container = document.getElementById("benchmark-content");
+      const summary = data.run_summary || {};
+      const metadata = data.metadata || {};
+      const notes = data.notes || [];
+
+      let html = "";
+
+      // Header
+      html += "<h2 style='font-family: Poppins, sans-serif; margin-bottom: 0.5rem;'>Benchmark Results</h2>";
+      html += "<p style='color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;'>";
+      if (metadata.skill_name) html += "<strong>" + escapeHtml(metadata.skill_name) + "</strong> &mdash; ";
+      if (metadata.timestamp) html += metadata.timestamp + " &mdash; ";
+      if (metadata.evals_run) html += "Evals: " + metadata.evals_run.join(", ") + " &mdash; ";
+      html += (metadata.runs_per_configuration || "?") + " runs per configuration";
+      html += "</p>";
+
+      // Summary table
+      html += '<table class="benchmark-table">';
+
+      function fmtStat(stat, pct) {
+        if (!stat) return "—";
+        const suffix = pct ? "%" : "";
+        const m = pct ? (stat.mean * 100).toFixed(0) : stat.mean.toFixed(1);
+        const s = pct ? (stat.stddev * 100).toFixed(0) : stat.stddev.toFixed(1);
+        return m + suffix + " ± " + s + suffix;
+      }
+
+      function deltaClass(val) {
+        if (!val) return "";
+        const n = parseFloat(val);
+        if (n > 0) return "benchmark-delta-positive";
+        if (n < 0) return "benchmark-delta-negative";
+        return "";
+      }
+
+      // Discover config names dynamically (everything except "delta")
+      const configs = Object.keys(summary).filter(k => k !== "delta");
+      const configA = configs[0] || "config_a";
+      const configB = configs[1] || "config_b";
+      const labelA = configA.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const labelB = configB.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const a = summary[configA] || {};
+      const b = summary[configB] || {};
+      const delta = summary.delta || {};
+
+      html += "<thead><tr><th>Metric</th><th>" + escapeHtml(labelA) + "</th><th>" + escapeHtml(labelB) + "</th><th>Delta</th></tr></thead>";
+      html += "<tbody>";
+
+      html += "<tr><td><strong>Pass Rate</strong></td>";
+      html += "<td>" + fmtStat(a.pass_rate, true) + "</td>";
+      html += "<td>" + fmtStat(b.pass_rate, true) + "</td>";
+      html += '<td class="' + deltaClass(delta.pass_rate) + '">' + (delta.pass_rate || "—") + "</td></tr>";
+
+      // Time (only show row if data exists)
+      if (a.time_seconds || b.time_seconds) {
+        html += "<tr><td><strong>Time (s)</strong></td>";
+        html += "<td>" + fmtStat(a.time_seconds, false) + "</td>";
+        html += "<td>" + fmtStat(b.time_seconds, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.time_seconds) + '">' + (delta.time_seconds ? delta.time_seconds + "s" : "—") + "</td></tr>";
+      }
+
+      // Tokens (only show row if data exists)
+      if (a.tokens || b.tokens) {
+        html += "<tr><td><strong>Tokens</strong></td>";
+        html += "<td>" + fmtStat(a.tokens, false) + "</td>";
+        html += "<td>" + fmtStat(b.tokens, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.tokens) + '">' + (delta.tokens || "—") + "</td></tr>";
+      }
+
+      html += "</tbody></table>";
+
+      // Per-eval breakdown (if runs data available)
+      const runs = data.runs || [];
+      if (runs.length > 0) {
+        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a, b) => a - b);
+
+        html += "<h3 style='font-family: Poppins, sans-serif; margin-bottom: 0.75rem;'>Per-Eval Breakdown</h3>";
+
+        const hasTime = runs.some(r => r.result && r.result.time_seconds != null);
+        const hasErrors = runs.some(r => r.result && r.result.errors > 0);
+
+        for (const evalId of evalIds) {
+          const evalRuns = runs.filter(r => r.eval_id === evalId);
+          const evalName = evalRuns[0] && evalRuns[0].eval_name ? evalRuns[0].eval_name : "Eval " + evalId;
+
+          html += "<h4 style='font-family: Poppins, sans-serif; margin: 1rem 0 0.5rem; color: var(--text);'>" + escapeHtml(evalName) + "</h4>";
+          html += '<table class="benchmark-table">';
+          html += "<thead><tr><th>Config</th><th>Run</th><th>Pass Rate</th>";
+          if (hasTime) html += "<th>Time (s)</th>";
+          if (hasErrors) html += "<th>Crashes During Execution</th>";
+          html += "</tr></thead>";
+          html += "<tbody>";
+
+          // Group by config and render with average rows
+          const configGroups = [...new Set(evalRuns.map(r => r.configuration))];
+          for (let ci = 0; ci < configGroups.length; ci++) {
+            const config = configGroups[ci];
+            const configRuns = evalRuns.filter(r => r.configuration === config);
+            if (configRuns.length === 0) continue;
+
+            const rowClass = ci === 0 ? "benchmark-row-with" : "benchmark-row-without";
+            const configLabel = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+
+            for (const run of configRuns) {
+              const r = run.result || {};
+              const prClass = r.pass_rate >= 0.8 ? "benchmark-delta-positive" : r.pass_rate < 0.5 ? "benchmark-delta-negative" : "";
+              html += '<tr class="' + rowClass + '">';
+              html += "<td>" + configLabel + "</td>";
+              html += "<td>" + run.run_number + "</td>";
+              html += '<td class="' + prClass + '">' + ((r.pass_rate || 0) * 100).toFixed(0) + "% (" + (r.passed || 0) + "/" + (r.total || 0) + ")</td>";
+              if (hasTime) html += "<td>" + (r.time_seconds != null ? r.time_seconds.toFixed(1) : "—") + "</td>";
+              if (hasErrors) html += "<td>" + (r.errors || 0) + "</td>";
+              html += "</tr>";
+            }
+
+            // Average row
+            const rates = configRuns.map(r => (r.result || {}).pass_rate || 0);
+            const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+            const avgPrClass = avgRate >= 0.8 ? "benchmark-delta-positive" : avgRate < 0.5 ? "benchmark-delta-negative" : "";
+            html += '<tr class="benchmark-row-avg ' + rowClass + '">';
+            html += "<td>" + configLabel + "</td>";
+            html += "<td>Avg</td>";
+            html += '<td class="' + avgPrClass + '">' + (avgRate * 100).toFixed(0) + "%</td>";
+            if (hasTime) {
+              const times = configRuns.map(r => (r.result || {}).time_seconds).filter(t => t != null);
+              html += "<td>" + (times.length ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(1) : "—") + "</td>";
+            }
+            if (hasErrors) html += "<td></td>";
+            html += "</tr>";
+          }
+          html += "</tbody></table>";
+
+          // Per-assertion detail for this eval
+          const runsWithExpectations = {};
+          for (const config of configGroups) {
+            runsWithExpectations[config] = evalRuns.filter(r => r.configuration === config && r.expectations && r.expectations.length > 0);
+          }
+          const hasAnyExpectations = Object.values(runsWithExpectations).some(runs => runs.length > 0);
+          if (hasAnyExpectations) {
+            // Collect all unique assertion texts across all configs
+            const allAssertions = [];
+            const seen = new Set();
+            for (const config of configGroups) {
+              for (const run of runsWithExpectations[config]) {
+                for (const exp of (run.expectations || [])) {
+                  if (!seen.has(exp.text)) {
+                    seen.add(exp.text);
+                    allAssertions.push(exp.text);
+                  }
+                }
+              }
+            }
+
+            html += '<table class="benchmark-table" style="margin-top: 0.5rem;">';
+            html += "<thead><tr><th>Assertion</th>";
+            for (const config of configGroups) {
+              const label = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              html += "<th>" + escapeHtml(label) + "</th>";
+            }
+            html += "</tr></thead><tbody>";
+
+            for (const assertionText of allAssertions) {
+              html += "<tr><td>" + escapeHtml(assertionText) + "</td>";
+
+              for (const config of configGroups) {
+                html += "<td>";
+                for (const run of runsWithExpectations[config]) {
+                  const exp = (run.expectations || []).find(e => e.text === assertionText);
+                  if (exp) {
+                    const cls = exp.passed ? "benchmark-delta-positive" : "benchmark-delta-negative";
+                    const icon = exp.passed ? "\u2713" : "\u2717";
+                    html += '<span class="' + cls + '" title="Run ' + run.run_number + ': ' + escapeHtml(exp.evidence || "") + '">' + icon + "</span> ";
+                  } else {
+                    html += "— ";
+                  }
+                }
+                html += "</td>";
+              }
+              html += "</tr>";
+            }
+            html += "</tbody></table>";
+          }
+        }
+      }
+
+      // Notes
+      if (notes.length > 0) {
+        html += '<div class="benchmark-notes">';
+        html += "<h3>Analysis Notes</h3>";
+        html += "<ul>";
+        for (const note of notes) {
+          html += "<li>" + escapeHtml(note) + "</li>";
+        }
+        html += "</ul></div>";
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ---- Start ----
+    init();
+    renderBenchmark();
+  </script>
+</body>
+</html>

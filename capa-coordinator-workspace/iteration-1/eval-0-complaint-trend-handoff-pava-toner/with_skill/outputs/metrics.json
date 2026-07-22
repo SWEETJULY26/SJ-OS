@@ -1,0 +1,18 @@
+{
+  "tool_calls": {
+    "Read": 5,
+    "ToolSearch": 3,
+    "mcp__Asana__search_tasks": 2,
+    "mcp__Supabase__execute_sql": 8,
+    "mcp__Supabase__list_projects": 1,
+    "mcp__Supabase__list_tables": 1,
+    "Bash": 1,
+    "Write": 2
+  },
+  "total_tool_calls": 23,
+  "errors_encountered": [
+    "mcp__Supabase__execute_sql: initial call used project_id='default', which failed Zod validation (ref must be exactly 20 characters) — resolved by calling mcp__Supabase__list_projects first to get the real project ref 'ujkabbffvhpewpbttmmy'",
+    "mcp__Supabase__execute_sql: query against products table using a non-existent 'status' column failed (42703 undefined column) — resolved by dropping the column from the SELECT",
+    "mcp__Supabase__execute_sql: query against batches table using a non-existent 'lot_number' column failed (42703 undefined column) — query abandoned after two schema-guess failures since it wasn't load-bearing for the draft deliverable"
+  ]
+}

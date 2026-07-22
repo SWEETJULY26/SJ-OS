@@ -1,0 +1,16 @@
+{
+  "tool_calls": {
+    "mcp__Fireflies__fireflies_get_transcripts": 1,
+    "mcp__Fireflies__fireflies_fetch": 1
+  },
+  "total_tool_calls": 2,
+  "errors_encountered": 0,
+  "notes": {
+    "meetings_in_window": 10,
+    "full_transcript_fetches": 1,
+    "summary_only_meetings": 9,
+    "full_fetch_reason": "SJ Skin Weekly TB (2026-07-15) hit a regulatory signal (Amazon heavy-metals appeal denied, active Padrero IL review, stability-waiver risk) and needed transcript-level detail beyond the summary to route SKU-specific regulatory items accurately.",
+    "asana_writes_performed": 0,
+    "stopped_at_confirmation_gate": true
+  }
+}

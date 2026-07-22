@@ -1,0 +1,12 @@
+{
+  "expectations": [
+    {"text": "Classified with both pd label and plm cross-flag", "passed": true, "evidence": "'Labels: [pd, plm]' stated explicitly with priority-order reasoning."},
+    {"text": "Proposed action is specifically a Formula Tracker stage move on the Sorrel task", "passed": true, "evidence": "Found the real Formula Development Tracker task (gid 1215142031949476) and proposed the comment/move against it specifically."},
+    {"text": "PLM cross-flag explicitly mentioned", "passed": true, "evidence": "'⚙️ PLM FLAG (cross-flag to outlook-plm-bridge / asana-plm-bridge...)' section present."},
+    {"text": "Confirmation preview, not a claim it already happened", "passed": true, "evidence": "'STOPPING HERE — no Asana write executed' plus a 'Confirm to proceed?' gate."},
+    {"text": "If no real transcript found, says so plainly", "passed": true, "evidence": "'no real Fireflies transcript exists that records a Sorrel formula approval' stated directly, backed by a full search log."}
+  ],
+  "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0},
+  "timing": {"executor_duration_seconds": 183.4},
+  "eval_feedback": {"overall": "Also caught that the formula (Rev 4, Formula # 18GS852005) is already in the Approved section with a signed form — flagged the discrepancy plainly rather than logging a duplicate or fabricated event."}
+}

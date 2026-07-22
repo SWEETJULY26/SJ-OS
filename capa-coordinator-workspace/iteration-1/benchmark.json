@@ -1,0 +1,35 @@
+{
+  "metadata": {
+    "skill_name": "capa-coordinator",
+    "skill_path": "/home/user/SJ-OS/.claude/skills/capa-coordinator",
+    "executor_model": "claude-sonnet-5",
+    "analyzer_model": "claude-sonnet-5",
+    "timestamp": "2026-07-21T00:00:00Z",
+    "evals_run": [0, 1, 2],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {"eval_id": 0, "eval_name": "complaint-trend-handoff-pava-toner", "configuration": "with_skill", "run_number": 1,
+      "result": {"pass_rate": 1.0, "passed": 6, "failed": 0, "total": 6, "time_seconds": 150.8, "tokens": 95319, "tool_calls": 26, "errors": 0}},
+    {"eval_id": 0, "eval_name": "complaint-trend-handoff-pava-toner", "configuration": "without_skill", "run_number": 1,
+      "result": {"pass_rate": 0.33, "passed": 2, "failed": 4, "total": 6, "time_seconds": 81.6, "tokens": 52580, "tool_calls": 3, "errors": 0}},
+    {"eval_id": 1, "eval_name": "ncr-no-escalate-vendor-receipt", "configuration": "with_skill", "run_number": 1,
+      "result": {"pass_rate": 1.0, "passed": 6, "failed": 0, "total": 6, "time_seconds": 49.8, "tokens": 68746, "tool_calls": 6, "errors": 0}},
+    {"eval_id": 1, "eval_name": "ncr-no-escalate-vendor-receipt", "configuration": "without_skill", "run_number": 1,
+      "result": {"pass_rate": 0.33, "passed": 2, "failed": 4, "total": 6, "time_seconds": 36.4, "tokens": 49172, "tool_calls": 3, "errors": 0}},
+    {"eval_id": 2, "eval_name": "full-lifecycle-batch-stability-fail", "configuration": "with_skill", "run_number": 1,
+      "result": {"pass_rate": 1.0, "passed": 6, "failed": 0, "total": 6, "time_seconds": 120.0, "tokens": 85346, "tool_calls": 9, "errors": 0}},
+    {"eval_id": 2, "eval_name": "full-lifecycle-batch-stability-fail", "configuration": "without_skill", "run_number": 1,
+      "result": {"pass_rate": 0.67, "passed": 4, "failed": 2, "total": 6, "time_seconds": 73.1, "tokens": 52299, "tool_calls": 3, "errors": 0}}
+  ],
+  "run_summary": {
+    "with_skill": {"pass_rate": {"mean": 1.0, "stddev": 0.0, "min": 1.0, "max": 1.0}, "time_seconds": {"mean": 106.9, "stddev": 43.1, "min": 49.8, "max": 150.8}, "tokens": {"mean": 83137.0, "stddev": 11151.1, "min": 68746, "max": 95319}},
+    "without_skill": {"pass_rate": {"mean": 0.443, "stddev": 0.157, "min": 0.33, "max": 0.67}, "time_seconds": {"mean": 63.7, "stddev": 19.8, "min": 36.4, "max": 81.6}, "tokens": {"mean": 51350.3, "stddev": 1554.9, "min": 49172, "max": 52299}},
+    "delta": {"pass_rate": "+0.557", "time_seconds": "+43.2", "tokens": "+31786.7"}
+  },
+  "notes": [
+    "REAL BUG in one baseline run: eval-0's baseline drafted a severity label of 'Moderate' — a value that doesn't exist in SKN-OPS-005's Critical/Major/Minor band system. Not an eval artifact; this is exactly the kind of schema drift the skill exists to prevent, and it happened without the model realizing it was inventing a value.",
+    "Baseline scored best (0.67) on the full-lifecycle eval, where general CAPA/RCA domain knowledge carries most of the way — it independently reasoned to Fishbone over 5 Whys and named the right handoffs. It scored worst on the two evals requiring specific procedural mechanics (§4.1 checklist structure, §5 justification field format, the [SOP Revision Pending] auto-stage convention) that only the skill encodes.",
+    "With-skill runs used dramatically more tool calls (6-26 vs. 3 flat for every baseline run) — baseline never queried live PLM/Asana/wiki context at all across any of the three evals, reasoning purely from the prompt text. That's a meaningful blind spot for a skill whose whole job is cross-referencing live records."
+  ]
+}

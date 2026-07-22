@@ -1,0 +1,15 @@
+{
+  "tool_calls": {
+    "Skill": 1,
+    "Read": 2,
+    "Bash": 1,
+    "Write": 2,
+    "simulated_wiki_lookup_dry_run": 1,
+    "simulated_asana_create_task_dry_run": 1,
+    "simulated_asana_update_status_dry_run": 1,
+    "simulated_asana_comment_dry_run": 2,
+    "simulated_reg_flag_task_dry_run": 1
+  },
+  "total_tool_calls": 12,
+  "errors_encountered": []
+}

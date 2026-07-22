@@ -1,0 +1,30 @@
+{
+  "tool_calls": {
+    "Read": 3,
+    "ToolSearch": 2,
+    "mcp__Asana-c313a468__asana_search_tasks": 1,
+    "mcp__Supabase__list_projects": 1,
+    "mcp__Supabase__execute_sql": 8,
+    "Bash": 1,
+    "Write": 2
+  },
+  "total_tool_calls": 18,
+  "errors_encountered": [
+    {
+      "tool": "mcp__Supabase__execute_sql",
+      "context": "wiki_lookup on project ndxatsnrnlbdesridwfq",
+      "error": "function public.wiki_slugify(unknown) does not exist"
+    },
+    {
+      "tool": "mcp__Supabase__execute_sql",
+      "context": "products/batches join guessing column b.status on PLM project ujkabbffvhpewpbttmmy",
+      "error": "column b.status does not exist"
+    },
+    {
+      "tool": "mcp__Supabase__execute_sql",
+      "context": "channel_inventory join guessing column ci.on_hand_quantity",
+      "error": "column ci.on_hand_quantity does not exist"
+    }
+  ],
+  "notes": "No wiki page existed for Soursop Vit C (source_count effectively 0 / page absent), so live queries were run per skill instructions. Live Asana search on SJ Skin Complaint Log (gid 1204763097184846) and live PLM (Supabase project ujkabbffvhpewpbttmmy) batch/product reads found no batch record or complaint record matching the stated 'lot 24-11' for Soursop Vit C, and no four new complaints from this week in the log. This discrepancy was surfaced as a blocking Gate 1 question in the recall walkthrough rather than assumed away. No Asana writes, PLM writes, comms, or notifications were executed at any point — output is a fully staged, HITL-gated draft per SKN-OPS-003."
+}

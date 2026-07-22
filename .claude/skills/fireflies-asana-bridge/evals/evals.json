@@ -1,0 +1,31 @@
+{
+  "skill_name": "fireflies-asana-bridge",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Catch me up on this week's meetings",
+      "expected_output": "Fetches all Fireflies transcripts from the past 7 days, runs the master classifier across sub-systems (PD, Ops, Quality, Regulatory, Margin, Intel, Founder), auto-flags urgent items first per Mode 2, then presents the full Action Item Report grouped by primary label with cross-references for multi-label items, ending in a 'which should I push?' confirmation gate.",
+      "files": [],
+      "expectations": [
+        "Multiple meetings/transcripts from the past week are covered, not just one",
+        "Urgent items are surfaced in their own section before the general action item list, per Mode 2",
+        "The Action Item Report uses the skill's section structure (e.g. URGENT, QUALITY, REGULATORY, OPS/PD, DECISIONS) rather than a flat meeting-by-meeting recap",
+        "Items with more than one sub-system label are split and cross-referenced",
+        "No Asana write happens before the 'which should I push?' confirmation"
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "The formula for the Sorrel lip treatment was approved on our call — log it",
+      "expected_output": "Finds the relevant meeting/transcript, classifies the approval as carrying pd + plm labels, proposes moving the Sorrel Formula Tracker task to Signed Approvals (which per asana-pd-manager also triggers the IL Review Gate side-effect), and flags the approval for outlook-plm-bridge / asana-plm-bridge cross-flag — presented as a confirmation preview, not an executed change.",
+      "files": [],
+      "expectations": [
+        "The action item is classified with both a pd label and a plm cross-flag, not just logged as a generic task",
+        "The proposed action is specifically a Formula Tracker stage move to Signed Approvals on the Sorrel task",
+        "A PLM cross-flag is explicitly mentioned (for the formula approval record)",
+        "The output is a confirmation preview awaiting approval, not a claim that the move already happened",
+        "If no real matching transcript is found, the output says so plainly rather than fabricating one"
+      ]
+    }
+  ]
+}

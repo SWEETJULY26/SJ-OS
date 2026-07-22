@@ -1,0 +1,11 @@
+{
+  "expectations": [
+    {"text": "Multiple meetings from the past week covered", "passed": true, "evidence": "8 meetings covered (7/14–7/20), full transcripts fetched for each."},
+    {"text": "Urgent items surfaced before general list (Mode 2)", "passed": true, "evidence": "🚨 URGENT section leads the report with 4 flagged items before any other section."},
+    {"text": "Uses the Action Item Report section structure", "passed": true, "evidence": "URGENT/QUALITY/REGULATORY/OPS-PD/DECISIONS/STATUS SIGNALS/MARGIN/INTEL/FOUNDER/PLM FLAGS all present."},
+    {"text": "Multi-label items split and cross-referenced", "passed": true, "evidence": "E.g. Amazon face-mask item labeled 'regulatory + quality' with explicit cross-ref to a 'margin' entry."},
+    {"text": "No Asana write before confirmation gate", "passed": true, "evidence": "Ends with 'which of these should I push?' and states nothing written."}
+  ],
+  "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0},
+  "timing": {"executor_duration_seconds": 152.9}
+}

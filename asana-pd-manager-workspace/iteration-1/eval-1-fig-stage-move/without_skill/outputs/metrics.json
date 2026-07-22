@@ -1,0 +1,12 @@
+{
+  "tool_calls": {
+    "mcp__Asana-c313a468__asana_typeahead_search": 3,
+    "mcp__Asana-c313a468__asana_list_workspaces": 1,
+    "mcp__Asana-c313a468__asana_search_tasks": 1,
+    "mcp__Asana-c313a468__asana_get_project_sections": 6,
+    "mcp__Asana-c313a468__asana_get_task": 2,
+    "mcp__Asana-c313a468__asana_get_projects": 1
+  },
+  "total_tool_calls": 14,
+  "errors_encountered": 0
+}

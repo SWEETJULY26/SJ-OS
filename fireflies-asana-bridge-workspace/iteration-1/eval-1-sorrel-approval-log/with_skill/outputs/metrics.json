@@ -1,0 +1,22 @@
+{
+  "tool_calls": {
+    "mcp__Fireflies__fireflies_search": 1,
+    "mcp__Fireflies__fireflies_fetch": 2,
+    "mcp__Asana__search_tasks": 3,
+    "mcp__Asana__get_project": 1,
+    "mcp__Asana__get_tasks": 1
+  },
+  "total_tool_calls": 8,
+  "errors_encountered": [
+    {
+      "tool": "mcp__Fireflies__fireflies_search",
+      "type": "output_size_exceeded",
+      "detail": "Result (70,152 chars) exceeded max token output; had to read saved result file via Bash/python instead of inline."
+    },
+    {
+      "tool": "mcp__Asana__get_tasks",
+      "type": "output_size_exceeded",
+      "detail": "Result (90,244 chars) exceeded max token output; had to read saved result file via Bash/python instead of inline."
+    }
+  ]
+}

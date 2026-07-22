@@ -59,7 +59,7 @@ Move tasks between the 5 stages (Intake / Concept → In Review → Signed Appro
 
 ### Job 3 — IL Review Gate (auto-fires on Signed Approvals)
 
-When a Formula Tracker task moves to Signed Approvals, atomically: flip `IL Status = Pending IL Review`, create inbound task in SJS Regulatory Management with prefix `[IL Review Pending — claims-il-and-label-keeper]`, set `Artifact Type = IL Review` and `Linked SKU`. PD launch flow holds until `IL Status = IL Approved` (written back by claims-il-and-label-keeper). See `references/stage-gate-procedure.md`.
+When a Formula Tracker task moves to Signed Approvals (the review/approval field being set to Approved — live Asana section is **Approved**, not a section literally named "Signed Approvals"; see `references/stage-gate-procedure.md`), atomically: check for an existing regulatory task on the same SKU first (don't duplicate on a re-approval), then flip `IL Status = Pending IL Review`, create inbound task in SJS Regulatory Management with prefix `[IL Review Pending — claims-il-and-label-keeper]`, set `Artifact Type = IL Review` and `Linked SKU`. PD launch flow holds until `IL Status = IL Approved` (written back by claims-il-and-label-keeper). See `references/stage-gate-procedure.md`.
 
 - *Trigger:* every Signed Approvals move from Job 2 (Rule 7 — no exceptions)
 - *HITL:* the Signed Approvals confirmation in Job 2 covers it; gate firing is part of the move's effect

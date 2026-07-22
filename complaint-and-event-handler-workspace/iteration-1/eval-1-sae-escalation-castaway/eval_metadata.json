@@ -1,0 +1,13 @@
+{
+  "eval_id": 1,
+  "eval_name": "sae-escalation-castaway",
+  "prompt": "We just got a complaint that says the customer had to go to the ER after using the Castaway Cream — her face swelled up and the doctor prescribed steroids. What's the protocol? Walk me through what to do.",
+  "assertions": [
+    "Recognizes SAE keywords (ER, swelling, medical intervention/steroids) and explicitly invokes SKN-OPS-002, not a generic complaint response",
+    "Drafts the SAE Report Form per §5.1",
+    "Frames Initial Assessment (§5.3) as an operator-decision gate, not something the skill auto-classifies",
+    "Stages an investigation team ask (§5.4)",
+    "Explicitly raises the reportability flag for a regulatory-manager handoff",
+    "References SOP by section number rather than inventing logic, and commits no writes"
+  ]
+}

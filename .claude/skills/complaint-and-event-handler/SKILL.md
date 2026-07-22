@@ -5,6 +5,8 @@ description: Single intake door for end-customer quality signals on Sweet July S
 
 # Complaint & Event Handler
 
+**Version:** v5.2 · **Last updated:** 2026-07-22 — Eval-driven fixes from Alvin's review: added explicit batch verification at intake (Job 1) — cross-reference a complaint's Product Batch Code against PLM and, when an order number is present, against OC3PL/Logiwa via oc3pl-order-manager, rather than trusting the customer-reported code alone; added Shopify (direct MCP, now connected) as a read source for order/channel verification; made the wiki-context check an explicit prerequisite for every job, not just some — an eval spot-check found it was being applied inconsistently.
+
 The single intake door for end-customer quality signals on Sweet July Skin. Owns post-launch consumer-facing quality events: complaints, adverse events, and recalls. PD owns pre-launch QA. This skill picks up everything customer-driven that lands after a product is on shelf.
 
 ## Why this exists
@@ -33,14 +35,21 @@ These shape every action the skill takes. Not negotiable on a per-task basis.
 
 ## The six core jobs
 
+**Run the wiki context check (bottom of this file) before every job below, not just some of them (confirmed with Alvin 2026-07-22 — an eval spot-check found this step was applied inconsistently across runs).** It's cheap, and skipping it means re-deriving institutional memory that's already sitting in `public.wiki_pages` — this applies to intake (Job 1), SAE triage (Job 4), and recall (Job 5) just as much as trend analysis.
+
 ### 1. Complaint intake
 
 Read new entries landing in the **SJ Skin Complaint Log** (gid `1204763097184846`) — intake comes via the existing form `https://form.asana.com/?k=BE68grALjn9XMB6OKe1ROA&d=1200120716421441`. Surface the new entry to the operator with the customer signal, SKU, batch code if present, sales channel, customer name, **Invoice/Order Number**, and any free-text description. Walk the operator through classification and first-response action.
 
 The customer order number ties every complaint back to the fulfillment record. Without it, the skill can't pivot from a complaint into oc3pl-order-manager for shipping context, can't confirm the channel or fulfillment date independent of what the customer reported, and can't pull the affected customer set during recall scoping (Job 5 §4.B). If the intake form submission is missing the Invoice/Order Number, surface that to the operator at intake — the skill drafts a back-to-customer ask before classification proceeds.
 
+**Batch verification at intake (confirmed with Alvin 2026-07-22).** If the complaint carries a Product Batch Code, don't just note it — resolve it against live records at intake, not later:
+- Pull the batch record from PLM via plm-assistant (production date, expiration, disposition, any existing hold) to confirm the batch code is real and active, not a customer-misread or a batch already pulled/disposed.
+- If the Invoice/Order Number is present, cross-reference it against OC3PL/Logiwa (via oc3pl-order-manager) to confirm which batch actually shipped on that order — customer-reported lot numbers are sometimes misread, and the fulfillment record is the more reliable source when the two disagree.
+- If the PLM batch and the OC3PL/Logiwa-confirmed shipped batch don't match, surface that discrepancy to the operator explicitly rather than silently trusting either one — this matters most once a complaint turns into a trend check (Job 3) or a recall scope (Job 5 §4.B), where the wrong batch number propagates into everything downstream.
+
 - *Trigger:* form submission lands in the New feedback section, "log this complaint", "new complaint on the toner", "complaint just came in", "add this to the complaint log", outlook-asana-bridge or fireflies-asana-bridge flags an inbound that fits the complaint pattern
-- *Action:* Read the task, surface fields (including Invoice/Order Number), propose a Complaint Type and Priority level. If Invoice/Order Number is missing, draft a back-to-customer ask and flag it to the operator. Recommend a First Response Corrective Action based on the type-to-action map (see references/complaint-classification.md). Stage the writes.
+- *Action:* Read the task, surface fields (including Invoice/Order Number), resolve any Product Batch Code against PLM and OC3PL/Logiwa per the batch-verification step above, propose a Complaint Type and Priority level. If Invoice/Order Number is missing, draft a back-to-customer ask and flag it to the operator. Recommend a First Response Corrective Action based on the type-to-action map (see references/complaint-classification.md). Stage the writes.
 - *HITL:* Operator approves classification + first-response. On approval, the skill writes the custom fields, sets `Status = Actioning` (or `Not Actioning` / `Backlog` per operator choice), posts the action plan as a comment, and moves the section to match Status.
 
 ### 2. Classification + first-response recommendation
@@ -123,6 +132,8 @@ The skill goes through other skills for source access wherever one exists. Asana
 
 **Reads via:**
 - plm-assistant — batch lookups when complaints reference a Product Batch Code, SKU lookups
+- oc3pl-order-manager (OC3PL/Logiwa) — confirm which batch actually shipped on a given order number when the customer-reported batch code needs cross-checking (see batch verification in Job 1)
+- Shopify (direct MCP, connected — confirmed with Alvin 2026-07-22) — order/customer lookup when a complaint's sales channel or fulfillment detail needs verifying directly rather than only through oc3pl-order-manager's view of it
 - outlook-asana-bridge — inbound complaint emails routed into the log as draft tasks
 - fireflies-asana-bridge — complaint signal from retail partner or customer-service calls
 - Asana — direct read of own tasks in the SJ Skin Complaint Log project

@@ -1,0 +1,13 @@
+{
+  "tool_calls": {
+    "fireflies_search": 1,
+    "fireflies_get_summary": 1,
+    "fireflies_fetch": 0,
+    "fireflies_get_transcripts": 0,
+    "asana_writes": 0
+  },
+  "total_tool_calls": 2,
+  "full_transcript_fetches": 0,
+  "full_transcript_fetch_reasons": [],
+  "errors_encountered": []
+}

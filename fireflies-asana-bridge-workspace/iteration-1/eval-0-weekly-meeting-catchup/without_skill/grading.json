@@ -1,0 +1,12 @@
+{
+  "expectations": [
+    {"text": "Multiple meetings from the past week covered", "passed": false, "evidence": "Only 3 meetings covered vs. 8 in the with-skill run — a real coverage gap, not just a formatting difference (baseline's date-window logic missed 5 real meetings)."},
+    {"text": "Urgent items surfaced first (Mode 2)", "passed": false, "evidence": "No urgency triage at all; meetings presented in plain chronological list."},
+    {"text": "Uses the Action Item Report section structure", "passed": false, "evidence": "Uses a meeting-by-meeting recap format instead."},
+    {"text": "Multi-label items split and cross-referenced", "passed": false, "evidence": "No classification labels applied anywhere."},
+    {"text": "No Asana write before confirmation gate", "passed": true, "evidence": "No write attempted; also correctly notes gaps between Fireflies and Asana."}
+  ],
+  "summary": {"passed": 1, "failed": 4, "total": 5, "pass_rate": 0.2},
+  "timing": {"executor_duration_seconds": 66.2},
+  "eval_feedback": {"overall": "The meeting-count gap (3 vs 8) is the most important finding here — worth checking whether baseline's search window logic is simply narrower, since that's a real coverage miss independent of classification quality."}
+}

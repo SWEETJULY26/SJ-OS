@@ -1,0 +1,12 @@
+{
+  "expectations": [
+    {"text": "Classifies as Skin Reactions (correct live enum), not generic", "passed": true, "evidence": "'Skin Reactions & Irritations' stated as the specific field value."},
+    {"text": "Recommends first-response per type-to-action map", "passed": true, "evidence": "'Return' recommended, explicitly noting the type default is 'Replace and no return' but overridden to honor the customer's stated refund preference."},
+    {"text": "Explicitly checks/flags SAE keyword threshold", "passed": true, "evidence": "'Scanned the description against the SKN-OPS-002 keyword list... does not match any of those. No SAE trigger.'"},
+    {"text": "Names the section move consistent with classification", "passed": true, "evidence": "'Move task from New feedback → Actioning' listed in staged writes."},
+    {"text": "States HITL gates, commits no writes", "passed": true, "evidence": "'Nothing above has been written to Asana. This is the plan for your sign-off.'"}
+  ],
+  "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0},
+  "timing": {"executor_duration_seconds": 46.3},
+  "eval_feedback": {"overall": "Also independently caught the missing Invoice/Order Number per the skill's Job 1 rule and drafted the back-to-customer ask — matches a specific, easy-to-miss requirement in the skill's design."}
+}

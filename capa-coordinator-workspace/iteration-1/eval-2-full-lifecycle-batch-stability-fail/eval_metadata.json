@@ -1,0 +1,13 @@
+{
+  "eval_id": 2,
+  "eval_name": "full-lifecycle-batch-stability-fail",
+  "prompt": "A pre-v5.4 batch-lifecycle-tracker handoff just landed in SJS CAPA Log: '[CAPA Request — batch-lifecycle-tracker] Soursop Vit C Lot 25-09 — 3-month accelerated stability fail on Vitamin C assay (89% of label claim, spec is ≥95%)'. This is a Critical NCR — stability failure on an active batch already in market at Ulta and DTC. Walk the FULL CAPA lifecycle: NCR open, conversion to CAPA, root cause analysis (recommend the right tool), corrective + preventive actions, verification, effectiveness review, and closeout. Show me what each phase produces, who approves each gate, and what handoffs fire on close. Don't actually write to Asana — draft as a complete walkthrough I can review before we run it for real.",
+  "assertions": [
+    "NCR opens with severity=Critical and correctly reasons why (active in-market batch, label-claim failure, regulatory exposure)",
+    "RCA tool recommendation (5 Whys vs Fishbone) is reasoned, not just asserted, and the RCA scaffold is actually provided",
+    "Corrective + preventive action plans have owners, dates, and evidence requirements; SOP-impact preventive action correctly triggers [SOP Revision Pending — quality-manager]",
+    "Effectiveness review correctly applies the Critical severity's 90-day window and names leading indicators",
+    "All six SKN-OPS-001 phases are walked (not skipped), with every HITL gate (Operator vs Pending QA Lead) named at the right phase",
+    "Closeout correctly identifies which of the four handoffs fire — specifically flags the regulatory feed (6d) given in-market + label-claim failure, and correctly defers batch hold/release to batch-lifecycle-tracker rather than deciding it"
+  ]
+}

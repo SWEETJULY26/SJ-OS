@@ -1,0 +1,12 @@
+{
+  "tool_calls": {
+    "asana_list_workspaces": 1,
+    "asana_get_projects_for_workspace": 2,
+    "asana_get_project": 1,
+    "asana_get_tasks": 1,
+    "asana_get_task": 4,
+    "asana_search_tasks": 2
+  },
+  "total_tool_calls": 11,
+  "errors_encountered": 1
+}

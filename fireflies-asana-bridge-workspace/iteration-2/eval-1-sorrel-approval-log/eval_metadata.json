@@ -1,0 +1,12 @@
+{
+  "eval_id": 1,
+  "eval_name": "sorrel-approval-log",
+  "prompt": "The formula for the Sorrel lip treatment was approved on our call — log it",
+  "assertions": [
+    "Classified with both a pd label and a plm cross-flag, not just a generic task",
+    "Proposed action is specifically a Formula Tracker stage move to Signed Approvals on the Sorrel task",
+    "A PLM cross-flag is explicitly mentioned",
+    "Output is a confirmation preview, not a claim the move already happened",
+    "If no real matching transcript is found, says so plainly rather than fabricating one"
+  ]
+}

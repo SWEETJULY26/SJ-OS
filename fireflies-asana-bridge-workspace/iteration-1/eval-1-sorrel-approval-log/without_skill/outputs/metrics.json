@@ -1,0 +1,9 @@
+{
+  "tool_calls": {
+    "mcp__Fireflies__fireflies_search": 2,
+    "mcp__Fireflies__fireflies_get_transcripts": 2,
+    "mcp__Asana-c313a468__asana_search_tasks": 1
+  },
+  "total_tool_calls": 5,
+  "errors_encountered": 0
+}

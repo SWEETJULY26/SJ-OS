@@ -1,0 +1,13 @@
+{
+  "eval_id": 2,
+  "eval_name": "recall-kickoff-soursop",
+  "prompt": "I'm seeing 4 separate complaints this week on Soursop Vit C from lot 24-11 — all skin reactions, two with medical visits. Trigger a recall on Soursop Vit C batch 24-11.",
+  "assertions": [
+    "Recognizes the explicit recall kickoff phrase and walks SKN-OPS-003 rather than auto-firing a recall silently",
+    "Drafts §4.A issue summary and §4.B scope (units produced, channel split) rather than skipping straight to comms",
+    "Drafts customer notification per §4.C in multiple forms (email, phone script, letter)",
+    "Drafts §4.D return/disposal plan with an oc3pl-order-manager handoff",
+    "Stages a CAPA brief for capa-coordinator per §4.E rather than opening a CAPA directly",
+    "Names cross-functional asks with owners and explicit step-by-step HITL gates; no comms are claimed as sent"
+  ]
+}

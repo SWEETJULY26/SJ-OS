@@ -1,0 +1,12 @@
+{
+  "eval_id": 0,
+  "eval_name": "intake-and-classify-pava-toner",
+  "prompt": "A new complaint came in on the SJ Skin Complaint Log — a customer says her face turned red and itchy after using the Pava Toner from lot 25-03. She's asking for a refund. Log it and tell me what to do. Don't actually write to Asana — draft the action plan, classification, and first-response recommendation as a markdown plan I can approve.",
+  "assertions": [
+    "Classifies the complaint as Skin Reactions (or the correct live enum option), not left generic",
+    "Recommends a first-response action per the type-to-action map (e.g. Replace/no return), not invented",
+    "Explicitly checks/flags SAE keyword threshold (notes red+itchy is below SAE threshold, rather than silently ignoring the question)",
+    "Names the section move (New feedback → Actioning or equivalent) consistent with the classification",
+    "States HITL gates explicitly and commits no writes"
+  ]
+}

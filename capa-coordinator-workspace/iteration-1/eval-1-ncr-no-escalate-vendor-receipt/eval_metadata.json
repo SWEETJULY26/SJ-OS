@@ -1,0 +1,13 @@
+{
+  "eval_id": 1,
+  "eval_name": "ncr-no-escalate-vendor-receipt",
+  "prompt": "Got a single-unit vendor receipt failure: HCT shipped 50 units of the Pava Toner cap (component HCT-CAP-007), one of them arrived with a hairline crack visible on inspection. Caught at receiving, the cracked unit was quarantined, the other 49 passed. HCT has no recurrence pattern in the last 12 months. Open this as an NCR — and walk me through whether this needs a CAPA or closes without one. Don't write to Asana, draft the plan.",
+  "assertions": [
+    "Opens an NCR with intake fields (source=vendor-receipt, vendor=HCT, component=HCT-CAP-007, severity=Minor per §3.3 isolated/contained/no-recurrence)",
+    "Walks §4.1 review checklist explicitly against each item (description, severity match, no existing open CAPA, no pattern, containment confirmed)",
+    "Recommends Close — No CAPA per §4.2 branch B / §5, not escalation",
+    "Drafts the required §5 justification fields (why no CAPA, what containment closed, trend exposure, reviewer)",
+    "Does NOT invoke RCA tools or draft action plans, since this doesn't escalate",
+    "Names the correct HITL gate for a no-escalate justification"
+  ]
+}

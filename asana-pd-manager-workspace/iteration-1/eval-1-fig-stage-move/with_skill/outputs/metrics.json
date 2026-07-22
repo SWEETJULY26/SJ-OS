@@ -1,0 +1,17 @@
+{
+  "tool_calls": {
+    "Read": 4,
+    "mcp__Asana-c313a468__asana_search_tasks": 1,
+    "mcp__Asana-c313a468__asana_typeahead_search": 1,
+    "mcp__Asana-c313a468__asana_get_tasks": 1,
+    "mcp__Asana-c313a468__asana_get_project_sections": 1,
+    "mcp__Asana-c313a468__asana_get_task": 1,
+    "Bash": 2,
+    "Write": 2
+  },
+  "total_tool_calls": 13,
+  "errors_encountered": [
+    "asana_search_tasks with text='Fig' and projects_any=1213280384100264 returned 0 results despite a matching task existing in that project — search index appears not to match on this text/project combo, had to fall back to asana_get_tasks (full project dump) and typeahead_search",
+    "asana_get_tasks full-project response (86,823 chars) exceeded the tool's max output size and was redirected to a file; had to use jq on the saved file instead of reading it directly"
+  ]
+}
