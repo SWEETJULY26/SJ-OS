@@ -1,10 +1,12 @@
 ---
 name: SJS SOP catalog
 description: Canonical catalog of every Sweet July Skin SOP plus ratification queue and annual review protocol. Sub-skills query at runtime to confirm current revision before significant writes. quality-manager owns the catalog.
-last_updated: 2026-05-09 (SKN-OPS-009 ratified at v6.2 build)
+last_updated: 2026-07-29 (reconciled against PLM sop_documents + wiki sop pages; SKN-OPS-005 row and page created, SKN-OPS-008 corrected to Rev 2.0, review dates backfilled)
 ---
 
 # Sweet July Skin SOP Catalog
+
+> **Reconciled with PLM 2026-07-29.** This catalog and PLM `sop_documents` had drifted: SKN-OPS-005 was ratified here on 2026-05-09 but had no PLM row and no wiki page at all, so for eleven weeks the runtime catalog could not answer "current revision of SKN-OPS-005" while every NCR cited it. SKN-OPS-008 was stale here at Rev 1.0 against PLM's Rev 2.0. `next_review_date` was NULL on all 13 PLM rows, so the Job 1 annual-review sweep had nothing to fire on — with the dates restored, **SKN-OPS-001–004 and all five forms are now 29 days overdue for annual review** (due 2026-06-30). When this file and PLM disagree, treat PLM as runtime truth and fix this file, then check whether a wiki `sop/` page exists too — all three surfaces have to agree.
 
 The runtime source of truth for which SOP revision is current. Sub-skills query this catalog before significant writes (e.g., capa-coordinator confirms SKN-OPS-001 Rev before opening a CAPA; batch-lifecycle-tracker confirms SKN-OPS-007 Rev before drafting a hold record).
 
@@ -21,8 +23,10 @@ The runtime source of truth for which SOP revision is current. Sub-skills query 
 | SKN-OPS-005 | Non-Conformance Report (NCR) Procedure | 1.0 | 2026-05-09 | Ratified | `capa-coordinator/references/ncr-procedure.md` | 2027-05-09 |
 | SKN-OPS-006 | Lab Quality Procedure | 1.0 | 2026-05-08 | Ratified | `quality-lab-coordinator/references/lab-procedure.md` | 2027-05-08 |
 | SKN-OPS-007 | Batch Lifecycle Procedure | 1.0 | 2026-05-08 | Ratified | `batch-lifecycle-tracker/references/batch-lifecycle-procedure.md` | 2027-05-08 |
-| SKN-OPS-008 | IL / Claims / Label Procedure | 1.0 | 2026-05-09 | Ratified | `claims-il-and-label-keeper/references/il-claims-label-procedure.md` | 2027-05-09 |
+| SKN-OPS-008 | IL / Claims / Label Procedure | 2.0 | 2026-05-12 | Ratified | `claims-il-and-label-keeper/references/il-claims-label-procedure.md` | 2027-05-12 |
 | SKN-OPS-009 | Reportable Events Procedure | 1.0 | 2026-05-09 | Ratified | `adverse-event-and-recall-reporter/references/reportable-events-procedure.md` | 2027-05-09 |
+
+**Forms (SKN-F-OPS-NNN).** Five forms sit alongside the procedures in PLM `sop_documents`, all Rev 1.0, effective 2024-06-30, on the same 2026-06-30 review cycle as SKN-OPS-001–004: F-001 CAPA Investigation Template, F-002 SAE Report Form, F-003 SAE Investigation Template, F-004 Root Cause Analysis Tools, F-005 Non-Conformance Report (NCR) Form. They were absent from this catalog until the 2026-07-29 wiki audit.
 
 **SharePoint master path:** `Sweet July/PD/Quality Control & Assurance/SOP/`
 **SOP & Form Log:** `Sweet July/PD/Quality Control & Assurance/Logs/SOP & Form Log.xlsx`
@@ -39,7 +43,7 @@ A sub-skill calling quality-manager for a catalog query returns:
 
 Example queries:
 - "current revision of SKN-OPS-001" → "1.0, effective 2024-06-30, ratified, mirror at capa-coordinator/references/skn-ops-001.md"
-- "what SOPs are pending ratification" → "SKN-OPS-005 NCR Procedure (drafted by capa-coordinator), pending QA Lead review"
+- "what SOPs are pending ratification" → "none — all nine SKN-OPS procedures are ratified. Four have no SharePoint master filed yet (005, 006, 007, 009), carried in PLM as the `pending-ratification://` sentinel; that flags an unfiled master, not an unratified SOP."
 - "any SOPs due for review in next 60 days" → walks the catalog and returns rows where Next Review Due ≤ today + 60 days
 
 ---

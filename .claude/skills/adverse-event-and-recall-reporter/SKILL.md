@@ -1,6 +1,6 @@
 ---
 name: adverse-event-and-recall-reporter
-description: Owns the agency side of MoCRA serious adverse events and FDA product recalls for Sweet July Skin. Use when an SAE classification or recall trigger is in play, an FDA filing needs staging, a statutory clock needs tracking, or an agency response needs logging. Triggers include "log this SAE for FDA reporting", "what's the clock on the [SKU] SAE filing", "stage the recall report for Pedrero", "any open SAEs at FDA", "did we close the [batch] recall agency-side", "draft the FDA Class [I/II/III] report", "any state AE filings open". Operates the SJS Reportable Events Asana project. Walks the Reportable Events Procedure pending SKN-OPS-009 ratification. Receives cross-flag from Quality's complaint-and-event-handler at v6.2; v6.3 retrofits to fan-out via regulatory-manager. Does not own complaint intake or recall ops (complaint-and-event-handler), CAPAs (capa-coordinator), MoCRA registrations or state filings (regulatory-manager), or PLM writes (plm-assistant). HITL on every Pedrero send and agency submission.
+description: Owns the agency side of MoCRA serious adverse events and FDA product recalls for Sweet July Skin. Use when an SAE classification or recall trigger is in play, an FDA filing needs staging, a statutory clock needs tracking, or an agency response needs logging. Triggers include "log this SAE for FDA reporting", "what's the clock on the [SKU] SAE filing", "stage the recall report for Pedrero", "any open SAEs at FDA", "did we close the [batch] recall agency-side", "draft the FDA Class [I/II/III] report", "any state AE filings open". Operates the SJS Reportable Events Asana project. Walks SKN-OPS-009 Rev.1 (Reportable Events Procedure). Receives cross-flag from Quality's complaint-and-event-handler at v6.2; v6.3 retrofits to fan-out via regulatory-manager. Does not own complaint intake or recall ops (complaint-and-event-handler), CAPAs (capa-coordinator), MoCRA registrations or state filings (regulatory-manager), or PLM writes (plm-assistant). HITL on every Pedrero send and agency submission.
 ---
 
 # Adverse Event and Recall Reporter
@@ -248,7 +248,7 @@ See `references/trigger-phrases.md` for the grouped trigger library.
 
 ## Reference files
 
-- `references/reportable-events-procedure.md` — Reportable Events Procedure (working draft, pending SKN-OPS-009 ratification)
+- `references/reportable-events-procedure.md` — Reportable Events Procedure, **SKN-OPS-009 Rev.1, ratified 2026-05-09**. SharePoint master not yet filed (PLM carries the `pending-ratification://skn-ops-009` sentinel, which flags the unfiled master, not an unratified SOP).
 - `references/role-map.md` — current role-holders for Operator, Reg Lead, External Reg Partner, QA Lead, Voice of Customer
 - `references/trigger-phrases.md` — grouped triggers by intent (intake, classification, packet drafting, Pedrero send, return processing, agency submission, clock tracking, closeout, status)
 

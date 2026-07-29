@@ -245,7 +245,7 @@ See `references/trigger-phrases.md` for the grouped trigger library.
 
 ## Reference files
 
-- `references/il-claims-label-procedure.md` — IL/Claims/Label Procedure (working draft, pending SKN-OPS-008 ratification)
+- `references/il-claims-label-procedure.md` — IL / Claims / Label Procedure, **SKN-OPS-008 Rev.2, ratified, effective 2026-05-12**. SharePoint master filed.
 - `references/role-map.md` — current role-holders for Operator, Reg Lead, External Reg Partner, QA Lead, Voice of Customer
 - `references/trigger-phrases.md` — grouped triggers by intent (IL gate, Pedrero send, return processing, label cross-check, new claim, attestation, closeout, status)
 
