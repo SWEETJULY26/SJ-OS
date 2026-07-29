@@ -43,7 +43,7 @@ If today does not match one of the 10 dates above: **exit silently. Do nothing.*
 
 - **From:** alvin@ac-brands.com
 - **To:** alvin@ac-brands.com
-- **BCC:** alvin@ac-brands.com, kate@ac-brands.com, soraya@ac-brands.com, ciarra@ac-brands.com, ivy@ac-brands.com, nicole@ac-brands.com, danielle@ac-brands.com
+- **BCC:** alvin@ac-brands.com, kate@ac-brands.com, soraya@ac-brands.com, ivy@ac-brands.com, nicole@ac-brands.com, danielle@ac-brands.com
 
 ---
 

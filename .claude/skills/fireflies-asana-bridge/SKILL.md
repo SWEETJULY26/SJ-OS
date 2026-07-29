@@ -375,7 +375,7 @@ carry their own additional labels.
 | Supplier call (KDC-One, AMR Labs, Vegelabs, IKS, Element) | Formula status, timelines, revision feedback, approvals | `pd`, often `plm` |
 | HCT call (Alex, David) | Lip treatment dev, RLC forms, color match, turnkey costs | `pd`, often `plm`, `margin` if costs |
 | Milinyc call (Perrine) | PD / R&D ownership decisions, packaging dev, samples, testing | `pd`, often `plm`, `quality` if test results |
-| Internal team (Alvin, Nicole, Danielle, Soraya, Ciarra, Kate, Erin, Ivy) | Task assignments, project health, blockers, social/creative | varies — classify per item |
+| Internal team (Alvin, Nicole, Danielle, Soraya, Kate, Erin, Ivy) | Task assignments, project health, blockers, social/creative | varies — classify per item |
 | SJS client/brand meeting | Brand decisions, launch priorities, approvals | `pd`, `founder` if Ayesha |
 | Vendor review | Vendor scorecard, quality history, commercial terms | `ops`, often `quality`, `margin` |
 | S&OP run | Demand forecast, safety stock, reorder points, capacity | `ops`, often `margin` |

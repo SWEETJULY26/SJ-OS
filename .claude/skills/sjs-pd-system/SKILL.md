@@ -174,7 +174,7 @@ Examples:
 - AC Brands PD + Ops Dashboard
 
 ### Internal team
-Alvin Belt (VP of Operations — owns project mgmt + ops side of PD), Perrine Calvet (Milinyc Beauty contractor — owns PD / R&D / Quality / Regulatory), Nicole Iturbe (Senior Director, Consumer Strategy & Operations — PD consult), Danielle (President — approves), Soraya (Marketing Manager), Ciarra Robinson (Operations Coordinator), Kate (Social Media Coordinator), Erin (Creative Director), Ivy (creative / design coordinator), Jan Haeck (creative contractor — works under Erin), Ayesha Curry (Founder — approves)
+Alvin Belt (VP of Operations — owns project mgmt + ops side of PD), Perrine Calvet (Milinyc Beauty contractor — owns PD / R&D / Quality / Regulatory), Nicole Iturbe (Senior Director, Consumer Strategy & Operations — PD consult), Danielle (President — approves), Soraya (Marketing Manager), Kate (Social Media Coordinator), Erin (Creative Director), Ivy (creative / design coordinator), Jan Haeck (creative contractor — works under Erin), Ayesha Curry (Founder — approves)
 
 ### Key external partners
 HCT, KDC-One Port Jervis, IKS, Impress Packaging, CDW (Consolidated Design),

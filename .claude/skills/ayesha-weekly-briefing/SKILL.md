@@ -120,7 +120,7 @@ candidate items that the founder filter then narrows down.
 - Tool: `asana_get_tasks` scoped to the project, filter by `modified_at` and `completed_at`
 
 ### 2. Asana — OC3PL Order Management (GID `1214235522292179`)
-- Weekly fulfillment stats if Ciarra logged a weekly review
+- Weekly fulfillment stats if a weekly review was logged (the Ops Coordinator seat is vacant as of 2026-07 — Nicole covers order management / OC3PL in the interim, so the review may be hers or absent)
 - Any flagged escalations
 - Tool: `asana_get_tasks` with section filters
 

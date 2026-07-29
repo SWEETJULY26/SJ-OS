@@ -224,7 +224,9 @@ Resolve every follower to a GID via `get_users`, matching on **email**, not disp
 
 **External contacts are never followers.** Pedrero, vendors, labs, and 3PL contacts are not workspace users; adding them fails or, worse, matches some unrelated guest account. They belong in the description's SOURCE block. This is the obvious way to misread "appropriate collaborators," so it's stated rather than assumed.
 
-**A role-holder who doesn't resolve is surfaced, not dropped.** `role-map.md` currently lists an Operations Coordinator (Ciarra Robinson) with no matching workspace user as of 2026-07-29. When a mapped role-holder has no account, add the rest of the followers, name the unresolved one in the open-questions block, and let Alvin decide — silently shipping a task with a missing watcher is how gates get skipped.
+**A role-holder who doesn't resolve is surfaced, not dropped.** When a role in the map has no matching workspace user — a vacant seat, or someone who has left — add the rest of the followers, name the unresolved role in the open-questions block, and let Alvin decide. Silently shipping a task with a missing watcher is how gates get skipped. A repeat of the same unresolved role across several writes means the role map is stale, not that the write is wrong; fix the map, per its departed-role-holder checklist.
+
+The Operations Coordinator seat is vacant as of 2026-07 and covered by an interim split (Alvin for inventory and logistics, Nicole for order management and OC3PL). Route to the interim owner rather than the vacant role.
 
 ---
 

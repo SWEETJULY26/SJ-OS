@@ -239,7 +239,7 @@ classifier, then apply the action-shape table for the matched label(s).
 | Outbound complaint response or recall communication | `quality`, `regulatory` | Log against complaint-and-event-handler / adverse-event-and-recall-reporter |
 | Outbound regulatory submission or attestation | `regulatory` | Log against regulatory-manager / claims-il-and-label-keeper |
 | Outbound spec sheet / target cost / BOM | `pd`, `plm`, `margin` (if cost target shifts) | Cross-flag `outlook-plm-bridge` (Flow G); cross-flag margin-pressure-test if cost target shifted |
-| Internal ask to Nicole / Danielle / Soraya / Ciarra / Kate / Erin / Ivy / Jan / Perrine | matches recipient's domain | Create task assigned to recipient, Alvin as follower, due date if implied |
+| Internal ask to Nicole / Danielle / Soraya / Kate / Erin / Ivy / Jan / Perrine | matches recipient's domain | Create task assigned to recipient, Alvin as follower, due date if implied |
 | Supplier instruction (revise this, hold this, ship by X) | `pd` or `ops` | Comment on task + check-back task if reply expected |
 | FYI / forward / thanks / one-line acknowledgment | (no labels) | Skip |
 
