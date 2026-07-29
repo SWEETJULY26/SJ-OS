@@ -4,27 +4,58 @@
     {
       "id": 0,
       "prompt": "Catch me up on this week's meetings",
-      "expected_output": "Fetches all Fireflies transcripts from the past 7 days, runs the master classifier across sub-systems (PD, Ops, Quality, Regulatory, Margin, Intel, Founder), auto-flags urgent items first per Mode 2, then presents the full Action Item Report grouped by primary label with cross-references for multi-label items, ending in a 'which should I push?' confirmation gate.",
+      "expected_output": "Sizes the window to the explicit 'week' (trailing 7 days), pulls each meeting's summary via fireflies_get_summary rather than a full transcript, runs the master classifier across sub-systems (PD, Ops, Quality, Regulatory, Margin, Intel, Founder), and runs Phase 0 of asana_task_contract.md on every extracted action item before proposing anything — so a blocker raised in more than one standup resolves to UPDATE against the existing task rather than producing a fresh task per meeting. Auto-flags urgent items first per Mode 2, then presents the Action Item Report grouped by primary label. Format discipline holds: one line per item with the 🔁 verdict and a dated derivation tag on that same line, empty sections omitted, field gaps collapsed into a single ❓ line at the end. Ends in a 'which should I push?' confirmation gate.",
       "files": [],
       "expectations": [
         "Multiple meetings/transcripts from the past week are covered, not just one",
         "Urgent items are surfaced in their own section before the general action item list, per Mode 2",
         "The Action Item Report uses the skill's section structure (e.g. URGENT, QUALITY, REGULATORY, OPS/PD, DECISIONS) rather than a flat meeting-by-meeting recap",
-        "Items with more than one sub-system label are split and cross-referenced",
+        "Every item line carries a 🔁 Resolve verdict on the same line, not on a separate line",
+        "A blocker discussed in more than one meeting resolves to UPDATE rather than producing multiple tasks",
+        "Every item shows a due date with a derivation tag — none are blank",
+        "Field gaps are collapsed into one open-questions line at the end, not one per item",
+        "Items with more than one sub-system label follow the one-task-or-two test rather than defaulting to a task per queue",
         "No Asana write happens before the 'which should I push?' confirmation"
       ]
     },
     {
       "id": 1,
       "prompt": "The formula for the Sorrel lip treatment was approved on our call — log it",
-      "expected_output": "Finds the relevant meeting/transcript, classifies the approval as carrying pd + plm labels, proposes moving the Sorrel Formula Tracker task to Signed Approvals (which per asana-pd-manager also triggers the IL Review Gate side-effect), and flags the approval for outlook-plm-bridge / asana-plm-bridge cross-flag — presented as a confirmation preview, not an executed change.",
+      "expected_output": "Finds the relevant meeting/transcript, classifies the approval as carrying pd + plm labels, and resolves before writing — a re-approval must not duplicate the regulatory task the IL Review Gate already opened on that SKU. Proposes moving the Sorrel Formula Tracker task to Signed Approvals (which per asana-pd-manager also triggers the IL Review Gate side-effect, itself gated on an existing-task check keyed on SKU + artifact type), and flags the approval for the PLM bridge cross-flag — presented as a confirmation preview, not an executed change.",
       "files": [],
       "expectations": [
         "The action item is classified with both a pd label and a plm cross-flag, not just logged as a generic task",
         "The proposed action is specifically a Formula Tracker stage move to Signed Approvals on the Sorrel task",
         "A PLM cross-flag is explicitly mentioned (for the formula approval record)",
+        "The IL Review Gate's existing-task check is respected so a re-approval does not open a second regulatory task",
         "The output is a confirmation preview awaiting approval, not a claim that the move already happened",
         "If no real matching transcript is found, the output says so plainly rather than fabricating one"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "In Monday's standup Nicole said she'd get the Sorrel artwork to Erin by end of week. Log it.",
+      "expected_output": "Resolves the deadline language against the MEETING's own date, not the date this scan runs — 'by end of week' said in Monday's standup means that same week's Friday, even when read later. Shows the derivation as stated rather than as an SLA default. Assigns Nicole, adds Alvin and the creative gate role-holder as collaborators, resolves both names to GIDs via get_users matching on email rather than display name, and never guesses a GID.",
+      "files": [],
+      "expectations": [
+        "The deadline is resolved against the meeting date, not the date of the scan",
+        "The due date derivation is shown as stated, not as an SLA default",
+        "Assignee and collaborators are resolved to GIDs via a user lookup, matched on email",
+        "Alvin is included as a collaborator",
+        "No user GID is guessed"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "The Vegelabs vendor review covered a 9% component cost increase and a stability fail on Pineapple Punch. Push the action items.",
+      "expected_output": "Resolves each item separately first — if an OOT task already exists on that batch, the stability fail is an UPDATE. Applies the Phase 4 test and reaches two tasks, because the stability fail and the price change are not one piece of work and do not share a close: the quality investigation (multi-homed into the Pineapple Punch SKU project since PD needs the finding visible) and a vendor record update in AC Brands Purchasing. The margin signal lands in PLM where the margin skills read it live rather than creating a margin queue task. The two tasks cross-reference through their LINKS blocks.",
+      "files": [],
+      "expectations": [
+        "Each item is resolved against existing tasks before any create is proposed",
+        "The stability fail and the cost increase are kept as separate tasks, with the reasoning tied to separate closes",
+        "The quality finding is multi-homed into the SKU project rather than duplicated as a second PD task",
+        "The margin signal routes to PLM rather than creating a task in a margin queue that does not exist",
+        "The resulting tasks cross-reference each other via LINKS"
       ]
     }
   ]

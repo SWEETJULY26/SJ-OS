@@ -5,7 +5,7 @@ description: "Universal Fireflies meeting intake for Sweet July Skin. Reads tran
 
 # Fireflies → Asana Bridge
 
-**Version:** v1.1 · **Last updated:** 2026-07-21 09:15 PT — Cost rescope, driven by an eval run hitting 172K tokens on a routine weekly catch-up (this skill runs daily, so that cost is a real problem, not a one-off): switched the default fetch to `fireflies_get_summary` instead of a full `fireflies_fetch` per meeting, with full-transcript fetch reserved for genuinely ambiguous or high-stakes items; sized the default catch-up window to the actual ask instead of a flat 7 days every time; rewrote the Action Item Report to drop the redundant meeting-by-meeting recap, omit empty sections, and cap each item to one line. Prior v1.0 2026-05-26 12:49 PT — P4/P5 bridge audit remediation: version marker added. P1 (2026-05-26): run-time entity discovery replaced hard-coded people tables.
+**Version:** v1.2 · **Last updated:** 2026-07-29 — Task-quality fix from Alvin's review: the bridge created tasks without checking whether one already existed (worst offender in the system — standups re-raise what an email opened yesterday, weekly syncs re-raise the same blocker until it clears), left fields blank when the transcript didn't mention them, shipped tasks with no due date, and split same-work items into a task per queue. Now walks `references/architecture/asana_task_contract.md` on every write — Phase 0 resolve-before-create (verdict rides the existing item line, no extra line, per the cost rescope below), Phase 1 no blank fields, Phase 2 due date always set with deadline language resolved against the meeting's own date, Phase 3 derived collaborators with external attendees excluded as followers, Phase 4 multi-home instead of one task per queue unless each system owes a distinct close. A gate field the summary can't fill is now a documented reason to pay for `fireflies_fetch`. Prior v1.1 2026-07-21 09:15 PT — Cost rescope, driven by an eval run hitting 172K tokens on a routine weekly catch-up (this skill runs daily, so that cost is a real problem, not a one-off): switched the default fetch to `fireflies_get_summary` instead of a full `fireflies_fetch` per meeting, with full-transcript fetch reserved for genuinely ambiguous or high-stakes items; sized the default catch-up window to the actual ask instead of a flat 7 days every time; rewrote the Action Item Report to drop the redundant meeting-by-meeting recap, omit empty sections, and cap each item to one line. Prior v1.0 2026-05-26 12:49 PT — P4/P5 bridge audit remediation: version marker added. P1 (2026-05-26): run-time entity discovery replaced hard-coded people tables.
 
 You are the universal meeting intake layer for AC Brands operations. Your job is to read
 Fireflies transcripts, extract every action item / decision / signal that matters for
@@ -144,20 +144,27 @@ When an action item or decision carries more than one label:
 
 1. Pick the **primary label** by priority order (safety and compliance win):
    `quality` > `regulatory` > `ops` > `pd` > `margin` > `intel` > `founder`
-2. Create the **parent action** in the primary sub-system
-3. Create **child / linked actions** in each secondary sub-system
-4. Cross-reference all of them — parent's description includes child action IDs/links;
-   each child points back to the parent
+2. Decide **one task or two**, per `asana_task_contract.md` Phase 4. One close by one person
+   → one task multi-homed into the primary queue plus each secondary queue's intake section,
+   counterpart owners as collaborators. Each system owes its own deliverable and its own
+   close → separate tasks.
+3. For the separate-task case only: **parent action** in the primary sub-system, **child
+   actions** in each secondary.
+4. Cross-reference either way — LINKS carries the secondary homes, or the parent/child GIDs.
 
 Example: a Vegelabs vendor review meeting where Mayra mentions a 9% cost increase on
-Pineapple Punch components and a stability fail on the same SKU would generate:
-- `[quality]` parent action → quality-lab-coordinator opens the OOT investigation
-- `[margin, ops]` child action → margin-pressure-test on Pineapple Punch
-- `[pd, plm]` child action → comment on the PD task and `outlook-plm-bridge` cross-flag
-  for product test fields
-- `[ops]` child action → purchasing-manager for vendor record update
+Pineapple Punch components and a stability fail on the same SKU. Resolve each item first —
+if an OOT task already exists on that batch, the stability fail is an UPDATE, not a new
+investigation. Then:
+- `[quality]` parent action → the OOT investigation in SJS Quality Management, multi-homed
+  into the Pineapple Punch SKU project since PD needs the same finding visible
+- `[margin, ops]` → the cost increase is separate work with a separate close: a vendor record
+  update task in AC Brands Purchasing, with the margin signal landing in PLM where the margin
+  skills read it live
+- `[plm]` → cross-flag the test result to `asana-plm-bridge` for `product_test_results`
 
-All four cross-reference each other.
+The investigation and the cost task cross-reference through LINKS. Two closes, two tasks —
+the stability fail and the price change are not one piece of work.
 
 ---
 
@@ -233,25 +240,33 @@ bullet. That's what pushed a single run to 172K tokens. New rules:
 - **Omit a section entirely if it has nothing in it.** Don't render "None this week"
   with an explanation. If PD/Ops/Quality/Regulatory are the only sections with content,
   those are the only sections shown.
-- **One line per item.** `[Item] — [Owner] — [Due, if any] — [primary label] →
+- **One line per item.** `[Item] — [Owner] — [Due] — 🔁 [verdict] — [primary label] →
   [destination]`. Cross-refs to a secondary label go on the same line
-  (`+ plm cross-flag`), not a separate indented line. Save the second line only for an
+  (`+ plm cross-flag`), and a secondary home rides the same line too
+  (`+ multi-home: Pineapple Punch SKU`). Save the second line only for an
   item flagged URGENT, where a short reason clause is worth the extra line.
+- **The Resolve verdict rides the item line — it never gets its own line.** `🔁 NEW`,
+  `🔁 UPDATE 1214…`, or `🔁 REOPEN? 1214…`. Every item shows one; an item with no verdict
+  means Phase 0 didn't run for it.
+- **Due date always present**, with a short derivation tag: `due 8/3 (SLA q3)`,
+  `due 7/24 (stated)`, `due 8/11 (statutory)`. Never blank.
+- **Open questions collapse into one block at the end**, not per item:
+  `❓ Owner unknown on items 3, 7 · Linked SKU ambiguous on item 5`.
 - **Meeting names appear once, as a source tag at the end of the line in parentheses**,
   not as a section header of their own — `(SJ Ops Standup, 7/20)`.
 
 ```
 🚨 URGENT
-• [Item] — [Owner] — [Due] — [why it's urgent, one clause] ([Meeting], [date])
+• [Item] — [Owner] — [Due] — 🔁 [verdict] — [why it's urgent, one clause] ([Meeting], [date])
 
 🩺 QUALITY
-• [Item] — [Owner] — [Due] — → [destination skill] [+ cross-flag if any] ([Meeting], [date])
+• [Item] — [Owner] — [Due] — 🔁 [verdict] — → [queue → section] [+ cross-flag / multi-home] ([Meeting], [date])
 
 📜 REGULATORY
-• [Item] — [Owner] — [Due] — → [destination skill] ([Meeting], [date])
+• [Item] — [Owner] — [Due] — 🔁 [verdict] — → [queue → section] ([Meeting], [date])
 
 📌 OPS / PD
-• [Item] — [Owner] — [Due] — [Project] ([Meeting], [date])
+• [Item] — [Owner] — [Due] — 🔁 [verdict] — [Project → section] ([Meeting], [date])
 
 💬 DECISIONS
 • [Decision] → [task/project] ([Meeting], [date])
@@ -265,6 +280,8 @@ bullet. That's what pushed a single run to 172K tokens. New rules:
 🔭 INTEL / 👤 FOUNDER / ⚙️ PLM FLAGS
 • One line each, same pattern — omit any of these three if empty.
 
+❓ [Field gaps across items, one line total — omit if none]
+
 ---
 Which of these should I push? (say "all", list numbers, or "skip")
 ```
@@ -274,9 +291,48 @@ under a screen's worth of text, not a multi-page document.
 
 ---
 
+## Asana task write contract — mandatory before any task write
+
+Every Asana write walks `references/architecture/asana_task_contract.md` first. Rules live
+there; this section says where they bite in the meeting flow.
+
+**Phase 0 — resolve before create.** Meetings are the highest-duplicate source in the system:
+a standup re-raises what an email opened yesterday, and a weekly sync re-raises the same
+blocker every week until it clears. Before proposing a task, compute the dedupe key and search
+for one that already covers the work.
+
+- Key by work type per the contract's dedupe key table.
+- The wiki page the Job 0 loop already reads carries task GIDs from prior runs — check it
+  before hitting Asana search.
+- `search_tasks(projects_any: <candidate queues>, text: <key terms>, completed: false)`,
+  then a second pass on `completed: true` with `completed_on_after: <today - 30d>`.
+- A recurring blocker is almost always UPDATE: comment the new discussion, re-run the
+  due-date ladder, move the section if it advanced. Not a fresh task each week.
+
+**Phase 1 — no blank fields.** Every task carries project, section, assignee, `due_on`,
+followers, and a description with the SOURCE / KEY / LINKS blocks. Transcripts often name a
+task with no owner or no date — that's `TBD — <what's missing>` plus an open question, never
+a blank. When the summary is too thin to fill a gate field, that's one of the documented
+reasons to fall back to `fireflies_fetch` for the full transcript.
+
+**Phase 2 — always a due date.** Explicit date → deadline language resolved against the
+**meeting's own date, not today's** → statutory or gate clock → SLA default (urgent 1bd,
+quality 3, regulatory 3, ops 5, pd 5, FYI 10). "By end of week" said in a Monday meeting
+read on Friday means that Monday's week.
+
+**Phase 3 — collaborators.** Assignee + Alvin + the role-holder owning that queue's gate +
+the counterpart owner on every secondary home + any internal attendee who owns or awaits part
+of the work. External attendees — suppliers, Pedrero, labs — are **never** followers; they go
+in the SOURCE block with the meeting name.
+
+**Phase 4 — move and multi-home.** Same work item spanning two systems is one task in two
+projects. This narrows the multi-route split below to items where each system owes a
+**distinct deliverable** with its own close.
+
 ## Pushing actions
 
-Once Alvin confirms which items to push, fan out by primary label:
+Once Alvin confirms which items to push, walk the write contract above, then fan out by
+primary label:
 
 1. For each **`pd` action item** → propose a task using the confirmation preview format
    in `asana-pd-manager/references/confirmation-protocol.md`

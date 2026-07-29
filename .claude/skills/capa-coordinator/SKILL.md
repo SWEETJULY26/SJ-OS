@@ -137,6 +137,18 @@ Once verification + effectiveness both clear:
 
 ## Asana surface
 
+### Task write contract
+
+Every task write in this project walks `references/architecture/asana_task_contract.md` —
+resolve against an existing task before creating one, fill every required field (`TBD — reason`
+when a value genuinely can't be determined, never a blank), always set a due date via the
+Phase 2 ladder, derive collaborators from the role map rather than from whoever the source
+mentioned, and move or multi-home an existing task instead of opening a second one.
+
+Dedupe keys for this queue: `NCR number` once assigned; `source event + SKU` before one is.
+
+An NCR raised in a meeting, then again by email, is one NCR. Resolve on the source event before a number exists, then on the number once it does.
+
 - *Project:* **SJS CAPA Log** — Operations team, public to workspace. Created 2026-05-09.
   - Project GID: `1214660784338465`
   - Project URL: https://app.asana.com/1/1200120716421441/project/1214660784338465

@@ -1,7 +1,7 @@
 ---
 name: PD confirmation protocol
 description: The canonical confirmation rules for every write asana-pd-manager makes. Sibling PD skills (fireflies-asana-bridge, outlook-asana-bridge, asana-plm-bridge, outlook-plm-bridge) reference this file by path instead of restating the rules.
-last_updated: 2026-05-17
+last_updated: 2026-07-29
 ---
 
 # Confirmation protocol
@@ -25,9 +25,11 @@ Only execute after Alvin confirms (e.g., "yes", "do it", "go ahead").
 
 Confirmation can be batched if Alvin says "do them all" — but each item in the batch still gets a one-line preview in the confirmation block.
 
-## Rule 2 — Prompt for missing details only when needed
+## Rule 2 — Every required field carries a value
 
-When creating a task or subtask, if Alvin did not provide assignee, due date, or section, ask for them before confirming. If he provided some but not all, only ask for what is missing.
+Superseded 2026-07-29 by the field discipline in `references/architecture/asana_task_contract.md` Phase 1. The old rule ("ask for assignee, due date, or section only when missing") let tasks land with blank fields whenever the source didn't happen to mention them, and let tasks land with no due date at all.
+
+Now: derive every required field. Assignee, section, and collaborators come from the role-map and the queue's routing rules; the due date comes from the Phase 2 ladder and is never omitted. A field that genuinely can't be determined is written `TBD — <what's missing and who would know>` and raised in the preview's open-questions block — not left blank, and not a reason to stall the write.
 
 Never create a task without a project AND section. See Rule 3.
 
@@ -54,6 +56,18 @@ Moving a Formula Tracker task **backward** through the 5-stage workflow (e.g., S
 ## Rule 7 — IL Review Gate fires on Signed Approvals every time
 
 When a Formula Tracker task moves to Signed Approvals, the IL Review Gate fires automatically (flip `IL Status` to `Pending IL Review`, create the inbound task in SJS Regulatory Management). The move itself follows Rule 1; the gate is part of the move's effect, not a separate confirmation. See `references/stage-gate-procedure.md`.
+
+## Rule 8 — Walk the task write contract before every Asana write
+
+`references/architecture/asana_task_contract.md` governs the shape of every Asana write in the system — the four bridges and every destination skill, not only PD. Walk its five phases before the Rule 1 preview goes up:
+
+1. **Resolve** against existing tasks by dedupe key. Never create what already exists — update it.
+2. **Fields** — every required field valued or explicitly `TBD` (Rule 2 above).
+3. **Due date** — always set, derived by the ladder, derivation shown.
+4. **Collaborators** — derived from the role-map, not from whatever the source mentioned.
+5. **Move / multi-home** — one task in two projects when it's the same work item; a second task only when each system owes a distinct deliverable.
+
+The Rule 1 preview carries the results: a `🔁 Resolve` verdict, the `Due` derivation, `Collaborators`, `Homes`, and any open questions. A preview with no Resolve verdict means Phase 0 didn't run — treat it as an incomplete write and go back.
 
 ## How siblings consume this
 

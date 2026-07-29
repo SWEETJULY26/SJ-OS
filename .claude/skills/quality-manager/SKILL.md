@@ -194,6 +194,18 @@ Same first-run-with-no-priors behavior as Job 7 (counts → 0, percentages → n
 
 ## Asana surface
 
+### Task write contract
+
+Every task write in this project walks `references/architecture/asana_task_contract.md` —
+resolve against an existing task before creating one, fill every required field (`TBD — reason`
+when a value genuinely can't be determined, never a blank), always set a due date via the
+Phase 2 ladder, derive collaborators from the role map rather than from whoever the source
+mentioned, and move or multi-home an existing task instead of opening a second one.
+
+Dedupe keys for this queue: per the member skill that owns the work type — this umbrella rarely creates tasks directly.
+
+Read-most umbrella. The contract applies to the cross-cutting tasks this skill does open (SOP reviews, audit prep, dashboard snapshots), keyed on `cross-cutting type + period`.
+
 - *Project:* **SJS Quality Management** (gid `1214660401644163`) — owned by quality-manager at v5.6. Operations team. Public to workspace.
 
 ### Sections (cached 2026-05-09)

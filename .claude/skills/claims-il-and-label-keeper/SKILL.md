@@ -124,6 +124,18 @@ Two paths:
 
 ## Asana surface
 
+### Task write contract
+
+Every task write in this project walks `references/architecture/asana_task_contract.md` —
+resolve against an existing task before creating one, fill every required field (`TBD — reason`
+when a value genuinely can't be determined, never a blank), always set a due date via the
+Phase 2 ladder, derive collaborators from the role map rather than from whoever the source
+mentioned, and move or multi-home an existing task instead of opening a second one.
+
+Dedupe keys for this queue: `SKU + artifact type` for IL and label artifacts, `retailer + SKU` for attestations.
+
+The IL Review Gate already checks for an existing regulatory task on the same SKU before firing, so a re-approval doesn't duplicate (asana-pd-manager Job 3). That check is Phase 0 and now applies to every artifact this skill stages, not just the gate.
+
 - *Project:* **SJS Regulatory Management** — Operations team, public to workspace. Created 2026-05-09 via Asana AI Builder at v6.1 build. Will roll up under regulatory-manager at v6.3.
   - Project GID: `1214660807386611`
   - Project URL: https://app.asana.com/1/1200120716421441/project/1214660807386611

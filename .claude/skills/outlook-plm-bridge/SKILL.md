@@ -18,7 +18,7 @@ description: >
 
 # Outlook → PLM Bridge
 
-**Version:** v1.3 · **Last updated:** 2026-07-20 23:05 PT — Iteration-2 eval re-run confirmed all four v1.2 fixes hold against live data (NetSuite not attempted; Pedrero backstop correctly returned zero; HCT thread read to the end and correctly showed proofs already signed/returned; the new PO recognition rule found a real receipt-confirmation on PO #100336 that the old literal-number search had missed). Also tightened the OC3PL/Pedrero folder guidance: two independent runs confirmed `outlook_email_search`'s `folderName` param reliably returns `NOT_FOUND` on both folders even though they're real and populated — retrying the same call doesn't help, so the guidance now specifies the actual working fallback (`read_resource` on `mail:///folders/` to get the folder ID, or a sender-domain backstop) instead of just "retry." Prior 2026-07-20 22:10 PT — Eval-driven fixes from Alvin's review of a live weekly-scan + PO-ack run: dropped NetSuite-relay recognition entirely (not a real invoice channel here); fixed OC3PL folder guidance (it's a direct Inbox subfolder, not nested — a "not found" search error is a lookup mismatch, not a missing folder) and added Pedrero Regulatory to the topic-folder sweep list (sender-domain matching alone misses forwards/CCs); added a rule to read to the end of a thread before flagging an item as still-open (a "waiting on signed proofs" item had actually already resolved later in the same thread); added Flow A recognition guidance for Alvin's actual PO workflow (POs go out as attachments without the PO number in subject/body — a vendor receipt-confirmation reply is sufficient for `status = 'Acknowledged'`, and the send itself is sufficient for `status = 'Sent'`, without waiting for the PO number to be restated). Prior 2026-05-31 14:30 PT — Bridge audit remediation: authored `references/flows.md` (was a broken pointer); reworked email scanning to be folder-aware against Alvin's per-domain Outlook folders (lexicon-driven, no static domain filter, never sort without a folder scope); vendor discovery query now pulls contact emails so sender domains resolve (not just names); Flow E now writes the new `public.product_test_results` table; Flow I confirmed against the new `public.vendor_invoices` table (both migrated 2026-05-31) and now recognizes NetSuite-relayed invoices (e.g. KAF); added `partner` to the Job 0 slug rule; fixed stale "outlook-asana-bridge sender map" reference; clarified Flow F vs Flow I. Prior 2026-05-28 21:48 PT — Phase 1 P2P build: added Flow C-gate (onboarding doc checklist auto-check, jsonb mirror, NDA + W9 gate detection and task move); `vendors.category` renamed to `vendors.vendor_type` in cost_category inference; `lab_testing` added to the quality inference. Prior 2026-05-26 12:49 PT — P4/P5 bridge audit remediation: version marker added; Job 0 narrative-vs-artifact framing clarified. P1 (2026-05-26): run-time entity discovery replaced the hard-coded product-name mapping.
+**Version:** v1.4 · **Last updated:** 2026-07-29 — Task-quality fix from Alvin's review: Asana-side writes (cross-system tasks and Flow I invoice tasks) now walk `references/architecture/asana_task_contract.md` — resolve before create, no blank fields, due date always with derivation shown, derived collaborators with external senders excluded as followers, multi-home over a second task. Flow I now reports two separate checks: `🔁 Dedup (PLM)` on the `(vendor_id, invoice_number)` constraint and `🔁 Resolve (Asana)` on the task, since a re-sent invoice is a PLM duplicate *and* an Asana update. PLM writes themselves unchanged — `plm-assistant` stays sole writer. Prior v1.3 2026-07-20 23:05 PT — Iteration-2 eval re-run confirmed all four v1.2 fixes hold against live data (NetSuite not attempted; Pedrero backstop correctly returned zero; HCT thread read to the end and correctly showed proofs already signed/returned; the new PO recognition rule found a real receipt-confirmation on PO #100336 that the old literal-number search had missed). Also tightened the OC3PL/Pedrero folder guidance: two independent runs confirmed `outlook_email_search`'s `folderName` param reliably returns `NOT_FOUND` on both folders even though they're real and populated — retrying the same call doesn't help, so the guidance now specifies the actual working fallback (`read_resource` on `mail:///folders/` to get the folder ID, or a sender-domain backstop) instead of just "retry." Prior 2026-07-20 22:10 PT — Eval-driven fixes from Alvin's review of a live weekly-scan + PO-ack run: dropped NetSuite-relay recognition entirely (not a real invoice channel here); fixed OC3PL folder guidance (it's a direct Inbox subfolder, not nested — a "not found" search error is a lookup mismatch, not a missing folder) and added Pedrero Regulatory to the topic-folder sweep list (sender-domain matching alone misses forwards/CCs); added a rule to read to the end of a thread before flagging an item as still-open (a "waiting on signed proofs" item had actually already resolved later in the same thread); added Flow A recognition guidance for Alvin's actual PO workflow (POs go out as attachments without the PO number in subject/body — a vendor receipt-confirmation reply is sufficient for `status = 'Acknowledged'`, and the send itself is sufficient for `status = 'Sent'`, without waiting for the PO number to be restated). Prior 2026-05-31 14:30 PT — Bridge audit remediation: authored `references/flows.md` (was a broken pointer); reworked email scanning to be folder-aware against Alvin's per-domain Outlook folders (lexicon-driven, no static domain filter, never sort without a folder scope); vendor discovery query now pulls contact emails so sender domains resolve (not just names); Flow E now writes the new `public.product_test_results` table; Flow I confirmed against the new `public.vendor_invoices` table (both migrated 2026-05-31) and now recognizes NetSuite-relayed invoices (e.g. KAF); added `partner` to the Job 0 slug rule; fixed stale "outlook-asana-bridge sender map" reference; clarified Flow F vs Flow I. Prior 2026-05-28 21:48 PT — Phase 1 P2P build: added Flow C-gate (onboarding doc checklist auto-check, jsonb mirror, NDA + W9 gate detection and task move); `vendors.category` renamed to `vendors.vendor_type` in cost_category inference; `lab_testing` added to the quality inference. Prior 2026-05-26 12:49 PT — P4/P5 bridge audit remediation: version marker added; Job 0 narrative-vs-artifact framing clarified. P1 (2026-05-26): run-time entity discovery replaced the hard-coded product-name mapping.
 
 You are Alvin Belt's email-to-PLM routing layer. Your job is to scan Outlook — both Inbox
 and Sent Items — for content that belongs directly in Sweet July Skin's PLM database —
@@ -35,6 +35,26 @@ same Outlook account (Inbox + Sent). The routing rule is simple:
 - **Content is a product record, batch, vendor, PO, or compliance artifact** → this skill
 - **Content is both** → split: task/decision → `outlook-asana-bridge`, record/artifact →
   this skill, with cross-reference notes in each
+
+### Asana task write contract — applies to Asana writes, not PLM writes
+
+Every task this bridge opens in an Asana queue walks
+`references/architecture/asana_task_contract.md` first — Phase 0 resolve before create,
+Phase 1 no blank fields, Phase 2 a due date always, Phase 3 derived collaborators, Phase 4
+move and multi-home instead of opening a second task. That covers the cross-system tasks
+below and the Flow I invoice tasks.
+
+It does **not** apply to PLM writes — those stay with `plm-assistant` under its own
+confirmation rules, and Flow I's `vendor_invoices` dedup on `(vendor_id, invoice_number)` is a
+database constraint, separate from the Asana-side resolve. Flow I's existing
+`🔁 Dedup: [clean / duplicate of …]` line reports the PLM check; the Asana task for that
+invoice gets its own `🔁 Resolve:` verdict keyed on `vendor + invoice number`. Both can fire on
+one email — a re-sent invoice is a PLM duplicate *and* an Asana UPDATE.
+
+Resolve matters here because this bridge is usually the second system to see an event. A COA
+that fails arrives as an email (this bridge), gets discussed on a call
+(`fireflies-asana-bridge`), and shows up in a PD task sync (`asana-plm-bridge`). All three key
+on `batch code + test type` and land on one task.
 
 ### Cross-system extraction is part of the job
 
@@ -463,7 +483,9 @@ Found [N] PLM-bound emails ([X] received, [Y] sent)
   → linked_sku: [SKU name or "—"]
   → po_link: [PO number or "—"]
   → Multi-home proposal: [purchasing-manager Job 9 → ...]
-  → 🔁 Dedup: [clean / duplicate of invoice [n] from [date]]
+  → 🔁 Dedup (PLM): [clean / duplicate of invoice [n] from [date]]
+  → 🔁 Resolve (Asana): [NEW | UPDATE task [gid] | REOPEN? task [gid]]
+  → Due: [date] ([derivation])
 
 📋 COMPONENT / BOM UPDATES (Flow G)
 • [📥/📤] [Sender or Recipient] | [Subject]

@@ -24,6 +24,18 @@ powered by the Logiwa daily shipment report sent by OC3PL.
 
 ## Asana surface
 
+### Task write contract
+
+Every task write in this project walks `references/architecture/asana_task_contract.md` —
+resolve against an existing task before creating one, fill every required field (`TBD — reason`
+when a value genuinely can't be determined, never a blank), always set a due date via the
+Phase 2 ladder, derive collaborators from the role map rather than from whoever the source
+mentioned, and move or multi-home an existing task instead of opening a second one.
+
+Dedupe keys for this queue: `Order #` for holds and post-ship errors, `report date` for daily log tasks, `RMA number` for returns.
+
+The `Order #` key and the daily-log existence check this skill already runs are the Phase 0 pattern. Both stay as documented; the contract adds the required-field, due-date, and collaborator discipline around them.
+
 Two dedicated Asana projects under the each-skill-gets-its-own-project pattern.
 Both are owned by this skill end-to-end.
 

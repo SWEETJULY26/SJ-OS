@@ -17,7 +17,7 @@ description: >
 
 # Outlook → Asana Bridge
 
-**Version:** v1.3 · **Last updated:** 2026-07-20 23:05 PT — Iteration-2 eval re-run confirmed the v1.2 fix holds and tightened the OC3PL/Pedrero folder guidance: two independent runs (on this skill and the peer `outlook-plm-bridge`) confirmed `outlook_email_search`'s `folderName` param reliably returns `NOT_FOUND` on both folders even though they're real and populated — retrying the same call doesn't help, so the guidance now specifies the actual working fallback (`read_resource` on `mail:///folders/` to get the folder ID, or a sender-domain backstop) instead of just "retry." Prior 2026-07-20 22:10 PT — Eval-driven fix from Alvin's review of the peer `outlook-plm-bridge` weekly-scan run (same shared folder-sweep design, so the same gap applied here): fixed OC3PL folder guidance (it's a direct Inbox subfolder, not nested — a "not found" search error is a lookup mismatch, not a missing folder) and added Pedrero Regulatory to the topic-folder sweep list (sender-domain matching alone misses forwards/CCs). Prior 2026-05-31 14:30 PT — Bridge audit remediation: reworked email scanning to be folder-aware against Alvin's per-domain Outlook folders (lexicon-driven sender search that spans all folders; never sort without a folder scope; explicit skip list); vendor discovery query now pulls contact emails so sender domains resolve (not just names); added `partner` to the Job 0 slug rule; marked the inline PD supplier list as examples (the lexicon is the source of truth). Prior 2026-05-26 12:49 PT — P4/P5 bridge audit remediation: version marker added. P1 (2026-05-26): run-time entity discovery replaced the hard-coded sender list (the 08:13 PT recap miss path).
+**Version:** v1.4 · **Last updated:** 2026-07-29 — Task-quality fix from Alvin's review: the bridge created tasks without checking whether one already existed, left fields blank when the email didn't mention them, shipped tasks with no due date, and split same-work items into a task per queue. Now walks `references/architecture/asana_task_contract.md` on every write — Phase 0 resolve-before-create (dedupe key + wiki pre-check + two-pass Asana search, verdict stated on every item), Phase 1 no blank fields (`TBD` + open questions instead), Phase 2 due date always set with derivation shown and deadline language resolved against the email's own sent date, Phase 3 derived collaborators with external senders explicitly excluded as followers, Phase 4 multi-home one task instead of one per queue unless each system owes a distinct close. The skill's own waiting-on window folded into the Phase 2 ladder as its rung-4 default. Prior v1.3 2026-07-20 23:05 PT — Iteration-2 eval re-run confirmed the v1.2 fix holds and tightened the OC3PL/Pedrero folder guidance: two independent runs (on this skill and the peer `outlook-plm-bridge`) confirmed `outlook_email_search`'s `folderName` param reliably returns `NOT_FOUND` on both folders even though they're real and populated — retrying the same call doesn't help, so the guidance now specifies the actual working fallback (`read_resource` on `mail:///folders/` to get the folder ID, or a sender-domain backstop) instead of just "retry." Prior 2026-07-20 22:10 PT — Eval-driven fix from Alvin's review of the peer `outlook-plm-bridge` weekly-scan run (same shared folder-sweep design, so the same gap applied here): fixed OC3PL folder guidance (it's a direct Inbox subfolder, not nested — a "not found" search error is a lookup mismatch, not a missing folder) and added Pedrero Regulatory to the topic-folder sweep list (sender-domain matching alone misses forwards/CCs). Prior 2026-05-31 14:30 PT — Bridge audit remediation: reworked email scanning to be folder-aware against Alvin's per-domain Outlook folders (lexicon-driven sender search that spans all folders; never sort without a folder scope; explicit skip list); vendor discovery query now pulls contact emails so sender domains resolve (not just names); added `partner` to the Job 0 slug rule; marked the inline PD supplier list as examples (the lexicon is the source of truth). Prior 2026-05-26 12:49 PT — P4/P5 bridge audit remediation: version marker added. P1 (2026-05-26): run-time entity discovery replaced the hard-coded sender list (the 08:13 PT recap miss path).
 
 You are the universal email intake layer for AC Brands operations. Your job is to scan
 Outlook — both the Inbox and the Sent Items folder — for SJ SKIN relevant emails,
@@ -130,16 +130,31 @@ Mirror the rule from `outlook-plm-bridge`. When an email has more than one label
 
 1. Pick the **primary label** by priority order (safety and compliance always win):
    `quality` > `regulatory` > `ops` > `pd` > `margin` > `intel` > `founder`
-2. Create the **parent action** in the primary sub-system
-3. Create **child / linked actions** in each secondary sub-system
-4. Cross-reference all of them — the parent action's description includes the child
-   action IDs/links; each child action's description points back to the parent
+2. Decide **one task or two**, per `asana_task_contract.md` Phase 4. Could one person close
+   it once? Then it's **one task multi-homed** into the primary queue and each secondary
+   queue's intake section, one owner, counterpart owners added as collaborators. Does each
+   system owe a **distinct deliverable** with its own owner and its own close? Then it's
+   separate tasks.
+3. For the separate-task case only: create the **parent action** in the primary sub-system
+   and **child actions** in each secondary sub-system.
+4. Cross-reference either way — the LINKS block carries the secondary homes on a multi-homed
+   task, or the parent/child GIDs when they're separate tasks.
+
+The old behavior created a task in every matched queue unconditionally, which double-counted
+one piece of work across two or three queues. Multi-homing is the default now; the split is
+the exception that has to be justified by two real closes.
 
 Example: a Vegelabs email with a PO ack + a COA attachment + an OOS note in the body
-classifies as `[quality, plm, ops]`. Primary: `quality` → open the OOS investigation
-with quality-lab-coordinator as the parent. Secondary: `plm` → cross-flag the COA to
-`outlook-plm-bridge` for the batch record. Secondary: `ops` → comment on the PO task
-with the ack status. All three actions reference each other.
+classifies as `[quality, plm, ops]`. Primary: `quality` → resolve first (an open OOS task on
+this batch already? then UPDATE it), otherwise open the investigation in SJS Quality
+Management. Secondary: `plm` → cross-flag the COA to `outlook-plm-bridge` for the batch
+record. Secondary: `ops` → the PO ack is a comment on the **existing** PO task, not a new
+task. The investigation and the PO task stay separate — Quality owes an investigation close,
+Purchasing owes a PO close, two deliverables — and reference each other through LINKS.
+
+Contrast: a receipt email that Purchasing and PD both track is one deliverable and one close,
+so it's a single task multi-homed into AC Brands Purchasing → Receiving and the SKU project's
+current phase section. Task `1214048212856468` in the live workspace is exactly this shape.
 
 ---
 
@@ -233,10 +248,19 @@ classifier, then apply the action-shape table for the matched label(s).
 This is one of the highest-value reasons to scan sent items. When Alvin sends a request
 and no reply has come in within the expected window, surface it.
 
-- Default expected reply window: 5 business days
-- If the email named a deadline ("by Friday", "EOW", "before launch"), use that instead
+The check-back date comes from the Phase 2 ladder in `asana_task_contract.md`, where the
+waiting-on window is the rung-4 SLA default:
+
+- If the email named a deadline ("by Friday", "EOW", "before launch"), that wins — resolved
+  against the date Alvin **sent** it, not the date this scan runs
+- Otherwise the waiting-on default: 5 business days, skipping weekends and AC Brands closures
 - If a known supplier has historically been slow (note in the email thread), extend
-  the window to 7–10 business days
+  the window to 7–10 business days and say so in the derivation
+
+Resolve first. A follow-up on a thread that already has a waiting-on task is an UPDATE —
+refresh the due date to the new expected reply date and comment with the latest exchange.
+Opening a second "Waiting on [supplier]" task for the same ask is the exact duplicate this
+contract exists to stop.
 
 In the next triage report, surface these under a 🕒 NO REPLY YET section with the
 days-waiting count and a proposed check-back action.
@@ -269,8 +293,11 @@ Labels seen: [pd:N, ops:N, quality:N, regulatory:N, margin:N, intel:N, founder:N
 🚨 URGENT / TIME-SENSITIVE
 • From: [Sender] | Subject: [Subject] | Received: [date]
   Labels: [primary] + [secondary, ...]
-  → Parent action: [task / comment / stage move] in [primary sub-system]
-  → Cross-references: [child action 1], [child action 2]
+  🔁 Resolve: [NEW | UPDATE task <gid> "<name>" (last touched Nd ago) | REOPEN? task <gid>]
+  → Action: [create / comment / field refresh / section move] in [primary queue]
+  → Due: [date] ([derivation])
+  → Homes: [primary queue → section] [+ secondary queue → section, same work item]
+  → Cross-references: [only when separate tasks — parent/child GIDs]
 
 🩺 QUALITY (parent slot)
 • From: [Sender] | Subject: [Subject] | Received: [date]
@@ -284,15 +311,18 @@ Labels seen: [pd:N, ops:N, quality:N, regulatory:N, margin:N, intel:N, founder:N
 📌 OPS / PD ACTION NEEDED — RECEIVED
 • From: [Sender] | Subject: [Subject] | Received: [date]
   Labels: [...]
+  🔁 Resolve: [verdict]
   → Proposed action: [task / comment / stage move]
-  → Project: [SJ SKIN project name]
+  → Project: [SJ SKIN project name] → [section]
+  → Due: [date] ([derivation]) | Owner: [name] | Collaborators: [names]
   → Attachments: [file name(s) if any]
 
 📤 ACTION NEEDED — SENT (commitments Alvin made)
 • To: [Recipient] | Subject: [Subject] | Sent: [date]
   Labels: [...]
+  🔁 Resolve: [verdict]
   → Proposed action: [waiting-on task / comment / internal task assignment]
-  → Reply expected by: [date if stated, or default +5 business days]
+  → Reply expected by: [date] ([stated deadline, or SLA default waiting-on 5bd])
 
 💰 MARGIN
 • [Cost increase / MOQ change / allowance ask entries]
@@ -318,12 +348,55 @@ Which should I push? (say "all", list numbers, or "skip")
 
 ---
 
+## Asana task write contract — mandatory before any task write
+
+Every Asana write walks `references/architecture/asana_task_contract.md` first. Rules live
+there; this section says where they bite in the email flow.
+
+**Phase 0 — resolve before create.** Before proposing a task, compute the dedupe key and
+search for one that already covers the work. A supplier emailing three times about the same
+PO is one task, not three. Threads are the common case here: the second email on a thread
+almost always resolves to UPDATE.
+
+- Key by work type per the contract's dedupe key table (`PO number + vendor`,
+  `SKU + work item`, `counterparty + ask` for waiting-on, etc.).
+- The wiki page the Job 0 loop already reads carries task GIDs from prior runs — check it
+  before hitting Asana search.
+- `search_tasks(projects_any: <candidate queues>, text: <key terms>, completed: false)`,
+  then a second pass on `completed: true` with `completed_on_after: <today - 30d>`.
+- State the verdict on every triage item and in every preview: `🔁 Resolve: NEW` /
+  `UPDATE task <gid>` / `REOPEN? task <gid>`.
+
+UPDATE means comment with source attribution, refresh changed fields, re-run the due-date
+ladder in case the supplier moved the date, move the section if state advanced, and
+multi-home if a second system now owns part of the work. Not "skip."
+
+**Phase 1 — no blank fields.** Every task carries project, section, assignee, `due_on`,
+followers, and a description with the SOURCE / KEY / LINKS blocks. Anything undeterminable
+from the email is written `TBD — <what's missing>` and raised under `❓ Open questions`.
+
+**Phase 2 — always a due date.** Explicit date → deadline language resolved against the
+**email's own sent date, not today's** → statutory or gate clock → SLA default (urgent 1bd,
+quality 3, regulatory 3, ops 5, pd 5, waiting-on 5, FYI 10). The waiting-on default that
+used to live in this skill is now rung 4 of that ladder. Show the derivation.
+
+**Phase 3 — collaborators.** Assignee + Alvin + the role-holder owning that queue's gate +
+the counterpart owner on every secondary home + any internal person named in the email.
+Senders who are external — vendors, Pedrero, labs — are **never** added as followers; they
+go in the SOURCE block. Most email-sourced tasks have an external sender, so this is the
+rule that matters most here.
+
+**Phase 4 — move and multi-home.** Same work item spanning two systems is one task in two
+projects, not two cross-referenced tasks. This narrows the multi-route split below: keep the
+parent/child split only when each system owes a **distinct deliverable** with its own owner
+and its own close.
+
 ## Pushing to Asana
 
 Once Alvin confirms which items to push:
 
-1. For **task creation** → use the confirmation preview format in
-   `asana-pd-manager/references/confirmation-protocol.md`, always include source email
+1. For **task creation** → walk the write contract above, then use the confirmation preview
+   format in `asana-pd-manager/references/confirmation-protocol.md`, always include source email
    context in the task description: `Source: Email from [Sender], [date] — "[Subject]"`
 2. For **comments** → note the email source at the top of the comment:
    `📧 From: [Sender] ([date]) — [Subject]` then the relevant content

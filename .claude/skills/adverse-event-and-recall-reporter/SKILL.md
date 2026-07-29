@@ -121,6 +121,18 @@ Once submitted, track agency response and the statutory clock until close.
 
 ## Asana surface
 
+### Task write contract
+
+Every task write in this project walks `references/architecture/asana_task_contract.md` —
+resolve against an existing task before creating one, fill every required field (`TBD — reason`
+when a value genuinely can't be determined, never a blank), always set a due date via the
+Phase 2 ladder, derive collaborators from the role map rather than from whoever the source
+mentioned, and move or multi-home an existing task instead of opening a second one.
+
+Dedupe keys for this queue: `SAE ID` or `recall ID` once assigned; `source complaint + SKU` before one is.
+
+Statutory filing clocks are Phase 2 rung 3 and **override** the SLA default — an FDA or state deadline is the real due date, never a service target. Never let a 3-business-day regulatory default overwrite a 15-day statutory window, in either direction.
+
 - *Project:* **SJS Reportable Events** — Operations team, public to workspace. Created 2026-05-09 via Asana AI Builder at v6.2 build. Rolls up under regulatory-manager (System C umbrella) for cross-skill dashboard alongside SJS Regulatory Management.
   - Project GID: `1214660834583706`
   - Project URL: https://app.asana.com/1/1200120716421441/project/1214660834583706

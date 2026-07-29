@@ -20,6 +20,8 @@ The PD system needs one place where Asana state is read, written, and confirmed 
 
 **Project + section required on every task.** Rule 3. Standalone tasks are not acceptable.
 
+**Resolve before create; every field valued; every task dated.** Rule 8. Every Asana write walks `references/architecture/asana_task_contract.md` — search for an existing task by dedupe key before creating one, fill every required field (`TBD — reason` when a value can't be determined, never a blank), always set a due date, derive collaborators from `references/role-map.md`, and move or multi-home an existing task instead of opening a second one. PD dedupe key: `SKU + work item`.
+
 **Asana = workflow truth. PLM = source of truth for product / batch / vendor data.** Sync to PLM happens via `asana-plm-bridge` or `outlook-plm-bridge`; this skill never writes PLM directly.
 
 **Role-based assignment.** Look up user GIDs via `asana_get_workspace_users` against the role-holders in `references/role-map.md`. Never guess.
@@ -66,23 +68,39 @@ When a Formula Tracker task moves to Signed Approvals (the review/approval field
 
 ### Job 4 — Task and subtask creation
 
-Create tasks per the structure below. Always specify project + section (Rule 3). Ask for missing assignee / due date / section only when needed (Rule 2).
+**Resolve first (Rule 8).** Before creating, search for a task that already covers the work — key on `SKU + work item`, across the SKU project and the Formula Tracker. A bridge proposing a task from the third email on one thread should land as an update to the task the first email opened. State the verdict in the preview.
+
+Then create per the structure below. Every field carries a value; `TBD — reason` when it genuinely can't be determined (Rule 2). Due date always set via the Phase 2 ladder, with derivation shown.
 
 ```
+🔁 Resolve: [NEW | UPDATE task <gid> | REOPEN? task <gid>]
 Task name: [Clear, descriptive name]
 Project: [Project name] → [Section]
 Assignee: [Name]
-Due date: [Date]
-Description: [Context]
+Due date: [Date] ([derivation — stated / SLA default pd 5bd / gate clock])
+Collaborators: Alvin (Operator), [gate role-holder], [secondary-home owner]
+Description: [Context, with SOURCE / KEY / LINKS blocks]
+Homes: [primary] [+ secondary, when one close covers both]
 Subtasks: [List if applicable]
+❓ Open questions: [any TBD fields]
 ```
 
 - *Trigger:* phrases in `references/trigger-phrases.md` §task-creation; inbound from PD bridges
 - *HITL:* Operator confirms via Rule 1 preview before creation. Subtasks confirm parent task before children.
 
-### Job 5 — Updates and assignments
+### Job 5 — Updates, assignments, section moves, multi-homing
 
-Update task name, notes, due date, assignee, completion status. Move tasks between sections (non-stage-gate moves). Assign by looking up user GID per `references/role-map.md`. Confirm all changes (Rule 1, Rule 5).
+Update task name, notes, due date, assignee, completion status. Assign by looking up user GID per `references/role-map.md`. Confirm all changes (Rule 1, Rule 5).
+
+**Section moves** (non-stage-gate) and **multi-homing** both run through `update_tasks` with `add_projects` — pass the project the task is already in to move it to a new section, or a second project to multi-home it:
+
+```
+update_tasks(tasks: [{task: <gid>,
+                      add_projects: [{project_id: <project>, section_id: <section>}],
+                      add_followers: [<counterpart owner>]}])
+```
+
+Multi-home when Purchasing, Inventory, or Quality needs the same PD work item visible — one task, one owner, PD keeps the close. Create a second task only when the other system owes its own separate deliverable. See `asana_task_contract.md` Phase 4.
 
 - *Trigger:* phrases in `references/trigger-phrases.md` §updates-assignments
 - *HITL:* Operator confirms every change
@@ -169,7 +187,8 @@ The Timing/Cutover Risk Notes custom field (GID `1211644347258861` — see `refe
 
 ## Reference index
 
-- `references/confirmation-protocol.md` — Rules 1–7. The contract sibling skills consume.
+- `references/confirmation-protocol.md` — Rules 1–8. The contract sibling skills consume.
+- `references/architecture/asana_task_contract.md` — system-wide task write contract: resolve before create, required fields, due-date ladder, collaborators, section moves and multi-homing. Rule 8 points here.
 - `references/role-map.md` — canonical PD-system role-map. Sibling PD skills reference this.
 - `references/pd-projects.md` — SKU projects (looked up live), Formula Tracker + portfolio.
 - `references/suppliers.md` — PD-side supplier routing (formula vs. component).
@@ -208,5 +227,6 @@ The Timing/Cutover Risk Notes custom field (GID `1211644347258861` — see `refe
 
 ## History
 
+- **2026-07-29** — Task-quality fix from Alvin's review of the bridges. Added Rule 8 and `references/architecture/asana_task_contract.md`: resolve before create, no blank fields, due date always, derived collaborators, section moves and multi-homing via `update_tasks.add_projects`. Job 4 gained the resolve step and a fuller preview; Job 5 gained the move/multi-home mechanics; Rule 2 was rewritten (its "ask only when needed" was what let tasks land undated and half-filled).
 - **2026-05-17** — Modernized to umbrella pattern. Extracted inline catalogs (team roster, product list, supplier map, external partners, stage-gate procedure, confirmation rules, trigger phrases) to `references/`. Updated system-position from "Skill 1 of 4-skill circular system" to "core engine of the 7-skill PD system" per `references/architecture/system_map.md`. Marked SKN-OPS-008 as ratified (was "pending ratification" — `quality-manager/references/sop-catalog.md` showed ratified 2026-05-09). Added Design principles, Core jobs (numbered), When NOT to use, Reference index. Documented cross-system handoffs to Quality, Regulatory, Margin, Ops, Retail Intel, and inbound reverse-handoffs.
 - **2026-05-09** — Original monolithic v1 (14KB SKILL.md, no references/).

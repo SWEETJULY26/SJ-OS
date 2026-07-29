@@ -179,6 +179,18 @@ PLM writer in the system.
 
 ## Asana surface
 
+### Task write contract
+
+Every task write in this project walks `references/architecture/asana_task_contract.md` —
+resolve against an existing task before creating one, fill every required field (`TBD — reason`
+when a value genuinely can't be determined, never a blank), always set a due date via the
+Phase 2 ladder, derive collaborators from the role map rather than from whoever the source
+mentioned, and move or multi-home an existing task instead of opening a second one.
+
+Dedupe keys for this queue: `SKU + planning period` for buy recommendations, `SKU + forecast cycle` for forecast tasks.
+
+A monthly S&OP run touches the same SKUs every cycle. Resolve on `SKU + planning period` so a re-run updates the current cycle's task instead of stacking a new one beside it.
+
 Dedicated project under the each-skill-gets-its-own-project pattern. Every
 forecasting and buy-recommendation task writes here under HITL approval.
 

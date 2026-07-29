@@ -251,6 +251,18 @@ The canonical flow for any count variance, damage, or missing-items signal at re
 
 ## Asana surface
 
+### Task write contract
+
+Every task write in this project walks `references/architecture/asana_task_contract.md` —
+resolve against an existing task before creating one, fill every required field (`TBD — reason`
+when a value genuinely can't be determined, never a blank), always set a due date via the
+Phase 2 ladder, derive collaborators from the role map rather than from whoever the source
+mentioned, and move or multi-home an existing task instead of opening a second one.
+
+Dedupe keys for this queue: `PO number + vendor` for receipts, `vendor + renewal window` for renewals, `vendor + invoice number` for Flow I invoices, `vendor + PO number` for discrepancies.
+
+Job 9's multi-home routing matrix and Job 10's PO multi-home inheritance are Phase 4 applications — the contract generalizes them, it doesn't replace them. Job 3e Scenario A already states the rule the contract now makes universal: when a receipt task exists on the PD side, set its PLM Link and multi-home it into Receiving rather than creating a duplicate.
+
 - *Project:* **AC Brands Purchasing** — dedicated, Operations team, public to workspace
   - Project GID: `1214373717266702`
   - Project URL: https://app.asana.com/0/1214373717266702/list

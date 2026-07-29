@@ -67,6 +67,8 @@ been captured.
 
 ## Bridge intake — queue contract
 
+**Task write contract.** Every task a bridge or a member skill writes into these queues walks `references/architecture/asana_task_contract.md` — resolve against an existing task before creating one, fill every required field, always set a due date, derive collaborators from the role map, and move or multi-home an existing task rather than opening a second one. Both sides of the handoff name the same contract: `bridge_queue_contract.md` decides which queue, `asana_task_contract.md` decides what the write looks like.
+
 The four bridges write into Asana projects (and into PLM via `plm-assistant`); `asana-pd-manager` and the rest of the PD system pick up from those projects. Bridges don't call destination skills directly.
 
 PD-relevant queue destinations:

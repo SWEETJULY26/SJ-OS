@@ -2,7 +2,9 @@
 
 **Use:** Authoritative rule for how the four bridges hand off to the rest of the system. Single source of truth — bridges, sub-system routers, and destination skills all reference this file.
 
-**Last updated:** 2026-05-26 — Authored as Priority 2 of `Bridge-and-System-Audit-2026-05-26.md`. Resolves the router/bridge ownership asymmetry by codifying the queue model the system already uses in practice.
+**Companion:** `asana_task_contract.md`. This file decides **which queue** a task goes to. That one decides **what the write looks like** once the queue is known — resolve before create, required fields, due dates, collaborators, section moves and multi-homing. Every bridge and destination skill walks both.
+
+**Last updated:** 2026-07-29 — Added the companion pointer to `asana_task_contract.md` and the multi-home note under "Cross-system signal" below. Prior 2026-05-26 — Authored as Priority 2 of `Bridge-and-System-Audit-2026-05-26.md`. Resolves the router/bridge ownership asymmetry by codifying the queue model the system already uses in practice.
 
 ---
 
@@ -16,6 +18,8 @@ This means:
 - Sub-system routers describe **which Asana projects they pick up from**, not which bridges call them.
 - Destination skills (member skills under a router) consume tasks from their queue — they don't need to know which bridge produced the task.
 - Cross-system signal is the same model: a bridge that detects cross-system signal posts to the **target system's** queue, and that system's router fans out.
+
+**Cross-system signal doesn't always mean a second task.** When the signal is the same work item that a second system needs to see, it's one task multi-homed into both queues — one owner, one due date, each system closing its own side. A second task is right only when each system owes a distinct deliverable with its own close. `asana_task_contract.md` Phase 4 has the test and the API call.
 
 Margin, Intel, and Founder skills do not run an Asana queue. They are direct-output skills that read Asana / PLM live, generate output, and stop. Bridges therefore do not "fan out" to them. The bridges' role for those skills is to land the underlying data in PLM and Asana, where the direct-output skills then read it.
 

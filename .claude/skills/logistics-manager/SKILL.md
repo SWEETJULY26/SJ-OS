@@ -317,6 +317,18 @@ Bridge intake follows the queue contract at `references/architecture/bridge_queu
 
 ## Asana surface
 
+### Task write contract
+
+Every task write in this project walks `references/architecture/asana_task_contract.md` —
+resolve against an existing task before creating one, fill every required field (`TBD — reason`
+when a value genuinely can't be determined, never a blank), always set a due date via the
+Phase 2 ladder, derive collaborators from the role map rather than from whoever the source
+mentioned, and move or multi-home an existing task instead of opening a second one.
+
+Dedupe keys for this queue: `PO number + vendor` for inbound shipments, `tracking number` for carrier issues, `retailer + PO number` for outbound ASNs.
+
+A shipment generates mail at booking, in transit, at customs, and on arrival. All of it resolves to the one shipment task — comment and advance the section, don't open a task per event.
+
 Dedicated project under the each-skill-gets-its-own-project pattern. All
 logistics task writes land here under HITL approval.
 

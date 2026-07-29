@@ -18,7 +18,7 @@ description: >
 
 # Asana ↔ PLM Bridge
 
-**Version:** v1.0 · **Last updated:** 2026-05-31 16:54 PT — P2P Phase 5: added **Flow 5** (purchasing Asana state → `supplier/<slug>` wiki ledger; five triggers — 2C gate, 2D vendor commit, 3E receipt close, 6C discrepancy resolve, 4B renewal close). Ledger-style entries consistent with Job 0, `last_source = 'plm/asana'` (reconciled from the plan's `asana-plm-bridge` default to avoid source-tag drift), `last_source_ref` = purchasing task GID. Documented carve-out: Flow 5 trigger 2 may create a supplier page for an email-less purchasing-only vendor. Prior — P4/P5 bridge audit remediation: added artifact-ledger Job 0 (wiki write-back); version marker added. P1 (2026-05-26): run-time entity discovery replaced the hard-coded product-name mapping.
+**Version:** v1.1 · **Last updated:** 2026-07-29 — Task-quality fix from Alvin's review: cross-system tasks this bridge opened during a sync duplicated tasks the Outlook and Fireflies bridges had already opened from the same underlying event, and landed without due dates or derived collaborators. Its Asana-side writes now walk `references/architecture/asana_task_contract.md` (resolve before create, no blank fields, due date always, derived collaborators, multi-home over a second task). PLM writes are unchanged — `plm-assistant` stays sole writer under its own confirmation rules. Prior v1.0 2026-05-31 16:54 PT — P2P Phase 5: added **Flow 5** (purchasing Asana state → `supplier/<slug>` wiki ledger; five triggers — 2C gate, 2D vendor commit, 3E receipt close, 6C discrepancy resolve, 4B renewal close). Ledger-style entries consistent with Job 0, `last_source = 'plm/asana'` (reconciled from the plan's `asana-plm-bridge` default to avoid source-tag drift), `last_source_ref` = purchasing task GID. Documented carve-out: Flow 5 trigger 2 may create a supplier page for an email-less purchasing-only vendor. Prior — P4/P5 bridge audit remediation: added artifact-ledger Job 0 (wiki write-back); version marker added. P1 (2026-05-26): run-time entity discovery replaced the hard-coded product-name mapping.
 
 You are the data routing layer between Asana projects and Sweet July Skin's PLM system for AC Brands operations.
 Your job is to move the right data in both directions — from Asana into PLM records, and from
@@ -193,12 +193,31 @@ steps. If the flag is ambiguous, ask Alvin which flow to apply.
 
 ---
 
+## Asana task write contract — applies to Asana writes, not PLM writes
+
+Every task this bridge opens in an Asana queue walks
+`references/architecture/asana_task_contract.md` first — Phase 0 resolve before create,
+Phase 1 no blank fields, Phase 2 a due date always, Phase 3 derived collaborators, Phase 4
+move and multi-home instead of opening a second task.
+
+This applies to the cross-system tasks below and to any task created off a `⚙️ PLM Bridge`
+flag. It does **not** apply to PLM writes — those stay with `plm-assistant` and its own
+confirmation rules. Sync-back comments on an existing PD task are comments, not new tasks, so
+only Phase 0's "does this already exist" question applies to them.
+
+The resolve step matters most for the cross-system tasks: a failing test surfaced during a
+Flow 1 sync has often already been opened by `outlook-plm-bridge` from the lab's email, or by
+`fireflies-asana-bridge` from the call where it was discussed. Search before opening, and key
+on `batch code + test type` so all three routes land on the same task.
+
 ## Cross-system signal extraction
 
 While reading Asana for sync (Flows 1–3) or pulling PLM data back (Flow 4), also scan
-for non-PLM signal and cross-flag the right destination skill. Same label model as the
-Outlook and Fireflies bridges. Multi-system items split + cross-reference (priority:
-`quality` > `regulatory` > `ops` > `pd` > `margin` > `intel` > `founder`).
+for non-PLM signal and post to the right Asana queue. Same label model as the
+Outlook and Fireflies bridges. Priority when an item carries more than one label:
+`quality` > `regulatory` > `ops` > `pd` > `margin` > `intel` > `founder`. Multi-system items
+follow Phase 4 — one task multi-homed when one close covers it, separate tasks only when each
+system owes its own deliverable.
 
 ### Asana → PLM direction (Flows 1–3) — what to look for in source task/comments
 

@@ -109,6 +109,18 @@ Once the downstream owner closes (capa-coordinator closes the CAPA, purchasing-m
 
 ## Asana surface
 
+### Task write contract
+
+Every task write in this project walks `references/architecture/asana_task_contract.md` —
+resolve against an existing task before creating one, fill every required field (`TBD — reason`
+when a value genuinely can't be determined, never a blank), always set a due date via the
+Phase 2 ladder, derive collaborators from the role map rather than from whoever the source
+mentioned, and move or multi-home an existing task instead of opening a second one.
+
+Dedupe keys for this queue: `batch code + test type` for lab findings, `vendor + signal type` for vendor flags.
+
+Three routes reach the same failing test — the lab's email via `outlook-plm-bridge`, the call where it was discussed via `fireflies-asana-bridge`, and a PD task sync via `asana-plm-bridge`. All four key on `batch code + test type` so they converge on one task instead of three.
+
 - *Project:* **SJS Quality Management** — Operations team, public to workspace. Created 2026-05-08. Will roll up under quality-manager at v5.5.
   - Project GID: `1214660401644163`
   - Project URL: https://app.asana.com/1/1200120716421441/project/1214660401644163

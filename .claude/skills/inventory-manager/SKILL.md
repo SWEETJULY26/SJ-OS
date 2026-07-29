@@ -115,6 +115,18 @@ The order-level tabs (*All Open Orders for OOS SKUs*, *Problem Orders*) are owne
 
 ## Asana surface
 
+### Task write contract
+
+Every task write in this project walks `references/architecture/asana_task_contract.md` —
+resolve against an existing task before creating one, fill every required field (`TBD — reason`
+when a value genuinely can't be determined, never a blank), always set a due date via the
+Phase 2 ladder, derive collaborators from the role map rather than from whoever the source
+mentioned, and move or multi-home an existing task instead of opening a second one.
+
+Dedupe keys for this queue: `SKU + location` for position tasks, `batch code + threshold` for near-expiry, `RMA number + SKU` for returns.
+
+This skill's existing multi-homed-tasks principle is the model the contract generalizes system-wide. Its dedupe-key rule on the OOS shortage sync (re-runs update by key, rows absent for two runs auto-close) is the Phase 0 pattern other queues now follow.
+
 - *Project:* AC Brands Ops Dashboard (GID to be confirmed on first run)
 - *Section:* Inventory Management — single section, no subsections
 - *Custom fields:* none new — defaults only (assignee, due date, completion)
