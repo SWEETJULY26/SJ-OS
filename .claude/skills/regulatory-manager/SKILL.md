@@ -236,6 +236,18 @@ Same shape as Job 8, calendar-quarter window, deeper analysis. Surfaces alongsid
 
 ## Asana surface
 
+### Task write contract
+
+Every task write in this project walks `references/architecture/asana_task_contract.md` —
+resolve against an existing task before creating one, fill every required field (`TBD — reason`
+when a value genuinely can't be determined, never a blank), always set a due date via the
+Phase 2 ladder, derive collaborators from the role map rather than from whoever the source
+mentioned, and move or multi-home an existing task instead of opening a second one.
+
+Dedupe keys for this queue: per the member skill that owns the work type; `filing type + period` for the filings this skill owns directly.
+
+Read-most umbrella. MoCRA and state filing deadlines are Phase 2 rung 3 statutory clocks, never SLA defaults.
+
 - *Project:* **SJS Regulatory Management** — Operations team, public to workspace. Created 2026-05-09 at v6.1 build (claims-il-and-label-keeper); regulatory-manager takes ownership at v6.3.
   - Project GID: `1214660807386611`
   - Project URL: https://app.asana.com/1/1200120716421441/project/1214660807386611

@@ -71,6 +71,8 @@ Pedrero Regulatory (Amy Pedrero principal, Heather Folkes and Teona Bebia second
 
 ## Bridge intake — queue contract
 
+**Task write contract.** Every task a bridge or a member skill writes into these queues walks `references/architecture/asana_task_contract.md` — resolve against an existing task before creating one, fill every required field, always set a due date, derive collaborators from the role map, and move or multi-home an existing task rather than opening a second one. Both sides of the handoff name the same contract: `bridge_queue_contract.md` decides which queue, `asana_task_contract.md` decides what the write looks like.
+
 The four bridges (`outlook-asana-bridge`, `fireflies-asana-bridge`, `outlook-plm-bridge`, `asana-plm-bridge`) write regulatory-relevant signal into specific Asana projects. System C picks up from those projects on its own cadence — the bridges do not call regulatory skills directly.
 
 Regulatory queue destinations:

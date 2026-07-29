@@ -26,7 +26,7 @@ Calendar in Asana (Operations team, project GID: `1214055559810920`).
 |-------|-------|
 | **From** | Alvin Belt — alvin@ac-brands.com |
 | **To** | alvin@ac-brands.com |
-| **BCC** | alvin@ac-brands.com, kate@ac-brands.com, soraya@ac-brands.com, ciarra@ac-brands.com, ivy@ac-brands.com, nicole@ac-brands.com, danielle@ac-brands.com |
+| **BCC** | alvin@ac-brands.com, kate@ac-brands.com, soraya@ac-brands.com, ivy@ac-brands.com, nicole@ac-brands.com, danielle@ac-brands.com |
 
 ---
 

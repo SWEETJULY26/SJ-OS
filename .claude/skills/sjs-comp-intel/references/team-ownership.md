@@ -45,11 +45,11 @@
 
 **Estimated time**: 4 hours per month ongoing, plus 5 additional hours in teardown months.
 
-## Procurement and admin: Ciarra Robinson
+## Procurement and admin: unassigned — Ops Coordinator seat vacant
 
-**Role**: Ops Coordinator. Reports to Alvin.
+**Role**: Ops Coordinator, vacant as of 2026-07 (role retired; an Operations Specialist and a PD Project Manager Specialist are being hired to replace it, both reporting to Nicole). Until a seat is filled, Alvin carries this directly. Reassign here once the Operations Specialist starts.
 
-**Ciarra's specific ownership**:
+**Ownership in this seat**:
 - Tool stack procurement (Glossy Pro, BeautyMatter Pro, social listening, Helium 10, Phantombuster).
 - Vendor renewal management.
 - Shared folder structure maintenance (Notion or SharePoint).

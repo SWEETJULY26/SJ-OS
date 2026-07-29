@@ -239,6 +239,8 @@ guidelines.
 
 ## Bridges and foundation
 
+**Task write contract.** Every task a bridge or a member skill writes into these queues walks `references/architecture/asana_task_contract.md` — resolve against an existing task before creating one, fill every required field, always set a due date, derive collaborators from the role map, and move or multi-home an existing task rather than opening a second one. Both sides of the handoff name the same contract: `bridge_queue_contract.md` decides which queue, `asana_task_contract.md` decides what the write looks like.
+
 The four shared bridges are how Operations content gets into Asana and PLM.
 Operations skills do not query Outlook or Fireflies directly — they call the
 bridges. The bridges are documented in their own SKILL.md files; this section

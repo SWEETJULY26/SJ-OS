@@ -9,7 +9,7 @@ Run sub-stream 3 (monthly trend digest) and sub-stream 1 (quarterly teardowns) i
 ## Month 1
 
 **Stand up infrastructure.**
-- Confirm tool stack and kick off procurement (Glossy Pro, BeautyMatter Pro, social listening trial). Ciarra handles the procurement paperwork.
+- Confirm tool stack and kick off procurement (Glossy Pro, BeautyMatter Pro, social listening trial). Procurement paperwork sits with the vacant Ops Coordinator seat — Alvin carries it until the Operations Specialist starts.
 - Set up shared working folder (Notion page or SharePoint) for CI deliverables and signal log.
 - Populate the Rhode comp profile in full using retail intel's existing profile plus two weeks of current monitoring (Soraya + Kate). Already scaffolded in references, so this is population work not template building.
 - Skeleton populate the other four comp profiles (Summer Fridays, Kosas, LANEIGE, YTTP) with basics: positioning one-liner, current price ladder snapshot, recent launch list, Ulta/Sephora presence map. Full populations happen during first quarterly teardowns.
@@ -100,7 +100,7 @@ Three points where the stream gets reassessed before continuing to the next phas
 
 ## Effort estimates
 
-**Month 1 stand up**: roughly 40 hours across the team (Nicole 15, Soraya 15, Kate 8, Ciarra 2).
+**Month 1 stand up**: roughly 40 hours across the team (Nicole 15, Soraya 15, Kate 8, Ops Coordinator seat 2 — Alvin while vacant).
 
 **Ongoing monthly effort**: roughly 12 hours (Nicole 5, Kate 4, Soraya 3). About a day and a half of team time.
 

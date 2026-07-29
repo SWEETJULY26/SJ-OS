@@ -114,6 +114,18 @@ Three documented routes downstream. Each has a degrade-gracefully behavior for t
 
 ## Asana surface
 
+### Task write contract
+
+Every task write in this project walks `references/architecture/asana_task_contract.md` —
+resolve against an existing task before creating one, fill every required field (`TBD — reason`
+when a value genuinely can't be determined, never a blank), always set a due date via the
+Phase 2 ladder, derive collaborators from the role map rather than from whoever the source
+mentioned, and move or multi-home an existing task instead of opening a second one.
+
+Dedupe keys for this queue: `complaint ID` once assigned; `customer + SKU + date` before one is.
+
+A customer who emails twice about one reaction is one complaint. Resolve before opening, and note that a complaint-rate trend is read across resolved complaints — duplicates inflate the rate and can trigger a false trend signal.
+
 - *Project:* **SJ Skin Complaint Log** (gid `1204763097184846`) — existing, repointed to this skill. Owner: Operations. Team: Product.
 - *Sections:* New feedback → Backlog → Actioning → Not actioning → Completed (existing, unchanged).
 - *Customer-facing custom fields:* live and unchanged. See references/complaint-classification.md for the full field map and current option lists.

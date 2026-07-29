@@ -1,6 +1,6 @@
 ---
 name: quality-lab-coordinator
-description: Owns lab-side and supplier-side quality signal for Sweet July Skin. Use whenever an OOS or OOT result, incoming material defect, lab pattern, or vendor quality flag is in play. Triggers include "any OOS results this month", "log this OOS", "log this OOT", "lab patterns by vendor", "did the latest [vendor] shipment pass", "flag the vendor on this", "vendor scorecard hit on [vendor]", "incoming material defect on [batch]", "lab queue", "what's open in lab quality". Operates the SJS Quality Management Asana project (rolls up under quality-manager post-v5.5). Walks the working Lab Quality Procedure pending SOP ratification. Does not own CAPAs (hands to capa-coordinator), batch hold/release (batch-lifecycle-tracker post-v5.4), vendor scorecard records (purchasing-manager — signals via comment-back), or PLM writes (plm-assistant). HITL on every vendor flag and every scorecard signal write.
+description: Owns lab-side and supplier-side quality signal for Sweet July Skin. Use whenever an OOS or OOT result, incoming material defect, lab pattern, or vendor quality flag is in play. Triggers include "any OOS results this month", "log this OOS", "log this OOT", "lab patterns by vendor", "did the latest [vendor] shipment pass", "flag the vendor on this", "vendor scorecard hit on [vendor]", "incoming material defect on [batch]", "lab queue", "what's open in lab quality". Operates the SJS Quality Management Asana project (rolls up under quality-manager post-v5.5). Walks SKN-OPS-006 Rev.1 (Lab Quality Procedure), ratified 2026-05-08. Does not own CAPAs (hands to capa-coordinator), batch hold/release (batch-lifecycle-tracker post-v5.4), vendor scorecard records (purchasing-manager — signals via comment-back), or PLM writes (plm-assistant). HITL on every vendor flag and every scorecard signal write.
 ---
 
 # Quality Lab Coordinator
@@ -108,6 +108,18 @@ Once the downstream owner closes (capa-coordinator closes the CAPA, purchasing-m
 - *HITL:* Operator approves close. On approval, Status = Closed, Gate = Open, task moves to Closed section.
 
 ## Asana surface
+
+### Task write contract
+
+Every task write in this project walks `references/architecture/asana_task_contract.md` —
+resolve against an existing task before creating one, fill every required field (`TBD — reason`
+when a value genuinely can't be determined, never a blank), always set a due date via the
+Phase 2 ladder, derive collaborators from the role map rather than from whoever the source
+mentioned, and move or multi-home an existing task instead of opening a second one.
+
+Dedupe keys for this queue: `batch code + test type` for lab findings, `vendor + signal type` for vendor flags.
+
+Three routes reach the same failing test — the lab's email via `outlook-plm-bridge`, the call where it was discussed via `fireflies-asana-bridge`, and a PD task sync via `asana-plm-bridge`. All four key on `batch code + test type` so they converge on one task instead of three.
 
 - *Project:* **SJS Quality Management** — Operations team, public to workspace. Created 2026-05-08. Will roll up under quality-manager at v5.5.
   - Project GID: `1214660401644163`

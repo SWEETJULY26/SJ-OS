@@ -1,6 +1,6 @@
 ---
 name: capa-coordinator
-description: Owns the corrective and preventive action lifecycle for Sweet July Skin per SKN-OPS-001. Use whenever an NCR, CAPA, root cause analysis, or non-conformance investigation is in play — opening, walking, verifying, or closing. Triggers include "open a CAPA", "open an NCR", "any open CAPAs", "draft a CAPA closeout", "root cause on [issue]", "5 Whys", "Fishbone", "log this OOS as an NCR", "convert this NCR", "any overdue NCRs". Operates the SJS CAPA Log Asana project. Walks SKN-OPS-001 phases verbatim, applies judgment within. Authors the working NCR Procedure pending SOP ratification. Status field carries SOP phase; Gate field carries HITL state. HITL split between Operator (intake, conversion, plan) and QA Lead (root cause, verification, effectiveness, close). Hands off to complaint-and-event-handler, purchasing-manager, regulatory-manager, quality-manager, and asana-pd-manager (when root cause is formulation).
+description: Owns the corrective and preventive action lifecycle for Sweet July Skin per SKN-OPS-001. Use whenever an NCR, CAPA, root cause analysis, or non-conformance investigation is in play — opening, walking, verifying, or closing. Triggers include "open a CAPA", "open an NCR", "any open CAPAs", "draft a CAPA closeout", "root cause on [issue]", "5 Whys", "Fishbone", "log this OOS as an NCR", "convert this NCR", "any overdue NCRs". Operates the SJS CAPA Log Asana project. Walks SKN-OPS-001 phases verbatim, applies judgment within. Authors the NCR Procedure, ratified as SKN-OPS-005 Rev.1 on 2026-05-09. Status field carries SOP phase; Gate field carries HITL state. HITL split between Operator (intake, conversion, plan) and QA Lead (root cause, verification, effectiveness, close). Hands off to complaint-and-event-handler, purchasing-manager, regulatory-manager, quality-manager, and asana-pd-manager (when root cause is formulation).
 ---
 
 # CAPA Coordinator
@@ -136,6 +136,18 @@ Once verification + effectiveness both clear:
 - *HITL:* **QA Lead approves CAPA close** (`Gate = Pending QA Lead` at v5.2). On close, all handoffs commit; Status moves to Closed (or Closed-No-CAPA), Gate returns to Open, and the task moves to the Closed section.
 
 ## Asana surface
+
+### Task write contract
+
+Every task write in this project walks `references/architecture/asana_task_contract.md` —
+resolve against an existing task before creating one, fill every required field (`TBD — reason`
+when a value genuinely can't be determined, never a blank), always set a due date via the
+Phase 2 ladder, derive collaborators from the role map rather than from whoever the source
+mentioned, and move or multi-home an existing task instead of opening a second one.
+
+Dedupe keys for this queue: `NCR number` once assigned; `source event + SKU` before one is.
+
+An NCR raised in a meeting, then again by email, is one NCR. Resolve on the source event before a number exists, then on the number once it does.
 
 - *Project:* **SJS CAPA Log** — Operations team, public to workspace. Created 2026-05-09.
   - Project GID: `1214660784338465`

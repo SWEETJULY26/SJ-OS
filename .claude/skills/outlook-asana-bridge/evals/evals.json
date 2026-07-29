@@ -26,6 +26,58 @@
         "The proposed actions cross-reference each other (parent links to children and vice versa)",
         "The output is a confirmation preview, not a claim that the task/comment was already created"
       ]
+    },
+    {
+      "id": 2,
+      "prompt": "KDC-One emailed again about PO 100342 — third email on that thread this week. Log it.",
+      "expected_output": "Runs Phase 0 of asana_task_contract.md before proposing anything: computes the dedupe key (PO number + vendor), checks the supplier wiki page for a task GID from a prior run, then searches Asana with search_tasks(projects_any: <Purchasing + candidate queues>, text: <PO 100342 / KDC-One>, completed: false) plus a completed-in-last-30-days second pass. Finds the task the earlier emails already opened and returns a 🔁 Resolve: UPDATE verdict naming that task's gid — then proposes a comment with source attribution, a re-run of the due-date ladder against the newest email, and a section move if the PO state advanced. Does NOT propose a new task.",
+      "files": [],
+      "expectations": [
+        "A dedupe key is computed and stated before any create is proposed",
+        "search_tasks is called with projects_any scoped to candidate queues, not an unscoped text search",
+        "The output states a 🔁 Resolve verdict of UPDATE and names the existing task's gid",
+        "No new task is proposed for work an existing task already covers",
+        "The UPDATE does more than comment — it re-evaluates the due date and the section against the new email"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Vegelabs sent over the Pava Cleanser component spec — create a task to review it. No deadline mentioned in the email.",
+      "expected_output": "Creates the task with every required field valued and no blanks. Because the email states no deadline, the due date comes from the Phase 2 ladder's rung-4 SLA default for the primary label and is shown with its derivation (e.g. 'Due: 2026-08-05 (SLA default — pd, 5bd)'), computed in business days skipping weekends and AC Brands closures. Collaborators are derived — Alvin as Operator plus the gate role-holder for the queue — and Mayra/Vegelabs is NOT added as a follower because external contacts are not workspace users; the sender goes in the description's SOURCE block. The description carries SOURCE / KEY / LINKS blocks, and the KEY block records the dedupe key so the next run's Phase 0 search can find this task.",
+      "files": [],
+      "expectations": [
+        "A due date is set even though the email named no deadline",
+        "The due date is labeled as an SLA default with its derivation shown, not presented as a stated deadline",
+        "Alvin is a collaborator, and the external sender is NOT added as a follower",
+        "The description includes the SOURCE, KEY, and LINKS blocks, with the dedupe key recorded",
+        "No required field is left blank — anything undeterminable is written as 'TBD — reason' and raised as an open question"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Allure Labs emailed a failing stability result on Castaway Cream, and there's already an open PD task on that SKU.",
+      "expected_output": "Resolves on batch code + test type first. Applies the Phase 4 one-task-or-two test: Quality owes an investigation close and PD owes a reformulation decision, so these are two distinct deliverables and stay two cross-referenced tasks — but the failing finding itself, which both need visible, is one task multi-homed via update_tasks with add_projects into SJS Quality Management and the Castaway Cream SKU project, with the PD-side owner added as a collaborator. Quality wins the parent slot per the safety-first priority order. The output does not create one task per matched queue unconditionally.",
+      "files": [],
+      "expectations": [
+        "The one-task-or-two test from Phase 4 is applied explicitly, not skipped",
+        "Multi-homing uses update_tasks with add_projects rather than creating a duplicate task in the second queue",
+        "The cross-system counterpart owner is added as a collaborator on the multi-homed task",
+        "Quality takes the parent slot per the safety-first priority order",
+        "The output does not blindly create a separate task in every matched queue"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Scan my inbox — there's an email from a supplier I don't think we have on file, asking us to review a quote.",
+      "expected_output": "Surfaces the unrecognized sender per the run-time entity discovery rule rather than dropping it, and asks whether to capture it as a vendor, partner, or contact. On the task itself, the fields it cannot determine from the email are written 'TBD — <what is missing and who would know>' rather than left blank, and every one is listed in a ❓ Open questions block in the confirmation preview. The task is still created — an unknown supplier does not stall the write.",
+      "files": [],
+      "expectations": [
+        "The unrecognized sender is surfaced for capture, not silently dropped",
+        "Undeterminable fields are written as 'TBD — reason', not left blank",
+        "Every TBD appears in an open-questions block in the preview",
+        "The task creation still proceeds rather than being blocked on the unknown supplier",
+        "An enum custom field that cannot be determined is left unset and raised as a question, not filled with an invented option GID"
+      ]
     }
   ]
 }

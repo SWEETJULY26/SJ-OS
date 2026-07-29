@@ -117,6 +117,18 @@ Once a batch reaches terminal state (Released to end of life, Pulled, or Expired
 
 ## Asana surface
 
+### Task write contract
+
+Every task write in this project walks `references/architecture/asana_task_contract.md` —
+resolve against an existing task before creating one, fill every required field (`TBD — reason`
+when a value genuinely can't be determined, never a blank), always set a due date via the
+Phase 2 ladder, derive collaborators from the role map rather than from whoever the source
+mentioned, and move or multi-home an existing task instead of opening a second one.
+
+Dedupe keys for this queue: `batch code + lifecycle event` for holds and releases, `batch code + test type` for in-market stability.
+
+Near-expiry tasks arrive here multi-homed from `inventory-manager` at 90/60/30 days — the same task crossing thresholds, not three tasks. Resolve on `batch code + threshold` and advance the existing one.
+
 - *Project:* **SJS Quality Management** (shared with quality-lab-coordinator) — gid `1214660401644163`. Operations team. Public to workspace.
 
 ### Sections (cached 2026-05-09)
@@ -227,7 +239,7 @@ The SJS Quality Management project exists from v5.3. On first invocation at v5.4
 4. Confirm `references/role-map.md` is current with the operator.
 5. Confirm inventory-manager Job 6 wording reflects the Job 5 cross-post handshake. The wording edit happens at v5.4 build (separate from skill files).
 6. Confirm asana-pd-manager Formula Development Tracker has a clean signal for `Signed Approvals` reach (used by Job 1 trigger).
-7. Multi-home the legacy PET Testing task (gid `1213487706215947` — "Perform PET Testing for Toner, Cleanser, Irie Power Oil, Castaway Cream, Soursop Vit C, and Good Youth Serum to Support Shelf-Life Extension") into SJS Quality Management. Currently lives in AC Brands PD + Ops Dashboard, Formulation and Testing section. Decompose new PET work into per-batch subtasks going forward; legacy task closes when its in-flight SKUs finish PET-EOL. **Manual UI step at v5.4 build — MCP doesn't expose task multi-homing.**
+7. Multi-home the legacy PET Testing task (gid `1213487706215947` — "Perform PET Testing for Toner, Cleanser, Irie Power Oil, Castaway Cream, Soursop Vit C, and Good Youth Serum to Support Shelf-Life Extension") into SJS Quality Management. Currently lives in AC Brands PD + Ops Dashboard, Formulation and Testing section. Decompose new PET work into per-batch subtasks going forward; legacy task closes when its in-flight SKUs finish PET-EOL. **Correction 2026-07-29: this is no longer a manual UI step.** The v5.4 note claimed the MCP doesn't expose task multi-homing; it does — `update_tasks` takes `add_projects: [{project_id, section_id}]`, and the live workspace already has multi-homed tasks (e.g. `1214048212856468`, in both a SKU project and AC Brands Purchasing). Do this via the API per `references/architecture/asana_task_contract.md` Phase 4.
 8. The `[SOP Revision Pending — quality-manager] Ratify Batch Lifecycle Procedure` task (gid `1214661415512391`) was closed at ratification (2026-05-08). If still open, mark complete with a comment citing SKN-OPS-007 Rev.1.
 
 If any check fails, surface to the operator and stop — the skill does not modify project structure unilaterally.

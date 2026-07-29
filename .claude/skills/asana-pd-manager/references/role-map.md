@@ -17,7 +17,7 @@ This is the canonical role-map for the PD system skills (asana-pd-manager, firef
 | PD Consult | Nicole Iturbe — Senior Director, Consumer Strategy & Operations | Strategy and consumer-side consult on PD decisions. Final-line approver alongside the President on direction-changing PD calls. |
 | Approver — President | Danielle | Approves direction-changing PD decisions (launch scope, supplier change, kill calls). |
 | Approver — Founder | Ayesha Curry | Founder approval on brand-line moves. Receives weekly PD signal via `ayesha-weekly-briefing`. |
-| Operations Coordinator | Ciarra Robinson | Day-to-day Asana stewardship, follow-ups, status pulls. |
+| Operations Coordinator | **Vacant — role retired 2026-07.** Interim split: Alvin (inventory, logistics), Nicole Iturbe (order management, OC3PL). | Day-to-day Asana stewardship, follow-ups, status pulls. Being replaced by two new roles per the 2026-07-17 decision — an Operations Specialist and a PD Project Manager Specialist, both reporting to Nicole. Until those seats are filled, route by the interim split; don't assign to the vacant role. |
 | Marketing | Soraya — Marketing Manager | Marketing-side coordination on launch readiness and brand-facing comms. |
 | Creative — Director | Erin | Creative Director — packaging, artwork, brand visuals. |
 | Creative — Contractor | Jan Haeck | Creative contractor under Erin — packaging / artwork execution. |
@@ -43,6 +43,21 @@ When Alvin refers to a person by first name, map to the workspace user via `asan
 
 asana-pd-manager is the core engine of the PD system. Centralizing the PD role-map here means a role change lands in one file and propagates via sibling reference rather than parallel updates in every PD skill. Same pattern as `quality-manager/references/role-map.md` for System B.
 
+## Departed role-holders
+
+When someone leaves, the role row is marked vacant here **in the same pass** as the departure — a stale row is worse than a blank one, because every skill resolving followers off this map will keep trying to add a user who no longer has an account, and `asana_task_contract.md` Phase 3 will surface an unresolved-role-holder question on every write until it's fixed.
+
+Checklist when a role-holder departs:
+
+1. Mark the role vacant here with the interim coverage, and note the decision that set it.
+2. Remove the person from any people list in a skill body (`outlook-asana-bridge` internal-ask row, `fireflies-asana-bridge` meeting-type table).
+3. Remove their address from any automation recipient list — `ac-brands-holiday-comms` BCC is the live one.
+4. Update their `contact/<slug>` wiki page to departed so the bridges' run-time lexicon stops resolving them as internal.
+5. Sweep Asana for tasks assigned to them and reassign — an unassigned task has no owner and drops out of every per-person sweep, so it goes stale silently.
+
+- **2026-07** — Ciarra Robinson (Operations Coordinator) departed. Role retired rather than backfilled, per the 2026-07-17 decision. Her Asana tasks were unassigned into a holding project (`Ciarra Robinson's previously assigned tasks`, gid `1216923783441065`) — 22 open tasks, 4 of them already overdue, pending reassignment under the interim split.
+
 ## History
 
+- **2026-07-29** — Operations Coordinator marked vacant; Ciarra Robinson departed. Added the departed-role-holder checklist above after the stale row surfaced during the `asana_task_contract.md` build (Phase 3 collaborator resolution found a mapped role-holder with no workspace account).
 - **2026-05-17** — Externalized from inline asana-pd-manager v1 SKILL.md table. Adopted PD Lead (Perrine) / PD Consult (Nicole) framing to match `quality-manager/references/role-map.md` System B canonical (Perrine = QA Lead; Nicole = Voice of Customer). Earlier inline table did not separate the roles.
