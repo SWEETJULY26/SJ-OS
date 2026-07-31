@@ -33,6 +33,10 @@
 
 **Running** (11): `sjs-monthly-sop-sync`, `sjs-monthly-sop-run`, `sjs-purchasing-weekly-digest`, `sjs-quality-weekly-digest`, `sjs-regulatory-weekly-digest`, `sjs-purchasing-monthly-rollup-and-snapshot`, `sjs-quality-monthly-snapshot`, `sjs-regulatory-monthly-rollup-and-snapshot`, `sjs-purchasing-quarterly-rollup-and-snapshot`, `sjs-quality-quarterly-rollup`, `sjs-regulatory-quarterly-cost-rollup`.
 
+**Punch list:** `scheduled-prompts/REGISTRATION.md` carries the working list — the three sweeps to re-enable with their trigger IDs, the three PD dailies to create, notification settings, and the three API limits that make all of it UI work. Read it before trying to change a Routine from a session.
+
+**Repo path bug, fixed 2026-07-31.** All 23 specs in `scheduled-prompts/` said the repo was cloned at `/home/user/sj-os`; it is `/home/user/SJ-OS`, and the lowercase form does not resolve on a case-sensitive filesystem. Every fired Routine was therefore unable to read the skill files it was told to follow. Corrected in all 23 with a locate-the-repo fallback added. Weigh this when judging whether the running jobs have actually been working.
+
 **Pending connectors:** `sjs-receipt-report-sweep` (`trig_01DnJ5tmwNVTvod7LXetHa1i`) was created 2026-07-31 for the Logiwa receipt order reports and is **disabled on purpose** — it was created from a session, so it has no connectors and cannot read Outlook or PLM. Recreate it in the Routines UI with the same cron and prompt, then delete the placeholder. Prompt text is on the trigger.
 
 ---
