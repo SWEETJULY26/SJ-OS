@@ -59,8 +59,9 @@ CHANGES = [
      "they were missing from the sources. Soraya owns Marketing, Nicole owns all channels, "
      "Danielle owns web."),
     ("Our partners are on the matrix",
-     "Pedrero Regulatory, Ironclad Finance, Calm HR, WITHIN on digital marketing and Teknologics "
-     "on web development. They hold the work; accountability stays in-house."),
+     "Pedrero on regulatory, Ironclad on finance, Calm HR on people, WITHIN on digital marketing, "
+     "Teknologics on web and Coastal Interactive on managed IT. They hold the work; accountability "
+     "stays in-house."),
     ("Perrine advises on the technical calls",
      "R&D, Quality, Production and Regulatory requirements for product. She stays accountable for "
      "formula and testing decisions, and consults on everything process-shaped."),
@@ -208,7 +209,7 @@ details.fn > summary:focus-visible{{outline:2px solid var(--focus);outline-offse
 .fn-count{{font-size:var(--step--1);color:var(--ink-faint);
   font-variant-numeric:tabular-nums;margin-left:auto}}
 .scroller{{overflow-x:auto;padding-bottom:.4rem}}
-table{{border-collapse:collapse;width:100%;min-width:1000px;font-size:var(--step--1)}}
+table{{border-collapse:collapse;width:100%;min-width:1080px;font-size:var(--step--1)}}
 thead th{{position:sticky;top:0;background:var(--ground);text-align:center;
   font-weight:600;font-size:.68rem;letter-spacing:.04em;padding:.4rem .05rem .5rem;
   border-bottom:1px solid var(--rule-strong);color:var(--ink-soft);white-space:nowrap}}

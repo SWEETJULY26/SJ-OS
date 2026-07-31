@@ -3,9 +3,9 @@
 Outputs built from this repo that are meant to leave it. Committed so they survive
 the session that produced them and so the next person can see how they were derived.
 
-## AC Brands RACI — v5, 2026-07-31
+## AC Brands RACI — v6, 2026-07-31
 
-Org-wide RACI. **99 activities across eleven functions, led by position with names
+Org-wide RACI. **102 activities across eleven functions, led by position with names
 cross-referenced.** Built for the resource-needs conversation with Danielle and
 Nicole, and updated to reflect the 2026-07-30 leadership review.
 
@@ -22,6 +22,17 @@ Three artifacts, one dataset:
   books once both seats are filled. `Gaps` lists open seats with salary bands,
   unowned functions, single points of failure and open items.
 - **`AC-Brands-RACI-summary.md`** — the one-pager for Danielle and Nicole.
+
+### What v6 changed
+
+**Coastal Interactive** added as the managed IT service provider — back-end infrastructure,
+identity and endpoint management, equipment procurement and onboarding, asset lifecycle.
+Alvin is the liaison and accountable; Coastal is responsible. Distinct from Teknologics:
+Coastal is the back end, Teknologics is the storefront. Nine external parties now.
+
+**Perrine and Soraya are never blank on a Product Development row.** Perrine was blank on
+one, Soraya on all eight. Both Informed at minimum now — a blank cell is ambiguous in a way
+Informed is not.
 
 ### What v5 changed
 
@@ -123,7 +134,7 @@ visible.
 - `build_html.py` — renders the team-facing page from the same data. Expects the
   base64 font payloads alongside it; regenerate them from
   `.claude/skills/sweet-july-skin-brand/assets/fonts/`.
-- `transform_v2.py` through `transform_v5.py` — the migration chain. Kept for the audit trail: it shows every
+- `transform_v2.py` through `transform_v6.py` — the migration chain. Kept for the audit trail: it shows every
   A/R reassignment and which rows were added, rather than the v2 data appearing
   from nowhere.
 - `verify.py` — seven checks: no departed-employee references in any cell of any

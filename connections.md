@@ -16,6 +16,7 @@ Registry of every system your AIOS can reach. Filled by `/onboard` from Q4-Q7 an
 | 10 | Web development | Teknologics (sweetjuly.com, Shopify storefront) | partner — see `references/external-partners.md` | — | 2026-07-31 |
 | 11 | Finance | Ironclad Finance (Dan Bender) | partner — see `references/external-partners.md` | — | 2026-07-31 |
 | 12 | HR / payroll | Calm HR (PEO, co-employer); Paylocity platform | partner — see `references/external-partners.md` | — | 2026-07-31 |
+| 13 | Managed IT / infrastructure | Coastal Interactive (back-end IT, equipment, identity) | partner — see `references/external-partners.md` | — | 2026-07-31 |
 
 The landing hub's `data/links.json` defines the eleven business functions with a named lead each. It is the canonical answer to "what does this business actually do" and is a source for the org-wide RACI in `deliverables/`.
 

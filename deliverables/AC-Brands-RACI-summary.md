@@ -3,7 +3,7 @@
 Prepared for Danielle Iturbe and Nicole Iturbe. Alvin Belt, 31 July 2026.
 Reflects the leadership review of 30 July and the role corrections of 31 July, and now covers the whole business rather than only the parts with a skill behind them.
 
-The matrix covers 99 activities across eleven functions: Product Development, Operations & Supply Chain, Quality, Regulatory & Compliance, Retail & Wholesale, Marketing & Brand, Creative, Ecommerce & DTC, Finance, People & Admin, and IT / Systems & Data. It leads with positions rather than people, so it survives a change in who holds a seat. Every row names one person accountable and one doing the work, and cites where that came from — an operating procedure, a job description, or the review itself.
+The matrix covers 102 activities across eleven functions: Product Development, Operations & Supply Chain, Quality, Regulatory & Compliance, Retail & Wholesale, Marketing & Brand, Creative, Ecommerce & DTC, Finance, People & Admin, and IT / Systems & Data. It leads with positions rather than people, so it survives a change in who holds a seat. Every row names one person accountable and one doing the work, and cites where that came from — an operating procedure, a job description, or the review itself.
 
 The team-facing version is a web page with the same content, filterable by position: **https://claude.ai/code/artifact/e0362bd1-d469-44f2-84d6-9fa5d8c9c9d3**
 
@@ -39,7 +39,7 @@ Both roles report to Nicole. That was the point of the redesign: moving day-to-d
 
 ## Our external partners are on it now, and that changed the picture
 
-Pedrero Regulatory, Ironclad Finance, Calm HR, WITHIN and Teknologics are all columns on the matrix now. They hold the work; accountability stays with one of us on every row.
+Pedrero Regulatory, Ironclad Finance, Calm HR, WITHIN, Teknologics and Coastal Interactive are all columns on the matrix now. They hold the work; accountability stays with one of us on every row.
 
 That resolved two things I flagged as unowned in the earlier draft. Finance and HR were never actually unowned — Ironclad runs AP, bookkeeping, payroll, close and reporting, and Calm HR runs handbook, benefits, onboarding, offboarding and separations as our co-employer. They were unowned *in our documentation*, which is a different problem and one I've now fixed with a partner registry in the repo. Worth flagging as a lesson: building the matrix strictly from what's written down surfaced a real gap, but it also produced a wrong answer until I added what wasn't written down.
 
@@ -47,7 +47,7 @@ Finance accountability splits: Danielle on month-end close, reporting and the an
 
 Regulatory is the interesting one. Pedrero is consulted on eleven rows and responsible for none. That isn't undervaluing them — our own procedures make them consult-only with no access to our systems, and Amy Pedrero holds the binding calls. The effect is a split bottleneck: Pedrero forms every regulatory opinion and I perform every regulatory action, because the Operator and Reg Lead gates are both mine and they can't act inside Asana or PLM. Either that gate gets an alternate or their remit widens.
 
-The bigger structural point: eight external parties hold execution of eight functions — Pedrero on regulatory, Ironclad on finance, Calm HR on people, WITHIN on digital marketing, Teknologics on web, plus Erin, Jan and Perrine. For a team of nine that's a sensible shape; it's how this surface gets covered at all. What it means is that continuity rests on eight engagements rather than on employment, and each one is a renewal decision rather than a retention conversation.
+The bigger structural point: nine external parties hold execution of nine functions — Pedrero on regulatory, Ironclad on finance, Calm HR on people, WITHIN on digital marketing, Teknologics on the storefront, Coastal Interactive on back-end IT and equipment, plus Erin, Jan and Perrine. For a team of nine that's a sensible shape; it's how this surface gets covered at all. What it means is that continuity rests on nine engagements rather than on employment, and each one is a renewal decision rather than a retention conversation.
 
 ## Marketing, wholesale and web are on it now
 
@@ -61,11 +61,17 @@ Marketing went from 9 rows to 15, Retail & Wholesale from 2 to 5. Soraya went fr
 
 One thing to confirm: you said Nicole is the systems and tech owner. I scoped that to the web and digital stack. The PLM write path, Asana configuration, the landing hub publish and the 23 scheduled Routines still sit with me. Tell me if that was meant more broadly.
 
+## Two smaller fixes
+
+Coastal Interactive is on the matrix now as our managed IT partner — back-end infrastructure, identity and endpoints, equipment onboarding and asset recovery. I'm the liaison and accountable; they're responsible. They're distinct from Teknologics: Coastal is the back end, Teknologics is the storefront. Employee onboarding splits across both HR partners now, with Calm HR on the employment side and Coastal on equipment and accounts.
+
+I also closed two visibility gaps on Product Development. Perrine was blank on one PD row and Soraya was blank on all eight — meaning marketing had no formal visibility into any product decision, which is wrong for someone who has to launch the thing. Both are Informed at minimum now. A blank cell doesn't tell you whether the omission was deliberate; Informed does.
+
 ## What I still need decisions on
 
 Nothing is unowned any more. Accounts payable, HR onboarding, Marketing, wholesale and Shopify revenue all sat in this paragraph across earlier drafts and all now have owners.
 
-What's left is engagement hygiene. Eight external parties hold execution of eight functions — Pedrero, Ironclad, Calm HR, WITHIN, Teknologics, plus Erin, Jan and Perrine. We have engagement terms and a renewal date recorded for Pedrero only. The other seven need the same, and that's a half-day of work rather than a decision.
+What's left is engagement hygiene. Nine external parties hold execution of nine functions — Pedrero, Ironclad, Calm HR, WITHIN, Teknologics, Coastal Interactive, plus Erin, Jan and Perrine. We have engagement terms and a renewal date recorded for Pedrero only. The other eight need the same, and that's a half-day of work rather than a decision.
 
 Three exposures survive both hires. Perrine is a contractor accountable for 7 formulation rows, and on stability and RIPT she is both accountable and responsible. Erin is a contractor accountable for 4 packaging and creative rows, and on creative direction she is both accountable and responsible. Between them and Jan, eleven activities sit with people outside the company where nobody on staff can check or continue the work. And every one of our 23 scheduled automations stops at an approval only I can clear, so a week away queues work rather than pausing it.
 
