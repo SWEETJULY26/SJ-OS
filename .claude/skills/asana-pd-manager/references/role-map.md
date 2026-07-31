@@ -55,7 +55,7 @@ Checklist when a role-holder departs:
 4. Update their `contact/<slug>` wiki page to departed so the bridges' run-time lexicon stops resolving them as internal.
 5. Sweep Asana for tasks assigned to them and reassign — an unassigned task has no owner and drops out of every per-person sweep, so it goes stale silently.
 
-- **2026-07** — Ciarra Robinson (Operations Coordinator) departed. Role retired rather than backfilled, per the 2026-07-17 decision. Her Asana tasks were unassigned into a holding project (`Ciarra Robinson's previously assigned tasks`, gid `1216923783441065`) — 22 open tasks, 4 of them already overdue, pending reassignment under the interim split.
+- **2026-07** — Ciarra Robinson (Operations Coordinator) departed. Role retired rather than backfilled, per the 2026-07-17 decision. Her Asana tasks were moved into a holding project (`Ciarra Robinson's previously assigned tasks`, gid `1216923783441065`) and reassigned to Alvin under the interim split on 2026-07-30; the holding project was archived in the same pass. Her Asana account is deprovisioned — she is not a workspace user, so she cannot be assigned or added as a follower.
 
 ## History
 
