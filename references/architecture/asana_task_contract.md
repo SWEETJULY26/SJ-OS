@@ -45,6 +45,7 @@ Every task type declares a **dedupe key**: the smallest set of identifiers that 
 | Near-expiry | `batch code + threshold` | `inventory-manager` → `batch-lifecycle-tracker` |
 | PO receipt | `PO number + vendor` | `purchasing-manager` |
 | Partial PO receipt | `PO number + receipt date` | `purchasing-manager` (matches PLM's multi-row `po_receipts`) |
+| Logiwa receipt order | `RO id` | `inventory-manager` (free-text RO; see `inventory-manager/references/logiwa-receipt-report.md`) |
 | Vendor renewal | `vendor + renewal window` | `purchasing-manager` |
 | Vendor invoice | `vendor + invoice number` | `purchasing-manager` (matches the PLM unique constraint) |
 | Lab finding | `batch code + test type` | `quality-lab-coordinator` |

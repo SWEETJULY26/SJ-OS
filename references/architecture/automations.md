@@ -20,6 +20,7 @@ All times are local (PT). Cron is 5-field `min hour dom month dow`. The schedule
 | `sjs-regulatory-morning-sweep` | `10 8 * * 1-5` | sjs-regulatory-system / sjs-regulatory-sweep Job 1 | Silent unless one of the 7 urgency categories fires; posts to Regulatory Sweep Running Log |
 | `sjs-quality-morning-sweep` | `20 8 * * 1-5` (was `12 8`) | quality-manager morning pass | Quality running log |
 | `sjs-purchasing-morning-sweep` | `26 8 * * 1-5` | purchasing-manager | Purchasing running log |
+| `sjs-receipt-report-sweep` | `32 8 * * 1-5` | inventory-manager Job 2 / `references/logiwa-receipt-report.md` | Looks back 24h (72h on Mondays) for Logiwa `Receipt Order Report` emails from `noreply@wmsnotification.com` and `noreply@wmssystem.logiwa.com`. Silent when none arrived. Stages `po_receipts` / `po_receipt_items` for HITL; never writes unattended. Reports RO class and the PLM reconciliation verdict per report. **Not yet registered in the Cowork scheduler** — added here 2026-07-31 when the flow was built; register before relying on it. |
 | `sjs-pd-midday-sweep` | `0 12 * * 1-5` | sjs-pd-system, midday window | Running log GID 1214208955674591 |
 | `sjs-pd-eod-reconciliation` | `0 16 * * 1-5` | sjs-pd-system, afternoon window (12 PM → now) + Skill 5 | 8-section payload, `pd_dashboard_runs` row, formatted comment on GID 1214208955674591 |
 
