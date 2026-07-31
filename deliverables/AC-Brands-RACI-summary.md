@@ -1,9 +1,9 @@
 # AC Brands RACI — where accountability sits
 
 Prepared for Danielle Iturbe and Nicole Iturbe. Alvin Belt, 31 July 2026.
-Reflects the leadership review of 30 July and the role corrections of 31 July.
+Reflects the leadership review of 30 July and the role corrections of 31 July, and now includes our external partners.
 
-The matrix covers 79 activities across eleven functions: Product Development, Operations & Supply Chain, Quality, Regulatory & Compliance, Retail & Wholesale, Marketing & Brand, Creative, Ecommerce & DTC, Finance, People & Admin, and IT / Systems & Data. It leads with positions rather than people, so it survives a change in who holds a seat. Every row names one person accountable and one doing the work, and cites where that came from — an operating procedure, a job description, or the review itself.
+The matrix covers 86 activities across eleven functions: Product Development, Operations & Supply Chain, Quality, Regulatory & Compliance, Retail & Wholesale, Marketing & Brand, Creative, Ecommerce & DTC, Finance, People & Admin, and IT / Systems & Data. It leads with positions rather than people, so it survives a change in who holds a seat. Every row names one person accountable and one doing the work, and cites where that came from — an operating procedure, a job description, or the review itself.
 
 The team-facing version is a web page with the same content, filterable by position: **https://claude.ai/code/artifact/e0362bd1-d469-44f2-84d6-9fa5d8c9c9d3**
 
@@ -37,9 +37,21 @@ Across both seats, 32 rows transition on hire — 16 each. Twenty-nine come off 
 
 Both roles report to Nicole. That was the point of the redesign: moving day-to-day management off the VP seat is the succession outcome, not a reporting-line detail.
 
+## Our external partners are on it now, and that changed the picture
+
+Pedrero Regulatory, Ironclad Finance and Calm HR are columns on the matrix. They hold the work; accountability stays with one of us on every row.
+
+That resolved two things I flagged as unowned in the earlier draft. Finance and HR were never actually unowned — Ironclad runs AP, bookkeeping, payroll, close and reporting, and Calm HR runs handbook, benefits, onboarding, offboarding and separations as our co-employer. They were unowned *in our documentation*, which is a different problem and one I've now fixed with a partner registry in the repo. Worth flagging as a lesson: building the matrix strictly from what's written down surfaced a real gap, but it also produced a wrong answer until I added what wasn't written down.
+
+Finance accountability splits: Danielle on month-end close, reporting and the annual budget; me on AP, vendor invoices and inventory valuation, since those flow out of purchasing and the inventory ledger. HR sits with me as liaison with Danielle co-approving, which matches how we already work it.
+
+Regulatory is the interesting one. Pedrero is consulted on eleven rows and responsible for none. That isn't undervaluing them — our own procedures make them consult-only with no access to our systems, and Amy Pedrero holds the binding calls. The effect is a split bottleneck: Pedrero forms every regulatory opinion and I perform every regulatory action, because the Operator and Reg Lead gates are both mine and they can't act inside Asana or PLM. Either that gate gets an alternate or their remit widens.
+
+The bigger structural point: six external parties now hold execution of six functions — three partner organisations plus Erin, Jan and Perrine. For a team of nine that's a sensible shape. What it means is that continuity rests on six engagements rather than on employment, and each one is a renewal decision rather than a retention conversation. We have engagement terms recorded for Pedrero only.
+
 ## What I still need decisions on
 
-Three functions have no owner anywhere in our documentation, and they show me by default because the work falls to me in practice rather than because anything says so. Accounts payable, bookkeeping and payroll — Finance appears in our operating documents only as an email category and a briefing heading. Employee onboarding, offboarding and access deprovisioning, where the only written process is a checklist I wrote after a departed employee's stale record broke task assignment. And Shopify revenue ownership, which is registered as our revenue connection and named as the primary DTC track but has no owner or approval step. The function closest to the top line is the least specified of the three.
+One row still has no owner anywhere: Shopify revenue and channel position. It's registered as our revenue connection and named as the primary DTC track, but nothing assigns ownership or an approval step, so it shows me by inference rather than because anything says so. The function closest to the top line is the least specified. Accounts payable and HR onboarding used to sit in this paragraph and are now owned by Ironclad and Calm HR.
 
 Three exposures survive both hires. Perrine is a contractor accountable for 7 formulation rows, and on stability and RIPT she is both accountable and responsible. Erin is a contractor accountable for 4 packaging and creative rows, and on creative direction she is both accountable and responsible. Between them and Jan, eleven activities sit with people outside the company where nobody on staff can check or continue the work. And every one of our 23 scheduled automations stops at an approval only I can clear, so a week away queues work rather than pausing it.
 

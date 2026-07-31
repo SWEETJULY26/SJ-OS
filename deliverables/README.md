@@ -3,9 +3,9 @@
 Outputs built from this repo that are meant to leave it. Committed so they survive
 the session that produced them and so the next person can see how they were derived.
 
-## AC Brands RACI — v3, 2026-07-31
+## AC Brands RACI — v4, 2026-07-31
 
-Org-wide RACI. **79 activities across eleven functions, led by position with names
+Org-wide RACI. **86 activities across eleven functions, led by position with names
 cross-referenced.** Built for the resource-needs conversation with Danielle and
 Nicole, and updated to reflect the 2026-07-30 leadership review.
 
@@ -22,6 +22,22 @@ Three artifacts, one dataset:
   books once both seats are filled. `Gaps` lists open seats with salary bands,
   unowned functions, single points of failure and open items.
 - **`AC-Brands-RACI-summary.md`** — the one-pager for Danielle and Nicole.
+
+### What v4 changed
+
+The three external partner organisations are now columns: **Pedrero Regulatory**,
+**Ironclad Finance** (Dan Bender) and **Calm HR** (PEO and co-employer). Partners hold
+R — they do the work — but never A, which stays with an employee. `verify.py` enforces
+that.
+
+This resolved two false negatives. Finance and People & Admin were reported as unowned
+functions on the first pass because Ironclad and Calm HR appeared nowhere in this repo,
+not because the work had no owner. `references/external-partners.md` now records all
+six external parties — three organisations plus Erin, Jan and Perrine — and did not
+exist before. Shopify revenue is now the only genuinely unowned row.
+
+Finance accountability splits: Danielle on reporting, Alvin on cost. HR sits with Alvin
+as liaison with Danielle co-approving.
 
 ### What v3 changed
 
@@ -87,13 +103,14 @@ visible.
 - `build_html.py` — renders the team-facing page from the same data. Expects the
   base64 font payloads alongside it; regenerate them from
   `.claude/skills/sweet-july-skin-brand/assets/fonts/`.
-- `transform_v2.py` and `transform_v3.py` — the v1→v2→v3 migrations. Kept for the audit trail: it shows every
+- `transform_v2.py`, `transform_v3.py`, `transform_v4.py` — the migration chain. Kept for the audit trail: it shows every
   A/R reassignment and which rows were added, rather than the v2 data appearing
   from nowhere.
 - `verify.py` — seven checks: no departed-employee references in any cell of any
   sheet or in the summary or the HTML; exactly one A and one R per row; every cited
   `file:line` resolves in this repo; every repo citation carries ownership language;
-  no open seat holds A or R, since a vacancy cannot be accountable; the nine
+  no open seat holds A or R and no partner organisation holds A, since a vacancy cannot be
+  accountable and accountability does not leave the company; the nine
   role-maps and the decisions log match the matrix; and roster sanity. Run it after
   any edit to `raci_rows.py`.
 

@@ -75,6 +75,29 @@ Keep it terse. Future-you will thank present-you for capturing the *why*, not ju
 **Status:** All four drift instances fixed 2026-07-29. Full findings in `decisions/wiki-layer-audit-2026-07-29.md`. Two items left open there — Job 0 (the bridges' wiki write-back) has not fired since 2026-05-26, leaving 123 of 133 pages as untouched seed; and `Bridge-and-System-Audit-2026-05-26.md` is cited from three files but exists nowhere, most likely lost in the 2026-07-19 consolidation.
 
 ---
+## 2026-07-31 — External partners belong on the RACI: Pedrero, Ironclad Finance, Calm HR
+
+**Decision:** Add the three partner organisations that hold execution of a whole function, with accountability split as follows.
+
+1. **Pedrero Regulatory** — external regulatory partner. Already documented in `regulatory-manager/references/pedrero-contacts.md` but absent from the RACI. Consulted on 11 rows, responsible for none, which is the direct consequence of the existing consult-only rule.
+
+2. **Ironclad Finance (Dan Bender)** — runs AP, bookkeeping, payroll, month-end close, reporting, budget consolidation, and inventory valuation into the books. **Accountability splits: Danielle on reporting-side work, Alvin on cost-side work.** Cost sits with Operations because it flows out of purchasing and the inventory ledger, and the vendor-invoice pipeline with its five approval gates is already there.
+
+3. **Calm HR** — PEO and co-employer. Handbook and policy, benefits, payroll processing, onboarding and offboarding, employment compliance, separations, recruiting. **Alvin accountable throughout as liaison; Danielle co-approves** on all of it, matching her presence on every Calm HR thread.
+
+Partners hold R, never A. Accountability stays with an employee on every row, and `deliverables/verify.py` now enforces it.
+
+**Why:** The first RACI pass reported Finance and People & Admin as unowned functions. That was wrong, and the reason it was wrong is instructive — those functions were unowned *in this repo*, not in the business. Ironclad and Calm HR appeared nowhere in SJ-OS, so a matrix built strictly from repo sources could not see them. Extracting rather than assuming is the right discipline and it produced a false negative here, which is worth remembering: absence from the repo means the repo has a gap, not that the work has no owner. Pedrero was documented but only inside one skill's references, so it read as a regulatory implementation detail rather than as one of six external parties the company depends on.
+
+**Alternatives considered:** Keep partners out of the matrix and list them separately — rejected, it hides that three functions have no internal execution capacity, which is exactly what a resourcing conversation needs to see. Give Pedrero R on the regulatory review rows — rejected for now; our own procedures make them consult-only with no system access, so R would misstate who can actually act. That constraint is itself a finding and is on the Gaps sheet.
+
+**Owner:** Alvin. Danielle on finance reporting and as HR co-approver.
+
+**Status:** Encoded 2026-07-31. RACI at 86 activities, 15 columns. `references/external-partners.md` created as the canonical registry — it did not exist, which is the underlying gap. Finance and People & Admin removed from the Gaps sheet as unowned and replaced with resolved rows. Shopify revenue and channel position is now the only genuinely unowned row on the matrix.
+
+**Open:** Continuity across six functions rests on engagements rather than employment — three partner organisations plus Erin, Jan and Perrine. Each is a renewal decision. Engagement terms and renewal dates are confirmed only for Pedrero; Ironclad and Calm HR need the same recorded.
+
+---
 ## 2026-07-31 — Erin is lead technical authority on packaging; Danielle and Ayesha get real Creative and Marketing roles
 
 **Decision:** Three corrections surfaced while reviewing the RACI.

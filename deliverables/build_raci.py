@@ -243,7 +243,7 @@ BLOCKS = [
   "attestations, and packaging. Informed on the rest.", False),
 
  ("Alvin owns the framework, and still does most of the work", True),
- ("Accountable for 39 of 79 activities and doing the work on 56. The framework rows are deliberate - "
+ ("Accountable for 44 of 86 activities and doing the work on 55. The framework rows are deliberate - "
   "quality management system, SOP framework, this RACI, the skill suite, the 23 scheduled Routines. "
   "The problem is not the A column. It is that 31 rows have him as both A and R, and that he does the "
   "work on 11 of the 12 Operations rows and 5 of the 8 Product Development rows. He holds the gates "
@@ -275,12 +275,29 @@ BLOCKS = [
   "and it is the reason the gate is worth having now rather than after the hire, but it is two people "
   "covering a role that was written as one.", False),
 
- ("What is still unowned", True),
- ("Three rows have no documented owner anywhere and default to Alvin as an inference rather than a "
-  "sourced claim: accounts payable and bookkeeping and payroll, employee onboarding and offboarding "
-  "and access deprovisioning, and Shopify revenue ownership. Finance appears in the operating "
-  "documentation only as an email-sender category and a briefing heading. The function closest to the "
-  "top line is the least specified.", False),
+ ("Three functions run entirely outside the company", True),
+ ("Regulatory goes through Pedrero Regulatory, Finance through Ironclad (Dan Bender), HR through Calm "
+  "HR as PEO and co-employer. Adding them resolved two of the three unowned functions - Finance and "
+  "HR were only unowned because the partners were missing from the matrix, not because nobody was "
+  "doing the work. Between the three partner organisations and the three contractors on packaging, "
+  "creative and formulation, six external parties hold the execution of six functions. For a team of "
+  "nine that is a reasonable shape. What it means is that continuity rests on six engagements rather "
+  "than on employment, and each is a renewal decision rather than a retention one.", False),
+
+ ("Regulatory is the odd one, and it cuts both ways", True),
+ ("Pedrero is consulted on 11 rows and responsible for none. That is not an undervaluation - our own "
+  "procedures make them consult-only with no Asana access and no internal authority, and Amy Pedrero "
+  "holds the binding regulatory calls. The consequence is a split bottleneck: Pedrero forms every "
+  "regulatory opinion, and Alvin performs every regulatory action, because the Operator and Reg Lead "
+  "gates are both his and Pedrero cannot act inside our systems. Either the Reg Lead gate gets an "
+  "alternate or Pedrero's remit widens; the current shape means regulatory work stops if either side "
+  "is unavailable.", False),
+
+ ("One row is still unowned", True),
+ ("Shopify revenue and channel position. It is registered as the revenue connection and named as the "
+  "primary direct-to-consumer revenue track, but no process assigns ownership or an approval step, so "
+  "it shows Alvin by inference rather than by source. The function closest to the top line is the "
+  "least specified.", False),
 
  ("Single points of failure that remain after both hires", True),
  ("Perrine is an external contractor holding A on 8 rows with no internal counterpart, and one of "
@@ -318,19 +335,23 @@ GAPS = [
   "Define scope, then recruit after Ops seat lands", 160,
   "decisions/log.md:52; Leadership Business Review 2026-07-30 53:17-57:10; PD Specialist JD"),
 
- ("Unowned function", "Finance",
-  "Accounts payable, bookkeeping and payroll have no owner, approver or gate anywhere.",
-  "Spend is captured through vendor invoices behind five approval gates, but nothing downstream of it "
-  "is owned. The cost ledger has a custodian; the books do not.",
-  "Fractional controller or bookkeeper; Alvin approves", 20,
-  "outlook-plm-bridge/SKILL.md:368; ayesha-weekly-briefing/SKILL.md:9"),
+ ("Resolved", "Finance",
+  "Finance is owned. Ironclad Finance (Dan Bender) runs AP, bookkeeping, payroll, month-end close "
+  "and reporting. Danielle accountable for reporting, Alvin for cost.",
+  "Was flagged as unowned before the external partners were added to the matrix. The remaining "
+  "question is not ownership but coverage: no internal finance headcount exists, so continuity "
+  "depends on the Ironclad engagement.",
+  "No action - confirm engagement terms and renewal date", 0,
+  "Alvin, 2026-07-31 (external partners)"),
 
- ("Unowned function", "People & Admin",
-  "Employee onboarding, offboarding and access deprovisioning has no named owner.",
-  "The only documented process is a departed-role-holder checklist written after a stale role record "
-  "broke task assignment. Reactive, and not owned.",
-  "Operations Specialist once hired; Alvin interim", 6,
-  "asana-pd-manager/references/role-map.md:48-56"),
+ ("Resolved", "People & Admin",
+  "HR is owned. Calm HR is the PEO and co-employer and runs handbook, policy, benefits, payroll "
+  "admin, onboarding, offboarding and separations. Alvin accountable as liaison, Danielle co-approves.",
+  "Was flagged as unowned before the external partners were added. What remains internal is the "
+  "system-side half of offboarding - Asana reassignment, wiki contact state, access deprovisioning - "
+  "which the departed-role-holder checklist covers and which is still on Alvin.",
+  "No action on HR; system-side offboarding to the Ops Specialist", 4,
+  "Alvin, 2026-07-31 (external partners); asana-pd-manager/references/role-map.md:48-56"),
 
  ("Unowned function", "Ecommerce & DTC",
   "Shopify revenue and channel position has no owner or gate.",
@@ -345,6 +366,24 @@ GAPS = [
   "second reader.",
   "PD Specialist as internal counterpart on hire", 0,
   "asana-pd-manager/references/role-map.md:16"),
+
+ ("Concentration", "All functions",
+  "Three whole functions run through external partners: Regulatory (Pedrero), Finance (Ironclad), "
+  "HR (Calm HR). Plus three contractors on packaging, creative and formulation.",
+  "Six external parties hold the execution of Regulatory, Finance, HR, packaging, creative and "
+  "formulation. Not a fault - it is how a team of nine covers this surface - but it means continuity "
+  "rests on six engagements rather than on employment, and every one of them is a renewal decision.",
+  "Confirm engagement terms and renewal dates for all six", 0,
+  "Alvin, 2026-07-31 (external partners)"),
+
+ ("Single point of failure", "Regulatory & Compliance",
+  "Pedrero forms every regulatory opinion but holds no accountability, and Alvin performs every "
+  "regulatory action. Consulted on 11 rows, responsible for none.",
+  "Our own procedures make Pedrero consult-only with no Asana access and no internal authority, so "
+  "the binding external call and the internal execution are both bottlenecks in different ways: "
+  "their opinion gates the work, and only Alvin can act on it.",
+  "Give the Reg Lead gate an alternate, or widen Pedrero's remit", 0,
+  "regulatory-manager/references/pedrero-contacts.md:9,13,21"),
 
  ("Single point of failure", "Creative",
   "Erin Hover is a contractor and the lead technical authority on packaging and artwork, "

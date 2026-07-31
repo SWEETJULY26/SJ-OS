@@ -143,7 +143,9 @@ KW = re.compile(r"owner|owns|own |belongs? to|approv|hitl|gate|sign-?off|account
                 r"sr\.? director|director|marketing manager|president|founder|first.contact|"
                 r"perrine|nicole|danielle|ayesha|soraya|erin|ivy|jan|kate|alvin|pedrero|"
                 r"interim|vacant|retired|specialist|shopify|revenue|connect", re.I)
-PRIMARY = re.compile(r"Leadership Business Review|Email to Danielle|Job Description\.docx", re.I)
+PRIMARY = re.compile(
+    r"Leadership Business Review|Email to Danielle|Job Description\.docx|Alvin, 20\d\d-\d\d-\d\d",
+    re.I)
 weak = []
 primary_only = []
 for func, act, A, R, C, I, T, src, notes in ROWS:
@@ -188,17 +190,31 @@ if weak:
 else:
     print("  PASS - every sourced row's citation carries ownership language")
 
-print(f"\n  rows sourced to a primary document rather than the repo: {len(primary_only)}")
+print(f"\n  rows sourced outside the repo (meeting, JD, email, or Alvin directly): {len(primary_only)}")
 for f_, a, s in primary_only:
     print(f"   {f_} :: {a}")
 
 # ---------- 5. open seats never hold A or R
-hdr("5. Open seats hold no accountability")
+hdr("5. Open seats and partner orgs hold no accountability")
 from raci_rows import POSITIONS
 OPEN = [p[0] for p in POSITIONS if p[3] in ("recruiting", "phased")]
 print(f"  open seats: {OPEN}")
 bad_seat = [(r[0], r[1]) for r in ROWS if r[2] in OPEN or r[3] in OPEN]
 print(f"  rows assigning A or R to an open seat: {len(bad_seat)}")
+PARTNER = [p[0] for p in POSITIONS if p[3] == "partner"]
+bad_p = [(r[0], r[1]) for r in ROWS if r[2] in PARTNER]
+print(f"  partner orgs: {PARTNER}")
+print(f"  rows assigning A to a partner org: {len(bad_p)}")
+for b in bad_p:
+    print("   FAIL", b)
+if bad_p:
+    fail += 1
+else:
+    print("  PASS - partners hold the work, never the accountability")
+pr_r = {p: sum(1 for r in ROWS if r[3] == p) for p in PARTNER}
+pr_c = {p: sum(1 for r in ROWS if p in r[4]) for p in PARTNER}
+print(f"  partner R counts: {pr_r}")
+print(f"  partner C counts: {pr_c}")
 for b in bad_seat:
     print("   FAIL", b)
 if bad_seat:

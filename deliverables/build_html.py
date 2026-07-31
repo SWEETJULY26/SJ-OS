@@ -40,7 +40,8 @@ payload = {
 }
 
 STATUS_LABEL = {"filled": "", "recruiting": "Open · recruiting now",
-                "phased": "Open · phased in after Ops", "contractor": "Contractor"}
+                "phased": "Open · phased in after Ops", "contractor": "Contractor",
+                "partner": "External partner"}
 
 CHANGES = [
     ("Erin is the technical authority on packaging",
@@ -53,9 +54,10 @@ CHANGES = [
     ("Quality gets a gate",
      "Nicole holds the final quality check on product and documentation across every function. "
      "Each function still owns its own work — the gate sits on top of it, not instead of it."),
-    ("The framework sits with Alvin",
-     "Quality management system, SOP framework, and this RACI. Nicole runs the system; Alvin owns "
-     "how it is built. Monthly quality-trend reviews start by the end of Q3."),
+    ("Our external partners are on the matrix",
+     "Pedrero Regulatory, Ironclad Finance and Calm HR now appear as columns. They hold the work; "
+     "accountability stays in-house. Finance and HR were only showing as unowned because they "
+     "were missing."),
     ("Perrine advises on the technical calls",
      "R&D, Quality, Production and Regulatory requirements for product. She stays accountable for "
      "formula and testing decisions, and consults on everything process-shaped."),
@@ -166,6 +168,8 @@ section.block{{margin-top:3rem;display:flex;flex-direction:column;gap:1.1rem}}
   background:var(--chip-open);color:var(--chip-open-ink);width:fit-content}}
 .chip.sub{{background:transparent;color:var(--ink-faint);
   border:1px solid var(--rule-strong);padding:.14rem .42rem}}
+.chip.partner{{background:transparent;color:var(--r-ink);
+  border:1px solid var(--r-ink);padding:.14rem .42rem}}
 /* legend */
 .legend{{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;font-size:var(--step--1);
   color:var(--ink-soft);align-items:center}}
@@ -201,11 +205,11 @@ details.fn > summary:focus-visible{{outline:2px solid var(--focus);outline-offse
 .fn-count{{font-size:var(--step--1);color:var(--ink-faint);
   font-variant-numeric:tabular-nums;margin-left:auto}}
 .scroller{{overflow-x:auto;padding-bottom:.4rem}}
-table{{border-collapse:collapse;width:100%;min-width:900px;font-size:var(--step--1)}}
+table{{border-collapse:collapse;width:100%;min-width:1080px;font-size:var(--step--1)}}
 thead th{{position:sticky;top:0;background:var(--ground);text-align:center;
   font-weight:600;font-size:.7rem;letter-spacing:.06em;padding:.4rem .1rem .5rem;
   border-bottom:1px solid var(--rule-strong);color:var(--ink-soft);white-space:nowrap}}
-thead th.act{{text-align:left;min-width:300px;letter-spacing:.1em;
+thead th.act{{text-align:left;min-width:270px;letter-spacing:.1em;
   text-transform:uppercase;padding-left:0}}
 tbody td{{border-bottom:1px solid var(--rule);padding:.5rem .1rem;text-align:center;
   vertical-align:middle}}
@@ -280,8 +284,9 @@ for pid, name, title, status in POSITIONS:
     chip = ""
     if status in ("recruiting", "phased"):
         chip = f'<span class="chip">{e(STATUS_LABEL[status])}</span>'
-    elif status == "contractor":
-        chip = f'<span class="chip sub">{e(STATUS_LABEL[status])}</span>'
+    elif status in ("contractor", "partner"):
+        cls = "chip sub" if status == "contractor" else "chip partner"
+        chip = f'<span class="{cls}">{e(STATUS_LABEL[status])}</span>'
     if status in ("recruiting", "phased"):
         tally = f'<span>Absorbs <b>{c["inc"]}</b></span>'
     else:
@@ -360,9 +365,13 @@ parts.append(f"""<footer class="page">
 <p><strong>How this was built.</strong> Every row traces to a source — the operating procedures and
 role definitions in the SJ-OS repository, the two specialist job descriptions, or the 30 July
 leadership review. Open any row's source link to see which.</p>
-<p>Three rows have no documented owner and show the VP of Operations by default because the work
-falls there in practice: accounts payable and bookkeeping, employee onboarding and offboarding,
-and Shopify revenue ownership. They are marked as inferred rather than sourced.</p>
+<p>One row has no documented owner and shows the VP of Operations by default because the work falls
+there in practice: Shopify revenue and channel position. It is marked as inferred rather than
+sourced. Accounts payable and HR onboarding used to sit here too, and are now owned by Ironclad
+Finance and Calm HR.</p>
+<p><strong>Partner organisations</strong> hold the work but never the accountability — that stays with
+an employee. Pedrero Regulatory is consulted rather than responsible because our procedures make
+them consult-only, with no access to our systems.</p>
 <p>Coverage is Sweet July Skin plus company-wide work. Sweet July, the lifestyle brand, is not
 represented — nothing in our operating documentation defines who owns it.</p>
 <p>Questions or a row that looks wrong: Alvin.</p>
