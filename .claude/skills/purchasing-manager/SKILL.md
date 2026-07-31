@@ -121,7 +121,8 @@ The biggest job. Six sub-flows that walk a PO from draft to close. The PO is one
 
 **3d-side. Cancellation**
 - *Trigger:* operator request ("cancel PO X"), or vendor cancellation logged via outlook-plm-bridge
-- *Action:* HITL confirm. On approval, PLM PO status → Cancelled, Asana Status = **Cancelled**, task moves to **Closed** section and gets marked complete. Available from any state prior to Received.
+- *Action:* HITL confirm. On approval, PLM PO status → Cancelled, Asana Status = **Cancelled**, task moves to **Closed** section. Available from any state prior to Received.
+- *Completion — check the other homes first.* Asana completion is a property of the task, not of a project, so ticking it closes the task in **every** project it is multi-homed into. Before marking complete, read `memberships` and confirm no other system still owns open work: a PO multi-homed into a SKU project, Logistics, or Quality is not done just because Purchasing is. Per `asana_task_contract.md` Phase 4, the **last** system to finish completes the task. If another home is still open, leave it incomplete, move the section, and say so in the cancellation comment. This is why the Asana Rule on this queue moves sections only and never marks complete.
 
 **3e. Receipt (two scenarios)**
 
@@ -137,7 +138,8 @@ QA itself stays on the PD side in both scenarios; Purchasing only carries the re
 
 **3f. Invoice + close (manual 3-way match in v1)**
 - *Trigger:* outlook-plm-bridge logs an invoice
-- *Action:* Skill stages a 3-way match in PLM (PO / receipt / invoice). Discrepancies → Status = **Variance**, task moves back to **HITL — Needs Operations Review**. Clean match → PLM PO closed, Status = **Closed**, Asana task moves to **Closed** section and gets marked complete.
+- *Action:* Skill stages a 3-way match in PLM (PO / receipt / invoice). Discrepancies → Status = **Variance**, task moves back to **HITL — Needs Operations Review**. Clean match → PLM PO closed, Status = **Closed**, Asana task moves to **Closed** section.
+- *Completion — same multi-home check as 3d-side.* Purchasing finishing its invoice match does not mean the freight leg cleared customs or that PD closed its side. Read `memberships`, and only mark complete when Purchasing is the last home with open work. Otherwise move the section and leave completion to whoever finishes last.
 - *Cost ledger:* The same invoice also gets logged as a `vendor_invoices` row via Job 9. PO-bound invoices have `po_link` populated, which is how Job 9 dedups against the 3-way match.
 - *Note:* When AP system integration ships (future), this match becomes automated. The current task data is structured to plug into that later without rewrite.
 

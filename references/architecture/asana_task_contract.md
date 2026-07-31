@@ -273,7 +273,11 @@ Two things to expect when doing this:
 - **Same-named fields are different fields.** Purchasing and SJS Quality Management both have a field called `Status`, with different GIDs and different option sets. Resolve per project and set both; don't assume one write covered it.
 - **A field with no honest value stays unset.** Phase 1's TBD string works on text fields only. Enum fields have no TBD option, so leave them blank and raise the gap in open questions rather than picking the nearest option. Populating a `Classification` of `OOS` on a preventive risk with no defect is worse than leaving it empty — it puts a fabricated finding into the quality record.
 
-One task, one assignee, one due date. Each system closes its own side of the work; the last one to finish completes the task. This generalizes the rule `inventory-manager` already runs (SKILL.md — near-expiry tasks multi-homed into SJS Quality Management, Purchasing multi-homes for reorder review) and the routing matrix in `purchasing-manager` Job 9.
+One task, one assignee, one due date. Each system closes its own side of the work; the last one to finish completes the task.
+
+**Completion is task-global — check `memberships` before ticking it.** Unlike section placement, which is per-project, marking a task complete completes it in *every* project it is multi-homed into. A skill that completes on reaching its own terminal state closes the task on behalf of systems that may still have open work: a PO whose invoice match cleared is not done if the freight is still in customs. So before any completion on a multi-homed task, read `memberships` and confirm this queue is the last home with open work. If it isn't, move the section, leave the task open, and say why in the comment.
+
+This is also why **Asana Rules on these queues move sections only and never mark complete.** A rule cannot see whether the other homes are finished. Section moves are safe to automate; completion is not. This generalizes the rule `inventory-manager` already runs (SKILL.md — near-expiry tasks multi-homed into SJS Quality Management, Purchasing multi-homes for reorder review) and the routing matrix in `purchasing-manager` Job 9.
 
 Multi-homing is live and working in this workspace today — task `1214048212856468` sits in both the Lychee Lip Treatment SKU project (Phase 5 section) and AC Brands Purchasing (Receiving). Any skill note claiming the MCP can't multi-home is stale.
 

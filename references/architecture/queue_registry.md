@@ -280,6 +280,8 @@ Confirmed live: **there is no Status field on this project.** `regulatory-manage
 
 None exist today — verified 2026-07-31, every section move in this system is a skill calling `update_tasks`. These have to be created in the Asana UI; the MCP cannot create them.
 
+**Rules move sections. Nothing else.** No completion action, no assignee change, no comment, no due date. Section placement is per-project, so a rule moving a task in one queue does not disturb where it sits in another. Completion is task-global — ticking it closes the task in every project it is multi-homed into, and a rule cannot see whether the other homes are finished. See `asana_task_contract.md` Phase 4.
+
 **Build first — AC Brands Purchasing.** One rule per row of its state → section map above: trigger *Status changes to X*, action *move to section Y*. Ten rules, or one rule with ten branches if the UI supports it.
 
 Before building:
