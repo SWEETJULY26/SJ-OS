@@ -128,9 +128,18 @@ The biggest job. Six sub-flows that walk a PO from draft to close. The PO is one
 
 Receipt is the formal hand-off where goods land at OC3PL (Logiwa WMS), the PO status flips to Received, and the batch record is created in PLM. The receipt task home depends on whether the PO is PD-linked.
 
-**Scenario A — PD-linked.** The PO traces to a linked PD task (linkage already known via the multi-home rule). A receipt task already lives in the PD project. Don't create a duplicate. Set the **PLM Link** field on the existing PD task to point at the PO record, then multi-home that task into AC Brands Purchasing, **Receiving** section. Downstream: OC3PL notifies via email or Asana comment → operator updates the task with the Logiwa Receipt Order ref and marks Status = **Received**. `plm-assistant` updates the PLM PO status and creates the batch entry. **PD owns the close.**
+**Scenario A — PD-linked.** The PO traces to a linked PD task. Set the **PLM Link** field on that PD task to point at the PO record so the linkage is visible from the PD side — but **do not multi-home the PD task into Receiving for an ordinary full receipt.** The PO task carries the receipt state, exactly as in Scenario B; the PD task carries the PD milestone. Multi-home only when PD genuinely owns the close on the same work item, per `asana_task_contract.md` Phase 4's could-one-person-close-it-once test. Downstream is the same: OC3PL notifies → operator records the Logiwa Receipt Order ref on the PO task and marks Status = **Received** → `plm-assistant` updates the PLM PO status and creates the batch entry.
 
-**Scenario B — Standalone.** No PD project for this PO. The skill creates a `Receipt — Vendor Name — PO Number` task in the **Receiving** section, description per the Receipt template (references/task-description-templates.md). Same downstream: OC3PL notifies → operator updates the Logiwa ref and marks Status = **Received** → `plm-assistant` writes the PLM PO status and batch entry. Purchasing holds the receipt task open until the invoice clears (Job 3f).
+This changed 2026-07-31. The old rule multi-homed a PD receipt task into Receiving on every PD-linked PO, which is how six of the seven tasks found in that section came to carry no Status at all — they were PD milestones sitting in a purchase-to-pay queue with no purchase-to-pay state, so nothing would ever move them.
+
+**Scenario B — Standalone.** No PD project for this PO. **Do not open a separate receipt task for a single full receipt.** The PO task itself carries the receipt: mark Status = **Received**, which lands it in the **Receiving** section per `references/architecture/queue_registry.md`, record the Logiwa Receipt Order ref and counts on that task, and `plm-assistant` writes the PLM PO status and batch entry. Purchasing holds the PO task in Receiving until the invoice clears (Job 3f). One PO, one task, all the way through.
+
+A separate `Receipt — Vendor Name — PO Number` task in **Receiving** is right in exactly two cases:
+
+- **Partial receiving.** PLM's `po_receipts` / `po_receipt_items` allow multiple receipt rows per PO — 10,000 units arriving in two containers on different dates with different batch codes is two receipt events. One PO task cannot hold two receipt states, so each partial receipt gets its own task keyed `PO number + receipt date`. The PO task stays in Receiving until the last one lands, then goes to Closed on the invoice match.
+- **A discrepancy.** Count variance, damage, or missing items opens a Job 10 discrepancy task, which is its own deliverable with its own close.
+
+Rationale, since this reversed on 2026-07-31: before the state → section map existed, nothing moved a PO out of POs In Flight, so a receipt task in Receiving was the only way the section had contents. Now `Received → Receiving` moves the PO task itself, and a second task for the same single event is a duplicate whose Status is always null — which is exactly what the live audit of the Receiving section found.
 
 QA itself stays on the PD side in both scenarios; Purchasing only carries the receipt signal.
 
