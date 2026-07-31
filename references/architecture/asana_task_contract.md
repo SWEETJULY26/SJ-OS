@@ -6,7 +6,7 @@
 
 **Companion contracts:** `bridge_queue_contract.md` decides *which queue* a task belongs to. This file decides *what the write looks like once the queue is known*. HITL confirmation itself lives in `asana-pd-manager/references/confirmation-protocol.md` (Rule 1); this contract adds the field discipline that confirmation preview displays.
 
-**Last updated:** 2026-07-29 — Authored to close four gaps Alvin flagged: bridges created tasks without checking for an existing one, left fields blank when the source didn't mention them, shipped tasks with no due date, and split same-work items into separate cross-referenced tasks in each queue instead of multi-homing one.
+**Last updated:** 2026-07-31 — Phase 3: Nicole added as an unconditional follower alongside Alvin, per the 2026-07-30 quality-gate decision. She was previously picked up only when she held the queue's gate or was named in the source, which left her off most Ops and PD tasks. Prior 2026-07-29 — Authored to close four gaps Alvin flagged: bridges created tasks without checking for an existing one, left fields blank when the source didn't mention them, shipped tasks with no due date, and split same-work items into separate cross-referenced tasks in each queue instead of multi-homing one.
 
 ---
 
@@ -216,9 +216,12 @@ Every task gets:
 
 - The **assignee**.
 - **Alvin** (Operator) — always. `alvin@ac-brands.com`, GID `1200866724349684`.
+- **Nicole** (Quality Gate) — always. `nicole@ac-brands.com`, GID `1200208283186758`. Unconditional for the same reason Alvin is: the 2026-07-30 leadership decision put quality of product *and* quality of documentation through her as the final check across every function, so the gate isn't queue-specific and can't be derived from a role-map row. Not a preference — don't strip it back to conditional.
 - The **role-holder who owns the gate** for that queue, per `asana-pd-manager/references/role-map.md` for PD and the Quality / Regulatory role-maps for those queues.
 - The **counterpart owner for every secondary home** on a multi-homed task, so each system sees its side.
 - Any **internal person named in the source** as owning or awaiting part of the work.
+
+The first three are unconditional — assignee, Alvin, Nicole — and the rest are derived per task. Alvin and Nicole deliberately sit outside the role-map: a role-map row describes who holds a queue's gate, and these two hold every task regardless of queue. Dedupe the final list, since Alvin or Nicole will often also be the assignee or the gate role-holder on the same task; adding either twice is a duplicate-follower error, not a second watcher.
 
 Resolve every follower to a GID via `get_users`, matching on **email**, not display name — display names in this workspace are inconsistent ("Alvin", "Danielle Iturbe", "ash@teknologicsllc.com"). Never guess a GID (Rule 5).
 
@@ -283,9 +286,9 @@ Extends the Rule 1 preview in `confirmation-protocol.md` rather than replacing i
 • Action: Create task
 • Target: SJS Quality Management → Lab Findings Open
 • Name: [Lab Finding] Pava Toner Spray — VL13-41-4 — stability OOT
-• Assignee: Perrine Calvet (PD Lead / QA Lead)
+• Assignee: Perrine Calvet (PD Lead / Technical Advisor)
 • Due: 2026-08-03 (SLA default — quality, 3bd)
-• Collaborators: Alvin (Operator), Perrine Calvet (QA Lead gate)
+• Collaborators: Alvin (Operator), Nicole Iturbe (Quality Gate), Perrine Calvet (Technical Advisor)
 • Fields: Status=Triage · Classification=OOT · Severity=Major · Linked Batch=VL13-41-4 · Linked SKU=Pava Toner Spray
 • Homes: SJS Quality Management → Lab Findings Open (primary)
          SJ SKIN – New Pava Toner Spray → Testing (secondary, same work item)

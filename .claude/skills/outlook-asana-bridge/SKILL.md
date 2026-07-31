@@ -380,8 +380,12 @@ from the email is written `TBD — <what's missing>` and raised under `❓ Open 
 quality 3, regulatory 3, ops 5, pd 5, waiting-on 5, FYI 10). The waiting-on default that
 used to live in this skill is now rung 4 of that ladder. Show the derivation.
 
-**Phase 3 — collaborators.** Assignee + Alvin + the role-holder owning that queue's gate +
-the counterpart owner on every secondary home + any internal person named in the email.
+**Phase 3 — collaborators.** Assignee + Alvin + **Nicole** + the role-holder owning that
+queue's gate + the counterpart owner on every secondary home + any internal person named in
+the email. Alvin and Nicole are on every task regardless of queue — Nicole holds the org-wide
+quality gate per the 2026-07-30 decision, so she is not derived from the role-map and not
+conditional on the email mentioning her. Dedupe the list; either of them is often the
+assignee or gate-holder too.
 Senders who are external — vendors, Pedrero, labs — are **never** added as followers; they
 go in the SOURCE block. Most email-sourced tasks have an external sender, so this is the
 rule that matters most here.
