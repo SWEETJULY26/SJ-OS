@@ -21,6 +21,19 @@ This means:
 
 **Cross-system signal doesn't always mean a second task.** When the signal is the same work item that a second system needs to see, it's one task multi-homed into both queues — one owner, one due date, each system closing its own side. A second task is right only when each system owes a distinct deliverable with its own close. `asana_task_contract.md` Phase 4 has the test and the API call.
 
+### Inbound PO with a freight leg — Purchasing **and** Logistics
+
+The `ops` row above reads as one-of, and for most signals it is. An inbound purchase order that is physically shipping is the exception: it is one work item that two systems act on, so it is one task multi-homed into both, per Phase 4's could-one-person-close-it-once test.
+
+- **AC Brands Purchasing** — primary. Owns the PO lifecycle and the close. Carries the `Status` field.
+- **Sweet July Skin Logistics** — secondary, section by cargo type: `Inbound — Components` or `Inbound — FG`. Owns the move. Carries `Shipment Status` and `Carrier/Vendor`.
+
+Both homes get their own fields populated in the same pass, per `asana_task_contract.md` Phase 4. The two `Status`-shaped fields are different fields measuring different things and both are set: Purchasing's tracks the PO lifecycle and advances to `In Transit` on the first shipping signal, while Logistics' `Shipment Status` tracks physical position and stays `Pre-Ship` until the cargo actually departs. Neither is wrong when they disagree.
+
+This matches the ownership split already stated in `sjs-ops-system` ("Logistics owns the move; Inventory…") — it just says which task each side reads it from, which was previously unspecified. Before 2026-07-31 no rule put a PO in Logistics at all, and the one place Logistics appeared as a multi-home destination named a project that does not exist.
+
+**Not yet proven at volume.** PLM's `shipments` table is empty and the Logistics project was mostly section seeds until this rule landed. The freight flow is built, not exercised. Expect to revise section choice and the owner split once real shipments run through it.
+
 Margin, Intel, and Founder skills do not run an Asana queue. They are direct-output skills that read Asana / PLM live, generate output, and stop. Bridges therefore do not "fan out" to them. The bridges' role for those skills is to land the underlying data in PLM and Asana, where the direct-output skills then read it.
 
 ---
@@ -93,7 +106,7 @@ How each bridge classifies and posts. Each bridge owns its label set; the contra
 | Signal label | Queue destination |
 |---|---|
 | `pd` | PD queue (project named by SKU; Formula Tracker if stage-gate signal) |
-| `ops` | Ops queue per signal subtype (vendor / PO → Purchasing; inventory → Inventory; forecast → S&OP; freight → Logistics; DTC order → OC3PL) |
+| `ops` | Ops queue per signal subtype (vendor / PO → Purchasing; inventory → Inventory; forecast → S&OP; freight → Logistics; DTC order → OC3PL). **A PO and a freight leg on the same shipment is a both-case, not a choice** — see below. |
 | `quality` | Quality queue (SJS Quality Management, plus CAPA or Complaint Log if signal subtype is clear) |
 | `regulatory` | Regulatory queue (SJS Regulatory Management; SJS Reportable Events if SAE / recall) |
 | `margin` | No queue. Stage the signal in PLM via cross-flag to `outlook-plm-bridge`; margin skills read PLM live. |
@@ -131,6 +144,6 @@ Each of `sjs-pd-system`, `sjs-ops-system`, `sjs-quality-system`, `sjs-regulatory
 
 ## Out of scope
 
-- Skill-internal queue mechanics (sections within an Asana project, custom field flags, sub-skill task templates) — those live in each skill's own SKILL.md and references.
+- Skill-internal queue mechanics (custom field flags, sub-skill task templates) — those live in each skill's own SKILL.md and references. **Sections and state → section maps are not skill-internal** and live in `asana_task_contract.md` Phase 4 plus `queue_registry.md`; this line used to send readers to the skills, which is part of why no canonical map existed.
 - Cross-system handoffs that don't pass through a bridge — e.g., Quality → PD via `[Reformulation Required]` flag — those live in the relevant router's "Cross-system handshakes" section.
 - Non-Asana, non-PLM destinations (SharePoint artifact archive, branded HTML dashboards on `acb-thelanding`) — those are owned by reporter and archive skills.

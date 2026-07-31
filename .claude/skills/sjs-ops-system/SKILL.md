@@ -151,10 +151,14 @@ low-stock signal sits with Inventory until it needs sequencing — at that point
 Inventory routes it through S&OP for buy timing.
 
 **inventory-manager vs. purchasing-manager.** Receiving is the seam. Purchasing
-carries a PO through Draft → Sent → Acknowledged → In Transit. Inventory picks
-up at the goods-received signal — opens the receive task, stages the batch in
-PLM, commits on Operations approval. Purchasing then moves its PO to Received
-and carries it through invoice and three-way match to Closed.
+carries one PO task through Status Draft → Sent → Acknowledged → In Transit, all
+of which live in the **POs In Flight** section. Inventory picks up at the
+goods-received signal — opens its own receive task in AC Brands Inventory,
+stages the batch in PLM, commits on Operations approval. On commit it sets the
+Purchasing PO task's `Status = Received`, which moves that task into
+**Receiving**; Purchasing then carries it through invoice and three-way match to
+`Closed`. Set the state field, never the section directly — the state → section
+map for both queues is in `references/architecture/queue_registry.md`.
 
 **logistics-manager vs. inventory-manager.** Logistics owns the move; Inventory
 owns the location ledger entry. A transfer from OC3PL to an Ulta DC is

@@ -78,7 +78,7 @@ Task name: [Clear, descriptive name]
 Project: [Project name] → [Section]
 Assignee: [Name]
 Due date: [Date] ([derivation — stated / SLA default pd 5bd / gate clock])
-Collaborators: Alvin (Operator), [gate role-holder], [secondary-home owner]
+Collaborators: Alvin (Operator), Nicole (Quality Gate), [gate role-holder], [secondary-home owner]
 Description: [Context, with SOURCE / KEY / LINKS blocks]
 Homes: [primary] [+ secondary, when one close covers both]
 Subtasks: [List if applicable]

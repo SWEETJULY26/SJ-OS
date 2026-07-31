@@ -26,7 +26,7 @@ PLM STAGING
 - Awaiting Operations approval to commit
 
 NEXT
-- On commit: hand back to Purchasing → [PO Received — Pending Invoice]
+- On commit: hand back to Purchasing → set the PO task's `Status = Received` (lands it in Receiving)
 ```
 
 ## [Position Variance] SKU — Location

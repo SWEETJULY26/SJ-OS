@@ -44,6 +44,10 @@ Phase 1 no blank fields, Phase 2 a due date always, Phase 3 derived collaborator
 move and multi-home instead of opening a second task. That covers the cross-system tasks
 below and the Flow I invoice tasks.
 
+Phase 3's two unconditional followers are Alvin and **Nicole** — every task, every queue,
+whether or not either is named in the email. The rest are derived. Vendor and lab contacts on
+the email are external and never followers; they go in the SOURCE block.
+
 It does **not** apply to PLM writes — those stay with `plm-assistant` under its own
 confirmation rules, and Flow I's `vendor_invoices` dedup on `(vendor_id, invoice_number)` is a
 database constraint, separate from the Asana-side resolve. Flow I's existing

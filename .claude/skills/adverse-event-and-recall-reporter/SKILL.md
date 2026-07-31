@@ -165,7 +165,7 @@ All fields exist on SJS Reportable Events. Canonical GID + option-GID reference:
 - `Window End` (date — statutory clock end. NOT Pedrero return date — agency deadline.)
 - `Gate` (single-select, shared field: Open, Pending Operator, Pending QA Lead, Pending Regulatory Lead) — orthogonal to section. Carries who's holding the puck. This skill uses Pending Regulatory Lead for every Pedrero send and agency submission; uses Pending QA Lead only when a quality-side cross-check is in flight.
 
-*Title prefixes:* reserved for cross-skill staging where the destination skill or source skill is not yet live. In-flight state and HITL gates use Section + Gate, not title prefixes.
+*Title prefixes:* reserved for cross-skill staging where the destination skill or source skill is not yet live. In-flight state and HITL gates use Section + Gate, not title prefixes — this project has no Status field (confirmed live 2026-07-31), so it is a declared **section-as-state** queue in `references/architecture/queue_registry.md`. The system-wide default is the opposite: state field authoritative, section derived. This queue is an exception to that default, not a competing convention.
 - **Inbound from regulatory-manager:** tasks land in SJS Reportable Events Inbound Staging via regulatory-manager fan-out (Job 1 of regulatory-manager). `Source Reg Flag` field carries the originating `[Reg Flag Pending — regulatory-manager]` task gid for traceback to Quality.
 - **Outbound staging to regulatory-manager:** `[Reg Coordination Pending — regulatory-manager]` for cross-skill issues that need the regulatory-manager dashboard view (e.g., a recall outcome that affects multiple registrations or surfaces a Pedrero engagement question).
 

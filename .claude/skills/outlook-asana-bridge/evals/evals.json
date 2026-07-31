@@ -43,12 +43,12 @@
     {
       "id": 3,
       "prompt": "Vegelabs sent over the Pava Cleanser component spec — create a task to review it. No deadline mentioned in the email.",
-      "expected_output": "Creates the task with every required field valued and no blanks. Because the email states no deadline, the due date comes from the Phase 2 ladder's rung-4 SLA default for the primary label and is shown with its derivation (e.g. 'Due: 2026-08-05 (SLA default — pd, 5bd)'), computed in business days skipping weekends and AC Brands closures. Collaborators are derived — Alvin as Operator plus the gate role-holder for the queue — and Mayra/Vegelabs is NOT added as a follower because external contacts are not workspace users; the sender goes in the description's SOURCE block. The description carries SOURCE / KEY / LINKS blocks, and the KEY block records the dedupe key so the next run's Phase 0 search can find this task.",
+      "expected_output": "Creates the task with every required field valued and no blanks. Because the email states no deadline, the due date comes from the Phase 2 ladder's rung-4 SLA default for the primary label and is shown with its derivation (e.g. 'Due: 2026-08-05 (SLA default — pd, 5bd)'), computed in business days skipping weekends and AC Brands closures. Collaborators are Alvin as Operator and Nicole as Quality Gate unconditionally, plus the gate role-holder for the queue, and Mayra/Vegelabs is NOT added as a follower because external contacts are not workspace users; the sender goes in the description's SOURCE block. The description carries SOURCE / KEY / LINKS blocks, and the KEY block records the dedupe key so the next run's Phase 0 search can find this task.",
       "files": [],
       "expectations": [
         "A due date is set even though the email named no deadline",
         "The due date is labeled as an SLA default with its derivation shown, not presented as a stated deadline",
-        "Alvin is a collaborator, and the external sender is NOT added as a follower",
+        "Both Alvin and Nicole are collaborators, and the external sender is NOT added as a follower",
         "The description includes the SOURCE, KEY, and LINKS blocks, with the dedupe key recorded",
         "No required field is left blank — anything undeterminable is written as 'TBD — reason' and raised as an open question"
       ]
@@ -77,6 +77,19 @@
         "Every TBD appears in an open-questions block in the preview",
         "The task creation still proceeds rather than being blocked on the unknown supplier",
         "An enum custom field that cannot be determined is left unset and raised as a question, not filled with an invented option GID"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Element Packaging emailed about PO 100346 — the toner bottles and caps are complete but they want to hold the shipment. Log it to Logistics.",
+      "expected_output": "Creates the task with Nicole Iturbe (nicole@ac-brands.com) as a collaborator even though she is neither the assignee nor mentioned anywhere in the email. Alvin and Nicole are the two unconditional followers on every task in every queue per asana_task_contract.md Phase 3 — Nicole holds the org-wide quality gate, so she is not derived from the role-map and not conditional on the source naming her. Both are resolved to GIDs via get_users matched on email, never guessed, and neither is added twice when one of them is also the assignee or the queue's gate role-holder. Emely Reyes and the other Element contacts are external, so they go in the description's SOURCE block and are never followers.",
+      "files": [],
+      "expectations": [
+        "Nicole is a collaborator on the task despite not being the assignee and not being named in the email",
+        "Alvin is also a collaborator",
+        "Collaborator GIDs are resolved via a user lookup matched on email rather than guessed or matched on display name",
+        "No follower appears twice when the assignee or gate role-holder is also Alvin or Nicole",
+        "The external Element contacts are in the SOURCE block and are NOT added as followers"
       ]
     }
   ]

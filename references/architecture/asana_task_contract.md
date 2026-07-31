@@ -4,9 +4,9 @@
 
 **Scope:** All four bridges (`outlook-asana-bridge`, `fireflies-asana-bridge`, `asana-plm-bridge`, `outlook-plm-bridge`) and every destination skill that creates or updates Asana tasks. Single source of truth — consuming skills point here rather than restating the rules.
 
-**Companion contracts:** `bridge_queue_contract.md` decides *which queue* a task belongs to. This file decides *what the write looks like once the queue is known*. HITL confirmation itself lives in `asana-pd-manager/references/confirmation-protocol.md` (Rule 1); this contract adds the field discipline that confirmation preview displays.
+**Companion contracts:** `bridge_queue_contract.md` decides *which queue* a task belongs to. `queue_registry.md` records each queue's sections, state field, and state → section map — the section half of Phase 4 reads from it. This file decides *what the write looks like once the queue is known*. HITL confirmation itself lives in `asana-pd-manager/references/confirmation-protocol.md` (Rule 1); this contract adds the field discipline that confirmation preview displays.
 
-**Last updated:** 2026-07-29 — Authored to close four gaps Alvin flagged: bridges created tasks without checking for an existing one, left fields blank when the source didn't mention them, shipped tasks with no due date, and split same-work items into separate cross-referenced tasks in each queue instead of multi-homing one.
+**Last updated:** 2026-07-31 — Phase 4: state field is authoritative and section is a projection of it, mapped per queue in the new `queue_registry.md`; where a Rule owns a queue's movement, skills write the field and don't move sections. Same date: every new home gets its fields populated in the same pass as the multi-home. Phase 3: Nicole added as an unconditional follower alongside Alvin, per the 2026-07-30 quality-gate decision. She was previously picked up only when she held the queue's gate or was named in the source, which left her off most Ops and PD tasks. Prior 2026-07-29 — Authored to close four gaps Alvin flagged: bridges created tasks without checking for an existing one, left fields blank when the source didn't mention them, shipped tasks with no due date, and split same-work items into separate cross-referenced tasks in each queue instead of multi-homing one.
 
 ---
 
@@ -144,7 +144,7 @@ The KEY block is what makes the next run's Phase 0 search find this task. Omitti
 
 Resolve field and option GIDs live per session via `get_project` — do not hard-code them.
 
-There is no GID store to read them from. Checked 2026-07-29: the PLM database has no Asana GID column on any of its 57 tables, and the wiki layer holds no structured GIDs either — only task GIDs written incidentally into page prose by Job 0 (see the wiki pre-check above). Project-level GIDs live in `gids.md`. Field, option, and section GIDs live only in the canonical cache named by `asana-pd-manager/references/gids-pointer.md`, which sits outside this repo on Alvin's Mac. Live resolution is therefore the only reliable route for field-level IDs. Append newly resolved GIDs to `gids.md` per its own discipline note.
+There is no GID store to read them from. Checked 2026-07-29: the PLM database has no Asana GID column on any of its 57 tables, and the wiki layer holds no structured GIDs either — only task GIDs written incidentally into page prose by Job 0 (see the wiki pre-check above). Project-level GIDs live in `gids.md`. Section GIDs, state fields, and state → section maps live in `queue_registry.md`, in-repo as of 2026-07-31. Field and option GIDs beyond the state fields are still only in the off-repo cache named by `asana-pd-manager/references/gids-pointer.md`, so live resolution stays the only reliable route for those. Append newly resolved GIDs to `gids.md` per its own discipline note.
 
 Enum fields take **option GIDs**, not display names. A name string is rejected.
 
@@ -216,9 +216,12 @@ Every task gets:
 
 - The **assignee**.
 - **Alvin** (Operator) — always. `alvin@ac-brands.com`, GID `1200866724349684`.
+- **Nicole** (Quality Gate) — always. `nicole@ac-brands.com`, GID `1200208283186758`. Unconditional for the same reason Alvin is: the 2026-07-30 leadership decision put quality of product *and* quality of documentation through her as the final check across every function, so the gate isn't queue-specific and can't be derived from a role-map row. Not a preference — don't strip it back to conditional.
 - The **role-holder who owns the gate** for that queue, per `asana-pd-manager/references/role-map.md` for PD and the Quality / Regulatory role-maps for those queues.
 - The **counterpart owner for every secondary home** on a multi-homed task, so each system sees its side.
 - Any **internal person named in the source** as owning or awaiting part of the work.
+
+The first three are unconditional — assignee, Alvin, Nicole — and the rest are derived per task. Alvin and Nicole deliberately sit outside the role-map: a role-map row describes who holds a queue's gate, and these two hold every task regardless of queue. Dedupe the final list, since Alvin or Nicole will often also be the assignee or the gate role-holder on the same task; adding either twice is a duplicate-follower error, not a second watcher.
 
 Resolve every follower to a GID via `get_users`, matching on **email**, not display name — display names in this workspace are inconsistent ("Alvin", "Danielle Iturbe", "ash@teknologicsllc.com"). Never guess a GID (Rule 5).
 
@@ -242,7 +245,15 @@ update_tasks(tasks: [{task: <gid>,
                                       section_id: <the new section>}]}])
 ```
 
-Each queue keeps a state → section map, resolved live from `get_project(include_sections: true)`. Section names drift; GIDs are cached per session, never hard-coded into a skill body.
+**The state field is the source of truth; section is a projection of it.** The map from one to the other lives in `queue_registry.md`, per queue — read it rather than inferring the section from a name that looks right.
+
+Where the registry says a **Rule owns movement** for that queue, write the state field and stop. Do not also issue the `add_projects` move: an Asana Rule fires on the field change and moves the section itself, and a skill doing it too makes two writers race on one field. Where no rule owns the queue, the skill performs the move per the registry's map.
+
+Three queues carry state in their sections because they have no state field, by declared design — `oc3pl-order-manager`, `supply-demand-planner`, `SJ Shipping Dashboard` — plus `SJS Regulatory Management` and `SJS Reportable Events`, which use section + `Gate`. The registry marks these **section-as-state**. They are exceptions, not gaps.
+
+`Gate` is orthogonal to both, everywhere. It records who is holding the puck, never where the task sits.
+
+Resolve section GIDs from the registry, or live from `get_project(include_sections: true)` when the registry is stale — and fix the registry in the same pass if so. Never hard-code a section GID into a skill body; that is how four separate copies of the Quality section GIDs came to exist.
 
 ### Multi-home
 
@@ -254,6 +265,13 @@ update_tasks(tasks: [{task: <gid>,
                                       section_id: <its intake section>}],
                       add_followers: [<counterpart owner GID>]}])
 ```
+
+**Every new home gets its fields populated in the same pass.** Adding a project is not finished when `add_projects` returns. The task now carries that project's whole custom-field set, all of it empty, and Phase 1's no-silent-blanks rule applies to those fields exactly as it applied to the primary queue's. Resolve the new project's fields via `get_project` and fill what the source supports, in the same turn as the multi-home — never as a follow-up someone is trusted to remember. A task multi-homed into Quality with every Quality field blank reads to that queue as an empty intake, which is the failure multi-homing was supposed to prevent.
+
+Two things to expect when doing this:
+
+- **Same-named fields are different fields.** Purchasing and SJS Quality Management both have a field called `Status`, with different GIDs and different option sets. Resolve per project and set both; don't assume one write covered it.
+- **A field with no honest value stays unset.** Phase 1's TBD string works on text fields only. Enum fields have no TBD option, so leave them blank and raise the gap in open questions rather than picking the nearest option. Populating a `Classification` of `OOS` on a preventive risk with no defect is worse than leaving it empty — it puts a fabricated finding into the quality record.
 
 One task, one assignee, one due date. Each system closes its own side of the work; the last one to finish completes the task. This generalizes the rule `inventory-manager` already runs (SKILL.md — near-expiry tasks multi-homed into SJS Quality Management, Purchasing multi-homes for reorder review) and the routing matrix in `purchasing-manager` Job 9.
 
@@ -283,9 +301,9 @@ Extends the Rule 1 preview in `confirmation-protocol.md` rather than replacing i
 • Action: Create task
 • Target: SJS Quality Management → Lab Findings Open
 • Name: [Lab Finding] Pava Toner Spray — VL13-41-4 — stability OOT
-• Assignee: Perrine Calvet (PD Lead / QA Lead)
+• Assignee: Perrine Calvet (PD Lead / Technical Advisor)
 • Due: 2026-08-03 (SLA default — quality, 3bd)
-• Collaborators: Alvin (Operator), Perrine Calvet (QA Lead gate)
+• Collaborators: Alvin (Operator), Nicole Iturbe (Quality Gate), Perrine Calvet (Technical Advisor)
 • Fields: Status=Triage · Classification=OOT · Severity=Major · Linked Batch=VL13-41-4 · Linked SKU=Pava Toner Spray
 • Homes: SJS Quality Management → Lab Findings Open (primary)
          SJ SKIN – New Pava Toner Spray → Testing (secondary, same work item)

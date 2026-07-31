@@ -320,9 +320,12 @@ reasons to fall back to `fireflies_fetch` for the full transcript.
 quality 3, regulatory 3, ops 5, pd 5, FYI 10). "By end of week" said in a Monday meeting
 read on Friday means that Monday's week.
 
-**Phase 3 — collaborators.** Assignee + Alvin + the role-holder owning that queue's gate +
-the counterpart owner on every secondary home + any internal attendee who owns or awaits part
-of the work. External attendees — suppliers, Pedrero, labs — are **never** followers; they go
+**Phase 3 — collaborators.** Assignee + Alvin + **Nicole** + the role-holder owning that
+queue's gate + the counterpart owner on every secondary home + any internal attendee who owns
+or awaits part of the work. Alvin and Nicole are on every task regardless of queue — Nicole
+holds the org-wide quality gate per the 2026-07-30 decision, so she is not derived from the
+role-map and not conditional on her having attended the meeting. Dedupe the list.
+External attendees — suppliers, Pedrero, labs — are **never** followers; they go
 in the SOURCE block with the meeting name.
 
 **Phase 4 — move and multi-home.** Same work item spanning two systems is one task in two

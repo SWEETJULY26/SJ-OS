@@ -64,7 +64,7 @@ When a Formula Tracker task moves to Signed Approvals, the IL Review Gate fires 
 1. **Resolve** against existing tasks by dedupe key. Never create what already exists — update it.
 2. **Fields** — every required field valued or explicitly `TBD` (Rule 2 above).
 3. **Due date** — always set, derived by the ladder, derivation shown.
-4. **Collaborators** — derived from the role-map, not from whatever the source mentioned.
+4. **Collaborators** — Alvin and Nicole unconditionally, on every task in every queue; the rest derived from the role-map, not from whatever the source mentioned. Those two sit outside the map on purpose — see the contract's Phase 3.
 5. **Move / multi-home** — one task in two projects when it's the same work item; a second task only when each system owes a distinct deliverable.
 
 The Rule 1 preview carries the results: a `🔁 Resolve` verdict, the `Due` derivation, `Collaborators`, `Homes`, and any open questions. A preview with no Resolve verdict means Phase 0 didn't run — treat it as an incomplete write and go back.

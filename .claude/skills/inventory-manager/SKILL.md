@@ -45,11 +45,11 @@ Cross-channel on-hand surfacing across all modeled locations. Pull from PLM as s
 
 ### 2. Receiving (PO closeout)
 
-Picks up from Purchasing's `[PO In Transit]`. On goods arrival notification, opens the receive task, stages a batch entry in PLM, hands back to Purchasing on commit.
+Picks up from a Purchasing PO at `Status = In Transit` (in the POs In Flight section). On goods arrival notification, opens the receive task, stages a batch entry in PLM, hands back to Purchasing on commit.
 
 - *Trigger:* outlook-plm-bridge logs goods received notification, the operator marks a PO received, "log the receipt for PO #X", "PO #X arrived"
 - *Action:* Open Asana task `[Receive] PO Number — Vendor` in Inventory Management. Description holds PO summary, expected vs. received quantities by line, condition notes, batch identifiers, COA reference if attached. Stage batch entry in PLM via plm-assistant.
-- *HITL:* Operations approves the batch. On commit, plm-assistant creates the batch records, attaches docs, closes the receive task with a sync-back comment, and the Purchasing task moves to `[PO Received — Pending Invoice]`.
+- *HITL:* Operations approves the batch. On commit, plm-assistant creates the batch records, attaches docs, closes the receive task with a sync-back comment, and the Purchasing PO task is set to `Status = Received`, which lands it in the Receiving section. Set the field, not the section — see `references/architecture/queue_registry.md`.
 
 ### 3. Location ledger and movements
 
@@ -127,9 +127,9 @@ Dedupe keys for this queue: `SKU + location` for position tasks, `batch code + t
 
 This skill's existing multi-homed-tasks principle is the model the contract generalizes system-wide. Its dedupe-key rule on the OOS shortage sync (re-runs update by key, rows absent for two runs auto-close) is the Phase 0 pattern other queues now follow.
 
-- *Project:* AC Brands Ops Dashboard (GID to be confirmed on first run)
-- *Section:* Inventory Management — single section, no subsections
-- *Custom fields:* none new — defaults only (assignee, due date, completion)
+- *Project:* **AC Brands Inventory** — `1214374368959019`. (This previously read "AC Brands Ops Dashboard (GID to be confirmed on first run)"; that project is `1202106077428461` and is **archived** — do not route to it.)
+- *Sections:* five, per `references/architecture/queue_registry.md` — HITL — Needs Operations Review, Active Movements, Stock Risks, Reconciliation, Closed. (Previously documented as a single section.)
+- *Custom fields:* `SKU` `1213879801597825`, `PLM Link` `1214370303255301`, and a `Status` enum `1214374252744527` whose options are a generic approval set (Pending Review / Approved / In Progress / On Hold / Closed / Cancelled) that describes none of this queue's states. This skill's state stays in the title prefixes below until that field is re-optioned; the registry records it as unusable rather than as this queue's state field.
 - *Detail home:* templated task descriptions (see references/task-description-templates.md)
 
 ### HITL queue title prefixes

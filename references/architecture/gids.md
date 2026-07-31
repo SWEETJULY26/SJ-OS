@@ -36,7 +36,9 @@
 
 Use `asana_typeahead_search` with `resource_type=project` or `asana_get_projects` with `opt_fields=name,gid` and `limit:50` to resolve project GIDs. Cache within a session.
 
-Verified GIDs (names confirmed live via `asana_get_project` on 2026-05-31). Field, option, and section GIDs for the Quality / CAPA / Regulatory / Reportable Events projects are **not** repeated here — they live in `asana-field-gids.md` (API-pulled, the source of truth for field-level IDs). This table is the project-level lookup only.
+Verified GIDs (names confirmed live via `asana_get_project` on 2026-05-31). **Section GIDs, state fields, and each queue's state → section map live in `queue_registry.md`** — pulled live 2026-07-31 and in-repo. This table is the project-level lookup only.
+
+This used to defer to `asana-field-gids.md`, which is not in this repo (it sits on Alvin's Mac). Anything running in a remote session could not read it, which is how four separate copies of the Quality section GIDs came to exist in skill bodies. The registry replaces it for section-level data.
 
 **PD — trackers & infrastructure**
 | Project | GID |
@@ -119,27 +121,22 @@ Skin projects on the Product team that aren't in the 2026-2028 Roadmap portfolio
 | AC Brands Leadership Dashboard | `1210917729477334` |
 | ACB Landing Hub — Updates & Releases | `1214790724230121` |
 
-**Quality** (field + section GIDs in `asana-field-gids.md`)
+**Quality** (sections + state fields in `queue_registry.md`)
 | Project | GID |
 |---------|-----|
 | SJS Quality Management | `1214660401644163` |
 | SJS CAPA Log | `1214660784338465` |
 | SJ Skin Complaint Log | `1204763097184846` |
 
-**Regulatory** (field + section GIDs in `asana-field-gids.md`)
+**Regulatory** (sections + state fields in `queue_registry.md`)
 | Project | GID |
 |---------|-----|
 | SJS Regulatory Management | `1214660807386611` |
 | SJS Reportable Events | `1214660834583706` |
 
-### Purchasing project section GIDs
+### Section GIDs
 
-Sections inside the AC Brands Purchasing project. Used by `outlook-plm-bridge` Flow C-gate and `purchasing-manager` Job 2.
-
-| Section | GID |
-|---------|-----|
-| Vendor Onboarding | `1215139855143672` |
-| Compliance, Renewals & Disputes | `1214373372406262` |
+Moved to `queue_registry.md`, which holds all eleven queues' sections plus their state → section maps. This file used to carry two of AC Brands Purchasing's nine sections, which was the worst of both — incomplete and a second copy.
 
 ### Project-level custom field GIDs
 
@@ -195,6 +192,23 @@ These are attached at the portfolio level. They appear on each project as a port
 1. Stage the value changes in chat as a paste-ready table (project name → field → new value)
 2. Open the portfolio spreadsheet view in Chrome
 3. Paste row-by-row into the spreadsheet
+
+### Custom-field payload shapes differ between create and update
+
+Verified the hard way 2026-07-31. `create_tasks` and `update_tasks` do not take the same shapes:
+
+| Param | `create_tasks` | `update_tasks` |
+|---|---|---|
+| `followers` | comma-separated **string** of GIDs | **array** of GIDs (`add_followers`) |
+| `custom_fields` | JSON-encoded **string** | **object** |
+
+Passing an array or object to `create_tasks` fails validation before the call leaves the client (`Expected string, received array`). Passing a JSON string to `update_tasks` fails server-side.
+
+**Date custom fields take an object, not a string** — on both calls. `{"<field_gid>": {"date": "2026-08-14"}}`. A bare `"2026-08-14"` returns `date_value: DayAndDateTime is not a JSON object`. Enum fields, by contrast, take a bare option-GID string.
+
+### Duplicate field names across projects
+
+Field names are not unique workspace-wide, and same-named fields on different projects are genuinely different fields with different GIDs and different option sets. Known collision: **`Status`** exists on AC Brands Purchasing (`1214373372406268` — Draft / Sent / Acknowledged / In Transit / Received / Variance / Dispute / Closed / On Hold / Cancelled) and on SJS Quality Management (`1214660437047242` — Inbound / Triage / Vendor Flag Review / … / Pending). A multi-homed task carries both and needs both set. Resolve per project via `get_project`; never reuse a field GID across projects because the name matched.
 
 ### Other limitations
 - **Custom fields not attached to a project** return `"Custom field with ID X is not on given object"` on `update_tasks` calls. Resolution: attach the field to the project via UI first, then re-run the batch.
