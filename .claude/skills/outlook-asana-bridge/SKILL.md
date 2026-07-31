@@ -154,7 +154,7 @@ Purchasing owes a PO close, two deliverables — and reference each other throug
 
 Contrast: a receipt email that Purchasing and PD both track is one deliverable and one close,
 so it's a single task multi-homed into AC Brands Purchasing → Receiving and the SKU project's
-current phase section. Task `1214048212856468` in the live workspace is exactly this shape.
+current phase section. Task `1215318129849303` (PO 100346 — Element Packaging) in the live workspace is exactly this shape, across Purchasing, Logistics and Quality.
 
 ---
 

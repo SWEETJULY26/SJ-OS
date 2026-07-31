@@ -280,7 +280,9 @@ One task, one assignee, one due date. Each system closes its own side of the wor
 
 This is also why **Asana Rules on these queues move sections only and never mark complete.** A rule cannot see whether the other homes are finished. Section moves are safe to automate; completion is not. This generalizes the rule `inventory-manager` already runs (SKILL.md — near-expiry tasks multi-homed into SJS Quality Management, Purchasing multi-homes for reorder review) and the routing matrix in `purchasing-manager` Job 9.
 
-Multi-homing is live and working in this workspace today — task `1214048212856468` sits in both the Lychee Lip Treatment SKU project (Phase 5 section) and AC Brands Purchasing (Receiving). Any skill note claiming the MCP can't multi-home is stale.
+Multi-homing is live and working in this workspace today — `update_tasks` takes `add_projects: [{project_id, section_id}]` and tasks in this workspace carry three homes at once (e.g. `1215318129849303`, PO 100346, in AC Brands Purchasing, Sweet July Skin Logistics and SJS Quality Management). Any skill note claiming the MCP can't multi-home is stale.
+
+The example this paragraph used to cite — `1214048212856468` in a Lychee SKU project and AC Brands Purchasing (Receiving) — was **removed from Purchasing on 2026-07-31** as part of the Job 3e collapse. It was a PD milestone multi-homed into a purchase-to-pay queue where it could never carry purchase-to-pay state, which is the anti-pattern, not the pattern. Proving multi-homing works is not the same as proving a given multi-home is correct.
 
 ### Multi-home or separate tasks
 
