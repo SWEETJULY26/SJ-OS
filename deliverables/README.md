@@ -3,9 +3,9 @@
 Outputs built from this repo that are meant to leave it. Committed so they survive
 the session that produced them and so the next person can see how they were derived.
 
-## AC Brands RACI — v2, 2026-07-31
+## AC Brands RACI — v3, 2026-07-31
 
-Org-wide RACI. **78 activities across eleven functions, led by position with names
+Org-wide RACI. **79 activities across eleven functions, led by position with names
 cross-referenced.** Built for the resource-needs conversation with Danielle and
 Nicole, and updated to reflect the 2026-07-30 leadership review.
 
@@ -22,6 +22,22 @@ Three artifacts, one dataset:
   books once both seats are filled. `Gaps` lists open seats with salary bands,
   unowned functions, single points of failure and open items.
 - **`AC-Brands-RACI-summary.md`** — the one-pager for Danielle and Nicole.
+
+### What v3 changed
+
+Role corrections from Alvin on 2026-07-31, on top of v2:
+
+- **Erin Hover is a contractor and the lead technical authority on packaging and
+  artwork.** Packaging development, artwork execution and the label artwork archive
+  answer to her; Jan executes under her; Perrine consults on formula contact.
+- **Danielle holds brand guideline custody and campaign direction**, and is consulted
+  across all Creative and Marketing rows. Campaign direction is a new row — it was
+  missing entirely, which is why the President had no Marketing presence.
+- **Ayesha is consulted wherever the brand carries her name** and keeps sole
+  accountability for brand-line moves.
+
+Three of the four holders in the packaging and creative chain are contractors, and
+between them they hold 11 activities. On the `Gaps` sheet.
 
 ### What v2 changed
 
@@ -71,7 +87,7 @@ visible.
 - `build_html.py` — renders the team-facing page from the same data. Expects the
   base64 font payloads alongside it; regenerate them from
   `.claude/skills/sweet-july-skin-brand/assets/fonts/`.
-- `transform_v2.py` — the v1→v2 migration. Kept for the audit trail: it shows every
+- `transform_v2.py` and `transform_v3.py` — the v1→v2→v3 migrations. Kept for the audit trail: it shows every
   A/R reassignment and which rows were added, rather than the v2 data appearing
   from nowhere.
 - `verify.py` — seven checks: no departed-employee references in any cell of any

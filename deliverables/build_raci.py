@@ -167,7 +167,8 @@ def para(text, bold=False, size=10):
 
 para("Ownership concentration, coverage gaps, and what the two seats move", bold=True, size=13)
 para("Counts are live formulas over the RACI sheet, so they move if a row changes. "
-     "Read against the matrix. Reflects the 30 July 2026 leadership review.")
+     "Read against the matrix. Reflects the 30 July 2026 leadership review and the 31 July "
+     "role corrections.")
 
 hr = an.max_row + 1
 for k, h in enumerate(["Position and holder", "A", "R", "A/R", "Hands off", "Absorbs", "A after", "R after"]):
@@ -211,17 +212,38 @@ BLOCKS = [
   "against 2 for Alvin and 1 for Perrine. Her total book of accountability goes from 8 rows to 21.", False),
 
  ("Perrine moves to technical guidance", True),
- ("She keeps A on the 8 rows where the judgment is genuinely technical - formula stage-gate, "
-  "compatibility and stability and RIPT and PET, packaging development, in-market stability testing, "
-  "reformulation, PD-linked receipt, and the two margin rows that turn on formulation cost. She moves "
+ ("She keeps A on the 7 rows where the judgment is genuinely formulation - formula stage-gate, "
+  "compatibility and stability and RIPT and PET, in-market stability testing, reformulation, "
+  "PD-linked receipt, and the two margin rows that turn on formulation cost. Packaging development "
+  "moved to Erin Hover as the lead technical authority on packaging and artwork. She moves "
   "to consulted on everything process-shaped: NCR and CAPA lifecycle, batch hold and release, vendor "
   "quality flags, lab finding classification, SOP ratification. Danielle's framing in the review was "
   "that there were things the team had assumed Perrine would manage or organize that she is not, and "
   "that leadership can pull the plug even when she has submitted an approval. Splitting technical "
   "judgment from process ownership is what that means in practice.", False),
 
+ ("Three contractors hold accountability, and two of them hold it alone", True),
+ ("Erin Hover is the lead technical authority on packaging and artwork and is accountable for 4 rows "
+  "- creative direction, packaging development, artwork execution, and the label artwork archive. "
+  "She is also a contractor, and on creative direction she is both A and R with no internal "
+  "counterpart. Jan Haeck, who executes under her, is a contractor too, so the whole packaging and "
+  "artwork chain runs through people outside the company. Perrine Calvet is the third, accountable "
+  "for 7 formulation rows. Between them that is 11 of 79 activities where nobody on staff can check "
+  "the work or continue it. Neither specialist job description covers creative or formulation "
+  "authority, so the two hires do not close this.", False),
+
+ ("Where the President and the Founder sit", True),
+ ("Danielle Iturbe is accountable for 4 rows - direction-changing PD decisions, the margin walk-away "
+  "call, brand guideline custody, and campaign direction - and is consulted on 13 more. She now "
+  "appears on all 9 Marketing rows and all 3 Creative rows, which she did not before. Campaign "
+  "direction was missing from the matrix entirely; adding it is what gave the President somewhere to "
+  "sit in Marketing rather than only receiving finished work. Ayesha Curry keeps sole accountability "
+  "for brand-line moves and is consulted on 6 rows where the brand carries her name - brand "
+  "guideline custody, creative direction, campaign direction, claim substantiation, retailer "
+  "attestations, and packaging. Informed on the rest.", False),
+
  ("Alvin owns the framework, and still does most of the work", True),
- ("Accountable for 40 of 78 activities and doing the work on 55. The framework rows are deliberate - "
+ ("Accountable for 39 of 79 activities and doing the work on 56. The framework rows are deliberate - "
   "quality management system, SOP framework, this RACI, the skill suite, the 23 scheduled Routines. "
   "The problem is not the A column. It is that 31 rows have him as both A and R, and that he does the "
   "work on 11 of the 12 Operations rows and 5 of the 8 Product Development rows. He holds the gates "
@@ -324,10 +346,18 @@ GAPS = [
   "PD Specialist as internal counterpart on hire", 0,
   "asana-pd-manager/references/role-map.md:16"),
 
+ ("Single point of failure", "Creative",
+  "Erin Hover is a contractor and the lead technical authority on packaging and artwork, "
+  "accountable for 4 rows with no internal backup. On creative direction she is both A and R.",
+  "Jan Haeck executes under her and is also a contractor, so the entire packaging and artwork "
+  "chain sits outside the company. Neither approved job description covers creative authority.",
+  "Name an internal creative counterpart, or scope it into a future role", 0,
+  "Alvin, 2026-07-31 (role correction); asana-pd-manager/references/role-map.md:22-23"),
+
  ("Single point of failure", "Quality",
-  "Perrine holds A on 8 technical rows as a contractor, with no named backup.",
-  "Reduced from 11 by moving process gates to Nicole, which is real progress. What remains is genuinely "
-  "technical and genuinely single-threaded.",
+  "Perrine holds A on 7 formulation rows as a contractor, with no named backup.",
+  "Reduced from 11 by moving process gates to Nicole and packaging to Erin, which is real progress. "
+  "What remains is genuinely formulation and genuinely single-threaded.",
   "Name a backup technical reviewer", 0,
   "Leadership Business Review 2026-07-30 25:18-25:50; quality-manager/references/role-map.md:14"),
 

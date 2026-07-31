@@ -28,6 +28,8 @@ The skill reads role-holders from this file at runtime. SKILL.md, references, As
 5. If the Quality Gate or Technical Advisor role-holder changes, update System B siblings (capa-coordinator, batch-lifecycle-tracker, quality-lab-coordinator, complaint-and-event-handler, quality-manager) at the same time — the role is shared.
 6. If a Pedrero contact changes (Amy / Heather / Teona), update this file. The Outlook contacts are pulled from asana-pd-manager's contact catalog; cross-check that catalog stays in sync.
 
+| Artwork technical authority | Erin Hover — contractor | Lead technical authority on packaging and artwork as of 2026-07-31. Answers for the artwork being correct on the label archive and cross-check work; the **Reg Lead still gates the archive entry itself**, so the artwork authority and the regulatory approval are deliberately two different people. Jan Haeck executes under her. Canonical definition in `asana-pd-manager/references/role-map.md`. |
+
 ## Reading this against older skill text
 
 This file mirrors the canonical role-map. SKILL.md and SOP references in this skill still say

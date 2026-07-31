@@ -75,6 +75,27 @@ Keep it terse. Future-you will thank present-you for capturing the *why*, not ju
 **Status:** All four drift instances fixed 2026-07-29. Full findings in `decisions/wiki-layer-audit-2026-07-29.md`. Two items left open there — Job 0 (the bridges' wiki write-back) has not fired since 2026-05-26, leaving 123 of 133 pages as untouched seed; and `Bridge-and-System-Audit-2026-05-26.md` is cited from three files but exists nowhere, most likely lost in the 2026-07-19 consolidation.
 
 ---
+## 2026-07-31 — Erin is lead technical authority on packaging; Danielle and Ayesha get real Creative and Marketing roles
+
+**Decision:** Three corrections surfaced while reviewing the RACI.
+
+1. **Erin Hover is a contractor and the lead technical authority on packaging and artwork.** Packaging development, artwork execution and the label artwork archive answer to her, with Jan Haeck executing under her. Perrine consults where formula contact or compatibility is in play. Previously packaging development was accountable to Perrine, which collapsed packaging and formulation into one gate.
+
+2. **Danielle Iturbe holds brand guideline custody and campaign direction**, and is consulted across Creative and Marketing rather than only receiving finished work. Campaign direction did not exist as an activity anywhere, which is why the President had almost no Marketing presence — it is now a row.
+
+3. **Ayesha Curry is consulted wherever the brand carries her name** — brand guidelines, creative direction, campaign direction, claim substantiation, retailer attestations, packaging — and keeps sole accountability for brand-line moves. She was informed-only on most of these.
+
+**Why:** The v2 matrix had Perrine accountable for packaging because the PD role-map bundled "PD / R&D / Quality / Regulatory" into one owner. Packaging is Erin's technical domain and Jan reports to her, so the accountability was in the wrong place. Danielle and Ayesha were structurally absent from Creative and Marketing despite the President managing Soraya and the founder's name being on every product — a RACI that shows the President as informed-only on brand custody is describing something that is not true. The margin sources already had Danielle approving every repricing and channel call, so brand and campaign accountability is consistent with how she already operates.
+
+**Alternatives considered:** Keep packaging with Perrine and add Erin as consult — rejected, it leaves a formulation contractor answering for tooling and deco decisions she does not make. Give Danielle accountability for every Marketing row — rejected, it would move teardowns, the trend digest and social off Soraya, Nicole and Kate, who genuinely own them; consult is the accurate level there. Make Ayesha accountable for brand identity — rejected, Erin holds the craft and Danielle the custody; the founder's input is real but it is consultation, not approval, outside brand-line moves.
+
+**Owner:** Alvin. Erin on packaging and artwork authority; Danielle on brand and campaign.
+
+**Status:** Encoded 2026-07-31. `asana-pd-manager/references/role-map.md` carries the Creative and brand-custody rows; `claims-il-and-label-keeper/references/role-map.md` adds the artwork-authority row and states explicitly that artwork authority and the Reg Lead archive gate are separate people. RACI is at 79 activities.
+
+**Open:** Three of the four holders in the packaging and creative chain are contractors — Erin, Jan and Perrine — and between them they hold accountability for 11 activities. On creative direction Erin is both accountable and responsible with no internal counterpart, same shape as Perrine on stability and RIPT. Neither specialist job description covers creative or formulation authority, so the two approved hires do not close this. It is on the RACI Gaps sheet and is not currently on the hiring plan.
+
+---
 ## 2026-07-30 — Quality gets a gate: Nicole owns quality control, Perrine advises, Ops Specialist hires first
 
 **Decision:** Three changes out of the leadership business review with Danielle and Nicole.

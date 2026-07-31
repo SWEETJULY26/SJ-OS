@@ -43,6 +43,13 @@ STATUS_LABEL = {"filled": "", "recruiting": "Open · recruiting now",
                 "phased": "Open · phased in after Ops", "contractor": "Contractor"}
 
 CHANGES = [
+    ("Erin is the technical authority on packaging",
+     "Packaging development, artwork execution and the label artwork archive answer to Erin. "
+     "Jan executes under her. Perrine consults where formula contact matters."),
+    ("Danielle owns brand and campaign direction",
+     "Brand guidelines and campaign direction are hers, and she is consulted across Creative and "
+     "Marketing rather than only receiving finished work. Ayesha is consulted wherever the brand "
+     "carries her name."),
     ("Quality gets a gate",
      "Nicole holds the final quality check on product and documentation across every function. "
      "Each function still owns its own work — the gate sits on top of it, not instead of it."),
@@ -132,7 +139,7 @@ header.page .lede{{max-width:62ch;color:var(--ink-soft);font-size:var(--step-1);
 section.block{{margin-top:3rem;display:flex;flex-direction:column;gap:1.1rem}}
 /* what changed */
 .changes{{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}}
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr))}}
 .change{{background:var(--raised);padding:1.1rem 1.15rem;display:flex;
   flex-direction:column;gap:.4rem}}
 .change h3{{font-size:var(--step-0);letter-spacing:.005em}}
@@ -254,7 +261,7 @@ parts.append(f"""<header class="page">
 activity and one person does the work — everyone else is consulted or kept informed.</p>
 <div class="meta"><span>{len(ROWS)} activities · {len(FUNCS)} functions</span>
 <span>As of 31 July 2026</span>
-<span>Reflects the 30 July leadership review</span></div>
+<span>Reflects the 30 July leadership review and the 31 July role corrections</span></div>
 </header>""")
 
 # ---- what changed
