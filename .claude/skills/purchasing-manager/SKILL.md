@@ -117,7 +117,7 @@ The biggest job. Six sub-flows that walk a PO from draft to close. The PO is one
 
 **3d. In transit**
 - *Trigger:* shipping / tracking updates from supplier emails (via outlook-plm-bridge)
-- *Action:* Status moves from **Acknowledged** to **In Transit** on first shipping signal. Skill syncs ETAs to PLM. ETA changes after that get logged as a comment on the same task; no Status change unless ETA slips materially.
+- *Action:* Status moves from **Acknowledged** to **In Transit** on first shipping signal. Skill syncs ETAs to PLM. ETA changes after that get logged as a comment on the same task; no Status change unless ETA slips materially. **No section move** — POs In Flight spans issued through in transit, so the task stays put. The section move happens later, at `Received`.
 
 **3d-side. Cancellation**
 - *Trigger:* operator request ("cancel PO X"), or vendor cancellation logged via outlook-plm-bridge
@@ -219,9 +219,9 @@ Universal cost tracking across all AC Brands vendors. Source is Ramp emails (and
 | `regulatory` | SJS Regulatory Management | Always. |
 | `quality` | SJS Quality Management | Always. |
 | `pd` | The SKU's PD project (when `linked_sku_id` is set) | Also positions the Asana task as a subtask under the master Asana task on that SKU. Both — not either/or. If no `linked_sku_id`, stays Purchasing-only. |
-| `ops` (freight) | SJS Logistics Shipment Status | Forwarder, broker, parcel carrier invoices. |
+| `ops` (freight) | Sweet July Skin Logistics | Forwarder, broker, parcel carrier invoices. (Was written as "SJS Logistics Shipment Status" — a project that does not exist; `Shipment Status` is a field on this project, not its name.) |
 | `ops` (fulfillment) | OC3PL Order Management | OC3PL service invoices, pick-pack-ship charges. |
-| `ops` (inventory) | SJS Inventory Management | Carrying / storage charges. Inventory-manager fields. |
+| `ops` (inventory) | AC Brands Inventory | Carrying / storage charges. Inventory-manager fields. (Was written as "SJS Inventory Management" — not a real project name.) |
 | `marketing` | (Purchasing-only until marketing project GID is provided) | Tracked in `vendor_invoices` even when no second home. |
 | `general` | None | Stays Purchasing-only. |
 
@@ -274,12 +274,11 @@ Job 9's multi-home routing matrix and Job 10's PO multi-home inheritance are Pha
 
 The skill drops tasks into the right section by job. Section GIDs (full live set, reconciled 2026-05-28):
 
-- **Untitled section** — `1214373372406252` (legacy default; not used by the skill)
 - **Cross-Skill Dashboard** — `1214843467424921` (cross-skill rollup surface; awareness only)
 - **Vendor Onboarding** — `1215139855143672` (Job 2 intake + doc collection: 2B/2C live here until the NDA+W9 gate fires)
 - **HITL — Needs Operations Review** — `1214373372406259` (anything pending the operator: PO drafts, variances, reorder review)
-- **POs In Flight** — `1214373372406260` (issued through in transit)
-- **Receiving** — `1214373372406261` (received, pending invoice match)
+- **POs In Flight** — `1214373372406260` (issued through in transit, including vendor holds)
+- **Receiving** — `1214373372406261` (received, pending invoice match). The PO task moves here on `Status = Received` — see the state → section map in `references/architecture/queue_registry.md`, which is authoritative for this queue. Section GIDs are listed here for reading convenience; the registry is what to trust if the two differ.
 - **Vendor Invoices** — `1215148455338976` (one task per invoice, state via custom fields)
 - **Compliance, Renewals & Disputes** — `1214373372406262` (compliance gaps, renewal warnings, vendor disputes; onboarding lands here after the 2C gate)
 - **Sourcing & RFQ** — `1214373372406263` (RFQs in flight, supplier qualification)
@@ -289,7 +288,7 @@ The skill drops tasks into the right section by job. Section GIDs (full live set
 
 Three workflow fields. Status is the queue driver; Vendor and PLM Link save the operator a click.
 
-- **Status** (single-select) — GID `1214373372406268`. Mirrors `purchase_orders.status` in PLM 1:1 (vocabulary + options identical).
+- **Status** (single-select) — GID `1214373372406268`. **Does not mirror `purchase_orders.status` 1:1** — that claim was wrong and was corrected 2026-07-31 after querying live. Asana `Closed` corresponds to PLM `Complete`; Asana `In Transit`, `Received`, `Variance`, `Dispute` and `On Hold` have no PLM counterpart in use. `purchase_orders.status` carries **no CHECK constraint**, so nothing enforces either vocabulary — do not write an Asana-only value into PLM on the assumption it is valid there. Values in PLM as of 2026-07-31: Sent, Draft, Acknowledged, Complete, Cancelled.
   - Draft `1214373372406269`
   - Sent `1214373372406270` (renamed from Issued; same enum option, label-only change in Asana)
   - Acknowledged `1214373372406273` (this GID previously held Variance before the v1.2 reconciliation; Asana now uses it for Acknowledged and assigned a fresh GID to Variance)

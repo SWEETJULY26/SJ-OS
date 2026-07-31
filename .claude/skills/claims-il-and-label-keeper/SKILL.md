@@ -166,7 +166,7 @@ All fields exist on SJS Regulatory Management. Canonical GID + option-GID refere
 - `Window End` (date — renewal/re-review date)
 - `Gate` (single-select: Open, Pending Operator, Pending QA Lead, Pending Regulatory Lead) — shared field with SJS Quality Management and SJS CAPA Log. The `Pending Regulatory Lead` option was added at v6.1 build for System C; System B skills continue to use only Open / Pending Operator / Pending QA Lead. This skill uses Pending Regulatory Lead for every Pedrero send and retailer submission gate; uses Pending QA Lead only when a label cross-check surfaces a quality-side issue.
 
-*Title prefixes:* reserved for cross-skill staging where the destination skill or source skill is not yet live. In-flight state and HITL gates use Section + Gate, not title prefixes.
+*Title prefixes:* reserved for cross-skill staging where the destination skill or source skill is not yet live. In-flight state and HITL gates use Section + Gate, not title prefixes — this project has no Status field (confirmed live 2026-07-31), so it is a declared **section-as-state** queue in `references/architecture/queue_registry.md`. The system-wide default is the opposite: state field authoritative, section derived. This queue is an exception to that default, not a competing convention.
 - **Inbound queue prefix (from asana-pd-manager):** `[IL Review Pending — claims-il-and-label-keeper]` — fires when Formula Tracker `Stage = Signed Approvals` flips `IL Status = Pending IL Review`.
 - **Outbound staging to skills not yet built:** `[Reg Flag Pending — regulatory-manager]` for cross-skill issues that need the v6.3 dashboard view; pre-v6.3, these stage as comments on this skill's task.
 

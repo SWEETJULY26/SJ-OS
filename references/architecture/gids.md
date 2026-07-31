@@ -36,7 +36,9 @@
 
 Use `asana_typeahead_search` with `resource_type=project` or `asana_get_projects` with `opt_fields=name,gid` and `limit:50` to resolve project GIDs. Cache within a session.
 
-Verified GIDs (names confirmed live via `asana_get_project` on 2026-05-31). Field, option, and section GIDs for the Quality / CAPA / Regulatory / Reportable Events projects are **not** repeated here — they live in `asana-field-gids.md` (API-pulled, the source of truth for field-level IDs). This table is the project-level lookup only.
+Verified GIDs (names confirmed live via `asana_get_project` on 2026-05-31). **Section GIDs, state fields, and each queue's state → section map live in `queue_registry.md`** — pulled live 2026-07-31 and in-repo. This table is the project-level lookup only.
+
+This used to defer to `asana-field-gids.md`, which is not in this repo (it sits on Alvin's Mac). Anything running in a remote session could not read it, which is how four separate copies of the Quality section GIDs came to exist in skill bodies. The registry replaces it for section-level data.
 
 **PD — trackers & infrastructure**
 | Project | GID |
@@ -119,27 +121,22 @@ Skin projects on the Product team that aren't in the 2026-2028 Roadmap portfolio
 | AC Brands Leadership Dashboard | `1210917729477334` |
 | ACB Landing Hub — Updates & Releases | `1214790724230121` |
 
-**Quality** (field + section GIDs in `asana-field-gids.md`)
+**Quality** (sections + state fields in `queue_registry.md`)
 | Project | GID |
 |---------|-----|
 | SJS Quality Management | `1214660401644163` |
 | SJS CAPA Log | `1214660784338465` |
 | SJ Skin Complaint Log | `1204763097184846` |
 
-**Regulatory** (field + section GIDs in `asana-field-gids.md`)
+**Regulatory** (sections + state fields in `queue_registry.md`)
 | Project | GID |
 |---------|-----|
 | SJS Regulatory Management | `1214660807386611` |
 | SJS Reportable Events | `1214660834583706` |
 
-### Purchasing project section GIDs
+### Section GIDs
 
-Sections inside the AC Brands Purchasing project. Used by `outlook-plm-bridge` Flow C-gate and `purchasing-manager` Job 2.
-
-| Section | GID |
-|---------|-----|
-| Vendor Onboarding | `1215139855143672` |
-| Compliance, Renewals & Disputes | `1214373372406262` |
+Moved to `queue_registry.md`, which holds all eleven queues' sections plus their state → section maps. This file used to carry two of AC Brands Purchasing's nine sections, which was the worst of both — incomplete and a second copy.
 
 ### Project-level custom field GIDs
 
