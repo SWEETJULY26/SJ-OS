@@ -32,7 +32,9 @@ Approved by Alvin 2026-07-31. All three keep their connectors, so this is a togg
 | `sjs-quality-morning-sweep` | `trig_01AVRFDRc7aHu8L7gv3etEza` | `20 15 * * 1-5` | 2026-07-17 |
 | `sjs-regulatory-morning-sweep` | `trig_01DY3iScZ6Ai3yV2FbbRbEMW` | `10 15 * * 1-5` | 2026-07-20 |
 
-**Expect a backlog on the first run.** These have been dark for two weeks, and each sweep's window is "since the last run." The first firing may surface a fortnight of signal at once rather than a normal day's worth. Worth running the first one manually — `fire_trigger` works on any Routine regardless of who created it — so the catch-up lands while you are watching rather than at 8:10 on a Monday.
+**Expect a backlog on the first run.** These have been dark for two weeks, and each sweep's window is "since the last run." The first firing may surface a fortnight of signal at once rather than a normal day's worth. Fire the first run manually from the Routines UI so the catch-up lands while you are watching rather than at 8:10 on a Monday.
+
+**Correction, 2026-07-31:** an earlier note here claimed `fire_trigger` works on any Routine regardless of creator. It does not — it carries the same restriction as `update_trigger` and refuses anything created via `http_api`. Manual firing is UI-only too. Assume **nothing** about an existing Routine can be driven from a session except reading it via `list_triggers`.
 
 ### 2. Register three PD dailies that were never created
 

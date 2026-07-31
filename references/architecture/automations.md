@@ -10,6 +10,8 @@
 
 **Cron is stored in UTC, and this file's tables are local PT.** A job written here as `26 8 * * 1-5` (8:26 AM PT) is stored on the Routine as `26 15 * * 1-5`. Convert on the way in and out; if the conversion crosses midnight, the day-of-week field shifts too. Getting this wrong is how a morning sweep ends up running overnight.
 
+**An existing Routine is read-only from a session.** `list_triggers` reads it; `update_trigger`, `fire_trigger` and `delete_trigger` all refuse anything created via `http_api`, which is every Routine here. A Routine may only disable *itself*. Re-enabling, re-timing, manual firing and deletion are all UI work.
+
 **A Routine needs connectors attached, or its session has no tools.** Every working job below carries 7–9 connectors (`Microsoft_365`, `Supabase`, `Asana`, `Asana-c313a468`, `Netlify`, `Fireflies`, `Vercel`, `Canva`, `Excalidraw`) and was created via the Routines UI (`created_via: http_api`). A Routine created from inside a Claude Code session gets **no** connectors — the session can only pass through grants it holds itself, and a remote session holds none. Such a job fires into a session with no Outlook, no PLM and no Asana, which for a sweep means it fails every run. **Create recurring ops jobs in the Routines UI, not from a session.**
 
 **Fresh session per fire.** Use `create_new_session_on_fire` for recurring ops jobs so each run starts clean. A Routine bound to a persistent session inherits that conversation's state and model, which drifts.
