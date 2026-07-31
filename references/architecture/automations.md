@@ -2,27 +2,59 @@
 
 **Use:** Canonical map of every recurring job for AC Brands / Sweet July Skin — cadence, source, output, owner skill, and failure mode.
 
-**Source of truth:** the **Cowork scheduler**. Every active recurring job lives there. Its state file is `~/Library/Application Support/Claude/local-agent-mode-sessions/<owner>/<session>/scheduled-tasks.json` (call it File A); each job's prompt spec lives in `~/Documents/Claude/Scheduled/<job-id>/SKILL.md`. Jobs are created through the Claude desktop "schedule" action — there is no MCP/CLI tool that writes File A, so register and re-time jobs through the app UI (or edit File A with the app fully quit; see the consolidation script note below).
+**Source of truth:** **Claude Code Routines.** Every recurring job is a Routine, managed through the claude.ai Routines UI or the `mcp__Claude_Code_Remote__*` tools (`list_triggers`, `create_trigger`, `update_trigger`, `delete_trigger`, `fire_trigger`). Verify live state with `list_triggers` rather than trusting this file — the tables below are a snapshot.
 
-**The `scheduled-tasks` MCP is no longer an orchestrator.** As of 2026-05-26 all four of its jobs are disabled in place — none fire. They aren't hard-deleted: the MCP exposes no delete tool, only `enabled: false`, and IT restrictions (no Full Disk Access for Terminal) block the file-level cleanup of File B. So the registry sits inert rather than empty. Do not add or re-enable recurring jobs through the `mcp__scheduled-tasks__*` tools — that re-creates the parallel-scheduler split this consolidation removed. All four MCP entries can be hard-removed later if file access ever becomes available.
+**Cowork is retired.** Until 2026-07-31 this file named the Cowork scheduler as the source of truth, with a state file under `~/Library/Application Support/Claude/…/scheduled-tasks.json`. That is no longer used and no longer fires anything. Nothing in this repo should reference it, and the failure-mode advice that depended on the desktop app being open is gone with it — Routines are server-side and fire whether any app is running or not.
+
+### Three things to get right
+
+**Cron is stored in UTC, and this file's tables are local PT.** A job written here as `26 8 * * 1-5` (8:26 AM PT) is stored on the Routine as `26 15 * * 1-5`. Convert on the way in and out; if the conversion crosses midnight, the day-of-week field shifts too. Getting this wrong is how a morning sweep ends up running overnight.
+
+**A Routine needs connectors attached, or its session has no tools.** Every working job below carries 7–9 connectors (`Microsoft_365`, `Supabase`, `Asana`, `Asana-c313a468`, `Netlify`, `Fireflies`, `Vercel`, `Canva`, `Excalidraw`) and was created via the Routines UI (`created_via: http_api`). A Routine created from inside a Claude Code session gets **no** connectors — the session can only pass through grants it holds itself, and a remote session holds none. Such a job fires into a session with no Outlook, no PLM and no Asana, which for a sweep means it fails every run. **Create recurring ops jobs in the Routines UI, not from a session.**
+
+**Fresh session per fire.** Use `create_new_session_on_fire` for recurring ops jobs so each run starts clean. A Routine bound to a persistent session inherits that conversation's state and model, which drifts.
 
 ---
 
-## Active Cowork jobs
+## Live state, checked 2026-07-31
+
+`list_triggers` returned 15 cron Routines. **Four are paused and three documented daily jobs do not exist at all**, so six of the daily jobs this file describes are not running.
+
+**Paused** (`enabled: false`, no `ended_reason` or `suspension_reason`, so user-paused rather than system-stopped):
+
+| Routine | Cron (UTC) | Last fired | Note |
+|---|---|---|---|
+| `sjs-purchasing-morning-sweep` | `26 15 * * 1-5` | 2026-07-17 | |
+| `sjs-quality-morning-sweep` | `20 15 * * 1-5` | 2026-07-17 | |
+| `sjs-regulatory-morning-sweep` | `10 15 * * 1-5` | 2026-07-20 | |
+| `ac-brands-holiday-comms-2026` | `0 16 * * 1` | 2026-07-13 | **Sends email to the team.** Do not re-enable without checking the send calendar first. |
+
+**Absent from Routines entirely** — documented below but never registered: `sjs-pd-morning-sweep`, `sjs-pd-midday-sweep`, `sjs-pd-eod-reconciliation`. The PD recap running log (task `1214208955674591`) therefore has no automated writer.
+
+**Running** (11): `sjs-monthly-sop-sync`, `sjs-monthly-sop-run`, `sjs-purchasing-weekly-digest`, `sjs-quality-weekly-digest`, `sjs-regulatory-weekly-digest`, `sjs-purchasing-monthly-rollup-and-snapshot`, `sjs-quality-monthly-snapshot`, `sjs-regulatory-monthly-rollup-and-snapshot`, `sjs-purchasing-quarterly-rollup-and-snapshot`, `sjs-quality-quarterly-rollup`, `sjs-regulatory-quarterly-cost-rollup`.
+
+**Pending connectors:** `sjs-receipt-report-sweep` (`trig_01DnJ5tmwNVTvod7LXetHa1i`) was created 2026-07-31 for the Logiwa receipt order reports and is **disabled on purpose** — it was created from a session, so it has no connectors and cannot read Outlook or PLM. Recreate it in the Routines UI with the same cron and prompt, then delete the placeholder. Prompt text is on the trigger.
+
+---
+
+## Active jobs
+
 
 All times are local (PT). Cron is 5-field `min hour dom month dow`. The scheduler adds a few minutes of dispatch jitter, so observed run times sit slightly after the cron minute (e.g. the 8:00 PD sweep logs around 08:13).
 
 ### Daily (Mon–Fri)
 
-| Job id | Cron | Owner / routes through | Output |
-|---|---|---|---|
-| `sjs-pd-morning-sweep` | `0 8 * * 1-5` | sjs-pd-system, overnight window (5 PM prior day → now) | Recap comment on running log GID 1214208955674591; real-time URGENT comments |
-| `sjs-regulatory-morning-sweep` | `10 8 * * 1-5` | sjs-regulatory-system / sjs-regulatory-sweep Job 1 | Silent unless one of the 7 urgency categories fires; posts to Regulatory Sweep Running Log |
-| `sjs-quality-morning-sweep` | `20 8 * * 1-5` (was `12 8`) | quality-manager morning pass | Quality running log |
-| `sjs-purchasing-morning-sweep` | `26 8 * * 1-5` | purchasing-manager | Purchasing running log |
-| `sjs-receipt-report-sweep` | `32 8 * * 1-5` | inventory-manager Job 2 / `references/logiwa-receipt-report.md` | Looks back 24h (72h on Mondays) for Logiwa `Receipt Order Report` emails from `noreply@wmsnotification.com` and `noreply@wmssystem.logiwa.com`. Silent when none arrived. Stages `po_receipts` / `po_receipt_items` for HITL; never writes unattended. Reports RO class and the PLM reconciliation verdict per report. **Not yet registered in the Cowork scheduler** — added here 2026-07-31 when the flow was built; register before relying on it. |
-| `sjs-pd-midday-sweep` | `0 12 * * 1-5` | sjs-pd-system, midday window | Running log GID 1214208955674591 |
-| `sjs-pd-eod-reconciliation` | `0 16 * * 1-5` | sjs-pd-system, afternoon window (12 PM → now) + Skill 5 | 8-section payload, `pd_dashboard_runs` row, formatted comment on GID 1214208955674591 |
+Cron shown as **local PT**; the Routine stores UTC (PT + 7). Status as of 2026-07-31 — re-check with `list_triggers`.
+
+| Job id | Cron (PT) | UTC | Status | Owner / routes through | Output |
+|---|---|---|---|---|---|
+| `sjs-pd-morning-sweep` | `0 8 * * 1-5` | `0 15 …` | **not registered** | sjs-pd-system, overnight window (5 PM prior day → now) | Recap comment on running log GID 1214208955674591; real-time URGENT comments |
+| `sjs-regulatory-morning-sweep` | `10 8 * * 1-5` | `10 15 …` | **paused** | sjs-regulatory-system / sjs-regulatory-sweep Job 1 | Silent unless one of the 7 urgency categories fires; posts to Regulatory Sweep Running Log |
+| `sjs-quality-morning-sweep` | `20 8 * * 1-5` (was `12 8`) | `20 15 …` | **paused** | quality-manager morning pass | Quality running log |
+| `sjs-purchasing-morning-sweep` | `26 8 * * 1-5` | `26 15 …` | **paused** | purchasing-manager | Purchasing running log |
+| `sjs-receipt-report-sweep` | `32 8 * * 1-5` | `32 15 …` | **created, disabled — no connectors** | inventory-manager Job 2 / `references/logiwa-receipt-report.md` | Looks back 24h (72h on Mondays) for Logiwa `Receipt Order Report` emails from `noreply@wmsnotification.com` and `noreply@wmssystem.logiwa.com`. Silent when none arrived. Stages `po_receipts` / `po_receipt_items` for HITL; never writes unattended. Reports RO class and the PLM reconciliation verdict. Placeholder `trig_01DnJ5tmwNVTvod7LXetHa1i` — recreate in the Routines UI so connectors attach, then delete it. |
+| `sjs-pd-midday-sweep` | `0 12 * * 1-5` | `0 19 …` | **not registered** | sjs-pd-system, midday window | Running log GID 1214208955674591 |
+| `sjs-pd-eod-reconciliation` | `0 16 * * 1-5` | `0 23 …` | **not registered** | sjs-pd-system, afternoon window (12 PM → now) + Skill 5 | 8-section payload, `pd_dashboard_runs` row, formatted comment on GID 1214208955674591 |
 
 ### Weekly
 
@@ -44,7 +76,7 @@ All times are local (PT). Cron is 5-field `min hour dom month dow`. The schedule
 | `sjs-purchasing-monthly-rollup-and-snapshot` | `10 7 1-3 * *` | purchasing-manager | Monthly rollup + snapshot |
 | `quality monthly` (`sjs-quality-monthly-snapshot`) | `15 7 1-3 * *` | quality-status-reporter | Monthly quality snapshot |
 | `pd-monthly-rollup` | `20 7 1-3 * *` | PD composition | Monthly PD rollup |
-| `sjs-monthly-sop-sync` | `0 9 1 * *` | SharePoint → Supabase SOP/Form drift check | One-line drift summary. **Migrated from the MCP on 2026-05-26** (re-created in the Cowork UI; MCP copy `sop-sync-monthly` disabled). |
+| `sjs-monthly-sop-sync` | `0 9 1 * *` | SharePoint → Supabase SOP/Form drift check | One-line drift summary. **Migrated from the MCP on 2026-05-26** (re-created in the scheduler UI of the day; MCP copy `sop-sync-monthly` disabled). |
 
 ### Quarterly (days 1–3 of Jan/Apr/Jul/Oct)
 
@@ -71,7 +103,7 @@ All times are local (PT). Cron is 5-field `min hour dom month dow`. The schedule
 
 ## Throttling note (`global_limit` skips)
 
-On 2026-05-22 and 2026-05-25 the Cowork runner recorded `global_limit` skips on several morning sweeps and weekly digests — a Cowork-level concurrency cap, not a tunable in `policy-limits.json`. The cause was exact-minute cron collisions. On 2026-05-26 the five worst offenders were de-clustered through the Cowork scheduler UI:
+**Historical, Cowork-era.** On 2026-05-22 and 2026-05-25 the Cowork runner recorded `global_limit` skips on several morning sweeps and weekly digests — a Cowork-level concurrency cap, not a tunable in `policy-limits.json`. The cause was exact-minute cron collisions. On 2026-05-26 the five worst offenders were de-clustered through the Cowork scheduler UI:
 
 | Job | Was | Now |
 |---|---|---|
@@ -81,11 +113,13 @@ On 2026-05-22 and 2026-05-25 the Cowork runner recorded `global_limit` skips on 
 | `sjs-regulatory-quarterly-cost-rollup` | `0 7 1-3 1,4,7,10 *` | `5 7 1-3 1,4,7,10 *` |
 | `sjs-purchasing-quarterly-rollup-and-snapshot` | `10 7 1-3 1,4,7,10 *` | `20 7 1-3 1,4,7,10 *` |
 
-The cap itself can't be raised from config; if skips recur, spread the cron minutes further rather than looking for a limit setting.
+The cap itself couldn't be raised from config, so the fix was spreading cron minutes. Whether Routines has an equivalent concurrency cap is untested — the de-clustered minutes were carried over, so the collisions have not recurred either way. Keep spreading minutes as a default.
 
 ---
 
-## Consolidation, 2026-05-26 (Priority 3, Bridge & System Audit)
+## Consolidation, 2026-05-26 (Priority 3, Bridge & System Audit) — historical
+
+Kept for the reasoning, not as current guidance. Both schedulers named below are retired: the `scheduled-tasks` MCP in 2026-05, Cowork on 2026-07-31. Routines is the third and current mechanism.
 
 Two schedulers had been running in parallel: Cowork (the real cadence) and the `scheduled-tasks` MCP (4 jobs). Cowork was confirmed as the single source of truth; the MCP was retired in place (disabled, not deleted — see the MCP note above).
 
@@ -101,4 +135,4 @@ Two dormant Cowork spec folders, superseded by live jobs, were deleted: `sjs-mon
 
 ## On failure
 
-If a daily/weekly job doesn't run, trigger it manually by naming its work (e.g. "run today's PD recap", "run the regulatory morning sweep"). Each spec is self-contained and reproduces the same workflow on demand. If a job silently stops appearing in the running logs, check File A for its `lastRunAt` and confirm the app was open at the scheduled time — Cowork jobs only fire while the desktop app is running (a missed job runs on next launch).
+If a daily/weekly job doesn't run, trigger it manually by naming its work (e.g. "run today's PD recap", "run the regulatory morning sweep"). Each spec is self-contained and reproduces the same workflow on demand. If a job silently stops appearing in the running logs, run `list_triggers` and check its `enabled`, `last_fired_at` and `next_run_at`. A `next_run_at` in the past with `enabled: false` means it was paused, not that it failed. Routines fire server-side, so nothing needs to be open — a job that stopped was paused, deleted, or never registered.
