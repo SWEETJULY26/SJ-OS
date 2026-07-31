@@ -103,9 +103,29 @@ Flow H reads against. Onboard them through this skill on the same HITL flow.
 The biggest job. Six sub-flows that walk a PO from draft to close. The PO is one Asana task that carries forward; **Status** field changes and section moves replace any title rewriting. Task title format stays `PO Number — Vendor` throughout.
 
 **3a. PO to place**
-- *Trigger:* approved reorder review, NPI ramp, manual ask ("place a PO for X")
-- *Action:* Draft PO in PLM (line items, quantities, prices, vendor terms). Open Asana task in **HITL — Needs Operations Review** section, Status = **Draft**, Vendor + PLM Link populated. Description holds PO summary, total, expected receipt date, linked PD task if applicable.
+- *Trigger:* approved reorder review, NPI ramp, manual ask ("place a PO for X"), or a PD `[PO Request]` task reaching readiness
+- *Action:* Draft PO in PLM (line items, quantities, prices, vendor terms). Open Asana task in **HITL — Needs Operations Review** section, Status = **Draft**, Vendor + PLM Link populated. Description holds PO summary, total, expected receipt date.
+- *Link it to the PD request — see "Request and order are two tasks" below.* Set the dependency and fill the four link fields in this same write, not later.
 - *HITL:* Operations reviews PLM draft. On approval, sends PDF via email to vendor.
+
+### Request and order are two tasks, linked — never one task multi-homed
+
+Every PD project carries a create-PO task. That task and the Purchasing PO task are **different work items with a handoff**, and both are kept.
+
+- The **PD request** is gated on PD readiness — artwork approved, formula signed off, quantities settled. No PO number exists yet. It closes when the PO is created. PD owns it.
+- The **Purchasing order** is the lifecycle from the moment a number exists: Draft → Sent → Acknowledged → In Transit → Received → Closed. It closes when the invoice matches. Purchasing owns it.
+
+Phase 4's test settles it: could one person close it once? No — "create the PO" closes when the PO exists, the PO task closes on invoice match. Two closes, two tasks.
+
+**Do not multi-home the PD task into this project.** That is what filled the Receiving section with PD milestones carrying no purchase-to-pay state, which no rule could ever move. It also cannot represent reality: the relationship is **one-to-many**. One PD readiness gate spawns several POs — Castaway Cleansing Oil alone has an assembly PO, a formula fill PO, and PO 100298 for secondary cartons. One task cannot be three orders.
+
+Link them three ways instead, all in the Job 3a write:
+
+1. **Dependency.** The Purchasing PO task **depends on** the PD request task — `update_tasks` with `add_dependencies: [<pd task gid>]`. This is the piece that expresses the actual gate: a PO should not go out against artwork that is not approved. Visible from both sides without either project owning the other's task. Several PO tasks may depend on one PD request; that is the expected shape.
+2. **The four link fields**, which exist on this project and are usually empty: `Linked Project` `1214761891654217`, `Linked Project GID` `1214761891654219`, `Linked SKU` `1214660230826031`, `PLM Product ID` `1214761891654215`. Filling them makes the PO task self-describing — which SKU it serves, readable without opening another project. Where no PD project exists (an in-market SKU reordering components), write `TBD — <why>` per the Phase 1 rule rather than leaving it blank or pointing at a near-miss project.
+3. **The PO number flowing back.** On creation, comment the number and vendor onto the PD request task so PD sees `PO 100346 placed — Element Packaging` in its own project without leaving it.
+
+**Naming.** PD side `[PO Request] <SKU> — <what is being bought>`. Purchasing side `PO <number> — <vendor>`. The prefix is what makes it obvious which is the request and which is the order; before 2026-07-31 the two ends read as unrelated task names ("Process Cleansing Oil Formula Fill PO" against "PO 100346 — Element Packaging") and nothing tied them.
 
 **3b. PO sent**
 - *Trigger:* `outlook-plm-bridge` / `outlook-asana-bridge` detect the PO PDF being sent from Sent Items, OR the operator marks the task sent as a manual fallback

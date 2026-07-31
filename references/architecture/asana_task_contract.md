@@ -46,6 +46,7 @@ Every task type declares a **dedupe key**: the smallest set of identifiers that 
 | PO receipt | `PO number + vendor` | `purchasing-manager` |
 | Partial PO receipt | `PO number + receipt date` | `purchasing-manager` (matches PLM's multi-row `po_receipts`) |
 | Logiwa receipt order | `RO id` | `inventory-manager` (free-text RO; see `inventory-manager/references/logiwa-receipt-report.md`) |
+| PO request (PD side) | `SKU + what is being bought` | `asana-pd-manager` (the request, not the order — see `purchasing-manager` Job 3) |
 | Vendor renewal | `vendor + renewal window` | `purchasing-manager` |
 | Vendor invoice | `vendor + invoice number` | `purchasing-manager` (matches the PLM unique constraint) |
 | Lab finding | `batch code + test type` | `quality-lab-coordinator` |
@@ -284,6 +285,14 @@ This is also why **Asana Rules on these queues move sections only and never mark
 Multi-homing is live and working in this workspace today — `update_tasks` takes `add_projects: [{project_id, section_id}]` and tasks in this workspace carry three homes at once (e.g. `1215318129849303`, PO 100346, in AC Brands Purchasing, Sweet July Skin Logistics and SJS Quality Management). Any skill note claiming the MCP can't multi-home is stale.
 
 The example this paragraph used to cite — `1214048212856468` in a Lychee SKU project and AC Brands Purchasing (Receiving) — was **removed from Purchasing on 2026-07-31** as part of the Job 3e collapse. It was a PD milestone multi-homed into a purchase-to-pay queue where it could never carry purchase-to-pay state, which is the anti-pattern, not the pattern. Proving multi-homing works is not the same as proving a given multi-home is correct.
+
+### Dependencies express gates, homes express ownership
+
+Two tasks that are genuinely separate work but where one gates the other get a **dependency**, not a shared home. `update_tasks` takes `add_dependencies` and `add_dependents`, both visible from either side, and neither project has to hold the other's task.
+
+The worked case is a PD PO request against a Purchasing PO order — different owners, different closes, and the order should not go out until the request is ready. `purchasing-manager` Job 3 carries it in full. Reach for a dependency whenever the honest relationship is "not until", and for a home whenever it is "this system also acts on this exact item."
+
+A dependency also handles fan-out that a home cannot: many tasks may depend on one, so one readiness gate can precede several orders.
 
 ### Multi-home or separate tasks
 
