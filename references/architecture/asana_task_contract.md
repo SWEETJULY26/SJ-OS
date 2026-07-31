@@ -6,7 +6,7 @@
 
 **Companion contracts:** `bridge_queue_contract.md` decides *which queue* a task belongs to. This file decides *what the write looks like once the queue is known*. HITL confirmation itself lives in `asana-pd-manager/references/confirmation-protocol.md` (Rule 1); this contract adds the field discipline that confirmation preview displays.
 
-**Last updated:** 2026-07-31 — Phase 3: Nicole added as an unconditional follower alongside Alvin, per the 2026-07-30 quality-gate decision. She was previously picked up only when she held the queue's gate or was named in the source, which left her off most Ops and PD tasks. Prior 2026-07-29 — Authored to close four gaps Alvin flagged: bridges created tasks without checking for an existing one, left fields blank when the source didn't mention them, shipped tasks with no due date, and split same-work items into separate cross-referenced tasks in each queue instead of multi-homing one.
+**Last updated:** 2026-07-31 — Phase 4: every new home gets its fields populated in the same pass as the multi-home. Phase 3: Nicole added as an unconditional follower alongside Alvin, per the 2026-07-30 quality-gate decision. She was previously picked up only when she held the queue's gate or was named in the source, which left her off most Ops and PD tasks. Prior 2026-07-29 — Authored to close four gaps Alvin flagged: bridges created tasks without checking for an existing one, left fields blank when the source didn't mention them, shipped tasks with no due date, and split same-work items into separate cross-referenced tasks in each queue instead of multi-homing one.
 
 ---
 
@@ -257,6 +257,13 @@ update_tasks(tasks: [{task: <gid>,
                                       section_id: <its intake section>}],
                       add_followers: [<counterpart owner GID>]}])
 ```
+
+**Every new home gets its fields populated in the same pass.** Adding a project is not finished when `add_projects` returns. The task now carries that project's whole custom-field set, all of it empty, and Phase 1's no-silent-blanks rule applies to those fields exactly as it applied to the primary queue's. Resolve the new project's fields via `get_project` and fill what the source supports, in the same turn as the multi-home — never as a follow-up someone is trusted to remember. A task multi-homed into Quality with every Quality field blank reads to that queue as an empty intake, which is the failure multi-homing was supposed to prevent.
+
+Two things to expect when doing this:
+
+- **Same-named fields are different fields.** Purchasing and SJS Quality Management both have a field called `Status`, with different GIDs and different option sets. Resolve per project and set both; don't assume one write covered it.
+- **A field with no honest value stays unset.** Phase 1's TBD string works on text fields only. Enum fields have no TBD option, so leave them blank and raise the gap in open questions rather than picking the nearest option. Populating a `Classification` of `OOS` on a preventive risk with no defect is worse than leaving it empty — it puts a fabricated finding into the quality record.
 
 One task, one assignee, one due date. Each system closes its own side of the work; the last one to finish completes the task. This generalizes the rule `inventory-manager` already runs (SKILL.md — near-expiry tasks multi-homed into SJS Quality Management, Purchasing multi-homes for reorder review) and the routing matrix in `purchasing-manager` Job 9.
 

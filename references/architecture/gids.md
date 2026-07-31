@@ -196,6 +196,23 @@ These are attached at the portfolio level. They appear on each project as a port
 2. Open the portfolio spreadsheet view in Chrome
 3. Paste row-by-row into the spreadsheet
 
+### Custom-field payload shapes differ between create and update
+
+Verified the hard way 2026-07-31. `create_tasks` and `update_tasks` do not take the same shapes:
+
+| Param | `create_tasks` | `update_tasks` |
+|---|---|---|
+| `followers` | comma-separated **string** of GIDs | **array** of GIDs (`add_followers`) |
+| `custom_fields` | JSON-encoded **string** | **object** |
+
+Passing an array or object to `create_tasks` fails validation before the call leaves the client (`Expected string, received array`). Passing a JSON string to `update_tasks` fails server-side.
+
+**Date custom fields take an object, not a string** — on both calls. `{"<field_gid>": {"date": "2026-08-14"}}`. A bare `"2026-08-14"` returns `date_value: DayAndDateTime is not a JSON object`. Enum fields, by contrast, take a bare option-GID string.
+
+### Duplicate field names across projects
+
+Field names are not unique workspace-wide, and same-named fields on different projects are genuinely different fields with different GIDs and different option sets. Known collision: **`Status`** exists on AC Brands Purchasing (`1214373372406268` — Draft / Sent / Acknowledged / In Transit / Received / Variance / Dispute / Closed / On Hold / Cancelled) and on SJS Quality Management (`1214660437047242` — Inbound / Triage / Vendor Flag Review / … / Pending). A multi-homed task carries both and needs both set. Resolve per project via `get_project`; never reuse a field GID across projects because the name matched.
+
 ### Other limitations
 - **Custom fields not attached to a project** return `"Custom field with ID X is not on given object"` on `update_tasks` calls. Resolution: attach the field to the project via UI first, then re-run the batch.
 - **Task name copy errors from project duplication** can be fixed via `asana_update_task` with the corrected name.
