@@ -6,6 +6,7 @@ from openpyxl import load_workbook
 REPO = "/home/user/SJ-OS"
 XLSX = os.path.expanduser("~/Documents/AC-Brands-RACI.xlsx")
 MD = os.path.expanduser("~/Documents/AC-Brands-RACI-summary.md")
+HTML = os.path.expanduser("~/Documents/AC-Brands-RACI.html")
 fail = 0
 
 def hdr(t):
@@ -30,7 +31,11 @@ for ws in wb.worksheets:
             if PLACEHOLDER.search(v):
                 ph.append((ws.title, c.coordinate, v[:110]))
 md = io.open(MD, encoding="utf-8").read()
+htmltxt = io.open(HTML, encoding="utf-8").read()
 md_hits = [b for b in BAN if b in md.lower()]
+html_hits = [b for b in BAN if b in htmltxt.lower()]
+print(f"  banned names in the html      : {len(html_hits)}")
+if html_hits: fail += 1
 
 print(f"  banned-name cells in workbook : {len(hits)}")
 print(f"  banned names in summary.md    : {len(md_hits)}")
@@ -55,17 +60,18 @@ for s, coord, v in ph:
 hdr("2. Exactly one A and one R per row (Sheet 1)")
 ws = wb["RACI"]
 head = [c.value for c in ws[1]]
-pcols = [i for i, h in enumerate(head) if h and len(str(h)) == 2 and str(h).isupper()]
+pcols = [i for i, h in enumerate(head)
+         if h and 2 <= len(str(h)) <= 3 and str(h).isupper() and str(h).isalpha()]
 print(f"  person columns: {[head[i] for i in pcols]}")
 bad = 0
 n = 0
-for r in range(2, ws.max_row + 1):
+for r in range(3, ws.max_row + 1):
     if not ws.cell(row=r, column=2).value:
         continue
-    if ws.cell(row=r, column=1).value in (None, "Legend", "People", "Source of truth"):
+    if ws.cell(row=r, column=1).value in (None, "Legend", "People", "Source of truth", "Code"):
         continue
     vals = [ws.cell(row=r, column=i + 1).value for i in pcols]
-    if not any(v in ("A", "R", "A/R", "C", "I") for v in vals):
+    if not any(v in ("A", "R", "A/R", "C", "I", "->") for v in vals):
         continue
     n += 1
     a = sum(1 for v in vals if v in ("A", "A/R"))
@@ -93,7 +99,7 @@ def lines(path):
 checked = missing_file = missing_line = 0
 unsourced = []
 problems = []
-for func, act, A, R, C, I, src, notes in ROWS:
+for func, act, A, R, C, I, T, src, notes in ROWS:
     if not src.strip():
         unsourced.append((func, act))
         continue
@@ -137,9 +143,18 @@ KW = re.compile(r"owner|owns|own |belongs? to|approv|hitl|gate|sign-?off|account
                 r"sr\.? director|director|marketing manager|president|founder|first.contact|"
                 r"perrine|nicole|danielle|ayesha|soraya|erin|ivy|jan|kate|alvin|pedrero|"
                 r"interim|vacant|retired|specialist|shopify|revenue|connect", re.I)
+PRIMARY = re.compile(r"Leadership Business Review|Email to Danielle|Job Description\.docx", re.I)
 weak = []
-for func, act, A, R, C, I, src, notes in ROWS:
+primary_only = []
+for func, act, A, R, C, I, T, src, notes in ROWS:
     if not src.strip():
+        continue
+    if not CITE.findall(src):
+        # sourced to a primary document rather than the repo
+        if PRIMARY.search(src):
+            primary_only.append((func, act, src))
+            continue
+        weak.append((func, act, src))
         continue
     ok = False
     for path, spec in CITE.findall(src):
@@ -173,8 +188,65 @@ if weak:
 else:
     print("  PASS - every sourced row's citation carries ownership language")
 
-# ---------- 5. people roster matches the live Asana workspace
-hdr("5. Roster sanity")
+print(f"\n  rows sourced to a primary document rather than the repo: {len(primary_only)}")
+for f_, a, s in primary_only:
+    print(f"   {f_} :: {a}")
+
+# ---------- 5. open seats never hold A or R
+hdr("5. Open seats hold no accountability")
+from raci_rows import POSITIONS
+OPEN = [p[0] for p in POSITIONS if p[3] in ("recruiting", "phased")]
+print(f"  open seats: {OPEN}")
+bad_seat = [(r[0], r[1]) for r in ROWS if r[2] in OPEN or r[3] in OPEN]
+print(f"  rows assigning A or R to an open seat: {len(bad_seat)}")
+for b in bad_seat:
+    print("   FAIL", b)
+if bad_seat:
+    fail += 1
+else:
+    print("  PASS - a vacancy cannot be accountable")
+tr_counts = {s: sum(1 for r in ROWS if r[6] == s) for s in OPEN}
+print(f"  rows transitioning to each seat: {tr_counts} (total {sum(tr_counts.values())})")
+orphan = [r[1] for r in ROWS if r[6] and r[6] not in OPEN]
+if orphan:
+    print(f"  FAIL - transition target is not an open seat: {orphan}"); fail += 1
+
+# ---------- 6. the role changes are reflected in the repo role-maps
+hdr("6. Role-map runtime config matches the RACI")
+RM = {
+ "quality-manager": "System B canonical",
+ "asana-pd-manager": "PD canonical",
+ "regulatory-manager": "System C canonical",
+ "capa-coordinator": "mirror", "batch-lifecycle-tracker": "mirror",
+ "quality-lab-coordinator": "mirror", "claims-il-and-label-keeper": "mirror",
+ "adverse-event-and-recall-reporter": "mirror", "regulatory-status-reporter": "mirror",
+}
+rm_bad = 0
+for skill, kind in RM.items():
+    p = os.path.join(REPO, ".claude/skills", skill, "references/role-map.md")
+    t = io.open(p, encoding="utf-8").read()
+    has_gate = "Quality Gate" in t
+    has_adv = "Technical Advisor" in t
+    stale_row = bool(re.search(r"^\| QA Lead \||^\| Voice of Customer \|", t, re.M))
+    dated = "last_updated: 2026-07-31" in t
+    ok = has_gate and has_adv and not stale_row and dated
+    if not ok:
+        rm_bad += 1
+        print(f"   FAIL {skill} ({kind}) gate={has_gate} adv={has_adv} "
+              f"stale_row={stale_row} dated={dated}")
+print(f"  role-maps checked: {len(RM)}")
+print("  PASS - all carry Quality Gate + Technical Advisor, no stale gate rows, dated today"
+      if rm_bad == 0 else f"  FAIL - {rm_bad} role-map(s) out of sync")
+if rm_bad:
+    fail += 1
+log = io.open(os.path.join(REPO, "decisions/log.md"), encoding="utf-8").read()
+has_entry = "2026-07-30 — Quality gets a gate" in log
+print(f"  decisions/log.md carries the 2026-07-30 entry: {has_entry}")
+if not has_entry:
+    fail += 1
+
+# ---------- 7. people roster matches the live Asana workspace
+hdr("7. Roster sanity")
 LIVE = {"Ayesha Curry", "Danielle Iturbe", "Alvin", "Nicole Iturbe", "Soraya Salgadoe",
         "Kate Le", "Erin", "Ivy", "Jan", "Perrine Calvet"}
 print(f"  10 people on the matrix; all 10 confirmed as live Asana workspace users.")

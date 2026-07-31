@@ -1,43 +1,46 @@
-# AC Brands RACI — what it shows
+# AC Brands RACI — where accountability sits
 
 Prepared for Danielle Iturbe and Nicole Iturbe. Alvin Belt, 31 July 2026.
+Reflects the leadership review of 30 July.
 
-The attached matrix covers 66 activities across eleven functions: Product Development, Operations & Supply Chain, Quality, Regulatory & Compliance, Retail & Wholesale, Marketing & Brand, Creative, Ecommerce & DTC, Finance, People & Admin, and IT / Systems & Data. Every row was extracted from the SJ-OS repo — the skill suite, the SOPs, the architecture contracts and the decisions log — and cites the file and line it came from. Where no source names an owner, the row says so rather than guessing.
+The matrix covers 78 activities across eleven functions: Product Development, Operations & Supply Chain, Quality, Regulatory & Compliance, Retail & Wholesale, Marketing & Brand, Creative, Ecommerce & DTC, Finance, People & Admin, and IT / Systems & Data. It leads with positions rather than people, so it survives a change in who holds a seat. Every row names one person accountable and one doing the work, and cites where that came from — an operating procedure, a job description, or the review itself.
 
-## Accountability is concentrated on one seat
+The team-facing version is a web page with the same content, filterable by position: **https://claude.ai/code/artifact/e0362bd1-d469-44f2-84d6-9fa5d8c9c9d3**
 
-I am accountable for 38 of the 66 activities and I do the work on 50 of them. The next largest book of accountability is 11. This is not a workload complaint; it is how the system was built. Three canonical role-maps define an Operator role that holds the approval gate on effectively every write across PD, Operations, Quality and Regulatory, and all three name the same person. In Regulatory it doubles: the role-map states that Reg Lead is the same person as Operator, so on an ingredient-list packet or an FDA filing the two gates that were designed to be independent both come to me.
+## Quality now has a gate
 
-43 of the 66 rows have the same person as both accountable and responsible. Thirty-four are mine. Those rows have no second pair of eyes by construction. The exposure sits in specific places: the MoCRA serious-adverse-event and FDA recall filings, where the procedure defines a Pedrero send approval and an agency submission approval as two separate audit-trail entries and I hold both; the recall kickoff, documented as the strictest gate in the system with six sequential approvals, all mine; and the landing-hub publish, where every commit goes live and one person clears it.
+Nicole holds the final quality check on product and documentation across every function. Each function still owns its own work; the gate sits on top of it rather than replacing it. In the matrix that is 10 of the 13 Quality rows accountable to Nicole, and her total book goes from 8 rows to 21. She is the right person for it because the job is catching the inconsistency nobody else noticed, and that is how she already works.
 
-## Two seats were approved in July and neither is filled
+I own the framework — the quality management system itself, the SOP framework, and this RACI. Nicole runs the system inside it. The monthly quality-trend review is the piece that makes the gate worth having: one complaint tells us nothing, but a pattern across a quarter tells us whether to reopen a packaging decision. The pump issue is the live example. Target is end of Q3.
 
-The decision to retire the Operations Coordinator role and replace it with an Operations Specialist and a Product Development Project Manager Specialist was logged on 17 July, with both roles reporting to Nicole. The stated reason was to move day-to-day ops management off the VP seat, which is the succession point the whole system is being built toward. The interim split has run for a quarter: I took inventory and logistics, Nicole took order management and OC3PL. That appears on six rows of the matrix.
+## Perrine advises rather than owns
 
-The interim state is already showing wear the repo itself recorded. Twenty-two tasks from the retired seat sit unassigned in an archived holding project, four of them overdue. The departed employee's contact record still resolves as an active internal contact, so all four email and meeting bridges keep classifying her mail as internal. Both are the kind of thing a coordinator seat closes in a week. Neither has closed in three months.
+She keeps accountability on the 8 rows where the judgment is genuinely technical: formula stage-gate, compatibility and stability and RIPT and PET, packaging development, in-market stability testing, reformulation, and the two margin rows that turn on formulation cost. Everything process-shaped moves to consulted — CAPA lifecycle, batch hold and release, vendor quality flags, lab findings, SOP ratification.
 
-I do the work on 11 of the 12 Operations rows and 5 of the 7 Product Development rows. Filling the two approved seats moves most of that. It leaves me with the approval gates, which is where a VP should sit. The problem right now is that I hold the gates and do the work behind them.
+This is the split Danielle was pointing at in the review: there were things we had assumed Perrine would manage or organize that she does not, and leadership needs to be able to pull the plug even when she has signed off. Separating technical judgment from process ownership is what that looks like written down.
 
-## Quality has no internal technical authority, and that is not on the hiring plan
+## Ops Specialist first, and the matrix shows why
 
-Perrine Calvet is accountable for 11 activities and she is an external contractor. Every technical quality gate runs through her — NCR-to-CAPA conversion, root cause sign-off, verification, effectiveness review, CAPA close, vendor flags, and every batch hold and release, which the procedure states admit no exceptions. She also holds pre-launch compatibility, stability, RIPT and PET decisions as both accountable and responsible, with no internal counterpart who could check the work or continue it.
+I do the work on 11 of the 12 Operations rows. The Operations Specialist job description covers almost exactly that list — daily order operations and the 3PL relationship, channel operations across the store and Ulta Beauty Marketplace and Amazon, inventory reconciliation and FEFO and out-of-stock signals, receiving, purchase-to-pay, freight and customs and brokers, routing-guide and ASN compliance, S&OP support, production scheduling, and the label and PR seeding and sampling work. That is a defined function currently sitting on one person.
 
-She is additionally covering a seat that is formally vacant. Our SOPs require a QA Manager to approve SOP revisions; the role-map notes that responsibility currently sits with her as QA Lead. If she is unavailable, product does not release and SOPs do not ratify. We sell into Sephora, Ulta and Whole Foods under MoCRA, so that is a shipping problem and a filing problem at the same time.
+The PD Specialist is the seat that closes the quality loop, which is why it comes second rather than never. Its description names running the quality system outright, plus document control and product regulatory work. Until it is filled, Nicole gates quality and I execute it — that works, and it is the reason the gate is worth standing up now instead of waiting, but it is two people covering a role written as one.
 
-## Three functions have no owner in the sources
+Across both seats, 32 rows transition on hire — 16 each. Twenty-nine come off me, three off Nicole. My share of the work drops from 55 rows to 26. Rows where one person is both accountable and responsible, with no second pair of eyes, drop from 42 to 25.
 
-Accounts payable, bookkeeping and payroll appear nowhere as owned work. Finance shows up only as an email-sender category and a briefing heading. Employee onboarding, offboarding and access deprovisioning has no named owner; the only documented process is a checklist written reactively after a stale role record broke task assignment. Shopify revenue is registered as our revenue connection and named as the primary DTC track, but no process assigns ownership or an approval step — the function closest to the top line is the least specified.
+Both roles report to Nicole. That was the point of the redesign: moving day-to-day management off the VP seat is the succession outcome, not a reporting-line detail.
 
-Those three rows show me as accountable on the matrix because the work falls to me in practice. They are marked as inferred, not sourced, so the distinction stays visible.
+## What I still need decisions on
 
-## Succession is documented once
+Three functions have no owner anywhere in our documentation, and they show me by default because the work falls to me in practice rather than because anything says so. Accounts payable, bookkeeping and payroll — Finance appears in our operating documents only as an email category and a briefing heading. Employee onboarding, offboarding and access deprovisioning, where the only written process is a checklist I wrote after a departed employee's stale record broke task assignment. And Shopify revenue ownership, which is registered as our revenue connection and named as the primary DTC track but has no owner or approval step. The function closest to the top line is the least specified of the three.
 
-One succession plan exists in the entire system: Soraya steps up as interim DRI for competitive intelligence if Nicole is unavailable. Nothing comparable exists for the Operator role, the QA Lead role, the Reg Lead role, or Creative. For a system whose stated purpose is to be an operating system built for succession, one plan across eleven functions is the gap I would fix first, and it costs a few hours rather than a hire.
+Two exposures survive both hires. Perrine is a contractor accountable for 8 technical rows with no internal backup, and on stability and RIPT she is both accountable and responsible, so nobody inside AC Brands can check or continue that work. And every one of our 23 scheduled automations stops at an approval only I can clear, so a week away queues work rather than pausing it.
 
-## What I am asking for
+Succession is documented exactly once in the entire system — Soraya stepping in for Nicole on competitive intelligence. Nothing equivalent exists for the quality gate, the technical advisor, or the framework. That one costs a few hours rather than a hire, and I would fix it before anything else on this list.
 
-Fill the two seats that were already approved in July. Add an in-house QA Manager to the plan, or name an internal backup approver for batch release and SOP ratification so a contractor's availability is not a shipping dependency. Decide who owns Finance, because right now nobody does.
+## Before this goes to Calm HR
 
-One scope question for you both: the matrix covers Sweet July Skin plus org-level work, because that is what the sources describe. Sweet July, the lifestyle brand, has no coverage in the system at all — merch, licensing and non-skincare retail are run somewhere, but nothing documents who owns them. If that should be on the next version, tell me and I will build it from a different set of inputs.
+Danielle's condition on the hire was that we clean up the system first so the role can function, which I agree with. Nicole and I have the SOP cleanup and operational prep to do, and 22 tasks from the retired coordinator seat are still sitting unassigned in an archived project with four overdue. Those close before an Ops Specialist starts, not after.
 
-Sheet 1 is the matrix. Sheet 2 is the analysis with live counts. Sheet 3 lists the gaps and open items with a suggested owner and a rough monthly hours estimate for each.
+The matrix is the input to that cleanup, not a substitute for it. Once you have both reviewed it, it goes to Claire to open the Ops Specialist search.
+
+One scope note: coverage is Sweet July Skin plus company-wide work, because that is what our operating documentation describes. Sweet July, the lifestyle brand, is not represented — merch, licensing and non-skincare retail are run somewhere, but nothing defines who owns them. Tell me if that belongs in the next version and I will build it from different inputs.

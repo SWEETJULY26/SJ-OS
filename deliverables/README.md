@@ -3,21 +3,44 @@
 Outputs built from this repo that are meant to leave it. Committed so they survive
 the session that produced them and so the next person can see how they were derived.
 
-## AC-Brands-RACI.xlsx — 2026-07-31
+## AC Brands RACI — v2, 2026-07-31
 
-Org-wide RACI for AC Brands, built for the leadership business review with Danielle
-and Nicole as input to a resource-needs conversation.
+Org-wide RACI. **78 activities across eleven functions, led by position with names
+cross-referenced.** Built for the resource-needs conversation with Danielle and
+Nicole, and updated to reflect the 2026-07-30 leadership review.
 
-Three sheets. `RACI` holds 66 activities across eleven functions, one column per
-person, with a `Source (file:line)` column pointing back into this repo for every
-row. `Analysis` covers ownership concentration, rows with no second approver,
-unowned functions, and what the interim split costs — with live COUNTIF formulas
-over Sheet 1, so the counts move if a row changes. `Gaps` lists unowned functions,
-vacant seats, single points of failure and open items, each with a suggested owner
-and a rough monthly hours estimate.
+Three artifacts, one dataset:
 
-`AC-Brands-RACI-summary.md` is the one-page version sent to Danielle and Nicole
-ahead of the meeting.
+- **`AC-Brands-RACI.html`** — the team-facing version. Position-led columns with
+  status chips, collapsible function sections, click-a-position filtering, and the
+  two open seats shown as columns with transition arrows on the rows they absorb.
+  Sources are behind a per-row disclosure so the team isn't reading file paths.
+  Self-contained: brand fonts and all styling are inlined, no external requests.
+- **`AC-Brands-RACI.xlsx`** — the working tool. `RACI` carries a two-row header
+  (position code, then holder) plus `Transitions to`, `Source` and `Notes`.
+  `Analysis` has live COUNTIF formulas over Sheet 1 including projected A and R
+  books once both seats are filled. `Gaps` lists open seats with salary bands,
+  unowned functions, single points of failure and open items.
+- **`AC-Brands-RACI-summary.md`** — the one-pager for Danielle and Nicole.
+
+### What v2 changed
+
+Per the 2026-07-30 leadership review (see `decisions/log.md`):
+
+- **Nicole holds the quality gate.** 10 of 13 Quality rows are accountable to her,
+  up from 2. Her total book goes from 8 rows to 21.
+- **Perrine moves to technical advisor.** Retains A on the 8 rows where judgment is
+  formula or testing; consult-only on process gates. Down from 11.
+- **Alvin owns the framework** — quality management system, SOP framework, this RACI.
+- **Two open seats are columns.** Ops Specialist recruiting now, PD Specialist phased
+  in after. 32 rows transition on hire, 16 each; 29 come off Alvin, 3 off Nicole.
+  His R book drops from 55 to 26, and rows with no second pair of eyes drop from
+  42 to 25.
+
+No job titles changed. What changed is who holds which gate. The corresponding
+role-label changes in the skill role-maps *are* real, because those are runtime
+config that decides where a skill routes an approval — see the History sections in
+`quality-manager`, `asana-pd-manager` and `regulatory-manager` role-maps.
 
 ### How it was built
 
@@ -34,16 +57,42 @@ The roster was cross-checked against live Asana workspace users, per the standin
 lesson in `MEMORY.md` about verifying against the actual system rather than what a
 skill's own documentation claims.
 
-- `raci_rows.py` — the row data. One tuple per activity: function, activity, A, R,
-  consulted, informed, source, notes. Edit here, not in the spreadsheet.
-- `build_raci.py` — renders the three sheets from `raci_rows.py`.
-- `verify.py` — five checks: no departed-employee references in any cell, exactly
-  one A and one R per row, every cited `file:line` still resolves in this repo,
-  every citation carries ownership language, and roster sanity. Run it after any
-  edit to `raci_rows.py`.
+Beyond the repo, v2 also draws on four primary sources: the Leadership Business
+Review of 2026-07-30 (Fireflies `01KYN0DNAB4M7WY99VEEP5CGSV`), the 2026-07-27 email
+to Danielle titled "Proposed Ops Positions - PD Specialist & Ops Specialist," and
+the two job descriptions attached to it. Eleven rows rest on those rather than on
+anything in this repo; `verify.py` reports them separately so the distinction stays
+visible.
+
+- `raci_rows.py` — the row data and the position roster. One tuple per activity:
+  function, activity, A, R, consulted, informed, transition, source, notes. Edit
+  here, not in the spreadsheet or the HTML.
+- `build_raci.py` — renders the three xlsx sheets from `raci_rows.py`.
+- `build_html.py` — renders the team-facing page from the same data. Expects the
+  base64 font payloads alongside it; regenerate them from
+  `.claude/skills/sweet-july-skin-brand/assets/fonts/`.
+- `transform_v2.py` — the v1→v2 migration. Kept for the audit trail: it shows every
+  A/R reassignment and which rows were added, rather than the v2 data appearing
+  from nowhere.
+- `verify.py` — seven checks: no departed-employee references in any cell of any
+  sheet or in the summary or the HTML; exactly one A and one R per row; every cited
+  `file:line` resolves in this repo; every repo citation carries ownership language;
+  no open seat holds A or R, since a vacancy cannot be accountable; the nine
+  role-maps and the decisions log match the matrix; and roster sanity. Run it after
+  any edit to `raci_rows.py`.
 
 ```
-python3 build_raci.py && python3 verify.py
+python3 build_raci.py && python3 build_html.py && python3 verify.py
+```
+
+`build_html.py` needs `Adrianna-Regular.ttf.b64` and `Adrianna-Demibold.ttf.b64` in
+its working directory:
+
+```
+python3 -c "import base64,pathlib;
+d=pathlib.Path('../.claude/skills/sweet-july-skin-brand/assets/fonts');
+[open(f.name+'.b64','w').write(base64.b64encode(f.read_bytes()).decode())
+ for f in [d/'Adrianna-Regular.ttf', d/'Adrianna-Demibold.ttf']]"
 ```
 
 Both scripts expect `~/Documents/` as the output directory and this repo at
@@ -57,6 +106,13 @@ ownership, employee onboarding and offboarding) cite context but no ownership
 statement. All three are marked `INFERRED` in the Notes column, and A defaults to
 Alvin because the work falls to him in practice rather than because a source says
 so.
+
+Skill bodies and SOP text still say "QA Lead" and "Voice of Customer" in places.
+That was deliberate — rewriting nine skills' prose is a larger change than this one
+warranted, and the role-maps are what the skills read at runtime. Each role-map
+carries a resolution note: process gates resolve to Quality Gate (Nicole), technical
+gates to Technical Advisor (Perrine). If a skill ever behaves as though Perrine
+still holds a process gate, the role-map is right and the prose is stale.
 
 Coverage is Sweet July Skin plus org-level work, which is what the sources
 describe. Sweet July, the lifestyle brand, has no skill coverage in this repo, so
