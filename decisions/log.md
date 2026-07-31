@@ -75,6 +75,26 @@ Keep it terse. Future-you will thank present-you for capturing the *why*, not ju
 **Status:** All four drift instances fixed 2026-07-29. Full findings in `decisions/wiki-layer-audit-2026-07-29.md`. Two items left open there — Job 0 (the bridges' wiki write-back) has not fired since 2026-05-26, leaving 123 of 133 pages as untouched seed; and `Bridge-and-System-Audit-2026-05-26.md` is cited from three files but exists nowhere, most likely lost in the 2026-07-19 consolidation.
 
 ---
+## 2026-07-31 — Capture the whole business, not just the parts with a skill
+
+**Decision:** Add real Marketing, Retail & Wholesale and Web activities to the RACI, sourced from the AC Brands landing hub rather than the skill suite, and resolve the three functions the hub left unowned.
+
+- **Marketing: Soraya accountable.** Editorial calendar, Klaviyo email, paid media, social content, influencer and earned media, product copy and PDP content, and the WITHIN agency relationship. WITHIN responsible for paid and email execution; Kate for social content; Danielle consulted throughout and retains campaign direction.
+- **All channels: Nicole accountable.** DTC, Amazon and wholesale together — Alvin consulted, Danielle informed. Broader than the hub, which split DTC and Amazon to Alvin and left wholesale as "TBD". Picks up wholesale pipeline, retail price architecture and the retailer promo calendar.
+- **Web: Danielle accountable, Nicole the systems and tech owner.** Teknologics responsible for development. Erin and Ivy on visual design, Soraya consulted on merchandising and content, Alvin informed.
+- **WITHIN and Teknologics added as partner organisations.** Eight external parties now hold execution of eight functions.
+
+**Why:** The matrix was built by extracting ownership from the skill suite, which is the right discipline for anything the system automates and a poor proxy for what the business does. There are no skills for marketing, wholesale or the website, so none of it existed on the matrix — the entire Marketing function was nine rows of competitive intelligence and holiday emails. The landing hub's `data/links.json` is the missing source: it defines the eleven business functions with an explicit `lead` per function, and three read "Owned by TBD". That file is a better answer to "what does this company actually do" than the skill catalogue is, and it should have been read on the first pass.
+
+**Alternatives considered:** Leave marketing and web off until skills exist for them — rejected outright; the RACI's job is to describe the business, and the absence of automation is not the absence of work. Keep DTC and Amazon with Alvin per the hub — rejected in favour of one accountable owner across all channels, so channel economics and retailer commitments do not fragment.
+
+**Owner:** Alvin. Soraya on Marketing, Nicole on channels and the web/digital stack, Danielle on web and finance reporting.
+
+**Status:** Encoded 2026-07-31. RACI at 99 activities, 17 columns, and for the first time **every row has a sourced owner** — no inferred owners remain. `references/external-partners.md` extended to eight parties. `connections.md` now registers the landing hub as the function-map source and lists the four partner organisations. `deliverables/verify.py` resolves citations against both repos.
+
+**Open:** "Nicole is the systems and tech owner" was scoped to the web and digital stack. PLM write path, Asana configuration, landing-hub publish and the 23 scheduled Routines still sit with Alvin — confirm whether that was meant more broadly. Engagement terms and renewal dates are recorded for Pedrero only; the other seven external parties need the same. The landing hub still shows Finance and Marketing as "Owned by TBD" and should be updated to match this decision.
+
+---
 ## 2026-07-31 — External partners belong on the RACI: Pedrero, Ironclad Finance, Calm HR
 
 **Decision:** Add the three partner organisations that hold execution of a whole function, with accountability split as follows.

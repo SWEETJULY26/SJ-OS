@@ -3,9 +3,9 @@
 Outputs built from this repo that are meant to leave it. Committed so they survive
 the session that produced them and so the next person can see how they were derived.
 
-## AC Brands RACI — v4, 2026-07-31
+## AC Brands RACI — v5, 2026-07-31
 
-Org-wide RACI. **86 activities across eleven functions, led by position with names
+Org-wide RACI. **99 activities across eleven functions, led by position with names
 cross-referenced.** Built for the resource-needs conversation with Danielle and
 Nicole, and updated to reflect the 2026-07-30 leadership review.
 
@@ -22,6 +22,26 @@ Three artifacts, one dataset:
   books once both seats are filled. `Gaps` lists open seats with salary bands,
   unowned functions, single points of failure and open items.
 - **`AC-Brands-RACI-summary.md`** — the one-pager for Danielle and Nicole.
+
+### What v5 changed
+
+Real Marketing, Retail & Wholesale and Web activities, sourced from the **AC Brands landing
+hub** rather than the skill suite. `data/links.json` in the `acb-thelanding` repo defines the
+eleven business functions with an explicit `lead` each, and three read "Owned by TBD."
+
+That file is the answer to a problem the earlier versions had: extracting ownership from the
+skill suite is right for what the system automates and wrong as a proxy for what the business
+does. There are no skills for marketing, wholesale or the website, so none of it was on the
+matrix. Marketing went from 9 rows to 15, Retail & Wholesale from 2 to 5.
+
+- **Soraya accountable for Marketing** — editorial calendar, Klaviyo email, paid media, social
+  content, influencer and earned media, product copy, and the WITHIN relationship. 1 → 8 A rows.
+- **Nicole accountable for all channels** — DTC, Amazon and wholesale together.
+- **Danielle accountable for web**, with Nicole as systems and tech owner.
+- **WITHIN** (digital marketing) and **Teknologics** (web development) added as partners.
+
+**Every row now has a sourced owner.** No inferred owners remain. `verify.py` resolves
+citations against both repos.
 
 ### What v4 changed
 
@@ -103,7 +123,7 @@ visible.
 - `build_html.py` — renders the team-facing page from the same data. Expects the
   base64 font payloads alongside it; regenerate them from
   `.claude/skills/sweet-july-skin-brand/assets/fonts/`.
-- `transform_v2.py`, `transform_v3.py`, `transform_v4.py` — the migration chain. Kept for the audit trail: it shows every
+- `transform_v2.py` through `transform_v5.py` — the migration chain. Kept for the audit trail: it shows every
   A/R reassignment and which rows were added, rather than the v2 data appearing
   from nowhere.
 - `verify.py` — seven checks: no departed-employee references in any cell of any
@@ -133,12 +153,14 @@ Both scripts expect `~/Documents/` as the output directory and this repo at
 
 ### Known limits
 
-One row has no source at all — accounts payable, bookkeeping and payroll. Finance
-appears nowhere in this repo as owned work. Two further rows (Shopify revenue
-ownership, employee onboarding and offboarding) cite context but no ownership
-statement. All three are marked `INFERRED` in the Notes column, and A defaults to
-Alvin because the work falls to him in practice rather than because a source says
-so.
+Nothing on the matrix is unowned. Across v1–v5 the unowned list went from three
+functions to zero — and none of them were ever actually ownerless. Finance and HR needed
+the partner organisations added; Marketing, wholesale and Shopify revenue needed the
+landing hub. Absence from a source meant the source had a gap.
+
+30 of the 99 rows cite something outside this repo — the leadership review, a job
+description, the landing hub, or Alvin directly. `verify.py` reports those separately so
+the distinction between extracted and stated stays visible.
 
 Skill bodies and SOP text still say "QA Lead" and "Voice of Customer" in places.
 That was deliberate — rewriting nine skills' prose is a larger change than this one

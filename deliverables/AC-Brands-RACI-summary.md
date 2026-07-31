@@ -1,9 +1,9 @@
 # AC Brands RACI — where accountability sits
 
 Prepared for Danielle Iturbe and Nicole Iturbe. Alvin Belt, 31 July 2026.
-Reflects the leadership review of 30 July and the role corrections of 31 July, and now includes our external partners.
+Reflects the leadership review of 30 July and the role corrections of 31 July, and now covers the whole business rather than only the parts with a skill behind them.
 
-The matrix covers 86 activities across eleven functions: Product Development, Operations & Supply Chain, Quality, Regulatory & Compliance, Retail & Wholesale, Marketing & Brand, Creative, Ecommerce & DTC, Finance, People & Admin, and IT / Systems & Data. It leads with positions rather than people, so it survives a change in who holds a seat. Every row names one person accountable and one doing the work, and cites where that came from — an operating procedure, a job description, or the review itself.
+The matrix covers 99 activities across eleven functions: Product Development, Operations & Supply Chain, Quality, Regulatory & Compliance, Retail & Wholesale, Marketing & Brand, Creative, Ecommerce & DTC, Finance, People & Admin, and IT / Systems & Data. It leads with positions rather than people, so it survives a change in who holds a seat. Every row names one person accountable and one doing the work, and cites where that came from — an operating procedure, a job description, or the review itself.
 
 The team-facing version is a web page with the same content, filterable by position: **https://claude.ai/code/artifact/e0362bd1-d469-44f2-84d6-9fa5d8c9c9d3**
 
@@ -39,7 +39,7 @@ Both roles report to Nicole. That was the point of the redesign: moving day-to-d
 
 ## Our external partners are on it now, and that changed the picture
 
-Pedrero Regulatory, Ironclad Finance and Calm HR are columns on the matrix. They hold the work; accountability stays with one of us on every row.
+Pedrero Regulatory, Ironclad Finance, Calm HR, WITHIN and Teknologics are all columns on the matrix now. They hold the work; accountability stays with one of us on every row.
 
 That resolved two things I flagged as unowned in the earlier draft. Finance and HR were never actually unowned — Ironclad runs AP, bookkeeping, payroll, close and reporting, and Calm HR runs handbook, benefits, onboarding, offboarding and separations as our co-employer. They were unowned *in our documentation*, which is a different problem and one I've now fixed with a partner registry in the repo. Worth flagging as a lesson: building the matrix strictly from what's written down surfaced a real gap, but it also produced a wrong answer until I added what wasn't written down.
 
@@ -47,11 +47,25 @@ Finance accountability splits: Danielle on month-end close, reporting and the an
 
 Regulatory is the interesting one. Pedrero is consulted on eleven rows and responsible for none. That isn't undervaluing them — our own procedures make them consult-only with no access to our systems, and Amy Pedrero holds the binding calls. The effect is a split bottleneck: Pedrero forms every regulatory opinion and I perform every regulatory action, because the Operator and Reg Lead gates are both mine and they can't act inside Asana or PLM. Either that gate gets an alternate or their remit widens.
 
-The bigger structural point: six external parties now hold execution of six functions — three partner organisations plus Erin, Jan and Perrine. For a team of nine that's a sensible shape. What it means is that continuity rests on six engagements rather than on employment, and each one is a renewal decision rather than a retention conversation. We have engagement terms recorded for Pedrero only.
+The bigger structural point: eight external parties hold execution of eight functions — Pedrero on regulatory, Ironclad on finance, Calm HR on people, WITHIN on digital marketing, Teknologics on web, plus Erin, Jan and Perrine. For a team of nine that's a sensible shape; it's how this surface gets covered at all. What it means is that continuity rests on eight engagements rather than on employment, and each one is a renewal decision rather than a retention conversation.
+
+## Marketing, wholesale and web are on it now
+
+The earlier drafts were built from our operating documentation, and there are no skills for marketing, wholesale or the website — so none of it appeared. The AC Brands landing hub filled that in. Its function map defines eleven functions with a named lead each, and three read "Owned by TBD": Marketing, Finance, and the wholesale half of Sales & Commerce.
+
+Those needed decisions, not hires. Soraya is accountable for Marketing — editorial calendar, Klaviyo email, paid media, social content, influencer and earned media, and the WITHIN relationship. WITHIN runs paid and email execution; Kate runs social content. Nicole is accountable for all channels together, DTC and Amazon and wholesale, which is broader than the hub had it and picks up wholesale pipeline, retail price architecture and the retailer promo calendar. Danielle is accountable for the website and web releases with Nicole as the systems and tech owner and Teknologics doing development.
+
+Marketing went from 9 rows to 15, Retail & Wholesale from 2 to 5. Soraya went from 1 accountable row to 8.
+
+**Every row on the matrix now has an owner.** No inferred owners left. That's the first version I'd call complete.
+
+One thing to confirm: you said Nicole is the systems and tech owner. I scoped that to the web and digital stack. The PLM write path, Asana configuration, the landing hub publish and the 23 scheduled Routines still sit with me. Tell me if that was meant more broadly.
 
 ## What I still need decisions on
 
-One row still has no owner anywhere: Shopify revenue and channel position. It's registered as our revenue connection and named as the primary DTC track, but nothing assigns ownership or an approval step, so it shows me by inference rather than because anything says so. The function closest to the top line is the least specified. Accounts payable and HR onboarding used to sit in this paragraph and are now owned by Ironclad and Calm HR.
+Nothing is unowned any more. Accounts payable, HR onboarding, Marketing, wholesale and Shopify revenue all sat in this paragraph across earlier drafts and all now have owners.
+
+What's left is engagement hygiene. Eight external parties hold execution of eight functions — Pedrero, Ironclad, Calm HR, WITHIN, Teknologics, plus Erin, Jan and Perrine. We have engagement terms and a renewal date recorded for Pedrero only. The other seven need the same, and that's a half-day of work rather than a decision.
 
 Three exposures survive both hires. Perrine is a contractor accountable for 7 formulation rows, and on stability and RIPT she is both accountable and responsible. Erin is a contractor accountable for 4 packaging and creative rows, and on creative direction she is both accountable and responsible. Between them and Jan, eleven activities sit with people outside the company where nobody on staff can check or continue the work. And every one of our 23 scheduled automations stops at an approval only I can clear, so a week away queues work rather than pausing it.
 

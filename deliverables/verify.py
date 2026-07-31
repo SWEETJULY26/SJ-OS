@@ -4,6 +4,7 @@ from raci_rows import ROWS
 from openpyxl import load_workbook
 
 REPO = "/home/user/SJ-OS"
+HUB = "/home/user/acb-thelanding"
 XLSX = os.path.expanduser("~/Documents/AC-Brands-RACI.xlsx")
 MD = os.path.expanduser("~/Documents/AC-Brands-RACI-summary.md")
 HTML = os.path.expanduser("~/Documents/AC-Brands-RACI.html")
@@ -89,12 +90,23 @@ if n != len(ROWS):
 # ---------- 3. every source resolves to a real file:line
 hdr("3. Source resolution - read each file:line back out of SJ-OS")
 CITE = re.compile(r"([A-Za-z0-9_./-]+\.md):([0-9]+(?:[,-][0-9]+)*)")
+# hub citations name a real file but not a line — checked for existence, not line number
+HUBCITE = re.compile(r"acb-thelanding:\s*([A-Za-z0-9_./-]+\.(?:json|html|md))")
 cache = {}
 def lines(path):
     if path not in cache:
         fp = os.path.join(REPO, path)
         cache[path] = io.open(fp, encoding="utf-8").read().splitlines() if os.path.isfile(fp) else None
     return cache[path]
+
+hub_ok = hub_bad = 0
+for _f, _a, _A, _R, _C, _I, _T, _s, _n in ROWS:
+    for hp in HUBCITE.findall(_s):
+        if os.path.isfile(os.path.join(HUB, hp)):
+            hub_ok += 1
+        else:
+            hub_bad += 1
+            print(f"   NO HUB FILE  {hp}  <- {_a[:50]}")
 
 checked = missing_file = missing_line = 0
 unsourced = []
@@ -122,7 +134,9 @@ for func, act, A, R, C, I, T, src, notes in ROWS:
                 problems.append(f"NO LINE  {path}:{ln} (file has {len(L)})  <- {act[:50]}")
                 missing_line += 1
 
-print(f"  citations resolved : {checked}")
+print(f"  citations resolved : {checked} (SJ-OS)  + {hub_ok} (landing hub)")
+if hub_bad:
+    print(f"  FAIL - {hub_bad} hub citation(s) do not resolve"); fail += 1
 print(f"  missing files      : {missing_file}")
 print(f"  missing lines      : {missing_line}")
 for p in problems:

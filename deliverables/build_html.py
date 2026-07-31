@@ -54,10 +54,13 @@ CHANGES = [
     ("Quality gets a gate",
      "Nicole holds the final quality check on product and documentation across every function. "
      "Each function still owns its own work — the gate sits on top of it, not instead of it."),
-    ("Our external partners are on the matrix",
-     "Pedrero Regulatory, Ironclad Finance and Calm HR now appear as columns. They hold the work; "
-     "accountability stays in-house. Finance and HR were only showing as unowned because they "
-     "were missing."),
+    ("Every row now has an owner",
+     "Marketing, wholesale and Shopify revenue were the last gaps. They were never ownerless — "
+     "they were missing from the sources. Soraya owns Marketing, Nicole owns all channels, "
+     "Danielle owns web."),
+    ("Our partners are on the matrix",
+     "Pedrero Regulatory, Ironclad Finance, Calm HR, WITHIN on digital marketing and Teknologics "
+     "on web development. They hold the work; accountability stays in-house."),
     ("Perrine advises on the technical calls",
      "R&D, Quality, Production and Regulatory requirements for product. She stays accountable for "
      "formula and testing decisions, and consults on everything process-shaped."),
@@ -205,17 +208,20 @@ details.fn > summary:focus-visible{{outline:2px solid var(--focus);outline-offse
 .fn-count{{font-size:var(--step--1);color:var(--ink-faint);
   font-variant-numeric:tabular-nums;margin-left:auto}}
 .scroller{{overflow-x:auto;padding-bottom:.4rem}}
-table{{border-collapse:collapse;width:100%;min-width:1080px;font-size:var(--step--1)}}
+table{{border-collapse:collapse;width:100%;min-width:1000px;font-size:var(--step--1)}}
 thead th{{position:sticky;top:0;background:var(--ground);text-align:center;
-  font-weight:600;font-size:.7rem;letter-spacing:.06em;padding:.4rem .1rem .5rem;
+  font-weight:600;font-size:.68rem;letter-spacing:.04em;padding:.4rem .05rem .5rem;
   border-bottom:1px solid var(--rule-strong);color:var(--ink-soft);white-space:nowrap}}
-thead th.act{{text-align:left;min-width:270px;letter-spacing:.1em;
-  text-transform:uppercase;padding-left:0}}
-tbody td{{border-bottom:1px solid var(--rule);padding:.5rem .1rem;text-align:center;
+thead th.act{{text-align:left;min-width:230px;width:34%;letter-spacing:.1em;
+  text-transform:uppercase;padding-left:0;position:sticky;left:0;
+  background:var(--ground);z-index:3}}
+tbody td{{border-bottom:1px solid var(--rule);padding:.5rem .05rem;text-align:center;
   vertical-align:middle}}
-tbody td.act{{text-align:left;padding:.55rem 1.2rem .55rem 0;line-height:1.4;
-  color:var(--ink)}}
+tbody td.act{{text-align:left;padding:.55rem 1rem .55rem 0;line-height:1.4;
+  color:var(--ink);position:sticky;left:0;background:var(--ground);z-index:2}}
 tbody tr:hover td{{background:var(--raised)}}
+tbody tr:hover td.act{{background:var(--raised)}}
+.mk{{min-width:1.35rem}}
 tbody tr.dim td.act{{color:var(--ink-faint)}}
 td .mk{{margin:0 auto}}
 td.col-dim .mk{{opacity:.26}}
@@ -228,8 +234,9 @@ tbody tr:hover .srcbtn,tbody tr:focus-within .srcbtn,
 @media (hover:none){{.srcbtn{{opacity:1}}}}
 .srcbtn:hover{{color:var(--ink-soft)}}
 .srcbtn:focus-visible{{outline:2px solid var(--focus);outline-offset:2px}}
-tr.srcrow td{{padding:0 1.2rem .7rem 0;text-align:left;
-  border-bottom:1px solid var(--rule)}}
+tr.srcrow td{{padding:0 1rem .7rem 0;text-align:left;
+  border-bottom:1px solid var(--rule);position:sticky;left:0;
+  background:var(--ground)}}
 tr.srcrow .srcwrap{{font-size:var(--step--1);color:var(--ink-soft);
   line-height:1.5;max-width:78ch;display:flex;flex-direction:column;gap:.3rem}}
 tr.srcrow code{{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;

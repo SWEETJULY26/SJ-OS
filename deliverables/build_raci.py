@@ -145,10 +145,11 @@ for j, i in enumerate(INI):
 nr = pr + 2 + len(INI) + 1
 ws.cell(row=nr, column=1, value="Source of truth").font = F_BD
 ws.cell(row=nr, column=2, value=(
-    "Rows citing a path are relative to the SJ-OS repo. Rows citing the 30 July leadership review, "
-    "the 27 July email to Danielle, or a job description come from those documents directly. "
-    "Rows marked INFERRED in Notes have no owner named in any source; A defaults to Alvin Belt "
-    "because the work falls there in practice.")).font = F_B
+    "Rows citing a path are relative to the SJ-OS repo. Rows prefixed acb-thelanding cite the AC "
+    "Brands landing hub, whose links.json defines eleven functions with a named lead each. Rows "
+    "citing the 30 July leadership review, the 27 July email to Danielle, a job description, or "
+    "Alvin directly come from those sources. Every row on this matrix has an owner - there are no "
+    "inferred owners left.")).font = F_B
 ws.cell(row=nr, column=2).alignment = WRAP
 
 # ================================================================ Sheet 2
@@ -232,9 +233,19 @@ BLOCKS = [
   "the work or continue it. Neither specialist job description covers creative or formulation "
   "authority, so the two hires do not close this.", False),
 
+ ("Marketing and the channels finally have owners with real activities under them", True),
+ ("Soraya goes from 1 accountable row to 8. Marketing now carries editorial calendar, Klaviyo email, "
+  "paid media, social content, influencer and earned media, the WITHIN relationship, product copy and "
+  "PDP content - none of which existed on the matrix before, because none of it has a skill behind "
+  "it. Nicole goes from 21 to 26 with all-channel accountability plus wholesale pipeline, retail "
+  "price architecture and the retailer promo calendar. Retail & Wholesale went from 2 rows to 5, "
+  "Marketing from 9 to 15. A skill suite is a good source for what is automated; it is a poor "
+  "source for what a business does.", False),
+
  ("Where the President and the Founder sit", True),
- ("Danielle Iturbe is accountable for 4 rows - direction-changing PD decisions, the margin walk-away "
-  "call, brand guideline custody, and campaign direction - and is consulted on 13 more. She now "
+ ("Danielle Iturbe is accountable for 8 rows - direction-changing PD decisions, the margin walk-away "
+  "call, brand guideline custody, campaign direction, month-end close, the annual budget, and the two "
+  "web rows - and is consulted on 25 more. She now "
   "appears on all 9 Marketing rows and all 3 Creative rows, which she did not before. Campaign "
   "direction was missing from the matrix entirely; adding it is what gave the President somewhere to "
   "sit in Marketing rather than only receiving finished work. Ayesha Curry keeps sole accountability "
@@ -243,7 +254,7 @@ BLOCKS = [
   "attestations, and packaging. Informed on the rest.", False),
 
  ("Alvin owns the framework, and still does most of the work", True),
- ("Accountable for 44 of 86 activities and doing the work on 55. The framework rows are deliberate - "
+ ("Accountable for 43 of 99 activities and doing the work on 57. The framework rows are deliberate - "
   "quality management system, SOP framework, this RACI, the skill suite, the 23 scheduled Routines. "
   "The problem is not the A column. It is that 31 rows have him as both A and R, and that he does the "
   "work on 11 of the 12 Operations rows and 5 of the 8 Product Development rows. He holds the gates "
@@ -275,14 +286,25 @@ BLOCKS = [
   "and it is the reason the gate is worth having now rather than after the hire, but it is two people "
   "covering a role that was written as one.", False),
 
- ("Three functions run entirely outside the company", True),
- ("Regulatory goes through Pedrero Regulatory, Finance through Ironclad (Dan Bender), HR through Calm "
-  "HR as PEO and co-employer. Adding them resolved two of the three unowned functions - Finance and "
-  "HR were only unowned because the partners were missing from the matrix, not because nobody was "
-  "doing the work. Between the three partner organisations and the three contractors on packaging, "
-  "creative and formulation, six external parties hold the execution of six functions. For a team of "
-  "nine that is a reasonable shape. What it means is that continuity rests on six engagements rather "
-  "than on employment, and each is a renewal decision rather than a retention one.", False),
+ ("Nothing on this matrix is unowned any more", True),
+ ("The first pass reported three unowned functions. All three are now owned, and none of them were "
+  "ever actually ownerless - they were missing from the sources. Finance and HR needed the partner "
+  "organisations added. Marketing, wholesale and Shopify revenue needed the AC Brands landing hub, "
+  "which defines eleven functions with an explicit lead per function and had three reading \"Owned "
+  "by TBD\": Marketing, Finance, and the wholesale half of Sales & Commerce. Resolving those took "
+  "three decisions rather than three hires. Soraya is accountable for Marketing. Nicole is "
+  "accountable for all channels - DTC, Amazon and wholesale together, which is broader than the hub "
+  "had it. Danielle is accountable for web with Nicole as the systems and tech owner. That is 99 "
+  "activities across eleven functions with an owner on every row.", False),
+
+ ("Five functions run entirely outside the company", True),
+ ("Regulatory goes through Pedrero, Finance through Ironclad (Dan Bender), HR through Calm HR as PEO "
+  "and co-employer, digital marketing and email through WITHIN, web development through Teknologics. "
+  "Add the three contractors on packaging, creative and formulation and that is eight external "
+  "parties holding the execution of eight functions. For a team of nine it is a reasonable shape - "
+  "it is how this surface gets covered at all. What it means is that continuity rests on eight "
+  "engagements rather than on employment, and each is a renewal decision rather than a retention "
+  "one. Engagement terms are recorded for Pedrero only.", False),
 
  ("Regulatory is the odd one, and it cuts both ways", True),
  ("Pedrero is consulted on 11 rows and responsible for none. That is not an undervaluation - our own "
@@ -353,12 +375,21 @@ GAPS = [
   "No action on HR; system-side offboarding to the Ops Specialist", 4,
   "Alvin, 2026-07-31 (external partners); asana-pd-manager/references/role-map.md:48-56"),
 
- ("Unowned function", "Ecommerce & DTC",
-  "Shopify revenue and channel position has no owner or gate.",
-  "Registered as the revenue connection and named as the primary direct-to-consumer revenue track, but "
-  "no process assigns ownership. The function closest to the top line is the least specified.",
-  "Nicole on channel, Alvin on data - needs a decision", 8,
-  "connections.md:7; context/about-business.md:5"),
+ ("Resolved", "Ecommerce & DTC",
+  "Shopify revenue and channel position is owned. Nicole is accountable for all channels - DTC, "
+  "Amazon and wholesale - with Alvin doing the work and Danielle informed.",
+  "Was the last row on the matrix with no owner. The landing hub had split DTC and Amazon to Alvin "
+  "and left wholesale as TBD; consolidating all channels under one accountability closes it.",
+  "No action - every row on the matrix now has an owner", 0,
+  "acb-thelanding: data/links.json; Alvin, 2026-07-31 (marketing, wholesale and web)"),
+
+ ("Resolved", "Marketing & Brand",
+  "Marketing is owned. Soraya is accountable across editorial, email, paid media and social. "
+  "WITHIN responsible for paid and email execution, Kate for social content.",
+  "The landing hub listed Marketing as \"Owned by TBD\" with four named tools and nobody against "
+  "them. Fifteen Marketing rows now have an owner.",
+  "No action - confirm WITHIN engagement terms and renewal", 0,
+  "acb-thelanding: data/links.json; Alvin, 2026-07-31 (marketing, wholesale and web)"),
 
  ("Single point of failure", "Product Development",
   "Compatibility, stability, RIPT and PET decisions sit with an external contractor as both A and R.",
@@ -368,12 +399,14 @@ GAPS = [
   "asana-pd-manager/references/role-map.md:16"),
 
  ("Concentration", "All functions",
-  "Three whole functions run through external partners: Regulatory (Pedrero), Finance (Ironclad), "
-  "HR (Calm HR). Plus three contractors on packaging, creative and formulation.",
-  "Six external parties hold the execution of Regulatory, Finance, HR, packaging, creative and "
-  "formulation. Not a fault - it is how a team of nine covers this surface - but it means continuity "
-  "rests on six engagements rather than on employment, and every one of them is a renewal decision.",
-  "Confirm engagement terms and renewal dates for all six", 0,
+  "Five whole functions run through external partner organisations: Regulatory (Pedrero), Finance "
+  "(Ironclad), HR (Calm HR), digital marketing (WITHIN), web development (Teknologics). Plus three "
+  "contractors on packaging, creative and formulation.",
+  "Eight external parties hold the execution of Regulatory, Finance, HR, digital marketing, web "
+  "development, packaging, creative and formulation. Not a fault - it is how a team of nine covers "
+  "this surface - but continuity rests on eight engagements rather than on employment, and each one "
+  "is a renewal decision. Engagement terms are recorded for Pedrero only.",
+  "Record engagement terms and renewal dates for all eight", 0,
   "Alvin, 2026-07-31 (external partners)"),
 
  ("Single point of failure", "Regulatory & Compliance",

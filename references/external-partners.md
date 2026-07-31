@@ -6,8 +6,8 @@ last_updated: 2026-07-31
 
 # External partners
 
-Three whole functions at AC Brands run through outside organisations, and three more
-areas run through individual contractors. That is six external parties covering six
+Five whole functions at AC Brands run through outside organisations, and three more
+areas run through individual contractors. That is eight external parties covering eight
 functions for a team of nine. It is a reasonable shape at this size; it is also worth
 writing down, because none of it was recorded anywhere in this repo before 2026-07-31
 and two functions were showing as unowned purely because the partners were missing.
@@ -67,6 +67,31 @@ departed-role-holder checklist in
 `.claude/skills/asana-pd-manager/references/role-map.md` is that procedure, and it
 exists because a stale role record broke collaborator resolution during a build.
 
+### WITHIN — digital marketing
+
+Digital marketing agency. Runs most of our digital marketing: paid media across Meta and
+Google, and Klaviyo email flows and campaign sends. Quarterly business reviews — the most
+recent was 20 July, where Q3 strategy confirmed Pineapple Punch as the primary driver.
+
+**Soraya is accountable** for the Marketing function including both channels, and holds
+the agency relationship. Alvin consulted on paid spend against margin floors. Danielle
+consulted on campaign direction.
+
+The landing hub listed Marketing as "Owned by TBD" until 2026-07-31.
+
+### Teknologics — web development
+
+Web development partner for sweetjuly.com and the Shopify storefront. A sizeable team —
+they hold multiple seats in the Asana workspace.
+
+**Danielle is accountable** for the website and web releases. **Nicole is the systems and
+tech owner** for the web and digital stack. Erin and Ivy on visual design, Soraya
+consulted on merchandising and content, Alvin informed.
+
+Scope note: Nicole's systems-and-tech ownership is recorded here against web and digital.
+The PLM write path, Asana configuration, landing-hub publish and the 23 scheduled Routines
+still sit with Alvin. Widen if that was meant more broadly.
+
 ## Individual contractors
 
 | Who | Scope | Accountability held |
@@ -77,8 +102,9 @@ exists because a stale role record broke collaborator resolution during a build.
 
 ## What this means for continuity
 
-Continuity across six functions rests on engagements rather than on employment, and
-each one is a renewal decision rather than a retention conversation. Two specific
+Continuity across eight functions rests on engagements rather than on employment, and
+each one is a renewal decision rather than a retention conversation. Engagement terms are
+recorded for Pedrero only; the other seven need the same. Two specific
 exposures, both on the RACI Gaps sheet:
 
 Erin and Perrine each hold a row where they are both accountable and responsible with
@@ -103,6 +129,10 @@ they are approving comes from a partner who cannot act in our systems.
 
 ## History
 
+- **2026-07-31 (second pass)** — Added WITHIN (digital marketing) and Teknologics (web
+  development) after they surfaced from the AC Brands landing hub, which defines eleven
+  functions with a named lead each and had Marketing reading "Owned by TBD." Eight
+  external parties now, not six.
 - **2026-07-31** — Created. Pedrero was documented inside the regulatory skill but
   Ironclad Finance and Calm HR appeared nowhere in the repo, which is why Finance and
   People & Admin were showing as unowned functions on the first RACI pass. Added the
