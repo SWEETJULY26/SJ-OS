@@ -1,0 +1,415 @@
+# RACI rows for AC Brands, extracted from /home/user/SJ-OS.
+# Tuple: (Function, Activity, A, R, [C...], [I...], Source, Notes)
+# A = answers for the outcome. R = does the work. Source is file:line relative to /home/user/SJ-OS.
+# "INFERRED" in Notes means no source names an owner and A defaults to AB.
+
+S = ".claude/skills/"
+
+ROWS = [
+# ============ PRODUCT DEVELOPMENT ============
+("Product Development",
+ "Formula stage-gate progression through the PD Formula Tracker",
+ "PC", "AB", ["NI"], ["DI"],
+ f"{S}asana-pd-manager/references/role-map.md:16; {S}asana-pd-manager/SKILL.md:60",
+ "PD Lead holds technical sign-off on formula stage moves. Operator confirms every move (Rule 1 preview); reversals get a stronger intent check."),
+
+("Product Development",
+ "Compatibility, stability, RIPT and PET decisions (pre-launch)",
+ "PC", "PC", ["AB"], ["NI"],
+ f"{S}asana-pd-manager/references/role-map.md:16",
+ "PD Lead owns the technical call outright. A and R the same person, and PC is an external contractor."),
+
+("Product Development",
+ "Packaging development with fillers and component vendors",
+ "PC", "JH", ["EH", "AB"], [],
+ f"{S}asana-pd-manager/references/role-map.md:16,23",
+ "PD Lead owns packaging dev calls; Jan executes packaging and artwork under Erin. Both are contractors."),
+
+("Product Development",
+ "Direction-changing PD decisions (launch scope, supplier change, kill calls)",
+ "DI", "AB", ["NI", "PC"], ["AC"],
+ f"{S}asana-pd-manager/references/role-map.md:17,18",
+ "President approves. PD Consult is final-line approver alongside the President."),
+
+("Product Development",
+ "Founder approval on brand-line moves",
+ "AC", "AB", ["DI", "NI"], [],
+ f"{S}asana-pd-manager/references/role-map.md:19",
+ "Founder gate. Ayesha receives weekly PD signal through the Friday briefing."),
+
+("Product Development",
+ "PD signal intake from meetings and supplier email, plus PD status reporting",
+ "AB", "AB", ["PC", "NI"], ["DI"],
+ f"{S}fireflies-asana-bridge/SKILL.md:287; {S}outlook-plm-bridge/SKILL.md:191; {S}sjs-status-reporter/SKILL.md:331,385",
+ "Alvin is the named approver on Flow D formula-approval decisions and classifies every meeting item. Covers the three PD hub dashboards. A and R both AB."),
+
+("Product Development",
+ "Reformulation triggered by a Quality or Regulatory reverse-handoff",
+ "PC", "AB", ["NI"], ["DI"],
+ f"{S}asana-pd-manager/references/role-map.md:16; {S}capa-coordinator/SKILL.md:85",
+ "PD Lead is cross-flagged for any PD-side reformulation. Reformulation handoff rides the root-cause approval - no separate gate."),
+
+# ============ OPERATIONS & SUPPLY CHAIN ============
+("Operations & Supply Chain",
+ "Vendor master data, onboarding (NDA + W9 gate), sourcing and performance scorecards",
+ "AB", "AB", ["PC", "NI", "SS"], [],
+ f"{S}purchasing-manager/SKILL.md:42,46,75,154,158",
+ "PLM vendor record created only after Operations approves at 2D. First-contact routing varies by vendor_type (SKILL.md:50-56) but the approval gate does not. A and R both AB."),
+
+("Operations & Supply Chain",
+ "Purchase order lifecycle: placement, acknowledgement variance, close and discrepancy",
+ "AB", "AB", ["PC"], [],
+ f"{S}purchasing-manager/SKILL.md:108,116,140,248",
+ "Six sub-flows from draft to close, plus Job 10 discrepancy investigation. Every gate is Operations. A and R both AB."),
+
+("Operations & Supply Chain",
+ "Goods receipt on PD-linked purchase orders",
+ "PC", "AB", ["NI"], [],
+ f"{S}purchasing-manager/SKILL.md:130",
+ "PD owns the close on PD-linked receipts; Purchasing carries the receipt signal only. The one Ops row where accountability sits off the VP seat."),
+
+("Operations & Supply Chain",
+ "Three-way reconciliation across PLM, Shopify and Logiwa",
+ "AB", "AB", ["NI"], [],
+ f"{S}inventory-manager/SKILL.md:68",
+ "Operations decides the correction direction, usually trusting Logiwa as physical reality. A and R both AB."),
+
+("Operations & Supply Chain",
+ "Vendor invoice classification and cost capture (five HITL gates)",
+ "AB", "AB", ["NI", "SS"], ["DI"],
+ f"{S}purchasing-manager/SKILL.md:234,235,238",
+ "Operator confirms cost_category, regulatory_driver, linked SKU and multi-home routing before any PLM write, and approves the dispute branch. A and R both AB."),
+
+("Operations & Supply Chain",
+ "Inventory position keeping, batch creation on receipt and the location ledger",
+ "AB", "AB", ["PC"], ["NI"],
+ f"{S}inventory-manager/SKILL.md:18,52,60",
+ "Ex-Ops-Coordinator scope. Alvin took inventory under the 2026-07-17 interim split. A and R both AB."),
+
+("Operations & Supply Chain",
+ "Adjustments, write-offs and return dispositions",
+ "AB", "AB", ["PC"], [],
+ f"{S}inventory-manager/SKILL.md:94",
+ "Operations approves. Near-expiry write-offs wait on the quality call first. A and R both AB."),
+
+("Operations & Supply Chain",
+ "S&OP: forecast, inventory targets and buy recommendations",
+ "AB", "AB", ["NI"], ["DI"],
+ f"{S}supply-demand-planner/SKILL.md:30-52; {S}supply-demand-planner/references/plm-schema-additions.md:139",
+ "Operations approves; plm-assistant executes the SQL. Four intertwined jobs on one person. A and R both AB."),
+
+("Operations & Supply Chain",
+ "Inbound freight, customs, duty and carrier claims",
+ "AB", "AB", [], ["PC"],
+ f"{S}logistics-manager/SKILL.md:59,186; {S}logistics-manager/forms/international-dtc-shipment.md:11",
+ "Nothing created or updated until Operations signs off. Ex-Ops-Coordinator logistics scope, now Alvin. HCT and Impress origin Asia so customs is routine. A and R both AB."),
+
+("Operations & Supply Chain",
+ "Daily DTC order operations and the Logiwa report parse",
+ "NI", "NI", ["AB"], [],
+ f"{S}ayesha-weekly-briefing/SKILL.md:123; {S}oc3pl-order-manager/SKILL.md:109,191",
+ "Ex-Ops-Coordinator scope. Nicole covers order management and OC3PL under the 2026-07-17 interim split. A and R both NI."),
+
+("Operations & Supply Chain",
+ "Pre-ship out-of-stock holds from the shortage sheet",
+ "NI", "AB", [], [],
+ f"{S}oc3pl-order-manager/SKILL.md:201; {S}ayesha-weekly-briefing/SKILL.md:123",
+ "Order-side holds sit with Nicole; SKU-level shortage routing belongs to inventory-manager, so Alvin does the work."),
+
+("Operations & Supply Chain",
+ "Retailer ASN / EDI 856 and routing-guide compliance (Ulta DC, Amazon Vendor)",
+ "NI", "AB", [], ["DI"],
+ f"{S}logistics-manager/SKILL.md:80; {S}purchasing-manager/SKILL.md:55",
+ "Operations or Order Ops reviews. UBM launch June 2026 is the deadline driver on this lane."),
+
+# ============ QUALITY ============
+("Quality",
+ "Customer complaint intake, classification and first response",
+ "AB", "AB", ["NI"], ["PC"],
+ f"{S}complaint-and-event-handler/SKILL.md:20,53",
+ "HITL on every write. Operator approves classification plus first response. A and R both AB."),
+
+("Quality",
+ "Complaint trend analysis by SKU and batch",
+ "NI", "AB", ["PC"], [],
+ f"{S}quality-manager/references/role-map.md:15",
+ "Voice of Customer holds gates on complaint classification and complaint-driven escalations."),
+
+("Quality",
+ "NCR and CAPA lifecycle, intake through close (SKN-OPS-001)",
+ "PC", "AB", ["NI"], ["DI"],
+ f"{S}capa-coordinator/SKILL.md:54,136; {S}capa-coordinator/references/ncr-procedure.md:135; {S}capa-coordinator/references/skn-ops-001.md:64,102",
+ "Operator approves intake and both action plans; QA Lead approves conversion, root cause, verification, effectiveness and close. Six SOP phases, one external contractor on every technical gate."),
+
+("Quality",
+ "Lab finding intake and OOS / OOT classification (SKN-OPS-006)",
+ "AB", "AB", ["PC"], [],
+ f"{S}quality-lab-coordinator/SKILL.md:48,56",
+ "Operator approves intake and the single-versus-systemic classification. A and R both AB."),
+
+("Quality",
+ "Vendor quality flag and scorecard signal back to Purchasing",
+ "PC", "AB", [], [],
+ f"{S}quality-lab-coordinator/SKILL.md:76; {S}quality-lab-coordinator/references/vendor-scorecard-signal.md:103",
+ "QA Lead approves any vendor flag and the scorecard band. Operator can stage but not commit."),
+
+("Quality",
+ "Batch hold and release (SKN-OPS-007)",
+ "PC", "AB", ["NI"], ["DI"],
+ f"{S}batch-lifecycle-tracker/references/batch-lifecycle-procedure.md:208; {S}batch-lifecycle-tracker/SKILL.md:86",
+ "QA Lead approves every hold and every release. No exceptions at v5.4. Releases need a CAPA close or clean retest plus QA Lead judgment."),
+
+("Quality",
+ "In-market stability scheduling and near-expiry decisions",
+ "AB", "AB", ["PC"], [],
+ f"{S}batch-lifecycle-tracker/SKILL.md:71,94",
+ "Operator approves schedule edits and the 30-day near-expiry call; a stability skip needs QA Lead approval. A and R both AB."),
+
+("Quality",
+ "Serious adverse event triage and recall kickoff (SKN-OPS-002, SKN-OPS-003)",
+ "AB", "AB", ["PC", "NI"], ["DI", "AC"],
+ f"{S}complaint-and-event-handler/SKILL.md:85,89,95",
+ "The strictest gate in the suite: explicit approval at every step, §4.A through §4.F each a separate gate. Operator decides severity, team and whether external reporting is needed. A and R both AB."),
+
+("Quality",
+ "SOP ratification, annual review and cross-cutting quality tasks",
+ "PC", "AB", ["NI"], [],
+ f"{S}quality-manager/SKILL.md:66,135; {S}quality-manager/references/sop-catalog.md:120; {S}quality-manager/references/qos-thresholds.md:52",
+ "QA Lead approves every ratification, review outcome, cross-cutting task and QoS threshold task. SOP §7 names a QA Manager for this; that seat is vacant and Perrine is filling it."),
+
+("Quality",
+ "Quality dashboard publish to the landing hub",
+ "AB", "AB", [], ["PC", "NI"],
+ f"{S}quality-status-reporter/SKILL.md:78",
+ "Operator approves the commit before push. Never commit without confirmation. A and R both AB."),
+
+# ============ REGULATORY & COMPLIANCE ============
+("Regulatory & Compliance",
+ "Pre-launch ingredient list review gate (SKN-OPS-008)",
+ "AB", "AB", ["PC"], ["NI"],
+ f"{S}claims-il-and-label-keeper/SKILL.md:50; {S}claims-il-and-label-keeper/references/il-claims-label-procedure.md:62",
+ "Operator approves intake. Reg Lead is the same person at v6.6, so the gate fires twice against one person. Pedrero holds the binding external call. A and R both AB."),
+
+("Regulatory & Compliance",
+ "Pedrero engagement and send approval",
+ "AB", "AB", ["PC"], [],
+ f"{S}claims-il-and-label-keeper/SKILL.md:60; {S}regulatory-manager/SKILL.md:140",
+ "Reg Lead approves every Pedrero send; Operator hits send manually. Both roles are Alvin. A and R both AB."),
+
+("Regulatory & Compliance",
+ "Claim substantiation and new-claim defensibility",
+ "AB", "AB", ["SS", "PC"], ["AC"],
+ f"{S}claims-il-and-label-keeper/SKILL.md:97; {S}claims-il-and-label-keeper/references/il-claims-label-procedure.md:29",
+ "Operator approves the path; Reg Lead approves the Pedrero stage. The procedure exists because new claims from marketing or the founder used to skip Pedrero sign-off. A and R both AB."),
+
+("Regulatory & Compliance",
+ "Label artwork archive, IL cross-check and label-law checks (Pantone, Canada, Quebec, 19-state toxics)",
+ "AB", "EH", ["PC", "JH"], [],
+ f"{S}claims-il-and-label-keeper/SKILL.md:85; {S}claims-il-and-label-keeper/references/il-claims-label-procedure.md:93",
+ "Operator approves each pass outcome; Reg Lead approves any archive entry. Creative produces the artwork under review."),
+
+("Regulatory & Compliance",
+ "Reformulation claim bridge when a SKU reformulates without QIL parity",
+ "AB", "PC", ["NI"], [],
+ f"{S}claims-il-and-label-keeper/references/il-claims-label-procedure.md:281",
+ "Reg Lead approves the QIL recovery ask to the prior manufacturer; PD Lead does the formulation work."),
+
+("Regulatory & Compliance",
+ "Retailer attestation responses (Sephora, Ulta, Whole Foods, Credo)",
+ "AB", "AB", ["NI", "PC"], ["DI"],
+ f"{S}claims-il-and-label-keeper/SKILL.md:105; {S}regulatory-manager/SKILL.md:122",
+ "Reg Lead approves the retailer submission after Pedrero approval. Voice of Customer consults where customer-perceived attributes matter. A and R both AB."),
+
+("Regulatory & Compliance",
+ "MoCRA registrations, state filings and Leaping Bunny renewal",
+ "AB", "AB", [], ["PC", "SS"],
+ f"{S}regulatory-manager/SKILL.md:114,367",
+ "Operator approves the filing draft; Reg Lead approves every registration record write. Both roles are Alvin. A and R both AB."),
+
+("Regulatory & Compliance",
+ "SAE and recall agency filings, including the 15-day MoCRA clock (SKN-OPS-009)",
+ "AB", "AB", ["PC", "NI"], ["DI", "AC"],
+ f"{S}adverse-event-and-recall-reporter/SKILL.md:65,108",
+ "Two distinct gates per filing - Pedrero send approval and agency submission approval - both held by Alvin. Statutory clock with no named backup. A and R both AB."),
+
+("Regulatory & Compliance",
+ "Regulatory fan-out routing and the regulatory dashboard publish",
+ "AB", "AB", ["PC"], ["NI"],
+ f"{S}regulatory-manager/SKILL.md:60; {S}regulatory-status-reporter/SKILL.md:90",
+ "Two gates per fan-out (Operator for the routing call, Reg Lead for task creation), both Alvin. Operator approves the dashboard commit before push. A and R both AB."),
+
+# ============ RETAIL & WHOLESALE ============
+("Retail & Wholesale",
+ "Retailer and reseller first contact",
+ "NI", "NI", ["AB"], ["DI"],
+ f"{S}purchasing-manager/SKILL.md:55",
+ "First-contact owner for retailer, promotional_goods and accessories vendor types is the Sr. Director Consumer Strategy & Ops. A and R both NI."),
+
+("Retail & Wholesale",
+ "Retail channel launch programs: UBM cohort positioning, price ladder, Amazon Vendor",
+ "NI", "AB", ["SS"], ["DI"],
+ f"{S}purchasing-manager/SKILL.md:55; {S}sjs-retail-intel/SKILL.md:52; {S}logistics-manager/SKILL.md:80",
+ "UBM launch June 2026. Nicole holds the channel relationship; Alvin runs the positioning and outbound work."),
+
+# ============ MARKETING & BRAND ============
+("Marketing & Brand",
+ "Quarterly competitive teardowns across the five comp brands",
+ "SS", "SS", ["KL", "NI"], ["AB"],
+ f"{S}sjs-comp-intel/references/team-ownership.md:19,23-30",
+ "Soraya owns teardown production and comp brand profile maintenance. A and R both SS."),
+
+("Marketing & Brand",
+ "Quarterly teardown sign-off before circulation",
+ "AB", "SS", ["NI"], ["DI"],
+ f"{S}sjs-comp-intel/references/team-ownership.md:65; {S}sjs-comp-intel/SKILL.md:50",
+ "Alvin signs off before it circulates to Danielle and the SJS brand team."),
+
+("Marketing & Brand",
+ "Monthly competitive trend digest and cross-stream signal routing",
+ "NI", "NI", ["SS", "KL"], ["AB"],
+ f"{S}sjs-comp-intel/references/team-ownership.md:3,9-15",
+ "Stream DRI owns digest production and the 'what it means for SJS' analytical layer. Named as the stream's heartbeat - first thing protected under capacity pressure. A and R both NI."),
+
+("Marketing & Brand",
+ "Social listening and comp brand monitoring (TikTok, IG, Pinterest, retailer new arrivals)",
+ "KL", "KL", ["SS"], [],
+ f"{S}sjs-comp-intel/references/team-ownership.md:34,40-44",
+ "Kate owns social listening tool maintenance, query hygiene and the weekly retailer new-arrivals scan. A and R both KL."),
+
+("Marketing & Brand",
+ "Brand guideline custody (fonts, colors, logos, voice)",
+ "EH", "IT", ["SS"], ["AC"],
+ f"{S}sweet-july-skin-brand/SKILL.md:1; references/architecture/system_map.md:157",
+ "Every output-producing skill defers here for canonical brand spec; no skill carries its own copy."),
+
+("Marketing & Brand",
+ "Annual team holiday communications (11 sends across 3 templates)",
+ "AB", "AB", [], ["NI", "DI", "SS", "KL", "IT"],
+ f"{S}ac-brands-holiday-comms/SKILL.md:26,165",
+ "Sends from alvin@ac-brands.com with the team on BCC. Includes the Outlook calendar sync and annual maintenance. A and R both AB."),
+
+("Marketing & Brand",
+ "Weekly founder briefing, Slides 5 and 6",
+ "AB", "AB", ["NI", "PC"], ["DI", "AC"],
+ f"{S}ayesha-weekly-briefing/SKILL.md:49,72",
+ "Alvin owns both Slide 5 (Business Operations) and Slide 6 PD-Ops content; Nicole co-authors Slide 6 with her core PD content. A and R both AB."),
+
+# ============ CREATIVE ============
+("Creative",
+ "Creative direction on packaging, artwork and brand visuals",
+ "EH", "EH", ["IT", "SS"], [],
+ f"{S}asana-pd-manager/references/role-map.md:22",
+ "Creative Director owns packaging, artwork and brand visuals. A and R both EH."),
+
+("Creative",
+ "Packaging and artwork execution",
+ "EH", "JH", ["PC"], ["AB"],
+ f"{S}asana-pd-manager/references/role-map.md:23; {S}sjs-comp-intel/references/team-ownership.md:79",
+ "Jan is the creative contractor under Erin. Title differs between sources - Packaging Engineer in one, creative contractor in the other."),
+
+("Creative",
+ "Creative Requests intake and design coordination",
+ "IT", "IT", ["EH", "SS"], [],
+ f"{S}sjs-status-reporter/SKILL.md:352; {S}asana-pd-manager/references/role-map.md:24",
+ "Creative Requests Asana project owner is Ivy, Editorial/Design team. Ivy supports Erin and Jan. A and R both IT."),
+
+# ============ ECOMMERCE & DTC ============
+("Ecommerce & DTC",
+ "Shopify revenue and channel position read",
+ "AB", "AB", ["NI"], ["DI"],
+ "connections.md:7; context/about-business.md:5",
+ "INFERRED - no source names an owner. Shopify is registered as the revenue connection and named as the primary DTC revenue track, but no skill assigns ownership or a gate. A defaults to AB."),
+
+("Ecommerce & DTC",
+ "Daily DTC fulfillment KPIs and the SJ Shipping Dashboard",
+ "NI", "NI", ["AB"], [],
+ f"{S}oc3pl-order-manager/SKILL.md:61,191; {S}ayesha-weekly-briefing/SKILL.md:123",
+ "Ex-Ops-Coordinator scope, now Nicole per the interim split. A and R both NI."),
+
+# ============ FINANCE ============
+("Finance",
+ "Margin architecture framework and quarterly portfolio review",
+ "AB", "AB", ["DI", "NI"], [],
+ f"{S}sjs-margin-architect/references/framework.md:209; {S}sjs-margin-portfolio-review/SKILL.md:1",
+ "Framework reference plus the quarterly portfolio sweep and traffic-light report. A and R both AB."),
+
+("Finance",
+ "Per-SKU margin pressure-test against channel floors",
+ "PC", "AB", ["SS", "NI"], ["DI"],
+ f"{S}sjs-margin-pressure-test/SKILL.md:93",
+ "Flagged as Perrine and Soraya's call to ratify, with Alvin on admin, Nicole consulting and Danielle approving."),
+
+("Finance",
+ "Walk-away decision when a SKU breaks its channel floor",
+ "DI", "AB", ["PC", "SS", "NI"], [],
+ f"{S}sjs-margin-walk-away/SKILL.md:93,105,118",
+ "Danielle approves on three of the four paths. Alvin carries the work on all four."),
+
+("Finance",
+ "SKU archetype and Standard / Acquisition designation",
+ "PC", "AB", ["NI"], ["DI"],
+ f"{S}sjs-margin-walk-away/SKILL.md:78",
+ "Perrine as PD owner with Alvin on PD admin and sourcing; Nicole consults."),
+
+("Finance",
+ "Monthly and quarterly vendor cost rollups",
+ "AB", "AB", [], ["DI"],
+ f"{S}regulatory-manager/SKILL.md:196; {S}purchasing-manager/SKILL.md:365",
+ "regulatory-manager Jobs 8 and 9 read vendor_invoices directly; purchasing-manager has no rollup of its own. A and R both AB."),
+
+("Finance",
+ "Accounts payable, bookkeeping and payroll",
+ "AB", "AB", ["DI"], [],
+ "",
+ "INFERRED - no source. Finance appears only as an email-sender category (outlook-plm-bridge/SKILL.md:368) and a briefing heading (ayesha-weekly-briefing/SKILL.md:9). No owner, no approver, no gate anywhere in SJ-OS. A defaults to AB."),
+
+# ============ PEOPLE & ADMIN ============
+("People & Admin",
+ "Hiring the Operations Specialist and the PD Project Manager Specialist",
+ "AB", "NI", ["DI"], ["AC"],
+ "decisions/log.md:52,58; context/priorities.md:3",
+ "Both new roles report to Nicole. Decision owner recorded as Alvin, with Nicole on the two new roles once filled. Priority 1 of 2 this quarter."),
+
+("People & Admin",
+ "Tool procurement, vendor renewals and shared-folder admin",
+ "AB", "AB", ["NI", "IT"], [],
+ f"{S}sjs-comp-intel/references/team-ownership.md:50; {S}sjs-comp-intel/references/sequencing-plan.md:12",
+ "Ex-Ops-Coordinator scope. Alvin carries it directly until the Operations Specialist starts. A and R both AB."),
+
+("People & Admin",
+ "Employee onboarding, offboarding and access deprovisioning",
+ "AB", "AB", ["NI"], [],
+ f"{S}asana-pd-manager/references/role-map.md:48-56",
+ "INFERRED - no named owner. The departed-role-holder checklist is the only offboarding process documented anywhere in SJ-OS, and it exists because a stale role row broke collaborator resolution. A defaults to AB."),
+
+# ============ IT / SYSTEMS & DATA ============
+("IT / Systems & Data",
+ "PLM schema, write path, audit log and Supabase wiki custody",
+ "AB", "AB", ["PC"], [],
+ f"{S}plm-assistant/SKILL.md:292; decisions/wiki-layer-audit-2026-07-29.md:52",
+ "plm-assistant is the sole PLM writer and every write needs Operations sign-off. Job 0 wiki write-back has not fired since 2026-05-26. A and R both AB."),
+
+("IT / Systems & Data",
+ "Landing hub publish and Netlify Function maintenance",
+ "AB", "AB", [], [],
+ f"{S}quality-status-reporter/SKILL.md:34-50; {S}quality-status-reporter/references/hub-integration.md:85",
+ "All hub writes go through the landing-hub-publish Function behind an Operator gate. Deploy is commit-and-push only, never Netlify CLI. A and R both AB."),
+
+("IT / Systems & Data",
+ "Asana project, section, custom-field and connector configuration",
+ "AB", "AB", ["NI"], [],
+ "references/architecture/asana_task_contract.md:227; connections.md:5-13",
+ "An unresolvable role-holder is surfaced for Alvin to decide, not dropped. Seven tool domains registered; iMessage still not connected. A and R both AB."),
+
+("IT / Systems & Data",
+ "Skill suite authorship, audit and versioning",
+ "AB", "AB", [], [],
+ "decisions/skills-architecture-tracker.md:4; decisions/log.md:31,45",
+ "Owner recorded as Alvin Belt across the architecture decisions. Priority 2 of 2 this quarter. A and R both AB."),
+
+("IT / Systems & Data",
+ "The 23 scheduled Routines and their HITL gates",
+ "AB", "AB", [], ["NI"],
+ "scheduled-prompts/weekly-pd-update.md:91; scheduled-prompts/sjs-purchasing-monthly-rollup-and-snapshot.md:79",
+ "Nothing commits until Alvin says go. Same pattern across all 23 Routines, including the ones that fire unattended on a schedule. A and R both AB."),
+]
