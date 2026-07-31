@@ -75,6 +75,27 @@ Keep it terse. Future-you will thank present-you for capturing the *why*, not ju
 **Status:** All four drift instances fixed 2026-07-29. Full findings in `decisions/wiki-layer-audit-2026-07-29.md`. Two items left open there — Job 0 (the bridges' wiki write-back) has not fired since 2026-05-26, leaving 123 of 133 pages as untouched seed; and `Bridge-and-System-Audit-2026-05-26.md` is cited from three files but exists nowhere, most likely lost in the 2026-07-19 consolidation.
 
 ---
+## 2026-07-31 — Coastal Interactive on the matrix; nobody blank on a product decision
+
+**Decision:** Two additions after the first RACI merge.
+
+1. **Coastal Interactive is the managed IT service provider** and belongs on the matrix. They hold the higher-level IT and systems work: back-end infrastructure, identity and endpoint management, equipment procurement and onboarding, asset lifecycle. **Alvin is the liaison and accountable**; Coastal is responsible. Three new rows plus consult on connector configuration and on employee onboarding, where they split the work with Calm HR — Calm HR runs the employment side, Coastal runs equipment and accounts.
+
+2. **Perrine and Soraya are never blank on a Product Development row.** Perrine's accountability is unchanged; she was blank on one row (founder brand-line approval) and is now Informed. Soraya was blank on all eight PD rows and is now Informed on every one.
+
+**Why:** Coastal was simply missing — the same failure mode as Ironclad, Calm HR, WITHIN and Teknologics before them, and the fifth time an external party turned out to be doing work the matrix showed as either unowned or absent. Worth naming the pattern: when a function looks thin on this matrix, the first question is whether a partner is missing rather than whether the work is unowned.
+
+On the blanks: a blank cell is ambiguous in a way Informed is not, because blank does not tell you whether the omission was deliberate. Perrine gives technical guidance across PD and should see every product decision even where she holds no gate. Soraya had no formal visibility into any product decision at all, which is wrong for a Marketing Manager who has to launch the thing — marketing needs the PD signal early, and the PD Specialist job description says as much when it describes creative getting launch dates and packaging details early.
+
+**Alternatives considered:** Drop Perrine's accountability on PD entirely and make her consult-only there — raised and then withdrawn in the same breath; her formula and testing gates are genuine technical authority and stay. Fold Coastal's rows into the existing IT rows — rejected, back-end infrastructure and the web storefront are different partners with different accountability (Coastal under Alvin, Teknologics under Danielle) and collapsing them would hide that.
+
+**Owner:** Alvin, as liaison to Coastal Interactive.
+
+**Status:** RACI at 102 activities, 18 columns, 11 IT rows. `references/external-partners.md` extended to nine parties, `connections.md` registers Coastal. All seven verification groups pass.
+
+**Open:** Engagement terms and renewal dates still recorded for Pedrero only — eight partners now need them. The landing hub still shows Finance and Marketing as "Owned by TBD".
+
+---
 ## 2026-07-31 — Capture the whole business, not just the parts with a skill
 
 **Decision:** Add real Marketing, Retail & Wholesale and Web activities to the RACI, sourced from the AC Brands landing hub rather than the skill suite, and resolve the three functions the hub left unowned.

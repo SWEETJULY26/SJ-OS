@@ -6,9 +6,9 @@ last_updated: 2026-07-31
 
 # External partners
 
-Five whole functions at AC Brands run through outside organisations, and three more
-areas run through individual contractors. That is eight external parties covering eight
-functions for a team of nine. It is a reasonable shape at this size; it is also worth
+Six whole functions at AC Brands run through outside organisations, and three more areas
+run through individual contractors. That is nine external parties covering nine functions
+for a team of nine. It is a reasonable shape at this size; it is also worth
 writing down, because none of it was recorded anywhere in this repo before 2026-07-31
 and two functions were showing as unowned purely because the partners were missing.
 
@@ -92,6 +92,24 @@ Scope note: Nicole's systems-and-tech ownership is recorded here against web and
 The PLM write path, Asana configuration, landing-hub publish and the 23 scheduled Routines
 still sit with Alvin. Widen if that was meant more broadly.
 
+### Coastal Interactive — managed IT
+
+Managed service provider for the higher-level IT and systems work: back-end
+infrastructure, identity and endpoint management, equipment procurement and onboarding,
+and asset lifecycle through to recovery on exit.
+
+**Alvin is the liaison and accountable** for the IT function; Coastal Interactive is
+responsible for the work. Nicole consulted.
+
+Distinct from the web and digital stack, which sits with Danielle as accountable and
+Nicole as systems and tech owner, with Teknologics developing. Coastal is the back end;
+Teknologics is the storefront.
+
+Onboarding and offboarding is split across two partners — Calm HR runs the employment
+side, Coastal Interactive runs equipment and account provisioning, and Alvin is the
+liaison to both. The internal systems half (Asana reassignment, wiki contact state) stays
+with the departed-role-holder checklist.
+
 ## Individual contractors
 
 | Who | Scope | Accountability held |
@@ -102,9 +120,9 @@ still sit with Alvin. Widen if that was meant more broadly.
 
 ## What this means for continuity
 
-Continuity across eight functions rests on engagements rather than on employment, and
-each one is a renewal decision rather than a retention conversation. Engagement terms are
-recorded for Pedrero only; the other seven need the same. Two specific
+Continuity across nine functions rests on engagements rather than on employment, and each
+one is a renewal decision rather than a retention conversation. Engagement terms are
+recorded for Pedrero only; the other eight need the same. Two specific
 exposures, both on the RACI Gaps sheet:
 
 Erin and Perrine each hold a row where they are both accountable and responsible with
@@ -129,6 +147,9 @@ they are approving comes from a partner who cannot act in our systems.
 
 ## History
 
+- **2026-07-31 (third pass)** — Added Coastal Interactive as the managed IT service
+  provider. Nine external parties now. Also recorded that Perrine and Soraya are never
+  blank on a Product Development row — see `decisions/log.md`.
 - **2026-07-31 (second pass)** — Added WITHIN (digital marketing) and Teknologics (web
   development) after they surfaced from the AC Brands landing hub, which defines eleven
   functions with a named lead each and had Marketing reading "Owned by TBD." Eight

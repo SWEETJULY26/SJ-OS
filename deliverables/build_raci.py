@@ -233,6 +233,13 @@ BLOCKS = [
   "the work or continue it. Neither specialist job description covers creative or formulation "
   "authority, so the two hires do not close this.", False),
 
+ ("Nobody is blank on a product decision", True),
+ ("Perrine and Soraya now hold a letter on all eight Product Development rows. Perrine was blank on "
+  "one - founder brand-line approval - and Soraya was blank on all eight, which meant the marketing "
+  "read had no formal visibility into any product decision. Both are Informed at minimum now. That "
+  "is a small change with a real effect: a blank cell on a RACI is ambiguous in a way that Informed "
+  "is not, because blank does not tell you whether the omission was deliberate.", False),
+
  ("Marketing and the channels finally have owners with real activities under them", True),
  ("Soraya goes from 1 accountable row to 8. Marketing now carries editorial calendar, Klaviyo email, "
   "paid media, social content, influencer and earned media, the WITHIN relationship, product copy and "
@@ -254,7 +261,7 @@ BLOCKS = [
   "attestations, and packaging. Informed on the rest.", False),
 
  ("Alvin owns the framework, and still does most of the work", True),
- ("Accountable for 43 of 99 activities and doing the work on 57. The framework rows are deliberate - "
+ ("Accountable for 46 of 102 activities and doing the work on 58. The framework rows are deliberate - "
   "quality management system, SOP framework, this RACI, the skill suite, the 23 scheduled Routines. "
   "The problem is not the A column. It is that 31 rows have him as both A and R, and that he does the "
   "work on 11 of the 12 Operations rows and 5 of the 8 Product Development rows. He holds the gates "
@@ -294,10 +301,10 @@ BLOCKS = [
   "by TBD\": Marketing, Finance, and the wholesale half of Sales & Commerce. Resolving those took "
   "three decisions rather than three hires. Soraya is accountable for Marketing. Nicole is "
   "accountable for all channels - DTC, Amazon and wholesale together, which is broader than the hub "
-  "had it. Danielle is accountable for web with Nicole as the systems and tech owner. That is 99 "
+  "had it. Danielle is accountable for web with Nicole as the systems and tech owner. That is 102 "
   "activities across eleven functions with an owner on every row.", False),
 
- ("Five functions run entirely outside the company", True),
+ ("Six functions run entirely outside the company", True),
  ("Regulatory goes through Pedrero, Finance through Ironclad (Dan Bender), HR through Calm HR as PEO "
   "and co-employer, digital marketing and email through WITHIN, web development through Teknologics. "
   "Add the three contractors on packaging, creative and formulation and that is eight external "
@@ -399,14 +406,14 @@ GAPS = [
   "asana-pd-manager/references/role-map.md:16"),
 
  ("Concentration", "All functions",
-  "Five whole functions run through external partner organisations: Regulatory (Pedrero), Finance "
-  "(Ironclad), HR (Calm HR), digital marketing (WITHIN), web development (Teknologics). Plus three "
-  "contractors on packaging, creative and formulation.",
-  "Eight external parties hold the execution of Regulatory, Finance, HR, digital marketing, web "
-  "development, packaging, creative and formulation. Not a fault - it is how a team of nine covers "
-  "this surface - but continuity rests on eight engagements rather than on employment, and each one "
-  "is a renewal decision. Engagement terms are recorded for Pedrero only.",
-  "Record engagement terms and renewal dates for all eight", 0,
+  "Six whole functions run through external partner organisations: Regulatory (Pedrero), Finance "
+  "(Ironclad), HR (Calm HR), digital marketing (WITHIN), web development (Teknologics), managed IT "
+  "(Coastal Interactive). Plus three contractors on packaging, creative and formulation.",
+  "Nine external parties hold the execution of Regulatory, Finance, HR, digital marketing, web "
+  "development, managed IT, packaging, creative and formulation. Not a fault - it is how a team of "
+  "nine covers this surface - but continuity rests on nine engagements rather than on employment, "
+  "and each one is a renewal decision. Engagement terms are recorded for Pedrero only.",
+  "Record engagement terms and renewal dates for all nine", 0,
   "Alvin, 2026-07-31 (external partners)"),
 
  ("Single point of failure", "Regulatory & Compliance",
