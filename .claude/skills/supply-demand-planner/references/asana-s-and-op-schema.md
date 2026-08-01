@@ -8,7 +8,9 @@ land here.
 
 Six sections, in order:
 
-1. **Monthly Run** — parent task per S&OP cycle. One task per run named
+1. **Monthly run** — parent task per S&OP cycle. Live section name is lowercase
+   `run`; resolve by GID `1214374670198667`, never by a literal name match.
+   One task per run named
    `[YYYY-MM] S&OP Run`. Subtasks: run summary text, one-pager link, bulk
    approval status, links to all child Buy Recs / Filler entries / Exceptions
    for that run.
@@ -113,7 +115,7 @@ Two workspace-level tags (confirmed exist in workspace `ac-brands.com`):
 
 ```
 Name: [YYYY-MM] S&OP Run
-Section: Monthly Run
+Section: Monthly run — `1214374670198667`
 Description: Run summary (forms/monthly-run-summary.md)
 Custom fields: run_id, sku=N/A
 Subtasks: Bulk Approval Status, One-Pager Link, Exceptions Bundle Link

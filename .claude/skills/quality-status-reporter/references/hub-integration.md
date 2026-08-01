@@ -1,6 +1,6 @@
 # Hub Integration — `acb-thelanding`
 
-How quality-status-reporter integrates with the AC Brands landing hub. Repo at `/Users/alvinbelt/Downloads/acb-thelanding/`, deploys to `acb-thelanding.netlify.app` via GitHub `SWEETJULY26/acb-thelanding`.
+How quality-status-reporter integrates with the AC Brands landing hub. Repo at `/home/user/acb-thelanding` in a remote session (the Mac working copy is `~/Downloads/acb-thelanding/`); deploys to `acb-thelanding.netlify.app` via GitHub `SWEETJULY26/acb-thelanding`.
 
 ---
 
@@ -89,7 +89,7 @@ Per memory:
 Standard git flow from the skill:
 
 ```bash
-cd /Users/alvinbelt/Downloads/acb-thelanding/
+cd /home/user/acb-thelanding    # Mac working copy: ~/Downloads/acb-thelanding/
 git status                     # confirm clean state before edits
 # ... skill writes files ...
 git add quality-dashboard.html assets/js/quality-dashboard.js assets/css/quality-dashboard.css netlify/functions/sjs-quality-rollup.js data/links.json

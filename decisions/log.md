@@ -223,3 +223,23 @@ The Status-authoritative choice is what makes Alvin's Asana Rule idea safe rathe
 **Open:** Four queues cannot be ruled yet and the registry says why — Quality Management has one Status field carrying two unrelated workflows, CAPA Log's `Verification & Effectiveness` spans two sections, Logistics' sections split by direction while its status splits by position so status alone cannot pick a section, and Inventory's Status options describe none of its states. Each needs a field or section redesign, not a rule. Also open: a CHECK constraint on `purchase_orders.status` so the Asana and PLM vocabularies cannot drift silently again — a schema change on live data, needs its own approval. And the Quality/Regulatory drift held out of scope by Alvin's call is listed at the end of the plan file and in the registry's drift section, including two skills disagreeing on how many sections the Regulatory project has.
 
 ---
+
+---
+
+## 2026-08-01 — All four unrulable Asana queues get field designs; Logistics restructures
+
+**Decision.** The four queues the registry marked "not rulable yet" each get a field change so an Asana Rule can own section movement. Two calls were Alvin's: Logistics rebuilds its sections around position with direction moving to a new field, and the workstream tasks that were misusing `Shipment Status` get the field cleared rather than being moved to their own project.
+
+**Why now.** Every one of the four is cheap today for the same reason — the state field is barely used. CAPA holds one task with a null Status, so its option split migrates nothing. Quality has 15 of 95 tasks carrying Status. Inventory has one of 42. Logistics has six real shipments. That stops being true as the queues fill, so the window for a free migration is now.
+
+**What the live pull changed about the plan.**
+
+Quality did not need its Status field split, which is what I recommended before checking. `Batch State` already existed on the project with exactly the eight batch options, and it was already the authoritative field in practice: on the three near-expiry batches it read `Watch` and the task sat in `Batch — Watch`, while `Status` still said `Active`. So the fix is subtraction — delete the batch options from `Status` — not surgery. The `Watch` collision that made the queue unrulable disappears without renaming anything.
+
+Logistics was worse than "independent axes," which is how the registry had it. `Shipment Status` was being used as a generic progress field on 17 tasks that are not shipments — "Engage Pedrero on CNF filings" was `Pre-Ship`, "Log customs costs to PLM" was `Delivered`. A rule built on the field in that state would have filed a monitoring task under Delivered. Cleared.
+
+**The general principle, stated because it decided Logistics.** Direction is set once when a shipment is created and never changes; position changes constantly. The field carries what is stable and queryable, the section carries what moves. Alvin accepted losing at-a-glance inbound/outbound board grouping in exchange for full rule coverage, since Logistics would otherwise stay the one queue where skills and rules both move sections.
+
+**Build order, cheapest first:** CAPA (0 tasks to migrate) → Quality (12) → Inventory (~38) → Logistics (6, but structural). All four specs live in `references/architecture/queue_registry.md`. The UI edits are Alvin's; the MCP cannot create or edit custom fields, sections, or rules.
+
+**Also settled.** `Ciarra Robinson's previously assigned tasks` is emptied — all 23 tasks were already assigned to Alvin, so the stale project membership came off. It had been surfacing as a phantom sixth section on AC Brands Inventory, which is the cheapest illustration yet of why `memberships` must never be read as belonging to the project you asked about.

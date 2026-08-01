@@ -145,17 +145,21 @@ Near-expiry tasks arrive here multi-homed from `inventory-manager` at 90/60/30 d
 
 ### Custom fields (cached 2026-05-09)
 
-All fields exist on SJS Quality Management. Canonical GID + option-GID reference: `/Users/alvinbelt/Documents/Claude/Projects/Skill Builder/asana-field-gids.md`. v5.4 fields below; v5.3 fields reused.
+All fields exist on SJS Quality Management. Canonical section + field + option GIDs: `references/architecture/queue_registry.md`, pulled live. (This previously pointed at `asana-field-gids.md` on a local Mac path — that file is not in this repo and cannot be read from a session or a Routine.) v5.4 fields below; v5.3 fields reused.
 
 **New for v5.4:**
-- `Batch State` (single-select: Active, Stability Pending, Hold/Release Review, On Hold, Watch, Released, Pulled, Expired)
+- `Batch State` `1214660230825974` (single-select: Active, Stability Pending, Hold/Release Review, On Hold, Watch, Released, Pulled, Expired) — **this is the batch state field. Write it.** See the note below on which of the two fields is authoritative.
 - `Stability Phase` (single-select: PET-launch, PET-EOL, Accelerated-3mo, Real-time-annual, Microbial-spot-check, Other)
 - `Linked SKU` (text — SKU code + name)
 - `Hold Reason` (single-select: Lab fail, Complaint trend, Vendor signal, Regulatory observation, Internal flag, Other)
 - `Window End` (date — for stability schedules and watch-list re-reviews)
 
 **Reused from v5.3 (already spec'd in quality-lab-coordinator):**
-- `Status` — gets new options added (Active, Stability Pending, Hold/Release Review, On Hold, Watch, Released, Pulled, Expired)
+- `Status` `1214660437047242` — **do not write batch values here.** v5.4 added `Batch State` and *also* duplicated its eight options onto `Status`, giving one field two unrelated workflows and making the whole queue impossible to hand to an Asana Rule. `Status` belongs to `quality-lab-coordinator`'s lab-findings machine: Inbound, Triage, Vendor Flag Review, Scorecard Signaled, CAPA Open, Watch, Closed.
+
+  **The live data settles it.** Pulled 2026-08-01: all seven batch tasks carry both fields. Four agree. On the three near-expiry batches — Soursop Vit C 942407, Pava Toner 930312, Good Youth Retinol 617411 — `Batch State = Watch` and the task sits in `Batch — Watch`, while `Status` still says `Active`. `Batch State` matches reality; `Status` is a stale copy that is wrong on three of seven. Write `Batch State`, leave `Status` alone, and let it be cleared on batch tasks per the migration in the registry.
+
+  **Field change specced, pending Operator UI edit:** the eight batch options come off `Status` entirely, along with the undocumented `Pending`. Once that lands, two rule sets own section movement — one keyed on `Status` for lab findings, one on `Batch State` for batches — and their section sets are disjoint, so they cannot fight. This skill then stops issuing section moves. Spec, evidence table and migration list: `references/architecture/queue_registry.md`, SJS Quality Management.
 - `Gate` — same Open / Pending Operator / Pending QA Lead
 - `Severity` — same Critical / Major / Minor
 - `Linked Batch` — text (PLM `batch_code`)

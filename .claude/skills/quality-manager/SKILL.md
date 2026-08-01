@@ -231,7 +231,7 @@ Read-most umbrella. The contract applies to the cross-cutting tasks this skill d
 
 ### Custom fields (cached 2026-05-09)
 
-All fields exist on SJS Quality Management. Canonical GID + option-GID reference: `/Users/alvinbelt/Documents/Claude/Projects/Skill Builder/asana-field-gids.md`. New v5.5 fields below; v5.3/v5.4 fields reused.
+All fields exist on SJS Quality Management. Canonical section + field + option GIDs: `references/architecture/queue_registry.md`, pulled live. (This previously pointed at `asana-field-gids.md` on a local Mac path — that file is not in this repo and cannot be read from a session or a Routine.) New v5.5 fields below; v5.3/v5.4 fields reused.
 
 **New for v5.5:**
 - `Cross-cutting Type` (single-select: SOP Annual Review, Audit Prep, Retailer Questionnaire, Regulatory Inspection, Quality System Review, QoS Threshold Crossed, Other)

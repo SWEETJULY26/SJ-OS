@@ -131,6 +131,10 @@ This skill's existing multi-homed-tasks principle is the model the contract gene
 - *Project:* **AC Brands Inventory** — `1214374368959019`. (This previously read "AC Brands Ops Dashboard (GID to be confirmed on first run)"; that project is `1202106077428461` and is **archived** — do not route to it.)
 - *Sections:* five, per `references/architecture/queue_registry.md` — HITL — Needs Operations Review, Active Movements, Stock Risks, Reconciliation, Closed. (Previously documented as a single section.)
 - *Custom fields:* `SKU` `1213879801597825`, `PLM Link` `1214370303255301`, and a `Status` enum `1214374252744527` whose options are a generic approval set (Pending Review / Approved / In Progress / On Hold / Closed / Cancelled) that describes none of this queue's states. This skill's state stays in the title prefixes below until that field is re-optioned; the registry records it as unusable rather than as this queue's state field.
+
+  **Field change specced, pending Operator UI edit.** The generic options get replaced by seven that map onto the five sections — `Pending Review`, `Receiving`, `Movement In Flight`, `Stock Risk`, `Reconciling`, `Closed`, `Cancelled` — after which an Asana Rule owns section movement and this skill writes Status only. The prefixes stay in titles as work-type labels; they do not become field options, because work type cannot pick a section on its own. Spec, rationale and migration list: `references/architecture/queue_registry.md`, AC Brands Inventory.
+
+  Worth knowing when reading this queue: as of 2026-08-01 exactly one of 42 tasks carried a Status value and exactly one used a title prefix. Neither mechanism is actually in use yet, so do not infer state from their absence.
 - *Detail home:* templated task descriptions (see references/task-description-templates.md)
 
 ### HITL queue title prefixes

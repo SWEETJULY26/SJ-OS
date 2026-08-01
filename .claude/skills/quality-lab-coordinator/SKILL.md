@@ -140,10 +140,15 @@ Three routes reach the same failing test — the lab's email via `outlook-plm-br
 | Closed | `1214660716447873` | completed lab findings |
 ### Custom fields (cached 2026-05-09)
 
-All fields exist on SJS Quality Management. Canonical GID + option-GID reference: `/Users/alvinbelt/Documents/Claude/Projects/Skill Builder/asana-field-gids.md`. The fields the skill uses:
+All fields exist on SJS Quality Management. Canonical section + field + option GIDs: `references/architecture/queue_registry.md`, pulled live. (This previously pointed at `asana-field-gids.md` on a local Mac path — that file is not in this repo and cannot be read from a session or a Routine.) The fields the skill uses:
 
-- `Status` (single-select: Inbound, Triage, Vendor Flag Review, Scorecard Signaled, CAPA Open, Watch, Closed) — carries workflow state. Steady-state read field.
-  - `Gate` (single-select: Open, Pending Operator, Pending QA Lead) — orthogonal to Status. Carries who's holding the puck. Snaps to Open on approval.
+- `Status` `1214660437047242` (single-select: Inbound, Triage, Vendor Flag Review, Scorecard Signaled, CAPA Open, Watch, Closed) — carries workflow state. Steady-state read field.
+
+  Those seven are this skill's machine and they are the ones to write. The field currently also carries eight batch-lifecycle options plus an undocumented `Pending`, added at `batch-lifecycle-tracker` v5.4 on a field that already had `Batch State` for the purpose. Ignore all nine; they come off the field per the spec in `references/architecture/queue_registry.md`. Batch state belongs on `Batch State` `1214660230825974`, which live data confirms is already the authoritative one for batch tasks.
+
+  Once those nine options are gone, an Asana Rule owns section movement off `Status` and this skill stops moving sections — with one carve-out: `Inbound` gets no rule, because both `Inbound Staging` and `Cross-cutting Tasks` are legitimate landing homes and Status alone cannot tell them apart. Keep setting the section explicitly on intake.
+
+  - `Gate` `1214660230825947` (single-select: Open, Pending Operator, Pending QA Lead, Pending Regulatory Lead) — orthogonal to Status. Carries who's holding the puck. Snaps to Open on approval.
   - `LF Number` (text, format `LF-YYYY-NNN`)
   - `Classification` (single-select: OOS, OOT, Incoming Defect, Pattern, In-Spec Flag)
   - `Severity` (single-select: Critical, Major, Minor) — same bands as the NCR Procedure for downstream alignment
