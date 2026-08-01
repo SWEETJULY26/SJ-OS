@@ -178,10 +178,12 @@ Twelve sections live, not eleven. Canonical list: `references/architecture/queue
 Sections carry the fine-grained workflow surface; Status field carries SOP phase. The two are loosely coupled — a task in the Investigation section maps to Status = Investigation — but Status is the field operators query against, not the section.
 - *Custom fields:*
   - `Status` (single-select: Inbound, NCR Review, Investigation, Action Plan, Implementation, Verification & Effectiveness, Closed, Closed-No-CAPA) — carries SOP phase per SKN-OPS-001 §5.1 → §5.6 plus terminal states. The skill writes Status on every state transition. Steady-state read field.
+
+    **Field change specced, pending Operator UI edit.** `Verification & Effectiveness` becomes `Verification`, `Effectiveness` and `NCR Open` get added, and the `CAPA Open` and `Untitled` sections get deleted — which makes Status map one-to-one onto sections and hands section movement to an Asana Rule. Spec and rationale: `references/architecture/queue_registry.md`, SJS CAPA Log. Until those edits land, write `Verification & Effectiveness` for both §5.5 and §5.6 as today, and keep moving sections from the skill. Once they land, write `Verification` and `Effectiveness` separately and stop moving sections.
   - `Gate` (single-select, shared field `1214660230825947`: Open, Pending Operator, Pending QA Lead, Pending Regulatory Lead) — orthogonal to Status. Carries who's holding the puck. Transient. Snaps back to Open on approval.
   - `NCR Number` (text, format `NCR-YYYY-NNN`)
   - `CAPA Number` (text, format `CAPA-YYYY-NNN`)
-  - `Source` (single-select: complaint-trend, lab-OOS, lab-OOT, vendor-receipt, process-deviation, audit-finding, regulatory-observation, internal-flag, direct-open)
+  - `Source` (single-select, 12 options live: complaint-trend, lab-OOS, lab-OOT, vendor-receipt, vendor-systemic, batch-pattern, COA-mismatch, process-deviation, audit-finding, regulatory-observation, internal-flag, direct-open) — the three middle vendor/batch values were added in Asana and were missing from this list until 2026-08-01. Option GIDs in the registry.
   - `Severity` (single-select: Critical, Major, Minor)
   - `Linked Batch` (text — PLM batch ID; vendor and SKU resolve from the batch via plm-assistant)
   - `Root Cause Statement` (text)

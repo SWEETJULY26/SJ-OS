@@ -71,7 +71,39 @@ Sourcing & RFQ, Vendor Onboarding, Vendor Invoices and Cross-Skill Dashboard hol
 | Reconciliation | `1214374252744522` |
 | Closed | `1214374252744523` |
 
-A `Status` field exists — `1214374252744527` — but its options are `Pending Review` / `Approved` / `In Progress` / `On Hold` / `Closed` / `Cancelled`: a generic approval vocabulary that describes none of this queue's actual states. `inventory-manager` carries state in title prefixes instead (`SKILL.md:139-149`: `[Receive]`, `[Low Stock]`, `[Position Variance]`, …). Treat the field as a leftover, not a state field. **No state → section map is possible until the field is re-optioned to match the work types** — flagged, not fixed here.
+A `Status` field exists — `1214374252744527` — but its options are `Pending Review` / `Approved` / `In Progress` / `On Hold` / `Closed` / `Cancelled`: a generic approval vocabulary that describes none of this queue's actual states. `inventory-manager` carries state in title prefixes instead (`SKILL.md:139-149`: `[Receive]`, `[Low Stock]`, `[Position Variance]`, …). Treat the field as a leftover, not a state field.
+
+### What is actually in this queue — pulled 2026-08-01
+
+42 tasks, 21 open. Two numbers decide the redesign:
+
+**One task of 42 has a non-null Status** — `Terry Headband — Update UPC` `1216724829783968`, set to `Pending Review`. The field has effectively never been used, so re-optioning it costs one task.
+
+**One task of 42 uses a title prefix** — the `[Receive]` on PO 100310 `1217082576096228`, created during this session's Element work. The eleven-prefix vocabulary at `inventory-manager/SKILL.md:139-149` is documented but not practiced; every other task carries a plain descriptive name. So the queue has no working state mechanism at all right now — not a field, and not the prefixes the skill claims to use instead.
+
+Thirteen of the 21 open tasks are `Send [SKU] to Amazon FBA`, multi-homed into `Active Movements` from their SKU project's `Phase 5 - Final Production`. That is what this queue mostly holds, and it is why the section names are work-type buckets rather than phases.
+
+**Eleven tasks are also homed in `Ciarra Robinson's previously assigned tasks` `1216923783441065`, section `Untitled section` `1216923764491937`** — a departed-staff handoff project. That section is not part of AC Brands Inventory; it surfaced in the task read because `memberships` spans every project a task belongs to, which is the trap recorded in `asana_task_contract.md`. `get_project` confirms Inventory has exactly the five sections listed above. The eleven tasks are worth a separate reassignment pass; they are not a registry problem.
+
+### Field change to make this rulable
+
+Re-option `Status` `1214374252744527`. Delete the six generic options and create these seven:
+
+| Status | Section |
+|---|---|
+| Pending Review | HITL — Needs Operations Review |
+| Receiving | Active Movements |
+| Movement In Flight | Active Movements |
+| Stock Risk | Stock Risks |
+| Reconciling | Reconciliation |
+| Closed | Closed |
+| Cancelled | Closed |
+
+Seven options onto five sections — many-to-one, which is all a rule needs. Record the new option GIDs here on creation.
+
+**Why not one option per title prefix.** The eleven prefixes name *work types*, not states, and work type alone cannot pick the section: a `[Write-Off Review]` awaiting approval belongs in HITL, and the same task after approval does not. Section here is a function of gate-and-position, which is what the seven options above encode. Keep the prefixes in titles for the finer distinction — they are free text and cost nothing. If the work type ever needs to be queryable ("show me every near-expiry item"), add a separate `Work Type` field that has **no** bearing on section, orthogonal the way `Gate` is elsewhere. Do not fold work type into Status.
+
+**Migration:** set `Status = Movement In Flight` on the thirteen FBA-send tasks, `Pending Review` on the three in HITL, `Reconciling` on the one in Reconciliation, and `Closed` on the 21 completed. Roughly 38 writes, all mechanical, all derivable from current section — a skill can do it in one pass once the options exist.
 
 ## Sweet July Skin S&OP — `1214347479282044`
 
@@ -173,7 +205,7 @@ Also live: option `Pending` `1214660230825945`, which appears in no skill's docu
 
 ## SJS CAPA Log — `1214660784338465`
 
-**State field:** `Status` — `1214660230826043` · **Authority:** Status (already declared) · **Rule owns movement:** no
+**State field:** `Status` — `1214660230826043` · **Authority:** Status (already declared) · **Rule owns movement:** no — **pending the field change specced below**
 
 | Section | GID |
 |---|---|
@@ -201,7 +233,39 @@ Also live: option `Pending` `1214660230825945`, which appears in no skill's docu
 | Closed | `1214660230826050` | Closed |
 | Closed-No-CAPA | `1214660230826051` | NCR Closed (No CAPA) |
 
-12 sections against 8 options, so the map is not onto: `NCR Open`, `CAPA Open`, `Effectiveness Review` and `Untitled section` have no Status value pointing at them. `capa-coordinator/SKILL.md:173` already says the two are "loosely coupled" and that Status is what operators query — consistent with the authority rule. `Verification & Effectiveness` covering both the `Verification` and `Effectiveness Review` sections is the ambiguity to resolve before ruling this queue.
+12 sections against 8 options, so the map is not onto: `NCR Open`, `CAPA Open`, `Effectiveness Review` and `Untitled section` have no Status value pointing at them. `capa-coordinator/SKILL.md:173` already says the two are "loosely coupled" and that Status is what operators query — consistent with the authority rule. `Verification & Effectiveness` covering both the `Verification` and `Effectiveness Review` sections is the ambiguity that blocks a rule.
+
+`Source` carries **12 options** live — the nine `capa-coordinator` documents plus `vendor-systemic` `1214660230825968`, `batch-pattern` `1214660230825969` and `COA-mismatch` `1214660230825970`. Full set: complaint-trend `…826060` · lab-OOS `…825965` · lab-OOT `…825966` · vendor-receipt `…825967` · vendor-systemic · batch-pattern · COA-mismatch · process-deviation `…826057` · audit-finding `…826058` · regulatory-observation `…826059` · internal-flag `…825971` · direct-open `…825972`.
+
+### Field change to make this rulable
+
+**Do it now: the queue holds one task, and that task has a null Status.** Zero tasks carry `Verification & Effectiveness`, so there is no migration — the split is a pure rename plus an add. Verified live 2026-08-01: `num_tasks: 1`, and the one task is `[SOP Revision Pending — quality-manager]` in Inbound Staging, a cross-skill staging item that never enters the CAPA phase machine.
+
+Four UI edits, in this order:
+
+1. **Rename** Status option `Verification & Effectiveness` — `1214660230826049` — to **`Verification`**. Rename, do not delete; the GID is cited in `capa-coordinator` and keeping it means no option GID churn.
+2. **Add** Status option **`Effectiveness`**, positioned directly after `Verification`. Record its new GID here on creation.
+3. **Add** Status option **`NCR Open`**, positioned directly after `Inbound` — the `NCR Open` section is currently unreachable by field.
+4. **Delete** the sections **`CAPA Open`** `1214660787241932` and **`Untitled section`** `1214660784338484`.
+
+`CAPA Open` is deleted rather than given a Status value because it is not a phase — it is the union of Investigation, Action Plan, Implementation, Verification and Effectiveness. Any task in one of those phases is also "CAPA open," so a rule keyed on Status could never choose between them. What actually distinguishes a CAPA from an NCR is the `CAPA Number` field being populated, which is already how `capa-coordinator` tracks conversion. Keeping the section guarantees the ambiguity; deleting it costs nothing, since no task sits there.
+
+**Target map — 10 options, 10 sections, one-to-one:**
+
+| Status | Section |
+|---|---|
+| Inbound | Inbound Staging |
+| NCR Open *(new)* | NCR Open |
+| NCR Review | NCR Review |
+| Investigation | Investigation |
+| Action Plan | Action Plan |
+| Implementation | Implementation |
+| Verification *(renamed)* | Verification |
+| Effectiveness *(new)* | Effectiveness Review |
+| Closed | Closed |
+| Closed-No-CAPA | NCR Closed (No CAPA) |
+
+Once the four edits land, this queue is rulable: ten rules, trigger *Status changes to X* → action *move to section Y*. Same caveats as Purchasing — bind the field by GID `1214660230826043`, not by picking "Status" from a dropdown, and stop `capa-coordinator` from issuing section moves only after a dry run confirms the rule fires.
 
 ## SJ Skin Complaint Log — `1204763097184846`
 
