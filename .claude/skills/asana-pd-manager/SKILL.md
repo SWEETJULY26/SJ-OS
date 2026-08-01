@@ -88,6 +88,20 @@ Subtasks: [List if applicable]
 - *Trigger:* phrases in `references/trigger-phrases.md` §task-creation; inbound from PD bridges
 - *HITL:* Operator confirms via Rule 1 preview before creation. Subtasks confirm parent task before children.
 
+### PO requests — the PD side of the purchasing handoff
+
+Every SKU project carries a create-PO task. It is a **request**, not the order, and the two stay separate. `purchasing-manager` Job 3's "Request and order are two tasks" section is the canonical statement; this is the PD half.
+
+**Name it `[PO Request] <SKU> — <what is being bought>.`** The prefix is what makes the chain legible — a request reads as a request, and `purchasing-manager`'s `PO <number> — <vendor>` reads as the order. Historic tasks named "Process Cleansing Oil Formula Fill PO" or "Create Cleansing Oil Assembly PO in PLM" are the old shape; rename on next touch rather than in a sweep.
+
+**What the PD request owns:** readiness. Artwork approved, formula signed off, quantities settled, supplier confirmed. It closes when the PO exists — not when the goods arrive, and not when the invoice clears. Those belong to the Purchasing task.
+
+**Never multi-home it into AC Brands Purchasing.** A PD milestone in a purchase-to-pay queue carries no purchase-to-pay state, so no rule can move it and it sits in Receiving forever. Nine such tasks were pulled back out on 2026-07-31. The link is a dependency plus the Purchasing task's four link fields, not a shared home.
+
+**One request, several orders.** One readiness gate routinely spawns multiple POs — primary packaging, secondary carton, formula fill. Expect several Purchasing tasks to depend on one request; that is correct, and it is the second reason multi-homing cannot express this.
+
+**When the PO lands,** `purchasing-manager` comments the number and vendor back onto the request. Read that comment rather than opening Purchasing.
+
 ### Job 5 — Updates, assignments, section moves, multi-homing
 
 Update task name, notes, due date, assignee, completion status. Assign by looking up user GID per `references/role-map.md`. Confirm all changes (Rule 1, Rule 5).

@@ -325,6 +325,7 @@ split + cross-referenced (same rule as `outlook-asana-bridge`).
 
 | Signal | Source | Routes to |
 |--------|--------|-----------|
+| **Logiwa Receipt Order Report** | Sender `noreply@wmsnotification.com` or `noreply@wmssystem.logiwa.com`, subject `Receipt Order Report for RO#… of Sweet July` | **inventory-manager** Job 2 owns it. This is a PLM write (`po_receipts` / `po_receipt_items`), not a cross-flag — stage it and hand over. Parse the **inline body table**, not the attachment. Spec, RO classification and the reconciliation rule: `inventory-manager/references/logiwa-receipt-report.md`. Do not read `PO DIFFERENCE = 0` as "PO complete" — it means that receipt order was fully received and nothing more. |
 | Failing test result (Flow E with fail status: PET fail, stability fail, RIPT positive, OOS/OOT) | Lab email body or attachment | **quality-lab-coordinator** as parent (PLM update becomes the cross-reference) |
 | Batch hold, near expiry, recall trigger | Vendor or internal email | **batch-lifecycle-tracker** + adverse-event-and-recall-reporter if recall-relevant |
 | Customer complaint or adverse event referenced in a vendor/lab email | Body | **complaint-and-event-handler**; cross-flag adverse-event-and-recall-reporter for SAE |

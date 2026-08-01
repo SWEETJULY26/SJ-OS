@@ -1,15 +1,15 @@
 # Scheduled task: sjs-regulatory-weekly-digest
 
-Remote routine. Operate in America/Los_Angeles time. The skills repo is cloned at `/home/user/sj-os`.
+Remote routine. Operate in America/Los_Angeles time. The skills repo is cloned at `/home/user/SJ-OS` — **case-sensitive**. If that path does not resolve, locate the repo before doing anything else (`ls -d /home/user/*` and look for the checkout containing `.claude/skills/`) and use what you find; do not proceed on the assumption the skills are unreadable. Until 2026-07-31 every spec in this directory said `/home/user/sj-os`, which does not exist on a case-sensitive filesystem, so fired runs could not read their own instructions.
 The landing hub repo (`SWEETJULY26/acb-thelanding`) is also cloned at `/home/user/acb-thelanding`, **read-only** — use it to check current file structure, CSS tokens, and existing page patterns before generating output. Any skill instructions referencing `/Users/alvinbelt/Downloads/acb-thelanding/` mean this clone. Do not commit or push to it — publishing still goes through the `landing-hub-publish` Netlify Function per the skill's Publishing section.
 
 ## Skills to read and FOLLOW (plain files, not auto-registered — read them as instructions)
-- `/home/user/sj-os/.claude/skills/sjs-regulatory-system/SKILL.md`
-- `/home/user/sj-os/.claude/skills/regulatory-manager/SKILL.md`
-- `/home/user/sj-os/.claude/skills/claims-il-and-label-keeper/SKILL.md`
-- `/home/user/sj-os/.claude/skills/adverse-event-and-recall-reporter/SKILL.md`
-- `/home/user/sj-os/.claude/skills/regulatory-status-reporter/SKILL.md`
-- `/home/user/sj-os/.claude/skills/sjs-master/SKILL.md`
+- `/home/user/SJ-OS/.claude/skills/sjs-regulatory-system/SKILL.md`
+- `/home/user/SJ-OS/.claude/skills/regulatory-manager/SKILL.md`
+- `/home/user/SJ-OS/.claude/skills/claims-il-and-label-keeper/SKILL.md`
+- `/home/user/SJ-OS/.claude/skills/adverse-event-and-recall-reporter/SKILL.md`
+- `/home/user/SJ-OS/.claude/skills/regulatory-status-reporter/SKILL.md`
+- `/home/user/SJ-OS/.claude/skills/sjs-master/SKILL.md`
 Also read any reference files these cite under their skill dirs (e.g. `references/*.md`).
 
 ## Connectors

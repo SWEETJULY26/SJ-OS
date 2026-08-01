@@ -210,6 +210,12 @@ Passing an array or object to `create_tasks` fails validation before the call le
 
 Field names are not unique workspace-wide, and same-named fields on different projects are genuinely different fields with different GIDs and different option sets. Known collision: **`Status`** exists on AC Brands Purchasing (`1214373372406268` — Draft / Sent / Acknowledged / In Transit / Received / Variance / Dispute / Closed / On Hold / Cancelled) and on SJS Quality Management (`1214660437047242` — Inbound / Triage / Vendor Flag Review / … / Pending). A multi-homed task carries both and needs both set. Resolve per project via `get_project`; never reuse a field GID across projects because the name matched.
 
+### Enumeration and subtask traps
+
+`search_tasks` caps at roughly 50 rows and gives no signal that it truncated. Use `get_tasks` with a `section` or `project` scope for any count that matters, and confirm `next_page: null`. A Receiving-section audit on 2026-07-31 reported 10 tasks from `search_tasks` where `get_tasks` returned 58.
+
+Subtasks hold no project membership — the parent does. An empty `projects` array on a subtask means read the parent, not that the task is homeless. Request `parent.gid` whenever placement is the question. Full note in `asana_task_contract.md` under Tool baseline.
+
 ### Other limitations
 - **Custom fields not attached to a project** return `"Custom field with ID X is not on given object"` on `update_tasks` calls. Resolution: attach the field to the project via UI first, then re-run the batch.
 - **Task name copy errors from project duplication** can be fixed via `asana_update_task` with the corrected name.

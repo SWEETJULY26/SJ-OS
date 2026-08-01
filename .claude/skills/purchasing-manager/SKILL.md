@@ -103,9 +103,29 @@ Flow H reads against. Onboard them through this skill on the same HITL flow.
 The biggest job. Six sub-flows that walk a PO from draft to close. The PO is one Asana task that carries forward; **Status** field changes and section moves replace any title rewriting. Task title format stays `PO Number — Vendor` throughout.
 
 **3a. PO to place**
-- *Trigger:* approved reorder review, NPI ramp, manual ask ("place a PO for X")
-- *Action:* Draft PO in PLM (line items, quantities, prices, vendor terms). Open Asana task in **HITL — Needs Operations Review** section, Status = **Draft**, Vendor + PLM Link populated. Description holds PO summary, total, expected receipt date, linked PD task if applicable.
+- *Trigger:* approved reorder review, NPI ramp, manual ask ("place a PO for X"), or a PD `[PO Request]` task reaching readiness
+- *Action:* Draft PO in PLM (line items, quantities, prices, vendor terms). Open Asana task in **HITL — Needs Operations Review** section, Status = **Draft**, Vendor + PLM Link populated. Description holds PO summary, total, expected receipt date.
+- *Link it to the PD request — see "Request and order are two tasks" below.* Set the dependency and fill the four link fields in this same write, not later.
 - *HITL:* Operations reviews PLM draft. On approval, sends PDF via email to vendor.
+
+### Request and order are two tasks, linked — never one task multi-homed
+
+Every PD project carries a create-PO task. That task and the Purchasing PO task are **different work items with a handoff**, and both are kept.
+
+- The **PD request** is gated on PD readiness — artwork approved, formula signed off, quantities settled. No PO number exists yet. It closes when the PO is created. PD owns it.
+- The **Purchasing order** is the lifecycle from the moment a number exists: Draft → Sent → Acknowledged → In Transit → Received → Closed. It closes when the invoice matches. Purchasing owns it.
+
+Phase 4's test settles it: could one person close it once? No — "create the PO" closes when the PO exists, the PO task closes on invoice match. Two closes, two tasks.
+
+**Do not multi-home the PD task into this project.** That is what filled the Receiving section with PD milestones carrying no purchase-to-pay state, which no rule could ever move. It also cannot represent reality: the relationship is **one-to-many**. One PD readiness gate spawns several POs — Castaway Cleansing Oil alone has an assembly PO, a formula fill PO, and PO 100298 for secondary cartons. One task cannot be three orders.
+
+Link them three ways instead, all in the Job 3a write:
+
+1. **Dependency.** The Purchasing PO task **depends on** the PD request task — `update_tasks` with `add_dependencies: [<pd task gid>]`. This is the piece that expresses the actual gate: a PO should not go out against artwork that is not approved. Visible from both sides without either project owning the other's task. Several PO tasks may depend on one PD request; that is the expected shape.
+2. **The four link fields**, which exist on this project and are usually empty: `Linked Project` `1214761891654217`, `Linked Project GID` `1214761891654219`, `Linked SKU` `1214660230826031`, `PLM Product ID` `1214761891654215`. Filling them makes the PO task self-describing — which SKU it serves, readable without opening another project. Where no PD project exists (an in-market SKU reordering components), write `TBD — <why>` per the Phase 1 rule rather than leaving it blank or pointing at a near-miss project.
+3. **The PO number flowing back.** On creation, comment the number and vendor onto the PD request task so PD sees `PO 100346 placed — Element Packaging` in its own project without leaving it.
+
+**Naming.** PD side `[PO Request] <SKU> — <what is being bought>`. Purchasing side `PO <number> — <vendor>`. The prefix is what makes it obvious which is the request and which is the order; before 2026-07-31 the two ends read as unrelated task names ("Process Cleansing Oil Formula Fill PO" against "PO 100346 — Element Packaging") and nothing tied them.
 
 **3b. PO sent**
 - *Trigger:* `outlook-plm-bridge` / `outlook-asana-bridge` detect the PO PDF being sent from Sent Items, OR the operator marks the task sent as a manual fallback
@@ -121,15 +141,25 @@ The biggest job. Six sub-flows that walk a PO from draft to close. The PO is one
 
 **3d-side. Cancellation**
 - *Trigger:* operator request ("cancel PO X"), or vendor cancellation logged via outlook-plm-bridge
-- *Action:* HITL confirm. On approval, PLM PO status → Cancelled, Asana Status = **Cancelled**, task moves to **Closed** section and gets marked complete. Available from any state prior to Received.
+- *Action:* HITL confirm. On approval, PLM PO status → Cancelled, Asana Status = **Cancelled**, task moves to **Closed** section. Available from any state prior to Received.
+- *Completion — check the other homes first.* Asana completion is a property of the task, not of a project, so ticking it closes the task in **every** project it is multi-homed into. Before marking complete, read `memberships` and confirm no other system still owns open work: a PO multi-homed into a SKU project, Logistics, or Quality is not done just because Purchasing is. Per `asana_task_contract.md` Phase 4, the **last** system to finish completes the task. If another home is still open, leave it incomplete, move the section, and say so in the cancellation comment. This is why the Asana Rule on this queue moves sections only and never marks complete.
 
 **3e. Receipt (two scenarios)**
 
 Receipt is the formal hand-off where goods land at OC3PL (Logiwa WMS), the PO status flips to Received, and the batch record is created in PLM. The receipt task home depends on whether the PO is PD-linked.
 
-**Scenario A — PD-linked.** The PO traces to a linked PD task (linkage already known via the multi-home rule). A receipt task already lives in the PD project. Don't create a duplicate. Set the **PLM Link** field on the existing PD task to point at the PO record, then multi-home that task into AC Brands Purchasing, **Receiving** section. Downstream: OC3PL notifies via email or Asana comment → operator updates the task with the Logiwa Receipt Order ref and marks Status = **Received**. `plm-assistant` updates the PLM PO status and creates the batch entry. **PD owns the close.**
+**Scenario A — PD-linked.** The PO traces to a linked PD task. Set the **PLM Link** field on that PD task to point at the PO record so the linkage is visible from the PD side — but **do not multi-home the PD task into Receiving for an ordinary full receipt.** The PO task carries the receipt state, exactly as in Scenario B; the PD task carries the PD milestone. Multi-home only when PD genuinely owns the close on the same work item, per `asana_task_contract.md` Phase 4's could-one-person-close-it-once test. Downstream is the same: OC3PL notifies → operator records the Logiwa Receipt Order ref on the PO task and marks Status = **Received** → `plm-assistant` updates the PLM PO status and creates the batch entry.
 
-**Scenario B — Standalone.** No PD project for this PO. The skill creates a `Receipt — Vendor Name — PO Number` task in the **Receiving** section, description per the Receipt template (references/task-description-templates.md). Same downstream: OC3PL notifies → operator updates the Logiwa ref and marks Status = **Received** → `plm-assistant` writes the PLM PO status and batch entry. Purchasing holds the receipt task open until the invoice clears (Job 3f).
+This changed 2026-07-31. The old rule multi-homed a PD receipt task into Receiving on every PD-linked PO, which is how six of the seven tasks found in that section came to carry no Status at all — they were PD milestones sitting in a purchase-to-pay queue with no purchase-to-pay state, so nothing would ever move them.
+
+**Scenario B — Standalone.** No PD project for this PO. **Do not open a separate receipt task for a single full receipt.** The PO task itself carries the receipt: mark Status = **Received**, which lands it in the **Receiving** section per `references/architecture/queue_registry.md`, record the Logiwa Receipt Order ref and counts on that task, and `plm-assistant` writes the PLM PO status and batch entry. Purchasing holds the PO task in Receiving until the invoice clears (Job 3f). One PO, one task, all the way through.
+
+A separate `Receipt — Vendor Name — PO Number` task in **Receiving** is right in exactly two cases:
+
+- **Partial receiving.** PLM's `po_receipts` / `po_receipt_items` allow multiple receipt rows per PO — 10,000 units arriving in two containers on different dates with different batch codes is two receipt events. One PO task cannot hold two receipt states, so each partial receipt gets its own task keyed `PO number + receipt date`. The PO task stays in Receiving until the last one lands, then goes to Closed on the invoice match.
+- **A discrepancy.** Count variance, damage, or missing items opens a Job 10 discrepancy task, which is its own deliverable with its own close.
+
+Rationale, since this reversed on 2026-07-31: before the state → section map existed, nothing moved a PO out of POs In Flight, so a receipt task in Receiving was the only way the section had contents. Now `Received → Receiving` moves the PO task itself, and a second task for the same single event is a duplicate whose Status is always null — which is exactly what the live audit of the Receiving section found.
 
 QA itself stays on the PD side in both scenarios; Purchasing only carries the receipt signal.
 
@@ -137,7 +167,8 @@ QA itself stays on the PD side in both scenarios; Purchasing only carries the re
 
 **3f. Invoice + close (manual 3-way match in v1)**
 - *Trigger:* outlook-plm-bridge logs an invoice
-- *Action:* Skill stages a 3-way match in PLM (PO / receipt / invoice). Discrepancies → Status = **Variance**, task moves back to **HITL — Needs Operations Review**. Clean match → PLM PO closed, Status = **Closed**, Asana task moves to **Closed** section and gets marked complete.
+- *Action:* Skill stages a 3-way match in PLM (PO / receipt / invoice). Discrepancies → Status = **Variance**, task moves back to **HITL — Needs Operations Review**. Clean match → PLM PO closed, Status = **Closed**, Asana task moves to **Closed** section.
+- *Completion — same multi-home check as 3d-side.* Purchasing finishing its invoice match does not mean the freight leg cleared customs or that PD closed its side. Read `memberships`, and only mark complete when Purchasing is the last home with open work. Otherwise move the section and leave completion to whoever finishes last.
 - *Cost ledger:* The same invoice also gets logged as a `vendor_invoices` row via Job 9. PO-bound invoices have `po_link` populated, which is how Job 9 dedups against the 3-way match.
 - *Note:* When AP system integration ships (future), this match becomes automated. The current task data is structured to plug into that later without rewrite.
 

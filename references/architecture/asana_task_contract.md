@@ -6,7 +6,7 @@
 
 **Companion contracts:** `bridge_queue_contract.md` decides *which queue* a task belongs to. `queue_registry.md` records each queue's sections, state field, and state → section map — the section half of Phase 4 reads from it. This file decides *what the write looks like once the queue is known*. HITL confirmation itself lives in `asana-pd-manager/references/confirmation-protocol.md` (Rule 1); this contract adds the field discipline that confirmation preview displays.
 
-**Last updated:** 2026-07-31 — Phase 4: state field is authoritative and section is a projection of it, mapped per queue in the new `queue_registry.md`; where a Rule owns a queue's movement, skills write the field and don't move sections. Same date: every new home gets its fields populated in the same pass as the multi-home. Phase 3: Nicole added as an unconditional follower alongside Alvin, per the 2026-07-30 quality-gate decision. She was previously picked up only when she held the queue's gate or was named in the source, which left her off most Ops and PD tasks. Prior 2026-07-29 — Authored to close four gaps Alvin flagged: bridges created tasks without checking for an existing one, left fields blank when the source didn't mention them, shipped tasks with no due date, and split same-work items into separate cross-referenced tasks in each queue instead of multi-homing one.
+**Last updated:** 2026-07-31 — Tool baseline: three enumeration and placement traps documented after each cost real errors in one session — subtasks carry no project membership so the parent holds the home, `search_tasks` silently caps at ~50 rows so `get_tasks` is the only honest enumerator, and a primary-server timeout needs state verified via the alternate server rather than assumed. Same date: dependencies express gates while homes express ownership, per the PD PO request / Purchasing PO order split in `purchasing-manager` Job 3. Phase 4: state field is authoritative and section is a projection of it, mapped per queue in the new `queue_registry.md`; where a Rule owns a queue's movement, skills write the field and don't move sections. Same date: every new home gets its fields populated in the same pass as the multi-home. Phase 3: Nicole added as an unconditional follower alongside Alvin, per the 2026-07-30 quality-gate decision. She was previously picked up only when she held the queue's gate or was named in the source, which left her off most Ops and PD tasks. Prior 2026-07-29 — Authored to close four gaps Alvin flagged: bridges created tasks without checking for an existing one, left fields blank when the source didn't mention them, shipped tasks with no due date, and split same-work items into separate cross-referenced tasks in each queue instead of multi-homing one.
 
 ---
 
@@ -28,6 +28,18 @@ Verified working against the AC Brands workspace on 2026-07-29:
 
 **Empty-memberships gotcha.** `search_tasks` sometimes returns `memberships: []` for a task that genuinely sits in the searched project. Never read that as "not in a project" or "no section" — re-read the task with `get_task` before deciding placement. Acting on the empty array is how a resolve step wrongly concludes a task needs creating or re-homing.
 
+**Subtasks carry no project membership — read the parent.** A subtask's `memberships` and `projects` are genuinely empty unless it was separately added to a project, and that emptiness is real rather than the gotcha above. The work still lives in a project; the *parent* holds the home. So an empty `projects` array on a subtask means "ask the parent", never "this task is homeless" and never "this task is only in the project I found it in."
+
+This bit twice on 2026-07-31, which is why it is written down. First a shipping subtask read as projectless when its parent sat in a SKU project's Phase 5. Then four drawdown-collection tasks were classified as Purchasing-only and slated for a move, when each was in fact subtask 3 of a 13-step packaging workflow whose parent lived in the SKU project's Phase 3 — the Purchasing membership was the stray, and moving them would have deepened the error rather than fixing it.
+
+Before concluding anything about a task's home, request `parent.gid` alongside `memberships`, and if a parent exists, read its memberships too. `resource_subtype: approval` tasks are common inside these workflows and behave the same way.
+
+**Enumerate with `get_tasks`, not `search_tasks`.** `search_tasks` silently caps its result set — around 50 rows regardless of how many match — and returns no indication that it truncated. An audit built on it reports a sample as a population. `get_tasks` scoped to a `section` or `project` paginates honestly and returns `next_page: null` when the set is complete; check that field before treating a count as total.
+
+The cost of getting this wrong, 2026-07-31: a Receiving-section audit run on `search_tasks` reported 10 tasks needing cleanup. `get_tasks` on the same section returned 58, with `next_page: null`. The first number was a sixth of the real one, and was reported as complete.
+
+**Server fallback.** When `mcp__Asana__*` times out mid-batch, do not assume the write did or did not land. `mcp__Asana-c313a468__asana_get_task` is a working read fallback and will answer when the primary will not — use it to establish actual state, then retry in smaller batches. It cannot substitute for writes: its `asana_update_task` has no `add_projects`/`remove_projects`, so project membership changes must go through the primary server.
+
 ---
 
 ## Phase 0 — Resolve before create
@@ -44,6 +56,9 @@ Every task type declares a **dedupe key**: the smallest set of identifiers that 
 | Stock position | `SKU + location` | `inventory-manager` |
 | Near-expiry | `batch code + threshold` | `inventory-manager` → `batch-lifecycle-tracker` |
 | PO receipt | `PO number + vendor` | `purchasing-manager` |
+| Partial PO receipt | `PO number + receipt date` | `purchasing-manager` (matches PLM's multi-row `po_receipts`) |
+| Logiwa receipt order | `RO id` | `inventory-manager` (free-text RO; see `inventory-manager/references/logiwa-receipt-report.md`) |
+| PO request (PD side) | `SKU + what is being bought` | `asana-pd-manager` (the request, not the order — see `purchasing-manager` Job 3) |
 | Vendor renewal | `vendor + renewal window` | `purchasing-manager` |
 | Vendor invoice | `vendor + invoice number` | `purchasing-manager` (matches the PLM unique constraint) |
 | Lab finding | `batch code + test type` | `quality-lab-coordinator` |
@@ -273,9 +288,23 @@ Two things to expect when doing this:
 - **Same-named fields are different fields.** Purchasing and SJS Quality Management both have a field called `Status`, with different GIDs and different option sets. Resolve per project and set both; don't assume one write covered it.
 - **A field with no honest value stays unset.** Phase 1's TBD string works on text fields only. Enum fields have no TBD option, so leave them blank and raise the gap in open questions rather than picking the nearest option. Populating a `Classification` of `OOS` on a preventive risk with no defect is worse than leaving it empty — it puts a fabricated finding into the quality record.
 
-One task, one assignee, one due date. Each system closes its own side of the work; the last one to finish completes the task. This generalizes the rule `inventory-manager` already runs (SKILL.md — near-expiry tasks multi-homed into SJS Quality Management, Purchasing multi-homes for reorder review) and the routing matrix in `purchasing-manager` Job 9.
+One task, one assignee, one due date. Each system closes its own side of the work; the last one to finish completes the task.
 
-Multi-homing is live and working in this workspace today — task `1214048212856468` sits in both the Lychee Lip Treatment SKU project (Phase 5 section) and AC Brands Purchasing (Receiving). Any skill note claiming the MCP can't multi-home is stale.
+**Completion is task-global — check `memberships` before ticking it.** Unlike section placement, which is per-project, marking a task complete completes it in *every* project it is multi-homed into. A skill that completes on reaching its own terminal state closes the task on behalf of systems that may still have open work: a PO whose invoice match cleared is not done if the freight is still in customs. So before any completion on a multi-homed task, read `memberships` and confirm this queue is the last home with open work. If it isn't, move the section, leave the task open, and say why in the comment.
+
+This is also why **Asana Rules on these queues move sections only and never mark complete.** A rule cannot see whether the other homes are finished. Section moves are safe to automate; completion is not. This generalizes the rule `inventory-manager` already runs (SKILL.md — near-expiry tasks multi-homed into SJS Quality Management, Purchasing multi-homes for reorder review) and the routing matrix in `purchasing-manager` Job 9.
+
+Multi-homing is live and working in this workspace today — `update_tasks` takes `add_projects: [{project_id, section_id}]` and tasks in this workspace carry three homes at once (e.g. `1215318129849303`, PO 100346, in AC Brands Purchasing, Sweet July Skin Logistics and SJS Quality Management). Any skill note claiming the MCP can't multi-home is stale.
+
+The example this paragraph used to cite — `1214048212856468` in a Lychee SKU project and AC Brands Purchasing (Receiving) — was **removed from Purchasing on 2026-07-31** as part of the Job 3e collapse. It was a PD milestone multi-homed into a purchase-to-pay queue where it could never carry purchase-to-pay state, which is the anti-pattern, not the pattern. Proving multi-homing works is not the same as proving a given multi-home is correct.
+
+### Dependencies express gates, homes express ownership
+
+Two tasks that are genuinely separate work but where one gates the other get a **dependency**, not a shared home. `update_tasks` takes `add_dependencies` and `add_dependents`, both visible from either side, and neither project has to hold the other's task.
+
+The worked case is a PD PO request against a Purchasing PO order — different owners, different closes, and the order should not go out until the request is ready. `purchasing-manager` Job 3 carries it in full. Reach for a dependency whenever the honest relationship is "not until", and for a home whenever it is "this system also acts on this exact item."
+
+A dependency also handles fan-out that a home cannot: many tasks may depend on one, so one readiness gate can precede several orders.
 
 ### Multi-home or separate tasks
 

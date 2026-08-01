@@ -1,16 +1,16 @@
 # Scheduled task: sjs-pd-eod-reconciliation
 
-Remote routine. Operate in America/Los_Angeles time. The skills repo is cloned at `/home/user/sj-os`.
+Remote routine. Operate in America/Los_Angeles time. The skills repo is cloned at `/home/user/SJ-OS` — **case-sensitive**. If that path does not resolve, locate the repo before doing anything else (`ls -d /home/user/*` and look for the checkout containing `.claude/skills/`) and use what you find; do not proceed on the assumption the skills are unreadable. Until 2026-07-31 every spec in this directory said `/home/user/sj-os`, which does not exist on a case-sensitive filesystem, so fired runs could not read their own instructions.
 
 ## Skills to read and FOLLOW (plain files, not auto-registered — read them as instructions)
-- `/home/user/sj-os/.claude/skills/sjs-pd-system/SKILL.md`
-- `/home/user/sj-os/.claude/skills/asana-pd-manager/SKILL.md`
-- `/home/user/sj-os/.claude/skills/fireflies-asana-bridge/SKILL.md`
-- `/home/user/sj-os/.claude/skills/outlook-asana-bridge/SKILL.md`
-- `/home/user/sj-os/.claude/skills/asana-plm-bridge/SKILL.md`
-- `/home/user/sj-os/.claude/skills/outlook-plm-bridge/SKILL.md`
-- `/home/user/sj-os/.claude/skills/sjs-status-reporter/SKILL.md`
-- `/home/user/sj-os/.claude/skills/sjs-master/SKILL.md`
+- `/home/user/SJ-OS/.claude/skills/sjs-pd-system/SKILL.md`
+- `/home/user/SJ-OS/.claude/skills/asana-pd-manager/SKILL.md`
+- `/home/user/SJ-OS/.claude/skills/fireflies-asana-bridge/SKILL.md`
+- `/home/user/SJ-OS/.claude/skills/outlook-asana-bridge/SKILL.md`
+- `/home/user/SJ-OS/.claude/skills/asana-plm-bridge/SKILL.md`
+- `/home/user/SJ-OS/.claude/skills/outlook-plm-bridge/SKILL.md`
+- `/home/user/SJ-OS/.claude/skills/sjs-status-reporter/SKILL.md`
+- `/home/user/SJ-OS/.claude/skills/sjs-master/SKILL.md`
 Also read any reference files these cite under their skill dirs (e.g. `references/*.md`).
 
 ## Connectors
@@ -25,7 +25,7 @@ Do not write any local files or logs — the container is ephemeral.
 ## Task
 Run the AC Brands PD System reconciliation for the afternoon window (12 PM PT → now).
 
-Read /home/user/sj-os/.claude/skills/sjs-pd-system/SKILL.md and route through it. Fire skills as warranted. Create, comment, and write to PLM the same way the 8 AM and 12 PM runs do.
+Read /home/user/SJ-OS/.claude/skills/sjs-pd-system/SKILL.md and route through it. Fire skills as warranted. Create, comment, and write to PLM the same way the 8 AM and 12 PM runs do.
 
 DEDUP: Before creating any task or comment, check Asana task GID 1214208955674591 (the running log) for prior runs today. Skip anything already actioned.
 

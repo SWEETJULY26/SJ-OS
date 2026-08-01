@@ -1,12 +1,12 @@
 # Scheduled task: sjs-purchasing-morning-sweep
 
-Remote routine. Operate in America/Los_Angeles time. The skills repo is cloned at `/home/user/sj-os`.
+Remote routine. Operate in America/Los_Angeles time. The skills repo is cloned at `/home/user/SJ-OS` — **case-sensitive**. If that path does not resolve, locate the repo before doing anything else (`ls -d /home/user/*` and look for the checkout containing `.claude/skills/`) and use what you find; do not proceed on the assumption the skills are unreadable. Until 2026-07-31 every spec in this directory said `/home/user/sj-os`, which does not exist on a case-sensitive filesystem, so fired runs could not read their own instructions.
 
 ## Skills to read and FOLLOW (plain files, not auto-registered — read them as instructions)
-- `/home/user/sj-os/.claude/skills/purchasing-manager/SKILL.md`
-- `/home/user/sj-os/.claude/skills/outlook-plm-bridge/SKILL.md`
-- `/home/user/sj-os/.claude/skills/sjs-ops-system/SKILL.md`
-- `/home/user/sj-os/.claude/skills/sjs-master/SKILL.md`
+- `/home/user/SJ-OS/.claude/skills/purchasing-manager/SKILL.md`
+- `/home/user/SJ-OS/.claude/skills/outlook-plm-bridge/SKILL.md`
+- `/home/user/SJ-OS/.claude/skills/sjs-ops-system/SKILL.md`
+- `/home/user/SJ-OS/.claude/skills/sjs-master/SKILL.md`
 Also read any reference files these cite under their skill dirs (e.g. `references/*.md`).
 
 ## Connectors
