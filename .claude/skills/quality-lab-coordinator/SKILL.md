@@ -140,7 +140,7 @@ Three routes reach the same failing test — the lab's email via `outlook-plm-br
 | Closed | `1214660716447873` | completed lab findings |
 ### Custom fields (cached 2026-05-09)
 
-All fields exist on SJS Quality Management. Canonical GID + option-GID reference: `/Users/alvinbelt/Documents/Claude/Projects/Skill Builder/asana-field-gids.md`. The fields the skill uses:
+All fields exist on SJS Quality Management. Canonical section + field + option GIDs: `references/architecture/queue_registry.md`, pulled live. (This previously pointed at `asana-field-gids.md` on a local Mac path — that file is not in this repo and cannot be read from a session or a Routine.) The fields the skill uses:
 
 - `Status` (single-select: Inbound, Triage, Vendor Flag Review, Scorecard Signaled, CAPA Open, Watch, Closed) — carries workflow state. Steady-state read field.
   - `Gate` (single-select: Open, Pending Operator, Pending QA Lead) — orthogonal to Status. Carries who's holding the puck. Snaps to Open on approval.

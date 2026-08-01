@@ -169,11 +169,16 @@ An NCR raised in a meeting, then again by email, is one NCR. Resolve on the sour
 | Verification | `1214660784329421` |
 | Effectiveness Review | `1214660787347574` |
 | Closed | `1214660436972438` |
+| Untitled section | `1214660784338484` | ← survives live; never route here. It is where a task lands when a section resolve fails. |
+
+Twelve sections live, not eleven. Canonical list: `references/architecture/queue_registry.md`.
+
+**Four sections have no Status value pointing at them** — `NCR Open`, `CAPA Open`, `Effectiveness Review`, `Untitled section`. And `Verification & Effectiveness` is one Status option covering two sections. Until that option is split, this queue cannot be handed to an Asana Rule; the skill keeps moving sections itself.
 
 Sections carry the fine-grained workflow surface; Status field carries SOP phase. The two are loosely coupled — a task in the Investigation section maps to Status = Investigation — but Status is the field operators query against, not the section.
 - *Custom fields:*
   - `Status` (single-select: Inbound, NCR Review, Investigation, Action Plan, Implementation, Verification & Effectiveness, Closed, Closed-No-CAPA) — carries SOP phase per SKN-OPS-001 §5.1 → §5.6 plus terminal states. The skill writes Status on every state transition. Steady-state read field.
-  - `Gate` (single-select: Open, Pending Operator, Pending QA Lead) — orthogonal to Status. Carries who's holding the puck. Transient. Snaps back to Open on approval.
+  - `Gate` (single-select, shared field `1214660230825947`: Open, Pending Operator, Pending QA Lead, Pending Regulatory Lead) — orthogonal to Status. Carries who's holding the puck. Transient. Snaps back to Open on approval.
   - `NCR Number` (text, format `NCR-YYYY-NNN`)
   - `CAPA Number` (text, format `CAPA-YYYY-NNN`)
   - `Source` (single-select: complaint-trend, lab-OOS, lab-OOT, vendor-receipt, process-deviation, audit-finding, regulatory-observation, internal-flag, direct-open)

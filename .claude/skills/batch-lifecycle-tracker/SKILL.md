@@ -145,7 +145,7 @@ Near-expiry tasks arrive here multi-homed from `inventory-manager` at 90/60/30 d
 
 ### Custom fields (cached 2026-05-09)
 
-All fields exist on SJS Quality Management. Canonical GID + option-GID reference: `/Users/alvinbelt/Documents/Claude/Projects/Skill Builder/asana-field-gids.md`. v5.4 fields below; v5.3 fields reused.
+All fields exist on SJS Quality Management. Canonical section + field + option GIDs: `references/architecture/queue_registry.md`, pulled live. (This previously pointed at `asana-field-gids.md` on a local Mac path — that file is not in this repo and cannot be read from a session or a Routine.) v5.4 fields below; v5.3 fields reused.
 
 **New for v5.4:**
 - `Batch State` (single-select: Active, Stability Pending, Hold/Release Review, On Hold, Watch, Released, Pulled, Expired)

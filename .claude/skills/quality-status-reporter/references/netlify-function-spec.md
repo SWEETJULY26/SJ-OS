@@ -252,4 +252,4 @@ async function asanaFetch(path, pat) {
 - ~~Batch and Cross-cutting section GIDs~~ **Resolved 2026-05-09** — all 16 section GIDs cached above.
 - The QoS source-field mappings depend on oc3pl-order-manager Daily Report Log task structure. Confirm field paths before wiring the QoS pull.
 - ~~The SJS CAPA Log project GID is unknown — capa-coordinator first-run setup creates it.~~ **Resolved 2026-05-09** — SJS CAPA Log project created at gid `1214660784338465`.
-- ~~Custom field GIDs are still pending~~ **Resolved 2026-05-09** — all 30 fields cached. Canonical reference: `asana-field-gids.md` in the skill builder root. Function uses field GIDs to bucket Hold Reason, Cross-cutting Type, QoS Metric, and to count Pending QA Lead.
+- ~~Custom field GIDs are still pending~~ **Resolved 2026-05-09** — all 30 fields cached. Canonical reference: `references/architecture/queue_registry.md`. Function uses field GIDs to bucket Hold Reason, Cross-cutting Type, QoS Metric, and to count Pending QA Lead.

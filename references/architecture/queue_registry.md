@@ -6,7 +6,7 @@
 
 **Pulled live:** 2026-07-31, via `get_project` with `include_sections` and `custom_field_settings`. Every GID below came from the API, not from a skill body — several skill bodies were already stale (see Drift found, at the end).
 
-**Last updated:** 2026-07-31 — Authored. Closes the gap Alvin found: a PO could reach `Status = Received` with no rule moving it out of `POs In Flight`, because no state → section map existed in any file, for any queue.
+**Last updated:** 2026-08-01 — Drift cleared: every skill body listed at the end now agrees with this file. Authored 2026-07-31. Closes the gap Alvin found: a PO could reach `Status = Received` with no rule moving it out of `POs In Flight`, because no state → section map existed in any file, for any queue.
 
 ---
 
@@ -89,7 +89,7 @@ A `Status` field exists — `1214374252744527` — but its options are `Pending 
 
 Declared exception at `supply-demand-planner/SKILL.md:218-224`. Its fields (`Buy Type`, `Urgency`, `Exception Reason`, `Recommended Qty`, `Target Ship By`, `Run ID`) classify and parameterize; none sequences. Documented movement: Buy Recommendations → Archive on PO placement. Risk Watch tasks stay until individually closed.
 
-Live section name is **`Monthly run`**, lowercase r. `asana-s-and-op-schema.md:11,116` writes `Monthly Run` — a literal name match fails.
+Live section name is **`Monthly run`**, lowercase r. `asana-s-and-op-schema.md` wrote `Monthly Run`, so a literal name match failed; it now resolves by GID `1214374670198667`. Resolve by GID here too.
 
 ## Sweet July Skin Logistics — `1214370420013442`
 
@@ -300,7 +300,9 @@ Sequencing: build the rule, dry-run it on a throwaway task (set Status to `Recei
 
 ## Drift found while pulling this
 
-Recorded because each is a place a skill body disagrees with the live workspace. Fixed in this pass where the plan scoped it; otherwise listed for follow-up.
+Recorded because each is a place a skill body disagrees with the live workspace.
+
+**Cleared 2026-08-01.** Every item below is now fixed in the skill bodies. The two that were live bugs rather than stale text: `regulatory-manager` was writing a `Status` field onto a project that has none, so those writes were failing; and eight skills pointed at `asana-field-gids.md` on a local Mac path that no session or Routine can open, which is why the GIDs got copied into skill bodies and drifted. Both now resolve to this file. Kept as a record of what was wrong and where to look if it recurs.
 
 - **`inventory-manager/SKILL.md:130-132`** claims its project is "AC Brands Ops Dashboard (GID to be confirmed on first run)" with a "single section, no subsections" and "no custom fields." Live: `AC Brands Inventory` `1214374368959019`, five sections, three fields. `gids.md:109-113` marks AC Brands Ops Dashboard archived, "do not route to."
 - **`purchasing-manager/SKILL.md:277`** lists an `Untitled section` `1214373372406252`. Not present live — deleted since.

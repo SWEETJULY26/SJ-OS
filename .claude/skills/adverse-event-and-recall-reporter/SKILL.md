@@ -154,7 +154,7 @@ A default `Untitled section` (gid `1214660834583725`) exists from project creati
 
 ### Custom fields (cached 2026-05-09)
 
-All fields exist on SJS Reportable Events. Canonical GID + option-GID reference: `/Users/alvinbelt/Documents/Claude/Projects/Skill Builder/asana-field-gids.md`. The fields the skill uses:
+All fields exist on SJS Reportable Events. Canonical section + field + option GIDs: `references/architecture/queue_registry.md`, pulled live. (This previously pointed at `asana-field-gids.md` on a local Mac path — that file is not in this repo and cannot be read from a session or a Routine.) The fields the skill uses:
 
 - `Event Type` (single-select: SAE — MoCRA, Recall — Class I, Recall — Class II, Recall — Class III, Recall — Class TBD, State AE Report, MoCRA Other, Triage Pending) — what kind of event this is. `Triage Pending` is the default at intake until Job 2 classifies.
 - `Linked SKU` (text — SKU code + name; shared field across SJS Quality Management, SJS CAPA Log, SJS Regulatory Management, SJS Reportable Events)
@@ -230,7 +230,7 @@ Pedrero traffic and agency traffic are mostly Outlook; outlook-asana-bridge does
 
 ## First-run setup
 
-Project, sections, custom fields, and Source Reg Flag rename completed via Asana AI Builder + Operator UI on 2026-05-09 at v6.2 build. Gids cached in this SKILL.md and `asana-field-gids.md`. On first invocation:
+Project, sections, custom fields, and Source Reg Flag rename completed via Asana AI Builder + Operator UI on 2026-05-09 at v6.2 build. GIDs cached in this SKILL.md and `references/architecture/queue_registry.md`. On first invocation:
 
 1. **Confirm Asana state matches cached gids.** Re-pull SJS Reportable Events via Asana MCP and confirm sections and custom fields match what's documented above.
 2. **Confirm portfolio.** Confirm SJS Reportable Events has been added to the Operations Dashboard portfolio (gid `1208174221370391`). Manual UI step — surface to Operator if missing.

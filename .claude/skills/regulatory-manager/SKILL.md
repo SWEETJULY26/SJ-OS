@@ -172,8 +172,8 @@ Once v6.3 is live, the skill helps Operator run the team license audit to load t
 - **Leaping Bunny renewal** — load with `Registration Type = Leaping Bunny Certification`, `Filing Cycle = Annual`, `Window End = 2026-07-10`. The 60-day reminder fires 2026-05-11; skill flags as imminent.
 
 **Seeded items added post-build (2026-05-12 Pedrero touchbase):**
-- **Canada extended-allergens compliance** — `Canada — Extended Allergens — 2026` in Registrations — Renewal Window. `Registration Type = Health Canada Notification`, `Filing Cycle = Per-Product-Launch`, `Window End = 2026-07-31`. 60-day reminder fires 2026-06-01. Tied to Sephora Canada acceptance cutoff. Status starts as `Inbound Staging — Pedrero scoping RP partner` (Ecomundo or alternative); flips to `In Pedrero Review` once RP partner is engaged.
-- **Health Canada cosmetic notification — backlog** — one task per active in-market SJS SKU shipped to Canada since 2023. Set `Registration Type = Health Canada Notification`, `Filing Cycle = Per-Product-Launch`. Status `Inbound Staging`; Operator works through with Pedrero / Ecomundo. Customs-hold history attaches as evidence.
+- **Canada extended-allergens compliance** — `Canada — Extended Allergens — 2026` in Registrations — Renewal Window. `Registration Type = Health Canada Notification`, `Filing Cycle = Per-Product-Launch`, `Window End = 2026-07-31`. 60-day reminder fires 2026-06-01. Tied to Sephora Canada acceptance cutoff. Starts in section **Inbound Staging** with a note that Pedrero is scoping the RP partner (Ecomundo or alternative); moves to **In Pedrero Review** once the RP partner is engaged.
+- **Health Canada cosmetic notification — backlog** — one task per active in-market SJS SKU shipped to Canada since 2023. Set `Registration Type = Health Canada Notification`, `Filing Cycle = Per-Product-Launch`. Section **Inbound Staging**; Operator works through with Pedrero / Ecomundo. Customs-hold history attaches as evidence.
 - **Quebec French-language compliance — portfolio sweep** — one parent task `Quebec French-Language Compliance — Portfolio Sweep — 2026`, subtasks per SKU. `Registration Type = Quebec French-Language Compliance`. Triggers a label cross-check in claims-il-and-label-keeper for any SKU not yet bilingual.
 - **CA SB 343 Pantone audit — portfolio sweep** — one parent task `CA SB 343 — Pantone Audit — 2026`, subtasks per primary and secondary component plus Z Pack sample units. `Registration Type = CA SB 343 Recycling Labeling`. Heather Folkes at Pedrero supplies the approved Pantone gradient; Alvin supplies artwork Pantones. Outcome per SKU: pass, lighten, or remove recycling symbol.
 - **19-state packaging toxics — certificate of compliance sweep** — one parent task `Packaging Toxics — 19 State — Cert of Compliance — 2026`, subtasks per active component supplier (Elements ACT, HCT, Impress, CDW, etc.). `Registration Type = Packaging Toxics — 19 State`. Pedrero (Heather) supplies request verbiage for vendors. Closed when every active component supplier has issued a current cert.
@@ -271,7 +271,9 @@ Read-most umbrella. MoCRA and state filing deadlines are Phase 2 rung 3 statutor
 
 ### Custom fields (cached 2026-05-09)
 
-All v6.1 fields exist on SJS Regulatory Management. Canonical GID + option-GID reference: `/Users/alvinbelt/Documents/Claude/Projects/Skill Builder/asana-field-gids.md`. Three v6.3 fields pending Operator UI add at first-run (see `asana-field-gids.md` "Pending — added at v6.3 first-run setup" subsection).
+All v6.1 fields exist on SJS Regulatory Management. Canonical section + field + option GIDs: `references/architecture/queue_registry.md`, pulled live. (This previously pointed at `asana-field-gids.md` on a local Mac path — that file is not in this repo and cannot be read from a session or a Routine.)
+
+**This project has no Status field** — confirmed live 2026-07-31. It is a declared **section-as-state** queue: the ten sections above are the state machine, and `Gate` carries HITL orthogonally. Never write a field named `Status` here; move the task instead.
 
 **v6.1 fields the skill uses (already cached):**
 - `Artifact Type` (single-select) — values include `Registration / Filing` and `Pedrero Liaison`, both reused at v6.3 with no change
@@ -283,7 +285,7 @@ All v6.1 fields exist on SJS Regulatory Management. Canonical GID + option-GID r
 - `Gate` (single-select, shared field) — uses `Pending Regulatory Lead` for cross-skill writes; uses `Pending QA Lead` only for cross-cutting overlaps with Quality
 
 **v6.3 fields (cached 2026-05-09):**
-- `Registration Type` (single-select, gid `1214660230826190`, 13 values) — see `asana-field-gids.md` for full option gids. Operator added `Credo Clean` and `Sephora Clean` as explicit retailer-cert values instead of generic `Retailer-Specific`. NY Cosmetic Registry not in current option set; add if SJS launches in NY. Two values carry whitespace typos (`OR Cosmetic Registry` leading space; `CA Toxic-Free Cosmetics Act` trailing space) — flagged for cleanup but functional.
+- `Registration Type` (single-select, gid `1214660230826190`, 13 values) — full option GIDs live in `references/architecture/queue_registry.md`. Operator added `Credo Clean` and `Sephora Clean` as explicit retailer-cert values instead of generic `Retailer-Specific`. NY Cosmetic Registry not in current option set; add if SJS launches in NY. Two values carry whitespace typos (`OR Cosmetic Registry` leading space; `CA Toxic-Free Cosmetics Act` trailing space) — flagged for cleanup but functional.
 - `Filing Cycle` (single-select, gid `1214660230826205`, 5 values: One-time, Continuous, Per-Product-Launch, `Biennial,` (trailing comma typo), Annual)
 - `Pedrero Engagement` — **not yet added.** Skill operates degraded on Pedrero Liaison section tasks: engagement type lives in description free-text until field is added.
 
@@ -359,7 +361,7 @@ Project, v6.1 sections, v6.1 custom fields stood up at v6.1 build (2026-05-09). 
 
 1. **Confirm Asana state matches cached gids.** Re-pull SJS Regulatory Management via Asana MCP and confirm v6.1 sections + fields match what's documented above.
 2. **Confirm v6.3 Asana setup.** v6.3 sections + Registration Type + Filing Cycle fields cached as of 2026-05-09. Pedrero Engagement field not yet added — flag to Operator if Pedrero Liaison section tasks need engagement-type categorization beyond description free-text.
-3. **Re-pull on field/section changes.** If sections or fields change post-build, re-pull via Asana MCP and update `asana-field-gids.md` plus this SKILL.md.
+3. **Re-pull on field/section changes.** If sections or fields change post-build, re-pull via Asana MCP and update `references/architecture/queue_registry.md` plus this SKILL.md.
 4. **Confirm portfolio.** Confirm SJS Regulatory Management is on Operations Dashboard portfolio (gid `1208174221370391`). Manual UI step.
 5. **Confirm SharePoint folder.** Confirm `Sweet July/Regulatory/` exists per `references/sharepoint-pointer.md`. If missing, surface to Operator and pause attachment migration; v6.1/v6.2 interim Asana attachments stay on Asana tasks until folder exists.
 6. **Confirm role-map.** Confirm `references/role-map.md` is current with the operator. Check that sub-skill role-maps (claims-il-and-label-keeper, adverse-event-and-recall-reporter) point to this skill as canonical System C role home.

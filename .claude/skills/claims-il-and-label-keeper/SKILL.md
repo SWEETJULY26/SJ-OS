@@ -152,11 +152,16 @@ The IL Review Gate already checks for an existing regulatory task on the same SK
 | Active / In-Effect | `1214661463988661` | approved IL versions, active claim sub files, archived label artwork, submitted attestations |
 | Renewal Window | `1214661463988662` | 60/30/14-day windows on attestations, IL re-review, registrations |
 | Closed | `1214661463988663` | superseded, expired, terminal |
+| Registrations — Active | `1214660230826186` | current active filings — owned by regulatory-manager, not this skill |
+| Registrations — Renewal Window | `1214660230826187` | filings coming due — owned by regulatory-manager |
+| Pedrero Liaison | `1214660230826188` | non-filing Pedrero engagement work — owned by regulatory-manager |
+| Cross-Skill Dashboard | `1214660230826189` | rollup status update, no tasks |
 
+Ten sections, not six. This skill works the first six; the last four belong to `regulatory-manager` on the same project. An earlier six-row list here made a shared project look like a private one.
 
 ### Custom fields (cached 2026-05-09)
 
-All fields exist on SJS Regulatory Management. Canonical GID + option-GID reference: `/Users/alvinbelt/Documents/Claude/Projects/Skill Builder/asana-field-gids.md`. The fields the skill uses:
+All fields exist on SJS Regulatory Management. Canonical section + field + option GIDs: `references/architecture/queue_registry.md`, pulled live. (This previously pointed at `asana-field-gids.md` on a local Mac path — that file is not in this repo and cannot be read from a session or a Routine.) The fields the skill uses:
 
 - `Artifact Type` (single-select: IL Review, Claim Sub, Label Artwork, Retailer Attestation, Registration / Filing, Reg Flag (from Quality), Pedrero Liaison, Other) — what kind of work this task is
 - `Linked SKU` (text — SKU code + name; blank for portfolio-level items)
@@ -227,9 +232,9 @@ Pedrero traffic is mostly Outlook; Outlook bridges do heavy work. Asana is direc
 
 ## First-run setup
 
-Project, sections, custom fields, and the Formula Tracker IL Status field were stood up via Asana AI Builder + Operator-managed UI on 2026-05-09 at v6.1 build. Gids cached in this SKILL.md and `asana-field-gids.md`. On first invocation:
+Project, sections, custom fields, and the Formula Tracker IL Status field were stood up via Asana AI Builder + Operator-managed UI on 2026-05-09 at v6.1 build. GIDs cached in this SKILL.md and `references/architecture/queue_registry.md`. On first invocation:
 
-1. **Confirm Asana state matches cached gids.** Re-pull the project via Asana MCP and confirm sections and custom fields match what's documented above. If anything has drifted, update SKILL.md and `asana-field-gids.md`.
+1. **Confirm Asana state matches cached gids.** Re-pull the project via Asana MCP and confirm sections and custom fields match what's documented above. If anything has drifted, update SKILL.md and `references/architecture/queue_registry.md`.
 2. **Confirm portfolio.** Confirm SJS Regulatory Management has been added to the Operations Dashboard portfolio (gid `1208174221370391`). Manual UI step — surface to Operator if missing. (Operator confirmed handling this manually at v6.1.)
 3. **Confirm IL Status field on Formula Tracker.** Field gid `1214676606090922` on project `1213280384100264`. asana-pd-manager retrofit documented in its SKILL.md. If the field is missing from Formula Tracker, surface to Operator and pause — the IL gate intake (Job 1) cannot fire without the upstream hook.
 4. **Confirm role-map.** Confirm `references/role-map.md` is current with the operator.
