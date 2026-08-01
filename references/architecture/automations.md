@@ -18,30 +18,31 @@
 
 ---
 
-## Live state, checked 2026-07-31
+## Live state — and how to check it without getting it wrong
 
-`list_triggers` returned 15 cron Routines. **Four are paused and three documented daily jobs do not exist at all**, so six of the daily jobs this file describes are not running.
+**Read this before trusting any audit of what is running, including the one below.**
 
-**Paused** (`enabled: false`, no `ended_reason` or `suspension_reason`, so user-paused rather than system-stopped):
+`list_triggers` **paginates, and one-shot `send_later` triggers count against the same limit.** A pull with `limit: 25` returned 15 cron Routines and 10 one-shots; raising it to 30 surfaced 20 crons — five jobs that had been invisible, including `pd-monthly-rollup`, `ayesha-weekly-briefing-friday`, `sjs-marketing-research--weekly-run` and `pd-quarterly-rollup`. Nothing in the response signals truncation. Always raise the limit until the count stops growing, and remember that this account's list is not necessarily every Routine that exists.
 
-| Routine | Cron (UTC) | Last fired | Note |
+**A Routine absent from `list_triggers` is not proof the job is not running.** On 2026-07-31 an audit concluded the three PD dailies "were never registered." They are in fact running and have been throughout — `sweeps/sjs-pd-morning-sweep-2026-07-30.txt` and `sjs-pd-eod-2026-07-30.html` are committed to `acb-thelanding` by the jobs themselves, with commit `4e81690` reading `sjs-pd-morning-sweep 2026-07-30 07:58 PT`. They are registered somewhere this account's Routine list does not reach. **Check the output artifact before concluding a job is dead** — for the PD jobs that means `acb-thelanding/sweeps/` and `sjs-pd-eod/`, and for the digests the relevant Asana running log.
+
+### What is actually off, verified twice
+
+Three morning sweeps are paused — `enabled: false`, no `ended_reason` or `suspension_reason`, so user-paused rather than system-stopped, each with `next_run_at` in the past:
+
+| Routine | Trigger ID | Cron (UTC) | Last fired |
 |---|---|---|---|
-| `sjs-purchasing-morning-sweep` | `26 15 * * 1-5` | 2026-07-17 | |
-| `sjs-quality-morning-sweep` | `20 15 * * 1-5` | 2026-07-17 | |
-| `sjs-regulatory-morning-sweep` | `10 15 * * 1-5` | 2026-07-20 | |
-| `ac-brands-holiday-comms-2026` | `0 16 * * 1` | 2026-07-13 | **Sends email to the team.** Do not re-enable without checking the send calendar first. |
+| `sjs-purchasing-morning-sweep` | `trig_01Y9ewzNuvZn24EzjzyjKyqC` | `26 15 * * 1-5` | 2026-07-17 |
+| `sjs-quality-morning-sweep` | `trig_01AVRFDRc7aHu8L7gv3etEza` | `20 15 * * 1-5` | 2026-07-17 |
+| `sjs-regulatory-morning-sweep` | `trig_01DY3iScZ6Ai3yV2FbbRbEMW` | `10 15 * * 1-5` | 2026-07-20 |
 
-**Absent from Routines entirely** — documented below but never registered: `sjs-pd-morning-sweep`, `sjs-pd-midday-sweep`, `sjs-pd-eod-reconciliation`. The PD recap running log (task `1214208955674591`) therefore has no automated writer.
+Also paused: `ac-brands-holiday-comms-2026` (`trig_01W9T3k8qRo7ru3JZMQwtgBN`, last fired 2026-07-13). **It auto-sends email to the team on BCC** — check the send calendar against today before re-enabling.
 
-**Running** (11): `sjs-monthly-sop-sync`, `sjs-monthly-sop-run`, `sjs-purchasing-weekly-digest`, `sjs-quality-weekly-digest`, `sjs-regulatory-weekly-digest`, `sjs-purchasing-monthly-rollup-and-snapshot`, `sjs-quality-monthly-snapshot`, `sjs-regulatory-monthly-rollup-and-snapshot`, `sjs-purchasing-quarterly-rollup-and-snapshot`, `sjs-quality-quarterly-rollup`, `sjs-regulatory-quarterly-cost-rollup`.
+**Pending connectors:** `sjs-receipt-report-sweep` (`trig_01DnJ5tmwNVTvod7LXetHa1i`) is disabled on purpose. Created from a session, so it carries no connectors and cannot read Outlook or PLM. Recreate it in the Routines UI, then delete the placeholder; the prompt is on the trigger.
 
-**Punch list:** `scheduled-prompts/REGISTRATION.md` carries the working list — the three sweeps to re-enable with their trigger IDs, the three PD dailies to create, notification settings, and the three API limits that make all of it UI work. Read it before trying to change a Routine from a session.
+**Punch list:** `scheduled-prompts/REGISTRATION.md`, which also records that an existing Routine is read-only from a session — `update_trigger`, `fire_trigger` and `delete_trigger` all refuse anything created via `http_api`.
 
-**Repo path bug, fixed 2026-07-31.** All 23 specs in `scheduled-prompts/` said the repo was cloned at `/home/user/sj-os`; it is `/home/user/SJ-OS`, and the lowercase form does not resolve on a case-sensitive filesystem. Every fired Routine was therefore unable to read the skill files it was told to follow. Corrected in all 23 with a locate-the-repo fallback added. Weigh this when judging whether the running jobs have actually been working.
-
-**Pending connectors:** `sjs-receipt-report-sweep` (`trig_01DnJ5tmwNVTvod7LXetHa1i`) was created 2026-07-31 for the Logiwa receipt order reports and is **disabled on purpose** — it was created from a session, so it has no connectors and cannot read Outlook or PLM. Recreate it in the Routines UI with the same cron and prompt, then delete the placeholder. Prompt text is on the trigger.
-
----
+**Repo path bug, fixed 2026-07-31.** All 23 specs in `scheduled-prompts/` said the repo was cloned at `/home/user/sj-os`; it is `/home/user/SJ-OS`, and the lowercase form does not resolve on a case-sensitive filesystem. Corrected in all 23 with a locate-the-repo fallback. Worth weighing against the fact that the PD jobs were producing sane output anyway — either their environment resolves the path differently, or they coped. Do not assume the bug was harmless; do not assume it was fatal either.
 
 ## Active jobs
 
@@ -54,13 +55,13 @@ Cron shown as **local PT**; the Routine stores UTC (PT + 7). Status as of 2026-0
 
 | Job id | Cron (PT) | UTC | Status | Owner / routes through | Output |
 |---|---|---|---|---|---|
-| `sjs-pd-morning-sweep` | `0 8 * * 1-5` | `0 15 …` | **not registered** | sjs-pd-system, overnight window (5 PM prior day → now) | Recap comment on running log GID 1214208955674591; real-time URGENT comments |
+| `sjs-pd-morning-sweep` | `0 8 * * 1-5` | `0 15 …` | **running** (not visible via this account's `list_triggers`; output in `acb-thelanding/sweeps/`) | sjs-pd-system, overnight window (5 PM prior day → now) | Recap comment on running log GID 1214208955674591; real-time URGENT comments |
 | `sjs-regulatory-morning-sweep` | `10 8 * * 1-5` | `10 15 …` | **paused** | sjs-regulatory-system / sjs-regulatory-sweep Job 1 | Silent unless one of the 7 urgency categories fires; posts to Regulatory Sweep Running Log |
 | `sjs-quality-morning-sweep` | `20 8 * * 1-5` (was `12 8`) | `20 15 …` | **paused** | quality-manager morning pass | Quality running log |
 | `sjs-purchasing-morning-sweep` | `26 8 * * 1-5` | `26 15 …` | **paused** | purchasing-manager | Purchasing running log |
 | `sjs-receipt-report-sweep` | `32 8 * * 1-5` | `32 15 …` | **created, disabled — no connectors** | inventory-manager Job 2 / `references/logiwa-receipt-report.md` | Looks back 24h (72h on Mondays) for Logiwa `Receipt Order Report` emails from `noreply@wmsnotification.com` and `noreply@wmssystem.logiwa.com`. Silent when none arrived. Stages `po_receipts` / `po_receipt_items` for HITL; never writes unattended. Reports RO class and the PLM reconciliation verdict. Placeholder `trig_01DnJ5tmwNVTvod7LXetHa1i` — recreate in the Routines UI so connectors attach, then delete it. |
-| `sjs-pd-midday-sweep` | `0 12 * * 1-5` | `0 19 …` | **not registered** | sjs-pd-system, midday window | Running log GID 1214208955674591 |
-| `sjs-pd-eod-reconciliation` | `0 16 * * 1-5` | `0 23 …` | **not registered** | sjs-pd-system, afternoon window (12 PM → now) + Skill 5 | 8-section payload, `pd_dashboard_runs` row, formatted comment on GID 1214208955674591 |
+| `sjs-pd-midday-sweep` | `0 12 * * 1-5` | `0 19 …` | **running** (see note above) | sjs-pd-system, midday window | Running log GID 1214208955674591 |
+| `sjs-pd-eod-reconciliation` | `0 16 * * 1-5` | `0 23 …` | **running** (output `acb-thelanding/sjs-pd-eod/`) | sjs-pd-system, afternoon window (12 PM → now) + Skill 5 | 8-section payload, `pd_dashboard_runs` row, formatted comment on GID 1214208955674591 |
 
 ### Weekly
 
@@ -102,7 +103,7 @@ Cron shown as **local PT**; the Routine stores UTC (PT + 7). Status as of 2026-0
 
 ### Manual / not scheduled
 
-- **Ayesha Friday briefing** beyond the Canva slide — `ayesha-weekly-briefing`, Friday manual sweep.
+- **Ayesha Friday briefing** beyond the Canva slide — `ayesha-weekly-briefing`. The Canva slide itself IS scheduled as `ayesha-weekly-briefing-friday` (`0 15 * * 5` UTC, verified enabled and last fired 2026-07-31); only the wider Friday sweep is manual.
 - **Quarterly margin portfolio review** — `sjs-margin-portfolio-review`, end of quarter, manual.
 
 ---
