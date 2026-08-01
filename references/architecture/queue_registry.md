@@ -83,7 +83,7 @@ A `Status` field exists — `1214374252744527` — but its options are `Pending 
 
 Thirteen of the 21 open tasks are `Send [SKU] to Amazon FBA`, multi-homed into `Active Movements` from their SKU project's `Phase 5 - Final Production`. That is what this queue mostly holds, and it is why the section names are work-type buckets rather than phases.
 
-**Eleven tasks are also homed in `Ciarra Robinson's previously assigned tasks` `1216923783441065`, section `Untitled section` `1216923764491937`** — a departed-staff handoff project. That section is not part of AC Brands Inventory; it surfaced in the task read because `memberships` spans every project a task belongs to, which is the trap recorded in `asana_task_contract.md`. `get_project` confirms Inventory has exactly the five sections listed above. The eleven tasks are worth a separate reassignment pass; they are not a registry problem.
+**Resolved 2026-08-01.** Eleven of these tasks also reported membership in an `Untitled section` `1216923764491937` that is not one of the five above. It belonged to `Ciarra Robinson's previously assigned tasks` `1216923783441065`, a departed-staff handoff project — `memberships` spans every project a task belongs to, which is the trap recorded in `asana_task_contract.md`, and `get_project` confirmed Inventory has exactly five sections. All 23 tasks in that project were already assigned to Alvin, so per his call the project membership was stripped from all 23 and the project is now empty, pending archive in the UI. Worth remembering as the cheapest possible illustration of the trap: a phantom sixth section that dissolved on one `get_task`.
 
 ### Field change to make this rulable
 
@@ -125,7 +125,7 @@ Live section name is **`Monthly run`**, lowercase r. `asana-s-and-op-schema.md` 
 
 ## Sweet July Skin Logistics — `1214370420013442`
 
-**State field:** `Shipment Status` — `1214374904674302` · **Authority:** Status · **Rule owns movement:** no (map incomplete)
+**State field:** `Shipment Status` — `1214374904674302` · **Authority:** Status · **Rule owns movement:** yes, once the restructure below lands
 
 | Section | GID |
 |---|---|
@@ -140,11 +140,79 @@ Live section name is **`Monthly run`**, lowercase r. `asana-s-and-op-schema.md` 
 
 Options: Pre-Ship `1214374904674303` · In Transit `1214374904674304` · At Port `1214374904674305` · In Clearance `1214374904674306` · Delivered `1214374904674307` · Exception `1214374904674308` · Closed `1214374904674309`.
 
-**No state → section map can be written yet, and this is a genuine design gap rather than a declared exception.** Sections here split by *direction and cargo type* (inbound FG vs inbound components vs outbound) while Shipment Status splits by *position in transit*. The two axes are independent: a Pre-Ship inbound component shipment and an In Transit one both belong in `Inbound — Components`. So status alone cannot pick the section — direction is needed too, and `logistics-manager` never states the combined rule despite `SKILL.md:330` saying "advance the section."
+Sections here split by *direction and cargo type* while Shipment Status splits by *position in transit*. The two axes are independent: a Pre-Ship inbound component shipment and an In Transit one both belong in `Inbound — Components`. So status alone cannot pick the section, and `logistics-manager` never states the combined rule despite `SKILL.md:330` saying "advance the section."
 
-Two rows are unambiguous and can be ruled today if wanted: `Exception → Outbound — Escalations` (already the practice at `oc3pl-order-manager/SKILL.md:382`) and `In Clearance → Customs Watch`. `At Port` is ambiguous — the section order implies destination port, the name does not.
+### The bigger problem, found 2026-08-01
 
-Resolving this needs a decision on whether inbound and outbound get separate status fields, or sections get restructured by position instead of direction. Out of scope for this pass; recorded so it is not mistaken for an oversight.
+**`Shipment Status` was being used as a generic progress field on tasks that are not shipments.** Of 35 tasks, roughly four were actual freight. The rest were two workstreams — Canada DTC compliance and Korea Masks — whose tasks had been given shipment positions standing in for not-started / doing / done:
+
+| Task | Shipment Status it carried |
+|---|---|
+| Canada DTC — Decide approach (DDP vs DDU vs pause) | Pre-Ship |
+| Canada DTC — Engage Pedrero Regulatory on CNF filings | Pre-Ship |
+| Canada DTC — Implement chosen approach | In Transit |
+| Canada DTC — Set up 60-day monitoring | Delivered |
+| Korea Masks — Source 3 customs broker quotes | Pre-Ship |
+| Korea Masks — Log customs costs to PLM | Delivered |
+
+A rule built on the field in that state would have moved "Set up 60-day monitoring" into a Delivered section. **Cleared on 17 tasks, 2026-08-01**, per Alvin's call: the workstream tasks stay where they are, they just no longer carry a shipment position. Six tasks kept the field because they genuinely describe a shipment — PO 100346, PO 100338 (Soursop), the PO 100310 receipt, the two Pava Toner outbounds, and the UPS clearance escalation.
+
+Four of the eight sections held nothing but their section seed.
+
+### Restructure — decided 2026-08-01
+
+**Sections carry position. Direction becomes a field.** Alvin's call, and it follows the registry's own principle: direction is set once when a shipment is created and never changes, so it is field-shaped. Section should carry what moves.
+
+**Add field `Direction`** (single-select): `Inbound — FG` · `Inbound — Components` · `Outbound — Retailer` · `Outbound — DTC` · `Outbound — Sample`. Record its GID and option GIDs here on creation.
+
+**Sections — rename two, add four, delete three, keep three:**
+
+| Action | Section | GID |
+|---|---|---|
+| rename → `In Clearance` | Customs Watch | `1214370392286066` |
+| rename → `Exception` | Outbound — Escalations | `1214370392301497` |
+| add | Pre-Ship | — |
+| add | In Transit | — |
+| add | At Port | — |
+| add | Delivered | — |
+| add | Closed | — |
+| delete | Inbound — FG | `1214370392291417` |
+| delete | Inbound — Components | `1214370420023360` |
+| delete | Outbound — Retailer | `1214370316148957` |
+| keep | Compliance Specs | `1214370392301434` |
+| keep | Weekly Digest | `1214370529340765` |
+| keep | Archive | `1214370302915904` |
+
+Rename rather than delete-and-recreate on the two, so their GIDs stay valid in `logistics-manager` and `oc3pl-order-manager`.
+
+**Target map — 1:1, fully rulable:**
+
+| Shipment Status | Option GID | Section |
+|---|---|---|
+| Pre-Ship | `1214374904674303` | Pre-Ship |
+| In Transit | `1214374904674304` | In Transit |
+| At Port | `1214374904674305` | At Port |
+| In Clearance | `1214374904674306` | In Clearance |
+| Delivered | `1214374904674307` | Delivered |
+| Exception | `1214374904674308` | Exception |
+| Closed | `1214374904674309` | Closed |
+
+`At Port` stops being ambiguous under this model — it is a position, not a place, so the destination-vs-origin question no longer arises. `Compliance Specs`, `Weekly Digest` and `Archive` take no rule; they hold non-shipment records and pinned digests.
+
+**Cost Alvin accepted:** the board no longer groups inbound vs outbound at a glance. Group by the `Direction` field instead. Worth it because full rule coverage removes the two-writer problem on the one queue that would otherwise keep it.
+
+**Migration:** small, because only six tasks carry the field.
+
+- PO 100346 `1215318129849303` → `Direction = Inbound — Components`, section Pre-Ship
+- PO 100338 / Soursop `1211654563799701` → `Direction = Inbound — Components`, section Pre-Ship
+- PO 100310 receipt `1216247022531162` → `Direction = Inbound — FG`, stays in Archive (completed)
+- Pava Toner bulk to NewBeauty `1214622982736967` → `Direction = Outbound — Retailer`; **its status reads `Pre-Ship` while the task is completed and archived** — set `Closed`
+- Pava Toner editorial samples `1214622865699529` → `Direction = Outbound — Sample`; same stale `Pre-Ship` on a completed task — set `Closed`
+- UPS clearance escalation `1214624750932762` → `Direction = Outbound — DTC`, section Exception
+
+Delete the section seeds for the three sections being removed; they document a layout that will no longer exist.
+
+**Not operationally proven.** PLM's `shipments` table is empty and this queue has never carried freight at volume. The map above says what should happen; it has not yet been exercised.
 
 ## OC3PL Order Management — `1214235522292179`
 
@@ -431,7 +499,11 @@ Each of the three below needs a field edit before its rules can be built. All th
 
 Quality is second rather than last because it needs no new field — `Batch State` already exists and is already authoritative in practice. Inventory is last because its migration is the largest, not because it is hard.
 
-**Still not rulable:** Sweet July Skin Logistics — status and sections are genuinely independent axes and resolving it needs a design decision, not a field edit. See that queue's section. Regulatory Management, Reportable Events, S&OP, OC3PL and SJ Shipping Dashboard have no state field to trigger on and are declared section-as-state.
+| 4 | Sweet July Skin Logistics | add 1 field, 2 renames, 5 adds, 3 deletes | 6 | 7 options → 7 sections, 1:1 |
+
+Logistics is last because it is the only structural change — sections get rebuilt around position and direction moves to a new field. Decided 2026-08-01; see that queue's section for the full spec.
+
+**Not rulable, and not a gap:** Regulatory Management, Reportable Events, S&OP, OC3PL and SJ Shipping Dashboard have no state field to trigger on and are declared section-as-state.
 
 ---
 

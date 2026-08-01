@@ -336,16 +336,22 @@ logistics task writes land here under HITL approval.
 - Project URL: https://app.asana.com/0/1214370420013442/list
 - Team: SJ Ops — GID `1202786171817904`
 
-Sections (all created and seeded):
+Sections — **being restructured, decided 2026-08-01.** Canonical list and the migration: `references/architecture/queue_registry.md`, Sweet July Skin Logistics.
 
-- Inbound — FG: `1214370392291417`
-- Inbound — Components: `1214370420023360`
-- Outbound — Retailer: `1214370316148957`
-- Outbound — Escalations: `1214370392301497`
-- Customs Watch: `1214370392286066`
-- Compliance Specs: `1214370392301434`
-- Weekly Digest: `1214370529340765`
-- Archive: `1214370302915904`
+Current:
+
+- Inbound — FG: `1214370392291417` *(to be deleted)*
+- Inbound — Components: `1214370420023360` *(to be deleted)*
+- Outbound — Retailer: `1214370316148957` *(to be deleted)*
+- Outbound — Escalations: `1214370392301497` *(renaming to `Exception`, GID stays)*
+- Customs Watch: `1214370392286066` *(renaming to `In Clearance`, GID stays)*
+- Compliance Specs: `1214370392301434` *(unchanged)*
+- Weekly Digest: `1214370529340765` *(unchanged)*
+- Archive: `1214370302915904` *(unchanged)*
+
+**Sections become position, direction becomes a field.** The three direction sections are replaced by a new `Direction` single-select — `Inbound — FG`, `Inbound — Components`, `Outbound — Retailer`, `Outbound — DTC`, `Outbound — Sample` — and sections are rebuilt as Pre-Ship / In Transit / At Port / In Clearance / Delivered / Exception / Closed, mapping 1:1 onto `Shipment Status`. Direction is set once when a shipment is created and never changes, so it is field-shaped; section carries what moves. Once the restructure lands, an Asana Rule owns section movement and this skill writes `Shipment Status` and `Direction` only — never a section move. That retires the "advance the section" instruction above.
+
+**Do not use `Shipment Status` on tasks that are not shipments.** On 2026-08-01 it had to be cleared from 17 workstream tasks — Canada DTC and Korea Masks — where `Pre-Ship` / `In Transit` / `Delivered` were standing in for not-started / doing / done. Once a rule keys on this field, that misuse moves a task like "Set up 60-day monitoring" into a Delivered section. Workstream tasks carry no shipment position.
 
 Custom fields (three-field minimum):
 
