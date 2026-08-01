@@ -2,7 +2,9 @@
 
 **Use:** The working list for getting the recurring jobs correctly registered as Claude Code Routines. Companion to `references/architecture/automations.md`, which is the canonical map; this file is the punch list.
 
-**Why it exists:** On 2026-07-31 a live check found six of seven daily jobs not running, and every spec in this directory pointing at a repo path that does not resolve. Both are fixable but not from inside a Claude Code session — the API refuses on both counts, documented below.
+**Why it exists:** On 2026-07-31 a live check found three morning sweeps paused and every spec in this directory pointing at a repo path that does not resolve. The path is fixed; the sweeps need a UI toggle the API refuses to perform, documented below.
+
+**One item on this list was wrong.** The same audit claimed the three PD dailies were unregistered. They were running the whole time — see item 2, kept as a record of the mistake rather than deleted. Treat any "job X is not running" claim here as needing an artifact check before you act on it.
 
 ---
 
@@ -36,17 +38,18 @@ Approved by Alvin 2026-07-31. All three keep their connectors, so this is a togg
 
 **Correction, 2026-07-31:** an earlier note here claimed `fire_trigger` works on any Routine regardless of creator. It does not — it carries the same restriction as `update_trigger` and refuses anything created via `http_api`. Manual firing is UI-only too. Assume **nothing** about an existing Routine can be driven from a session except reading it via `list_triggers`.
 
-### 2. Register three PD dailies that were never created
+### 2. ~~Register three PD dailies~~ — WITHDRAWN, they were already running
 
-Documented in `automations.md` since before the Routines migration, present as specs in this directory, absent from Routines entirely. The PD recap running log (Asana task `1214208955674591`) has therefore had no automated writer.
+**This item was wrong and is kept only so the error is visible.** An audit on 2026-07-31 concluded `sjs-pd-morning-sweep`, `sjs-pd-midday-sweep` and `sjs-pd-eod-reconciliation` had never been registered, because they did not appear in `list_triggers`.
 
-| Routine to create | Cron (UTC) | Cron (PT) | Prompt spec |
-|---|---|---|---|
-| `sjs-pd-morning-sweep` | `0 15 * * 1-5` | 8:00 AM | `scheduled-prompts/sjs-pd-morning-sweep.md` |
-| `sjs-pd-midday-sweep` | `0 19 * * 1-5` | 12:00 PM | `scheduled-prompts/sjs-pd-midday-sweep.md` |
-| `sjs-pd-eod-reconciliation` | `0 23 * * 1-5` | 4:00 PM | `scheduled-prompts/sjs-pd-eod-reconciliation.md` |
+They are running, and have been. `acb-thelanding` carries `sweeps/sjs-pd-morning-sweep-2026-07-30.txt` and `sjs-pd-eod-2026-07-30.html`, committed by the jobs themselves — commit `4e81690`, "sjs-pd-morning-sweep 2026-07-30 07:58 PT". They are registered somewhere this account's Routine list does not reach.
 
-Paste each spec file as the Routine's prompt. Settings to match the working jobs: fresh session per fire, all connectors attached, and completion notifications on per Alvin's 2026-07-31 ask.
+Two causes, both worth knowing:
+
+- **`list_triggers` paginates and one-shots share the limit.** `limit: 25` returned 15 crons plus 10 `send_later` one-shots; `limit: 30` returned 20 crons. Five real jobs were invisible at the lower limit — `pd-monthly-rollup`, `pd-quarterly-rollup`, `ayesha-weekly-briefing-friday`, `sjs-marketing-research--weekly-run`. Nothing signals truncation. Raise the limit until the count stops moving.
+- **Absence from the list is not absence of the job.** Check the output artifact before declaring anything dead: `acb-thelanding/sweeps/` and `sjs-pd-eod/` for PD, the Asana running logs for the digests.
+
+Nothing to do here.
 
 ### 3. Register the Logiwa receipt sweep
 

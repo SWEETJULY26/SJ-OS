@@ -38,6 +38,10 @@ Before concluding anything about a task's home, request `parent.gid` alongside `
 
 The cost of getting this wrong, 2026-07-31: a Receiving-section audit run on `search_tasks` reported 10 tasks needing cleanup. `get_tasks` on the same section returned 58, with `next_page: null`. The first number was a sixth of the real one, and was reported as complete.
 
+**This is not an Asana quirk — treat every list API the same way.** The same failure hit `mcp__Claude_Code_Remote__list_triggers` twice in the same session: its limit is shared between cron Routines and one-shot `send_later` triggers, so `limit: 25` hid five real recurring jobs, and an audit built on it wrongly reported three live jobs as never registered. Raise the limit until the count stops growing, prefer whatever call exposes a completion signal, and **before declaring anything absent, look for its output** — an artifact in a repo, a row in a table, a comment on a running log. Absence from a list is evidence about the list.
+
+Three times in one session, the same shape of error: a capped read reported as a complete picture. When a count drives a decision, prove the count.
+
 **Server fallback.** When `mcp__Asana__*` times out mid-batch, do not assume the write did or did not land. `mcp__Asana-c313a468__asana_get_task` is a working read fallback and will answer when the primary will not — use it to establish actual state, then retry in smaller batches. It cannot substitute for writes: its `asana_update_task` has no `add_projects`/`remove_projects`, so project membership changes must go through the primary server.
 
 ---
