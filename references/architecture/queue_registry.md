@@ -199,9 +199,70 @@ Same declared exception. Its fields (`Order Error Type`, `Shipping Error Type`, 
 | Watch List | `1214660713569760` |
 | Closed | `1214660716447873` |
 
-The `Status` field carries **15 options spanning two unrelated workflows** — lab findings (Inbound, Triage, Vendor Flag Review, Scorecard Signaled, CAPA Open, Watch, Closed) and batch lifecycle (Active, Stability Pending, Hold/Release Review, On Hold, Released, Pulled, Expired), plus `Pending`. A single rule keyed on this field cannot serve both, since `On Hold` and `Closed` mean different sections depending on which workflow the task belongs to. Splitting the field is the prerequisite for ruling this queue. Out of scope for this pass.
+The `Status` field carries **15 options spanning two unrelated workflows** — lab findings (Inbound, Triage, Vendor Flag Review, Scorecard Signaled, CAPA Open, Watch, Closed) and batch lifecycle (Active, Stability Pending, Hold/Release Review, On Hold, Released, Pulled, Expired), plus `Pending` `1214660230825945`, which appears in no skill's documented option list. A single rule keyed on this field cannot serve both, since `Watch` and `Closed` mean different sections depending on which workflow the task belongs to.
 
-Also live: option `Pending` `1214660230825945`, which appears in no skill's documented option list.
+### The field does not need splitting — the second field already exists
+
+`Batch State` `1214660230825974` is already on this project with exactly the eight batch options: Active `…825975` · Stability Pending `…825976` · Hold/Release Review `…825977` · On Hold `…825978` · Watch `…825979` · Released `…825980` · Pulled `…825981` · Expired `…825982`. `batch-lifecycle-tracker/SKILL.md:151,158` defines both fields with overlapping vocabularies and writes only `Status`.
+
+**Pulled 2026-08-01, and the data settles which one wins.** All seven batch tasks carry both fields. On four they agree. On three they disagree, and `Batch State` is the one that matches the section:
+
+| Task | Status | Batch State | Section |
+|---|---|---|---|
+| Coffee Fix Peptide Eye Cream — 25E22D1 | Active | Active | Batch — Active in Market |
+| Pava Exfoliating Cleanser — 950407 | Active | Active | Batch — Active in Market |
+| Irie Power Face Oil — 941407 | Active | Active | Batch — Active in Market |
+| Castaway Cream — 875502 | Active | Active | Batch — Active in Market |
+| Soursop Vit C — 942407 | Active | **Watch** | **Batch — Watch** |
+| Pava Toner — 930312 | Active | **Watch** | **Batch — Watch** |
+| Good Youth Retinol — 617411 | Active | **Watch** | **Batch — Watch** |
+
+`Batch State` is already the authoritative field for batch tasks in practice. `Status = Active` is a stale duplicate that is wrong on three of seven. So the change is to **retire the eight batch values from `Status`**, not to split it or build anything.
+
+### What is actually in this queue
+
+95 tasks, 40 open. `Status` is set on 15; `Batch State` on 7. The other 80 tasks carry no state at all — including all 21 in `Inbound Staging` and all 57 in `Closed`.
+
+Nine of the sixteen sections hold zero tasks: `Running Log`, `Lab Findings Open`, `Vendor Flag Review`, `Scorecard Signal Posted`, `CAPA Handed Off`, `Watch List`, `Batch — Hold/Release Review`, `Batch — On Hold`, `Batch — Closed`. The lab-findings half of this queue has never run a task through it.
+
+`Pending` turns out not to be junk — it marks a **third** workflow. All five uses are cross-cutting items: four `[SOP Annual Review]` tasks and one closed migration decision, all in `Cross-cutting Tasks`.
+
+### Field change to make this rulable
+
+1. **Delete the eight batch options from `Status`** — Active `…825938`, Stability Pending `…825939`, Hold/Release Review `…825940`, On Hold `…825941`, Released `…825942`, Pulled `…825943`, Expired `…825944`, and the batch sense of Watch. Keep `Watch` `1214660230825936`; it stays as the lab-findings watch state and no longer collides, because the batch sense now lives on `Batch State`.
+2. **Delete `Pending`** `1214660230825945`. Migrate its five tasks to `Inbound` (the four open SOP reviews) and `Closed` (the one completed).
+3. **Clear `Status` on the seven batch tasks.** `Batch State` already holds the truth.
+
+`Status` then reads: Inbound · Triage · Vendor Flag Review · Scorecard Signaled · CAPA Open · Watch · Closed.
+
+**Target maps — two fields, disjoint section sets, so two independent rule sets:**
+
+| Status | Section |
+|---|---|
+| Inbound | *no rule — see carve-out* |
+| Triage | Lab Findings Open |
+| Vendor Flag Review | Vendor Flag Review |
+| Scorecard Signaled | Scorecard Signal Posted |
+| CAPA Open | CAPA Handed Off |
+| Watch | Watch List |
+| Closed | Closed |
+
+| Batch State | Section |
+|---|---|
+| Active | Batch — Active in Market |
+| Stability Pending | Batch — Stability Schedule |
+| Watch | Batch — Watch |
+| Hold/Release Review | Batch — Hold/Release Review |
+| On Hold | Batch — On Hold |
+| Released | Batch — Closed (Released, Expired, Pulled) |
+| Pulled | Batch — Closed (Released, Expired, Pulled) |
+| Expired | Batch — Closed (Released, Expired, Pulled) |
+
+**The `Inbound` carve-out.** `Status = Inbound` gets no rule, because two sections are legitimate landing homes: `Inbound Staging` for lab findings and bridge intake, `Cross-cutting Tasks` for audits, SOP reviews and retailer questionnaires. The creating skill picks; a rule cannot tell them apart from Status alone. Same shape as the `SAE Open` / `Recall Open` carve-out on SJ Skin Complaint Log — and the same reason rules must key on specific option GIDs rather than "any Status change."
+
+`Running Log` and `SOP Catalog` also take no rule; they are pinned non-workflow sections.
+
+**Migration:** 12 writes total. Clear `Status` on the seven batch tasks, and move five `Pending` tasks to `Inbound` or `Closed`. Everything else is already consistent, because 80 of 95 tasks carry no state to migrate.
 
 ## SJS CAPA Log — `1214660784338465`
 
@@ -358,7 +419,19 @@ Sequencing: build the rule, dry-run it on a throwaway task (set Status to `Recei
 
 **SJ Skin Complaint Log** is the next best candidate: a clean 5-row map, with the mandatory carve-out that `SAE Open` and `Recall Open` trigger no move.
 
-**Not rulable yet:** Quality Management (one field, two workflows), CAPA Log (`Verification & Effectiveness` spans two sections), Logistics (status and sections are independent axes), Inventory (Status options describe nothing). Regulatory Management, Reportable Events, S&OP, OC3PL and SJ Shipping Dashboard have no state field to trigger on.
+### Build order, cheapest first
+
+Each of the three below needs a field edit before its rules can be built. All three specs are in their queue's section above, and all three are cheap for the same reason: the state field is barely used, so there is almost nothing to migrate. That will stop being true as these queues fill, which is the argument for doing them now.
+
+| Order | Queue | UI edits | Tasks to migrate | Result |
+|---|---|---|---|---|
+| 1 | SJS CAPA Log | 2 renames/adds, 1 add, 2 section deletes | **0** | 10 options → 10 sections, 1:1 |
+| 2 | SJS Quality Management | 9 option deletes | 12 | two fields, disjoint sections, 13 rules |
+| 3 | AC Brands Inventory | re-option one field | ~38, all mechanical | 7 options → 5 sections |
+
+Quality is second rather than last because it needs no new field — `Batch State` already exists and is already authoritative in practice. Inventory is last because its migration is the largest, not because it is hard.
+
+**Still not rulable:** Sweet July Skin Logistics — status and sections are genuinely independent axes and resolving it needs a design decision, not a field edit. See that queue's section. Regulatory Management, Reportable Events, S&OP, OC3PL and SJ Shipping Dashboard have no state field to trigger on and are declared section-as-state.
 
 ---
 
