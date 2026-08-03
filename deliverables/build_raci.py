@@ -34,10 +34,10 @@ F_SUB = Font(name=A, size=8, color="FFFFFF")
 F_T = Font(name=A, size=13, bold=True)
 F_AR = Font(name=A, size=10, bold=True, color="FFFFFF")
 FILL_H = PatternFill("solid", fgColor="1F3B4D")
-FILL_A = PatternFill("solid", fgColor="8A665A")   # Pava Brown — accountable
-FILL_R = PatternFill("solid", fgColor="6E8AAE")   # Coffee Fix, darkened — responsible
+FILL_A = PatternFill("solid", fgColor="8A665A")   # Pava Brown, accountable
+FILL_R = PatternFill("solid", fgColor="6E8AAE")   # Coffee Fix, darkened, responsible
 FILL_FN = PatternFill("solid", fgColor="EDF1F5")
-FILL_OPEN = PatternFill("solid", fgColor="F3D54E")  # Pineapple Punch — open seat
+FILL_OPEN = PatternFill("solid", fgColor="F3D54E")  # Pineapple Punch, open seat
 THIN = Side(style="thin", color="D0D7DE")
 BD = Border(left=THIN, right=THIN, top=THIN, bottom=THIN)
 WRAP = Alignment(wrap_text=True, vertical="top")
@@ -181,7 +181,7 @@ for j, i in enumerate(INI):
     r = hr + 1 + j
     col = get_column_letter(3 + j)
     rng = f"RACI!{col}3:{col}{nrows}"
-    an.cell(row=r, column=1, value=f"{i} — {TITLE[i]} ({NAME[i]})").font = F_B
+    an.cell(row=r, column=1, value=f"{i}: {TITLE[i]} ({NAME[i]})").font = F_B
     an.cell(row=r, column=2, value=f'=COUNTIF({rng},"A")+COUNTIF({rng},"A/R")').font = F_B
     an.cell(row=r, column=3, value=f'=COUNTIF({rng},"R")+COUNTIF({rng},"A/R")').font = F_B
     an.cell(row=r, column=4, value=f'=COUNTIF({rng},"A/R")').font = F_B

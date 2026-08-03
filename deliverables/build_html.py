@@ -43,32 +43,6 @@ STATUS_LABEL = {"filled": "", "recruiting": "Open · recruiting now",
                 "phased": "Open · phased in after Ops", "contractor": "Contractor",
                 "partner": "External partner"}
 
-CHANGES = [
-    ("Erin is the technical authority on packaging",
-     "Packaging development, artwork execution and the label artwork archive answer to Erin. "
-     "Jan executes under her. Perrine consults where formula contact matters."),
-    ("Danielle owns brand and campaign direction",
-     "Brand guidelines and campaign direction are hers, and she is consulted across Creative and "
-     "Marketing rather than only receiving finished work. Ayesha is consulted wherever the brand "
-     "carries her name."),
-    ("Quality gets a gate",
-     "Nicole holds the final quality check on product and documentation across every function. "
-     "Each function still owns its own work — the gate sits on top of it, not instead of it."),
-    ("Every row now has an owner",
-     "Marketing, wholesale and Shopify revenue were the last gaps. They were never ownerless — "
-     "they were missing from the sources. Soraya owns Marketing, Nicole owns all channels, "
-     "Danielle owns web."),
-    ("Our partners are on the matrix",
-     "Pedrero on regulatory, Ironclad on finance, Calm HR on people, WITHIN on digital marketing, "
-     "Teknologics on web and Coastal Interactive on managed IT. They hold the work; accountability "
-     "stays in-house."),
-    ("Perrine advises on the technical calls",
-     "R&D, Quality, Production and Regulatory requirements for product. She stays accountable for "
-     "formula and testing decisions, and consults on everything process-shaped."),
-    ("Two seats, in order",
-     "Operations Specialist first, recruiting now. Product Development Specialist phased in after. "
-     "Both report to Nicole. 32 rows below move to one of them on hire."),
-]
 
 def cell(row, ini):
     if row[2] == ini and row[3] == ini:
@@ -143,13 +117,6 @@ header.page .lede{{max-width:62ch;color:var(--ink-soft);font-size:var(--step-1);
 .meta{{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;font-size:var(--step--1);
   color:var(--ink-faint);margin-top:.5rem}}
 section.block{{margin-top:3rem;display:flex;flex-direction:column;gap:1.1rem}}
-/* what changed */
-.changes{{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);
-  grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr))}}
-.change{{background:var(--raised);padding:1.1rem 1.15rem;display:flex;
-  flex-direction:column;gap:.4rem}}
-.change h3{{font-size:var(--step-0);letter-spacing:.005em}}
-.change p{{font-size:var(--step--1);color:var(--ink-soft);line-height:1.55}}
 /* position strip */
 .pos-strip{{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);
   grid-template-columns:repeat(auto-fit,minmax(178px,1fr))}}
@@ -203,7 +170,7 @@ details.fn > summary{{cursor:pointer;padding:.85rem .2rem;display:flex;
 details.fn > summary::-webkit-details-marker{{display:none}}
 details.fn > summary::before{{content:"+";font-weight:600;color:var(--ink-faint);
   width:1ch;display:inline-block}}
-details.fn[open] > summary::before{{content:"–"}}
+details.fn[open] > summary::before{{content:"\u2212"}}
 details.fn > summary:focus-visible{{outline:2px solid var(--focus);outline-offset:-2px}}
 .fn-name{{font-weight:600;font-size:var(--step-1)}}
 .fn-count{{font-size:var(--step--1);color:var(--ink-faint);
@@ -270,17 +237,11 @@ parts.append(f"""<header class="page">
 <p class="eyebrow">AC Brands · Operations &amp; Product Development</p>
 <h1>Who owns what</h1>
 <p class="lede">Accountability across every function, by position. One person answers for each
-activity and one person does the work — everyone else is consulted or kept informed.</p>
+activity and one person does the work. Everyone else is consulted or kept informed.</p>
 <div class="meta"><span>{len(ROWS)} activities · {len(FUNCS)} functions</span>
 <span>As of 31 July 2026</span>
 <span>Reflects the 30 July leadership review and the 31 July role corrections</span></div>
 </header>""")
-
-# ---- what changed
-parts.append('<section class="block"><h2>What changed</h2><div class="changes">')
-for t, b in CHANGES:
-    parts.append(f'<article class="change"><h3>{e(t)}</h3><p>{e(b)}</p></article>')
-parts.append('</div></section>')
 
 # ---- positions
 parts.append("""<section class="block">
@@ -324,7 +285,7 @@ parts.append("""<section class="block"><h2>The matrix</h2>
 
 # ---- function tables
 head_cells = "".join(
-    f'<th data-col="{p[0]}" title="{e(p[1])} — {e(p[2])}">{p[0]}</th>' for p in POSITIONS)
+    f'<th data-col="{p[0]}" title="{e(p[1])}, {e(p[2])}">{p[0]}</th>' for p in POSITIONS)
 ri = 0
 for fi, fn in enumerate(FUNCS):
     frows = [r for r in ROWS if r[0] == fn]
@@ -370,18 +331,18 @@ parts.append('</section>')
 
 # ---- footer
 parts.append(f"""<footer class="page">
-<p><strong>How this was built.</strong> Every row traces to a source — the operating procedures and
+<p><strong>How this was built.</strong> Every row traces to a source: the operating procedures and
 role definitions in the SJ-OS repository, the two specialist job descriptions, or the 30 July
 leadership review. Open any row's source link to see which.</p>
 <p>One row has no documented owner and shows the VP of Operations by default because the work falls
 there in practice: Shopify revenue and channel position. It is marked as inferred rather than
 sourced. Accounts payable and HR onboarding used to sit here too, and are now owned by Ironclad
 Finance and Calm HR.</p>
-<p><strong>Partner organisations</strong> hold the work but never the accountability — that stays with
+<p><strong>Partner organisations</strong> hold the work but never the accountability. That stays with
 an employee. Pedrero Regulatory is consulted rather than responsible because our procedures make
 them consult-only, with no access to our systems.</p>
 <p>Coverage is Sweet July Skin plus company-wide work. Sweet July, the lifestyle brand, is not
-represented — nothing in our operating documentation defines who owns it.</p>
+represented, because nothing in our operating documentation defines who owns it.</p>
 <p>Questions or a row that looks wrong: Alvin.</p>
 </footer>""")
 
@@ -417,7 +378,7 @@ parts.append("""<script>
     if(active){
       var b=strip.querySelector('[data-pos="'+active+'"]');
       state.textContent='Showing '+b.querySelector('.pos-name').textContent.trim()+
-        ' — '+b.querySelector('.pos-title').textContent.trim();
+        ', '+b.querySelector('.pos-title').textContent.trim();
     } else { state.textContent='Showing all positions'; }
   }
   strip.addEventListener('click',function(ev){
@@ -446,5 +407,5 @@ parts.append("""<script>
 </script>""")
 
 io.open(OUT, "w", encoding="utf-8").write(
-    "<title>AC Brands — Who owns what</title>\n" + "\n".join(parts))
+    "<title>AC Brands: Who owns what</title>\n" + "\n".join(parts))
 print("wrote", OUT, os.path.getsize(OUT) // 1024, "KB")

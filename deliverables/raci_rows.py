@@ -1,10 +1,10 @@
-"""RACI rows for AC Brands. v6 — the whole business, including managed IT.
+"""RACI rows for AC Brands. v6, the whole business, including managed IT.
 
 Tuple: (Function, Activity, A, R, [C...], [I...], Transition, Source, Notes)
   A = answers for the outcome. R = does the work. One of each per row.
-  Transition = "" | "OPS" | "PDS" — the incoming seat that absorbs R on hire.
+  Transition = "" | "OPS" | "PDS" is the incoming seat that absorbs R on hire.
   Open seats never hold A or R; a vacancy cannot be accountable.
-  Partner organisations can hold R — they do the work — but never A.
+  Partner organisations can hold R (they do the work) but never A.
 
 Sources are the SJ-OS repo (paths relative to /home/user/SJ-OS), the AC Brands
 landing hub (relative to /home/user/acb-thelanding, prefixed "acb-thelanding:"),
@@ -12,7 +12,7 @@ the 2026-07-30 leadership review, the 2026-07-27 email to Danielle, the two
 specialist job descriptions, and Alvin's corrections of 2026-07-31.
 
 v6 adds Coastal Interactive as the managed IT service partner, and guarantees that
-Perrine and Soraya are never blank on a Product Development row — PD technical
+Perrine and Soraya are never blank on a Product Development row. PD technical
 guidance and the marketing read both need visibility on every product decision.
 """
 
@@ -73,7 +73,7 @@ ROWS = [
   ('Quality', 'Batch hold and release (SKN-OPS-007)', 'NI', 'AB', ['PC'], ['DI'], 'PDS', '.claude/skills/batch-lifecycle-tracker/references/batch-lifecycle-procedure.md:208; .claude/skills/batch-lifecycle-tracker/SKILL.md:86', 'QA Lead approves every hold and every release. No exceptions at v5.4. Releases need a CAPA close or clean retest plus QA Lead judgment. A moved from Perrine to Nicole per Leadership Business Review 2026-07-30 25:35-26:01. Perrine consults on the technical basis.'),
   ('Quality', 'In-market stability testing decisions (PET, accelerated, real-time)', 'PC', 'AB', ['NI'], [], 'PDS', '.claude/skills/batch-lifecycle-tracker/SKILL.md:71,94', 'Technical testing call stays with Perrine as the R&D and quality technical advisor. Operator approves schedule edits. Per Leadership Business Review 2026-07-30 25:18-25:35 the process gate moved to Nicole but the technical judgment did not.'),
   ('Quality', 'Near-expiry batch disposition at the 30-day threshold', 'NI', 'AB', ['PC'], [], 'PDS', '.claude/skills/batch-lifecycle-tracker/SKILL.md:71,94', 'Disposition is a quality gate, so it moves to Nicole. Posts back to inventory before any write-off.'),
-  ('Quality', 'Serious adverse event triage and recall kickoff (SKN-OPS-002, SKN-OPS-003)', 'AB', 'AB', ['PC', 'NI', 'PR'], ['DI', 'AC'], '', '.claude/skills/complaint-and-event-handler/SKILL.md:85,89,95; .claude/skills/regulatory-manager/references/pedrero-contacts.md:9,13,21', 'The strictest gate in the suite: explicit approval at every step, §4.A through §4.F each a separate gate. Operator decides severity, team and whether external reporting is needed. A and R both AB. Stays with Alvin as Reg Lead — legal and agency exposure. Nicole consults. Pedrero Regulatory holds the binding external review; consult-only internally, with no Asana access and no internal authority, so the Reg Lead gate stays in-house.'),
+  ('Quality', 'Serious adverse event triage and recall kickoff (SKN-OPS-002, SKN-OPS-003)', 'AB', 'AB', ['PC', 'NI', 'PR'], ['DI', 'AC'], '', '.claude/skills/complaint-and-event-handler/SKILL.md:85,89,95; .claude/skills/regulatory-manager/references/pedrero-contacts.md:9,13,21', 'The strictest gate in the suite: explicit approval at every step, §4.A through §4.F each a separate gate. Operator decides severity, team and whether external reporting is needed. A and R both AB. Stays with Alvin as Reg Lead, given the legal and agency exposure. Nicole consults. Pedrero Regulatory holds the binding external review; consult-only internally, with no Asana access and no internal authority, so the Reg Lead gate stays in-house.'),
   ('Quality', 'SOP ratification, annual review and cross-cutting quality tasks', 'NI', 'AB', ['PC'], [], '', '.claude/skills/quality-manager/SKILL.md:66,135; .claude/skills/quality-manager/references/sop-catalog.md:120; .claude/skills/quality-manager/references/qos-thresholds.md:52', 'QA Lead approves every ratification, review outcome, cross-cutting task and QoS threshold task. SOP §7 names a QA Manager for this; that seat is vacant and Perrine is filling it. Gate moved to Nicole per Leadership Business Review 2026-07-30 25:18-25:50.'),
   ('Quality', 'Quality dashboard publish to the landing hub', 'NI', 'AB', ['PC'], [], 'PDS', '.claude/skills/quality-status-reporter/SKILL.md:78', 'Operator approves the commit before push. Never commit without confirmation. A and R both AB. Nicole gates the content; Alvin retains the publish mechanics. Per Leadership Business Review 2026-07-30 26:02-26:17.'),
   ('Quality', 'Final quality check on product and documentation across every function', 'NI', 'NI', ['AB', 'PC', 'SS', 'EH'], ['DI', 'AC'], '', 'Leadership Business Review 2026-07-30 25:35-26:01', 'The new cross-function gate. Verbatim: "anything related to quality of service or quality of product will go through Nicole\'s eyes as sort of that final quality check... Even with each function having or being the primary owner, we\'ll still have that quality gate." A and R both NI.'),
