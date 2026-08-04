@@ -243,3 +243,21 @@ Logistics was worse than "independent axes," which is how the registry had it. `
 **Build order, cheapest first:** CAPA (0 tasks to migrate) → Quality (12) → Inventory (~38) → Logistics (6, but structural). All four specs live in `references/architecture/queue_registry.md`. The UI edits are Alvin's; the MCP cannot create or edit custom fields, sections, or rules.
 
 **Also settled.** `Ciarra Robinson's previously assigned tasks` is emptied — all 23 tasks were already assigned to Alvin, so the stale project membership came off. It had been surfacing as a phantom sixth section on AC Brands Inventory, which is the cheapest illustration yet of why `memberships` must never be read as belonging to the project you asked about.
+
+---
+
+## 2026-08-04 — SOPs move to `sops/` as canonical text; fresh start on SKN-OPS-004; annual review deferred to a single pass
+
+**Decision:** Three calls made together while finishing the SOP migration (#26, #27).
+
+1. **`sops/*.md` is canonical for every ratified SOP, not SharePoint and not a Supabase row.** SKN-OPS-001 through 009 were migrated out of their skill-side mirror files (capa-coordinator, complaint-and-event-handler, quality-lab-coordinator, batch-lifecycle-tracker, claims-il-and-label-keeper, adverse-event-and-recall-reporter) into `sops/`, joining SKN-OPS-010. The six skills keep their reference files, but as an operational walk layered on top of the canonical text, not a second source of truth — each now points at its `sops/` file instead of a SharePoint path. `quality-manager/references/sop-catalog.md` gained a Canonical text column alongside its existing Skill-side Mirror column.
+2. **SKN-OPS-004's reconstructed text stands as the real version — no reconciliation against a SharePoint original.** The migration flagged SKN-OPS-004 (Customer Complaint Handling) as a reconstruction from skill behavior rather than a transcription, since no original text existed anywhere in the repo. Alvin's call: this is a fresh start on SOPs going forward, not a transcription project — don't chase the old SharePoint doc. The content notice in the file is removed.
+3. **The overdue annual review on SKN-OPS-001–004 (due 2026-06-30) waits for the full SOP set, then runs once.** Rather than firing a review per SOP as each one gets touched, it holds until the rest of the SOPs Alvin is about to author are populated in `sops/`, then runs as a single pass across everything.
+
+**Why:** SOPs were scattered across SharePoint docx files, skill-side markdown mirrors, and a PLM `sop_documents` table that had already drifted from at least one of them (the 2026-07-29 catalog reconciliation note). Picking one canonical location and making every other copy point at it is what actually stops the drift instead of documenting it after the fact. SKN-OPS-004 specifically had nothing to reconcile against in-repo — treating it as done rather than a standing gap matches the "fresh start" framing and avoids a chase for a document that may not even reflect current practice anymore. Deferring the annual review to one pass avoids doing the review work four separate times against a SOP set that's about to grow.
+
+**Alternatives considered:** Leave the six skills' mirror files pointing at SharePoint and only add `sops/` as a new, uncited copy — rejected, it recreates exactly the multi-copy drift this migration exists to close. Fully rewrite the six skills to read `sops/` directly instead of keeping their own reference files — rejected for now; Alvin doesn't want the skills gutted while he's mid-flow on writing new SOPs, and the mirror-file layer is where skill-specific operational detail (job mappings, HITL gates, field maps) legitimately lives. Pull the real SKN-OPS-004 from SharePoint before calling this done — rejected per Alvin's explicit "don't worry about the original, fresh start."
+
+**Owner:** Alvin. Skill-side mirror files updated in this pass; `sops/` is where all future SOP edits land first.
+
+**Open:** The annual review for SKN-OPS-001–004 is still owed, just batched for later. No date is set for when "the rest of the SOPs are populated" — that's Alvin's call as he authors them.

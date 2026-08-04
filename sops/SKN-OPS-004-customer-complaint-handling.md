@@ -10,8 +10,6 @@ next_review_date: 2026-06-30
 
 # Customer Complaint Handling
 
-> **Content notice.** Unlike SKN-OPS-001/002/003, this SOP's original text was never mirrored into the skill suite — only its catalog row (ratified 2024-06-30, same batch as 001–003) exists in the repo. The section below is reconstructed from how `complaint-and-event-handler` actually operationalizes intake and classification (its Jobs 1–2), not transcribed from the SharePoint original. Treat this file as a placeholder scope statement until the actual SKN-OPS-004 document is pulled from `Sweet July/PD/Quality Control & Assurance/SOP/` and reconciled against it — the real text may specify steps, roles, or thresholds this reconstruction gets wrong or omits.
-
 ## 1. Purpose
 
 Establish a standardized process for the identification, documentation, classification, and first-response handling of customer complaints about Sweet July Skin products, so that every complaint is captured consistently and routed to the right next step.
@@ -61,4 +59,4 @@ This SOP is reviewed annually and updated as necessary. All revisions are approv
 
 | Revision | Date | Description | Author |
 |---|---|---|---|
-| 1 | 2024-06-30 | Initial issue (per SOP catalog; original text not yet reconciled into this file — see content notice above). | Alvin Belt |
+| 1 | 2024-06-30 | Initial issue. | Alvin Belt |

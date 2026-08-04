@@ -149,7 +149,7 @@ The skill goes through other skills for source access wherever one exists. Asana
 - outlook-asana-bridge — inbound complaint emails routed into the log as draft tasks
 - fireflies-asana-bridge — complaint signal from retail partner or customer-service calls
 - Asana — direct read of own tasks in the SJ Skin Complaint Log project
-- SharePoint — references/skn-ops-002-sae.md and references/skn-ops-003-recall.md mirror the source SOPs at `Sweet July/Product Development/Quality Control & Assurance/SOP/`. The skill points operators back to source on every recall and SAE walk so they're always working from the canonical doc.
+- `sops/` — references/skn-ops-002-sae.md and references/skn-ops-003-recall.md mirror the canonical procedure text at `sops/SKN-OPS-002-sae-reporting.md` and `sops/SKN-OPS-003-product-recall.md`. The skill points operators back to those files on every recall and SAE walk so they're always working from the canonical doc.
 
 **Writes via:**
 - Asana — direct (custom fields on tasks, comments, section moves, new tasks for handoff staging)
@@ -192,8 +192,8 @@ See references/trigger-phrases.md for the grouped trigger library.
 ## Reference files
 
 - `references/complaint-classification.md` — live custom-field map, classification recommendations, type-to-first-response defaults
-- `references/skn-ops-002-sae.md` — SKN-OPS-002 SAE SOP walk, mirrored from SharePoint
-- `references/skn-ops-003-recall.md` — SKN-OPS-003 recall SOP walk, mirrored from SharePoint
+- `references/skn-ops-002-sae.md` — SKN-OPS-002 SAE SOP walk; canonical text at `sops/SKN-OPS-002-sae-reporting.md`
+- `references/skn-ops-003-recall.md` — SKN-OPS-003 recall SOP walk; canonical text at `sops/SKN-OPS-003-product-recall.md`
 - `references/trigger-phrases.md` — grouped trigger phrases by intent (intake, trend, SAE, recall, status)
 
 ---

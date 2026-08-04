@@ -6,7 +6,7 @@
 **Prepared by:** Alvin Belt
 **Approved by:** Alvin Belt
 
-This file mirrors the SOP for in-skill reference. The SharePoint version is canonical — always link operators back to source on any recall walk.
+This file mirrors the SOP for in-skill reference. `sops/SKN-OPS-003-product-recall.md` is canonical — always link operators back to that source on any recall walk.
 
 ## 1. Purpose
 

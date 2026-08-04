@@ -6,7 +6,7 @@
 **Revision Number:** 1.0
 **Prepared by:** Alvin Belt (batch-lifecycle-tracker skill-side); QA Lead (procedural-side)
 **Approved by:** Alvin Belt
-**Status:** Ratified 2026-05-08. Drafted and ratified in-place during batch-lifecycle-tracker v5.4 build, same pattern as SKN-OPS-006. SharePoint master copy to be filed at `Sweet July/PD/Quality Control & Assurance/SOP/Batch Lifecycle Procedure SKN-OPS-007 Rev.1.docx`.
+**Status:** Ratified 2026-05-08. Drafted and ratified in-place during batch-lifecycle-tracker v5.4 build, same pattern as SKN-OPS-006. Canonical procedure text lives at `sops/SKN-OPS-007-batch-lifecycle.md`.
 
 **Owner:** batch-lifecycle-tracker (skill-side); QA Lead (procedural-side, currently Perrine — technical QA/QC lead)
 **Anchors:** SKN-OPS-001 Rev.1 (CAPA escalation, retention floor), SKN-OPS-006 Rev.1 (Lab Quality severity bands), capa-coordinator NCR Procedure §3.3 (severity bands kept aligned), ISO 11930 (PET applies only to water-containing emulsions)

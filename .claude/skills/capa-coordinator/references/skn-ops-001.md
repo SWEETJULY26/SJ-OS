@@ -1,6 +1,6 @@
 # SKN-OPS-001 — CAPA Procedure walk
 
-Mirrored from `Sweet July/Product Development/Quality Control & Assurance/SOP/Corrective Action Preventive Action (CAPA) SOP SKN-OPS-001 Rev.1.docx` (Effective June 30, 2024). The skill walks the phase structure verbatim and applies judgment within each phase per the Design Principles in SKILL.md.
+Canonical procedure text lives at `sops/SKN-OPS-001-capa-procedure.md`. This file layers the skill's operational behavior on top of each SOP step; the skill walks the phase structure verbatim and applies judgment within each phase per the Design Principles in SKILL.md.
 
 ---
 

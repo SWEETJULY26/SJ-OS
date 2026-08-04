@@ -265,8 +265,8 @@ See `references/trigger-phrases.md` for the grouped trigger library.
 
 ## Reference files
 
-- `references/skn-ops-001.md` — SKN-OPS-001 phase walk, mirrored from SharePoint with skill-side commentary on what each phase needs
-- `references/ncr-procedure.md` — Non-Conformance Report (NCR) Procedure SKN-OPS-005 Rev.1 (ratified 2026-05-09)
+- `references/skn-ops-001.md` — SKN-OPS-001 phase walk with skill-side commentary on what each phase needs; canonical text at `sops/SKN-OPS-001-capa-procedure.md`
+- `references/ncr-procedure.md` — Non-Conformance Report (NCR) Procedure SKN-OPS-005 Rev.1 (ratified 2026-05-09); canonical text at `sops/SKN-OPS-005-ncr-procedure.md`
 - `references/rca-tools.md` — 5 Whys + Fishbone scaffolds (mirrors SKN-OPS-001 Appendix C)
 - `references/capa-investigation.md` — CAPA investigation + action plan template (mirrors SKN-OPS-001 Appendix B)
 - `references/trigger-phrases.md` — grouped triggers by intent (intake, review, RCA, action plan, verification, close, status)

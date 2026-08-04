@@ -6,7 +6,7 @@
 **Revision Number:** 1.0
 **Prepared by:** Alvin Belt (quality-lab-coordinator skill-side); QA Lead (procedural-side)
 **Approved by:** Alvin Belt
-**Status:** Ratified 2026-05-08. Original draft authored same day, ratified in-place. SharePoint master copy to be filed at `Sweet July/PD/Quality Control & Assurance/SOP/Lab Quality Procedure SKN-OPS-006 Rev.1.docx`.
+**Status:** Ratified 2026-05-08. Original draft authored same day, ratified in-place. Canonical procedure text lives at `sops/SKN-OPS-006-lab-quality-procedure.md`.
 
 **Owner:** quality-lab-coordinator (skill-side); QA Lead (procedural-side, currently Perrine — technical QA/QC lead)
 **Anchors:** SKN-OPS-001 Rev.1 (CAPA escalation), capa-coordinator NCR Procedure §3.3 (severity bands — kept aligned)

@@ -6,7 +6,7 @@
 **Prepared by:** Alvin Belt / Shirlene Loi
 **Approved by:** Alvin Belt
 
-This file mirrors the SOP for in-skill reference. The SharePoint version is canonical — always link operators back to source on any SAE walk.
+This file mirrors the SOP for in-skill reference. `sops/SKN-OPS-002-sae-reporting.md` is canonical — always link operators back to that source on any SAE walk.
 
 ## 1. Purpose
 
