@@ -8,4 +8,13 @@ Skills reference these files directly by `sop_id` when they need to walk a proce
 
 | SOP ID | Title | Status |
 |---|---|---|
+| SKN-OPS-001 | Corrective and Preventive Action (CAPA) Procedure | ratified — overdue for annual review |
+| SKN-OPS-002 | Serious Adverse Event (SAE) Reporting and Management | ratified — overdue for annual review |
+| SKN-OPS-003 | Product Recall Procedure | ratified — overdue for annual review |
+| SKN-OPS-004 | Customer Complaint Handling | ratified — content notice, see file |
+| SKN-OPS-005 | Non-Conformance Report (NCR) Procedure | ratified |
+| SKN-OPS-006 | Lab Quality Procedure | ratified |
+| SKN-OPS-007 | Batch Lifecycle Procedure | ratified |
+| SKN-OPS-008 | IL / Claims / Label Procedure | ratified (Rev.2) |
+| SKN-OPS-009 | Reportable Events Procedure | ratified |
 | SKN-OPS-010 | Supplier Onboarding Procedure | draft |
