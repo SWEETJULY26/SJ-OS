@@ -3,7 +3,7 @@
 Outputs built from this repo that are meant to leave it. Committed so they survive
 the session that produced them and so the next person can see how they were derived.
 
-## AC Brands RACI — v6, 2026-07-31
+## AC Brands RACI: v6, 2026-07-31
 
 Org-wide RACI. **102 activities across eleven functions, led by position with names
 cross-referenced.** Built for the resource-needs conversation with Danielle and
@@ -11,27 +11,27 @@ Nicole, and updated to reflect the 2026-07-30 leadership review.
 
 Three artifacts, one dataset:
 
-- **`AC-Brands-RACI.html`** — the team-facing version. Position-led columns with
+- **`AC-Brands-RACI.html`**: the team-facing version. Position-led columns with
   status chips, collapsible function sections, click-a-position filtering, and the
   two open seats shown as columns with transition arrows on the rows they absorb.
   Sources are behind a per-row disclosure so the team isn't reading file paths.
   Self-contained: brand fonts and all styling are inlined, no external requests.
-- **`AC-Brands-RACI.xlsx`** — the working tool. `RACI` carries a two-row header
+- **`AC-Brands-RACI.xlsx`**: the working tool. `RACI` carries a two-row header
   (position code, then holder) plus `Transitions to`, `Source` and `Notes`.
   `Analysis` has live COUNTIF formulas over Sheet 1 including projected A and R
   books once both seats are filled. `Gaps` lists open seats with salary bands,
   unowned functions, single points of failure and open items.
-- **`AC-Brands-RACI-summary.md`** — the one-pager for Danielle and Nicole.
+- **`AC-Brands-RACI-summary.md`**: the one-pager for Danielle and Nicole.
 
 ### What v6 changed
 
-**Coastal Interactive** added as the managed IT service provider — back-end infrastructure,
+**Coastal Interactive** added as the managed IT service provider: back-end infrastructure,
 identity and endpoint management, equipment procurement and onboarding, asset lifecycle.
 Alvin is the liaison and accountable; Coastal is responsible. Distinct from Teknologics:
 Coastal is the back end, Teknologics is the storefront. Nine external parties now.
 
 **Perrine and Soraya are never blank on a Product Development row.** Perrine was blank on
-one, Soraya on all eight. Both Informed at minimum now — a blank cell is ambiguous in a way
+one, Soraya on all eight. Both Informed at minimum now. A blank cell is ambiguous in a way
 Informed is not.
 
 ### What v5 changed
@@ -45,9 +45,9 @@ skill suite is right for what the system automates and wrong as a proxy for what
 does. There are no skills for marketing, wholesale or the website, so none of it was on the
 matrix. Marketing went from 9 rows to 15, Retail & Wholesale from 2 to 5.
 
-- **Soraya accountable for Marketing** — editorial calendar, Klaviyo email, paid media, social
+- **Soraya accountable for Marketing**: editorial calendar, Klaviyo email, paid media, social
   content, influencer and earned media, product copy, and the WITHIN relationship. 1 → 8 A rows.
-- **Nicole accountable for all channels** — DTC, Amazon and wholesale together.
+- **Nicole accountable for all channels**: DTC, Amazon and wholesale together.
 - **Danielle accountable for web**, with Nicole as systems and tech owner.
 - **WITHIN** (digital marketing) and **Teknologics** (web development) added as partners.
 
@@ -58,13 +58,13 @@ citations against both repos.
 
 The three external partner organisations are now columns: **Pedrero Regulatory**,
 **Ironclad Finance** (Dan Bender) and **Calm HR** (PEO and co-employer). Partners hold
-R — they do the work — but never A, which stays with an employee. `verify.py` enforces
+R (they do the work) but never A, which stays with an employee. `verify.py` enforces
 that.
 
 This resolved two false negatives. Finance and People & Admin were reported as unowned
 functions on the first pass because Ironclad and Calm HR appeared nowhere in this repo,
 not because the work had no owner. `references/external-partners.md` now records all
-six external parties — three organisations plus Erin, Jan and Perrine — and did not
+six external parties (three organisations plus Erin, Jan and Perrine) and did not
 exist before. Shopify revenue is now the only genuinely unowned row.
 
 Finance accountability splits: Danielle on reporting, Alvin on cost. HR sits with Alvin
@@ -78,7 +78,7 @@ Role corrections from Alvin on 2026-07-31, on top of v2:
   artwork.** Packaging development, artwork execution and the label artwork archive
   answer to her; Jan executes under her; Perrine consults on formula contact.
 - **Danielle holds brand guideline custody and campaign direction**, and is consulted
-  across all Creative and Marketing rows. Campaign direction is a new row — it was
+  across all Creative and Marketing rows. Campaign direction is a new row. It was
   missing entirely, which is why the President had no Marketing presence.
 - **Ayesha is consulted wherever the brand carries her name** and keeps sole
   accountability for brand-line moves.
@@ -94,7 +94,7 @@ Per the 2026-07-30 leadership review (see `decisions/log.md`):
   up from 2. Her total book goes from 8 rows to 21.
 - **Perrine moves to technical advisor.** Retains A on the 8 rows where judgment is
   formula or testing; consult-only on process gates. Down from 11.
-- **Alvin owns the framework** — quality management system, SOP framework, this RACI.
+- **Alvin owns the framework**: quality management system, SOP framework, this RACI.
 - **Two open seats are columns.** Ops Specialist recruiting now, PD Specialist phased
   in after. 32 rows transition on hire, 16 each; 29 come off Alvin, 3 off Nicole.
   His R book drops from 55 to 26, and rows with no second pair of eyes drop from
@@ -102,19 +102,26 @@ Per the 2026-07-30 leadership review (see `decisions/log.md`):
 
 No job titles changed. What changed is who holds which gate. The corresponding
 role-label changes in the skill role-maps *are* real, because those are runtime
-config that decides where a skill routes an approval — see the History sections in
+config that decides where a skill routes an approval. See the History sections in
 `quality-manager`, `asana-pd-manager` and `regulatory-manager` role-maps.
+
+### House style
+
+No em dashes anywhere in these deliverables, per Alvin's instruction on 2026-08-03.
+Commas, colons, semicolons and full stops instead. The HTML page also has no
+"What changed" section; version history lives in this README, not on the page the
+team reads. Keep both rules when editing `raci_rows.py` or either build script.
 
 ### How it was built
 
-Ownership was extracted from this repo, not assumed — `.claude/skills/` (SKILL.md
+Ownership was extracted from this repo rather than assumed, from `.claude/skills/` (SKILL.md
 plus every `references/` file), `references/architecture/`, `decisions/`,
 `context/`, `connections.md`, `MEMORY.md` and `scheduled-prompts/`. Roles resolve
 to people only through the three canonical role-maps:
 
-- `.claude/skills/asana-pd-manager/references/role-map.md` — PD
-- `.claude/skills/quality-manager/references/role-map.md` — Quality (System B)
-- `.claude/skills/regulatory-manager/references/role-map.md` — Regulatory (System C)
+- `.claude/skills/asana-pd-manager/references/role-map.md`: PD
+- `.claude/skills/quality-manager/references/role-map.md`: Quality (System B)
+- `.claude/skills/regulatory-manager/references/role-map.md`: Regulatory (System C)
 
 The roster was cross-checked against live Asana workspace users, per the standing
 lesson in `MEMORY.md` about verifying against the actual system rather than what a
@@ -127,17 +134,17 @@ the two job descriptions attached to it. Eleven rows rest on those rather than o
 anything in this repo; `verify.py` reports them separately so the distinction stays
 visible.
 
-- `raci_rows.py` — the row data and the position roster. One tuple per activity:
+- `raci_rows.py`: the row data and the position roster. One tuple per activity:
   function, activity, A, R, consulted, informed, transition, source, notes. Edit
   here, not in the spreadsheet or the HTML.
-- `build_raci.py` — renders the three xlsx sheets from `raci_rows.py`.
-- `build_html.py` — renders the team-facing page from the same data. Expects the
+- `build_raci.py`: renders the three xlsx sheets from `raci_rows.py`.
+- `build_html.py`: renders the team-facing page from the same data. Expects the
   base64 font payloads alongside it; regenerate them from
   `.claude/skills/sweet-july-skin-brand/assets/fonts/`.
-- `transform_v2.py` through `transform_v6.py` — the migration chain. Kept for the audit trail: it shows every
+- `transform_v2.py` through `transform_v6.py`: the migration chain. Kept for the audit trail, so it shows every
   A/R reassignment and which rows were added, rather than the v2 data appearing
   from nowhere.
-- `verify.py` — seven checks: no departed-employee references in any cell of any
+- `verify.py`: seven checks. No departed-employee references in any cell of any
   sheet or in the summary or the HTML; exactly one A and one R per row; every cited
   `file:line` resolves in this repo; every repo citation carries ownership language;
   no open seat holds A or R and no partner organisation holds A, since a vacancy cannot be
@@ -165,16 +172,16 @@ Both scripts expect `~/Documents/` as the output directory and this repo at
 ### Known limits
 
 Nothing on the matrix is unowned. Across v1–v5 the unowned list went from three
-functions to zero — and none of them were ever actually ownerless. Finance and HR needed
+functions to zero, and none of them were ever actually ownerless. Finance and HR needed
 the partner organisations added; Marketing, wholesale and Shopify revenue needed the
 landing hub. Absence from a source meant the source had a gap.
 
-30 of the 99 rows cite something outside this repo — the leadership review, a job
+30 of the 99 rows cite something outside this repo: the leadership review, a job
 description, the landing hub, or Alvin directly. `verify.py` reports those separately so
 the distinction between extracted and stated stays visible.
 
 Skill bodies and SOP text still say "QA Lead" and "Voice of Customer" in places.
-That was deliberate — rewriting nine skills' prose is a larger change than this one
+That was deliberate. Rewriting nine skills' prose is a larger change than this one
 warranted, and the role-maps are what the skills read at runtime. Each role-map
 carries a resolution note: process gates resolve to Quality Gate (Nicole), technical
 gates to Technical Advisor (Perrine). If a skill ever behaves as though Perrine
