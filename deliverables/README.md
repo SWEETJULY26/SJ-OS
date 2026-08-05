@@ -28,16 +28,21 @@ Three artifacts, one dataset:
 
 The page renders the matrix from a JSON payload rather than from baked-in markup, so
 it can be changed in the browser. Press **Edit** and every cell becomes a button that
-cycles through blank, C, I, A, R and back. Shift-click steps backwards. Activity names
+cycles through blank, C, I, A, A/R and R and back. Shift-click steps backwards. Activity names
 and function names become editable text, rows can be reordered within a function, moved
 to another function, added or deleted, and a whole function can be added.
 
 **A can be shared, R cannot.** An activity may have several positions accountable, so
-taking A displaces nobody. R is single, and it sits last in the cycle for a reason:
-clicking through a cell must never rewrite a different one. If R is already held on that
-activity the cycle steps over it and names the holder, so the only way to move R is to
-clear their cell first. This replaced the original one-A rule on 2026-08-05 at Alvin's
+taking A displaces nobody. This replaced the original one-A rule on 2026-08-05 at Alvin's
 instruction.
+
+R is single, and the two states that claim it, **A/R** and **R**, sit at the end of the
+cycle for a reason: clicking through a cell must never rewrite a different one. If R is
+already held on that activity, cycling skips past both and names the holder, so the only
+way to move R is to clear their cell first. That is two clicks rather than one, and it is
+the whole reason a click can no longer disturb a cell you were not looking at. A/R and a
+separate A can sit on the same activity: one position both answers and does the work,
+another only answers.
 
 Two restrictions still hold, and `verify.py` enforces both on the data. An open seat can
 only receive the transition arrow, because a vacancy cannot be accountable. A partner

@@ -87,6 +87,8 @@ This replaces the exactly-one-A rule that the original RACI brief set. Two restr
 
 **Status:** Shipped 2026-08-05. The page carries A as a list. `deliverables/raci_rows.py` still holds one code per row because that is what today's data says, but `build_raci.py` accepts a code or a list, and `verify.py` now checks for at least one A and exactly one R and reports how many rows carry more than one. So an export with shared A folds back in without another schema change. Proved the tolerance with a temporary two-A row: both positions get an A marker in the spreadsheet. Verified in Chromium: cycle order is C, I, A, R, blank; four positions held A on one row at once with tallies tracking; R untouched throughout; R settable once its slot is free; existing A/R cells still render and clear in one click; open-seat and partner limits intact; edits survive a reload.
 
+**Correction, same day.** Making A a set removed A/R from the cycle, so it could no longer be set by hand. Restored: the cycle is blank, C, I, A, A/R, R. Both A/R and R claim R, so both sit at the end and both are skipped when another position holds R, with the toast naming the holder. A/R and a separate A can coexist on one activity, which is a shape the old one-A rule could not express at all.
+
 **Open:** The A/R count in the banner still reads "same person on A and R" per row, which is literally true but means less now that a row can carry other A's alongside. If shared A becomes common, the single-point-of-failure measure on the Gaps sheet needs rethinking, since it was written when one A per row was guaranteed.
 
 ---
