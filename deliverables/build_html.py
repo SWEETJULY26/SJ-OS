@@ -24,7 +24,7 @@ PUB = {
     "positions": [{"id": p[0], "name": p[1], "title": p[2], "status": p[3]}
                   for p in POSITIONS],
     "functions": FUNCS,
-    "rows": [{"f": r[0], "act": r[1], "A": r[2], "R": r[3],
+    "rows": [{"f": r[0], "act": r[1], "A": ([r[2]] if r[2] else []), "R": r[3],
               "C": list(r[4]), "I": list(r[5]),
               "t": r[6] or "", "src": r[7], "n": r[8]}
              for r in ROWS],
@@ -282,8 +282,9 @@ JS = r"""
 
   // A row's letter for one position. '' | 'C' | 'I' | 'R' | 'A' | 'AR'
   function letterOf(row, id){
-    if(row.A===id && row.R===id) return 'AR';
-    if(row.A===id) return 'A';
+    var isA = row.A.indexOf(id)>-1;
+    if(isA && row.R===id) return 'AR';
+    if(isA) return 'A';
     if(row.R===id) return 'R';
     if(row.C.indexOf(id)>-1) return 'C';
     if(row.I.indexOf(id)>-1) return 'I';
@@ -293,19 +294,20 @@ JS = r"""
   var MK = {A:['a','A'], R:['r','R'], AR:['ar','A/R'], C:['c','C'], I:['i','I'], T:['t','\u2192']};
 
   function strip(row, id){
-    if(row.A===id) row.A = '';
+    row.A = row.A.filter(function(x){ return x!==id; });
     if(row.R===id) row.R = '';
     row.C = row.C.filter(function(x){ return x!==id; });
     row.I = row.I.filter(function(x){ return x!==id; });
     if(row.t===id) row.t = '';
   }
 
-  // Cycle order depends on what the seat is allowed to hold. A vacancy cannot be
+  // R sits last on purpose. Taking R moves it off whoever held it, so it must not
+  // be something you pass through on the way to C, I or A. A vacancy cannot be
   // accountable or responsible, and accountability never leaves the company.
   function cycle(id){
     if(isOpen(id)) return ['','T','C','I'];
     if(isPartner(id)) return ['','C','I','R'];
-    return ['','C','I','R','A','AR'];
+    return ['','C','I','A','R'];
   }
 
   // Returns the letters this assignment took off other positions, so the change
@@ -321,43 +323,58 @@ JS = r"""
       row.R = id;
     }
     else if(next==='A'){
-      if(row.A && row.A!==id) moved.push(['A', row.A]);
-      row.A = id;
+      // More than one A is allowed, so taking A displaces nobody.
+      row.A.push(id);
     }
     else if(next==='AR'){
-      if(row.A && row.A!==id) moved.push(['A', row.A]);
       if(row.R && row.R!==id) moved.push(['R', row.R]);
-      row.A = id; row.R = id;
+      row.A.push(id); row.R = id;
     }
     return moved;
   }
 
-  function bump(row, id){
+  // back=true steps backwards, so overshooting a cell costs one shift-click
+  // rather than a lap through every other letter.
+  function bump(row, id, back){
     var order = cycle(id), cur = letterOf(row, id);
+    // A/R is never produced by cycling now that a row can carry several A's.
+    // Existing A/R cells still render, and one click clears them.
+    if(cur==='AR') return {next:'', moved: setLetter(row, id, '')};
     var at = order.indexOf(cur);
-    var next = order[(at<0 ? 0 : at+1) % order.length];
-    return {next: next, moved: setLetter(row, id, next)};
+    if(at<0) at = 0;
+    var step = back ? -1 : 1;
+    var next = order[(at + step + order.length) % order.length];
+    // R is single. Cycling must never take it off another position, or clicking
+    // through one cell quietly rewrites a different one. Step over R instead and
+    // say why: clear the current holder first to move it.
+    var blocked = '';
+    if(next==='R' && row.R && row.R!==id){
+      blocked = row.R;
+      next = order[(at + 2*step + order.length) % order.length];
+    }
+    return {next: next, moved: setLetter(row, id, next), blocked: blocked};
   }
 
   // ---- counts
   function counts(id){
     var a=0,r=0,ar=0,inc=0,out=0;
     D.rows.forEach(function(row){
-      if(row.A===id) a++;
+      if(row.A.indexOf(id)>-1) a++;
       if(row.R===id) r++;
-      if(row.A===id && row.R===id) ar++;
+      if(row.A.indexOf(id)>-1 && row.R===id) ar++;
       if(row.t===id) inc++;
       if(row.R===id && row.t) out++;
     });
     return {a:a,r:r,ar:ar,inc:inc,out:out};
   }
   function problems(){
-    var miss=0, both=0;
+    var miss=0, both=0, multi=0;
     D.rows.forEach(function(row){
-      if(!row.A || !row.R) miss++;
-      if(row.A && row.A===row.R) both++;
+      if(!row.A.length || !row.R) miss++;
+      if(row.R && row.A.indexOf(row.R)>-1) both++;
+      if(row.A.length>1) multi++;
     });
-    return {miss:miss, both:both};
+    return {miss:miss, both:both, multi:multi};
   }
 
   // ---- rendering
@@ -480,7 +497,7 @@ JS = r"""
       var idx = D.rows.indexOf(row);
       var tr = el('tr');
       tr.setAttribute('data-row', String(idx));
-      if(editing && (!row.A || !row.R)) tr.className = 'flag';
+      if(editing && (!row.A.length || !row.R)) tr.className = 'flag';
 
       var act = el('td','act');
       var txt = el('span','acttext', row.act);
@@ -500,7 +517,7 @@ JS = r"""
 
       if(editing){
         var msgs = [];
-        if(!row.A) msgs.push('no one accountable');
+        if(!row.A.length) msgs.push('no one accountable');
         if(!row.R) msgs.push('no one doing the work');
         if(msgs.length) act.appendChild(el('span','rowmsg', msgs.join('; ')));
       } else {
@@ -520,15 +537,19 @@ JS = r"""
         var L = letterOf(row, p.id);
         if(editing){
           var b = el('button','cellbtn'); b.type='button';
-          b.setAttribute('aria-label', p.name + ' on ' + row.act);
+          b.setAttribute('aria-label', p.name + ' on ' + row.act +
+            '. Click to change, shift-click to step back.');
           b.appendChild(mark(L, true));
-          b.addEventListener('click', function(){
-            var res = bump(row, p.id);
+          b.addEventListener('click', function(ev){
+            var res = bump(row, p.id, ev.shiftKey);
             save();
-            if(res.moved.length){
+            if(res.blocked){
+              toast('R belongs to ' + label(res.blocked) +
+                    ' on this activity. Clear that cell first to move it.');
+            } else if(res.moved.length){
               toast(res.moved.map(function(m){
                 return m[0] + ' moved off ' + label(m[1]);
-              }).join(', ') + '. One A and one R per activity.');
+              }).join(', ') + '. Only one R per activity.');
             }
             render();
           });
@@ -643,8 +664,9 @@ JS = r"""
       var st = el('strong', null, row.act);
       card.appendChild(st);
       var who = el('div','who');
-      var wa = el('span'); wa.appendChild(mark(row.A?'A':'', false));
-      wa.appendChild(document.createTextNode(row.A ? label(row.A) : 'no owner'));
+      var wa = el('span'); wa.appendChild(mark(row.A.length?'A':'', false));
+      wa.appendChild(document.createTextNode(row.A.length
+        ? row.A.map(label).join(', ') : 'no owner'));
       var wr = el('span'); wr.appendChild(mark(row.R?'R':'', false));
       wr.appendChild(document.createTextNode(row.R ? label(row.R) : 'unassigned'));
       who.appendChild(wa); who.appendChild(wr);
@@ -699,8 +721,10 @@ JS = r"""
     var lead = el('span');
     if(editing){
       lead.appendChild(document.createTextNode('Editing. Click a cell to cycle through '));
-      lead.appendChild(el('b', null, 'C, I, R, A'));
-      lead.appendChild(document.createTextNode(' and back to blank. Edits save in this browser only.'));
+      lead.appendChild(el('b', null, 'C, I, A, R'));
+      lead.appendChild(document.createTextNode(' and back to blank. Shift-click steps back. '
+        + 'An activity can have several A\u2019s; only R is single. '
+        + 'Edits save in this browser only.'));
     } else {
       lead.appendChild(el('b', null, 'Edited copy.'));
       lead.appendChild(document.createTextNode(' You are seeing local changes, not the published version.'));
@@ -708,6 +732,8 @@ JS = r"""
     bannerEl.appendChild(lead);
     if(pr.miss) bannerEl.appendChild(el('span','warn', pr.miss +
       (pr.miss===1 ? ' activity is missing an A or an R' : ' activities are missing an A or an R')));
+    if(pr.multi) bannerEl.appendChild(el('span', null, pr.multi +
+      ' with more than one A'));
     if(pr.both) bannerEl.appendChild(el('span', null, pr.both +
       ' with the same person on A and R'));
     bannerEl.appendChild(el('span', null, D.rows.length + ' activities \u00b7 ' +
@@ -895,7 +921,7 @@ parts.append('<div class="wrap">')
 parts.append("""<header class="page">
 <p class="eyebrow">AC Brands &middot; Operations &amp; Product Development</p>
 <h1>Who owns what</h1>
-<p class="lede">Accountability across every function, by position. One person answers for each
+<p class="lede">Accountability across every function, by position. Someone answers for each
 activity and one person does the work. Everyone else is consulted or kept informed.</p>
 <div class="meta" id="meta"></div>
 </header>""")
@@ -908,7 +934,7 @@ parts.append("""<section class="block">
 
 parts.append("""<section class="block"><h2>The matrix</h2>
 <div class="legend">
-<span><i class="mk a">A</i> Answers for the outcome</span>
+<span><i class="mk a">A</i> Answers for the outcome, and can be shared</span>
 <span><i class="mk r">R</i> Does the work</span>
 <span><i class="mk ar">A/R</i> Both, so no second pair of eyes</span>
 <span><i class="mk c">C</i> Consulted</span>
@@ -936,11 +962,15 @@ parts.append("""<section class="block"><h2>The matrix</h2>
 </section>""")
 
 parts.append("""<footer class="page">
-<p><strong>Editing.</strong> Press Edit, then click any cell to cycle it through C, I, R, A and back
-to blank. Activity names and function names become editable, rows can be reordered, moved to another
-function, added or deleted. One A and one R per activity is enforced: giving A to someone takes it
-off whoever held it. Open seats can only receive the transition arrow and partner organisations
-cannot hold A, because a vacancy cannot be accountable and accountability does not leave the company.</p>
+<p><strong>Editing.</strong> Press Edit, then click any cell to cycle it through C, I, A, R and back
+to blank. Shift-click steps backwards if you overshoot. Activity names and function names become
+editable, rows can be reordered, moved to another function, added or deleted.</p>
+<p>An activity can have more than one A, so giving someone A takes nothing away from anyone else. R
+is single and sits at the end of the cycle, and clicking never takes it off someone: if R is already
+held on that activity the cycle steps over it and tells you who has it, so clearing their cell is the
+only way to move it. Open seats can only receive the transition arrow and partner organisations
+cannot hold A, because a vacancy cannot be accountable and accountability does not leave the company.
+An activity with no A at all, or nobody doing the work, is marked in the margin.</p>
 <p><strong>Where edits live.</strong> In your own browser, on this device. They are not shared with
 anyone else opening this link, and they survive a reload but not a cleared cache. Export JSON when a
 change is worth keeping and send it back to Alvin to fold into the repository, which is what the

@@ -28,16 +28,22 @@ Three artifacts, one dataset:
 
 The page renders the matrix from a JSON payload rather than from baked-in markup, so
 it can be changed in the browser. Press **Edit** and every cell becomes a button that
-cycles through blank, C, I, R, A and back. Activity names and function names become
-editable text, rows can be reordered within a function, moved to another function,
-added or deleted, and a whole function can be added.
+cycles through blank, C, I, A, R and back. Shift-click steps backwards. Activity names
+and function names become editable text, rows can be reordered within a function, moved
+to another function, added or deleted, and a whole function can be added.
 
-Three invariants are enforced in the editor, the same ones `verify.py` enforces on the
-data. One A and one R per activity, so giving A to someone takes it off whoever held
-it and the page says whose it was. An open seat can only receive the transition arrow,
-because a vacancy cannot be accountable. A partner organisation can hold R but not A,
-because accountability does not leave the company. Rows left without an A or an R are
-flagged in the margin and counted in the banner rather than silently accepted.
+**A can be shared, R cannot.** An activity may have several positions accountable, so
+taking A displaces nobody. R is single, and it sits last in the cycle for a reason:
+clicking through a cell must never rewrite a different one. If R is already held on that
+activity the cycle steps over it and names the holder, so the only way to move R is to
+clear their cell first. This replaced the original one-A rule on 2026-08-05 at Alvin's
+instruction.
+
+Two restrictions still hold, and `verify.py` enforces both on the data. An open seat can
+only receive the transition arrow, because a vacancy cannot be accountable. A partner
+organisation can hold R but never A, because accountability does not leave the company.
+An activity with no A at all, or with nobody doing the work, is flagged in the margin and
+counted in the banner rather than silently accepted.
 
 Edits live in the viewer's own browser via `localStorage`, keyed to the payload
 version. They survive a reload, they are not shared with anyone else opening the link,
@@ -57,6 +63,12 @@ copies would mislead, and not otherwise.
 The HTML page became editable, and the page is now client-rendered from the payload
 rather than server-rendered as static rows. No data changed: same 102 activities, same
 owners, same counts.
+
+The A column widened from one holder to many. `raci_rows.py` still carries a single code
+per row because that is what the data says today, but `build_raci.py` accepts either a
+code or a list of codes, and `verify.py` now checks for **at least one** A and exactly one
+R, reporting how many rows carry more than one. So an export with shared accountability
+folds straight back in without another schema change.
 
 ### What v6 changed
 

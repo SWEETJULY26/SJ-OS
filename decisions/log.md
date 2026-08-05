@@ -75,6 +75,21 @@ Keep it terse. Future-you will thank present-you for capturing the *why*, not ju
 **Status:** All four drift instances fixed 2026-07-29. Full findings in `decisions/wiki-layer-audit-2026-07-29.md`. Two items left open there — Job 0 (the bridges' wiki write-back) has not fired since 2026-05-26, leaving 123 of 133 pages as untouched seed; and `Bridge-and-System-Audit-2026-05-26.md` is cited from three files but exists nowhere, most likely lost in the 2026-07-19 consolidation.
 
 ---
+## 2026-08-05 — More than one A is allowed; R is single and cannot be taken by accident
+
+**Decision:** An activity can have several positions accountable. Taking A displaces nobody. R stays single, sits last in the cell cycle, and cycling can never move it off its holder: if R is already held on that activity the cycle steps over R and names the holder, so clearing their cell is the only way to move it. Shift-click steps the cycle backwards.
+
+This replaces the exactly-one-A rule that the original RACI brief set. Two restrictions are unchanged: an open seat can hold only the transition arrow, and a partner organisation can hold R but never A.
+
+**Why:** Alvin's call, and both halves came out of using the thing. Shared accountability is real on this team, so a matrix that forces a single A was making him pick a winner where two people genuinely answer together. The ordering was a straight defect: R sat mid-cycle, so clicking a cell towards C, I or A passed through R and silently pulled R off whichever position held it on that row, wrecking selections elsewhere. Ordering alone was not enough, because a full lap back to blank still crosses R. Refusing to move R by cycling is what actually makes clicking safe.
+
+**Alternatives considered:** Keep one A and add a second column for co-owners. Rejected, it encodes the same ambiguity the RACI is meant to remove and nobody would read the second column. Let R be multi as well. Rejected, R is who does the work and splitting it is how a task ends up done by nobody; the A/R flag on the Gaps sheet only means something while R is single. Let cycling steal R but announce it, which is what shipped first. Rejected after using it: a toast does not undo a change you did not want, and the whole complaint was edits leaking into cells he was not looking at.
+
+**Status:** Shipped 2026-08-05. The page carries A as a list. `deliverables/raci_rows.py` still holds one code per row because that is what today's data says, but `build_raci.py` accepts a code or a list, and `verify.py` now checks for at least one A and exactly one R and reports how many rows carry more than one. So an export with shared A folds back in without another schema change. Proved the tolerance with a temporary two-A row: both positions get an A marker in the spreadsheet. Verified in Chromium: cycle order is C, I, A, R, blank; four positions held A on one row at once with tallies tracking; R untouched throughout; R settable once its slot is free; existing A/R cells still render and clear in one click; open-seat and partner limits intact; edits survive a reload.
+
+**Open:** The A/R count in the banner still reads "same person on A and R" per row, which is literally true but means less now that a row can carry other A's alongside. If shared A becomes common, the single-point-of-failure measure on the Gaps sheet needs rethinking, since it was written when one A per row was guaranteed.
+
+---
 ## 2026-08-04 — The RACI page is the editing surface, and the repo is still the source of truth
 
 **Decision:** The team-facing RACI page becomes editable in the browser. Cells cycle through blank, C, I, R and A; activity and function names are editable; rows can be reordered, moved between functions, added and deleted; functions can be added. The page is now client-rendered from a JSON payload instead of static markup, which is what makes any of that possible.
