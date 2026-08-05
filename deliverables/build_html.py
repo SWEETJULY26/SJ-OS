@@ -227,13 +227,27 @@ tr[hidden]{display:none}
   body.editing .cards{display:none}
   body.editing .scroller{display:block}
 }
+/* inline form, since the sandboxed frame blocks prompt() */
+.inline-form{display:inline-flex;gap:.4rem;align-items:center}
+.inline-form input{font:inherit;font-size:var(--step--1);background:var(--raised);
+  color:var(--ink);border:1px solid var(--rule-strong);border-radius:2px;
+  padding:.35rem .5rem;min-width:15rem}
+.inline-form input:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);
+  white-space:nowrap}
 /* toast */
+.toast-act{font:inherit;font-size:var(--step--1);font-weight:600;
+  background:transparent;color:var(--ground);border:1px solid var(--ground);
+  border-radius:2px;padding:.15rem .5rem;margin-left:.65rem;cursor:pointer}
+.toast-act:hover{background:var(--ground);color:var(--ink)}
+.toast-act:focus-visible{outline:2px solid var(--ground);outline-offset:2px}
 .toast{position:fixed;left:50%;bottom:1.25rem;transform:translateX(-50%);
   background:var(--ink);color:var(--ground);font-size:var(--step--1);
-  padding:.55rem .95rem;border-radius:3px;max-width:min(92vw,44ch);
+  padding:.55rem .95rem;border-radius:3px;max-width:min(92vw,52ch);
   opacity:0;pointer-events:none;transition:opacity .18s ease;z-index:20;
-  text-align:center}
-.toast.on{opacity:1}
+  text-align:center;display:flex;align-items:center;justify-content:center;
+  flex-wrap:wrap;gap:.15rem}
+.toast.on{opacity:1;pointer-events:auto}
 footer.page{margin-top:3.5rem;padding-top:1.25rem;border-top:1px solid var(--rule);
   font-size:var(--step--1);color:var(--ink-faint);display:flex;
   flex-direction:column;gap:.4rem;max-width:78ch}
@@ -617,9 +631,15 @@ JS = r"""
     var del = el('button','icb del','\u00d7'); del.type='button';
     del.title='Delete'; del.setAttribute('aria-label','Delete activity');
     del.addEventListener('click', function(){
-      if(!confirm('Delete "' + row.act + '"?')) return;
-      D.rows.splice(D.rows.indexOf(row),1);
+      var at = D.rows.indexOf(row);
+      if(at < 0) return;
+      var gone = row.act;
+      D.rows.splice(at, 1);
       save(); render();
+      toast('Deleted \u201c' + gone + '\u201d.', 'Undo', function(){
+        D.rows.splice(Math.min(at, D.rows.length), 0, row);
+        save(); render();
+      });
     });
 
     box.appendChild(up); box.appendChild(dn); box.appendChild(sel); box.appendChild(del);
@@ -754,12 +774,27 @@ JS = r"""
   }
 
   // ---- toast
+  // The artifact frame is sandboxed without allow-modals, so confirm() and
+  // prompt() are ignored by the browser. Anything that needed a modal is done
+  // in-page instead, with an undo action on the toast.
   var toastTimer;
-  function toast(msg){
-    toastEl.textContent = msg;
+  function toast(msg, actionLabel, actionFn){
+    toastEl.textContent = '';
+    toastEl.appendChild(document.createTextNode(msg));
+    if(actionLabel && actionFn){
+      var a = el('button','toast-act', actionLabel);
+      a.type = 'button';
+      a.addEventListener('click', function(){
+        toastEl.classList.remove('on');
+        clearTimeout(toastTimer);
+        actionFn();
+      });
+      toastEl.appendChild(a);
+    }
     toastEl.classList.add('on');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function(){ toastEl.classList.remove('on'); }, 3600);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove('on'); },
+                            actionLabel ? 9000 : 3600);
   }
 
   // ---- export / import
@@ -840,19 +875,41 @@ JS = r"""
     editBtn.setAttribute('aria-pressed', editing ? 'true':'false');
     editBtn.textContent = editing ? 'Done editing' : 'Edit';
     document.getElementById('editTools').hidden = !editing;
+    if(!editing && !addFnBox.hidden){ addFnBox.hidden = true; addFnBtn.hidden = false; }
     render();
   });
 
-  document.getElementById('addFn').addEventListener('click', function(){
-    var name = prompt('Name of the new function');
-    if(!name) return;
-    name = name.trim();
-    if(!name) return;
-    if(D.functions.indexOf(name)>-1){ toast('That function already exists.'); return; }
+  var addFnBtn = document.getElementById('addFn');
+  var addFnBox = document.getElementById('addFnBox');
+  var addFnInput = document.getElementById('addFnName');
+  function commitFn(){
+    var name = (addFnInput.value || '').replace(/\s+/g,' ').trim();
+    if(!name){ closeFn(); return; }
+    if(D.functions.indexOf(name)>-1){ toast('There is already a function called ' + name + '.'); return; }
     D.functions.push(name);
     openState[name] = true;
+    addFnInput.value = '';
+    addFnBox.hidden = true;
+    addFnBtn.hidden = false;
     save(); render();
     addRow(name);
+  }
+  function closeFn(){
+    addFnInput.value = '';
+    addFnBox.hidden = true;
+    addFnBtn.hidden = false;
+    addFnBtn.focus();
+  }
+  addFnBtn.addEventListener('click', function(){
+    addFnBtn.hidden = true;
+    addFnBox.hidden = false;
+    addFnInput.focus();
+  });
+  document.getElementById('addFnGo').addEventListener('click', commitFn);
+  document.getElementById('addFnCancel').addEventListener('click', closeFn);
+  addFnInput.addEventListener('keydown', function(ev){
+    if(ev.key === 'Enter'){ ev.preventDefault(); commitFn(); }
+    if(ev.key === 'Escape'){ ev.preventDefault(); closeFn(); }
   });
 
   document.getElementById('exportBtn').addEventListener('click', function(){
@@ -881,11 +938,16 @@ JS = r"""
     fr.readAsText(f);
   });
   document.getElementById('revertBtn').addEventListener('click', function(){
-    if(!confirm('Discard your local edits and go back to the published version?')) return;
+    var snapshot = clone(D), wasDirty = dirty;
     try { localStorage.removeItem(KEY); } catch(err){}
     D = clone(PUB); dirty = false; openState = {};
     render();
-    toast('Back to the published version.');
+    toast('Back to the published version. Your edits are gone unless you undo.',
+      'Undo', function(){
+        D = snapshot; dirty = wasDirty; openState = {};
+        save(); render();
+        toast('Your edits are back.');
+      });
   });
 
   document.getElementById('expandAll').addEventListener('click', function(){
@@ -950,6 +1012,10 @@ parts.append("""<section class="block"><h2>The matrix</h2>
 </div>
 <div class="btnrow" id="editTools" hidden>
 <button class="btn quiet" type="button" id="addFn">+ Add function</button>
+<span class="inline-form" id="addFnBox" hidden><label class="vh" for="addFnName">New function name</label>
+<input type="text" id="addFnName" placeholder="New function name" autocomplete="off">
+<button class="btn" type="button" id="addFnGo">Add</button>
+<button class="btn quiet" type="button" id="addFnCancel">Cancel</button></span>
 <button class="btn quiet" type="button" id="exportBtn">Export JSON</button>
 <button class="btn quiet" type="button" id="copyBtn">Copy for Excel</button>
 <button class="btn quiet" type="button" id="importBtn">Import JSON</button>

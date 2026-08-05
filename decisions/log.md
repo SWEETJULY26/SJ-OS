@@ -75,6 +75,21 @@ Keep it terse. Future-you will thank present-you for capturing the *why*, not ju
 **Status:** All four drift instances fixed 2026-07-29. Full findings in `decisions/wiki-layer-audit-2026-07-29.md`. Two items left open there — Job 0 (the bridges' wiki write-back) has not fired since 2026-05-26, leaving 123 of 133 pages as untouched seed; and `Bridge-and-System-Audit-2026-05-26.md` is cited from three files but exists nowhere, most likely lost in the 2026-07-19 consolidation.
 
 ---
+## 2026-08-05 — No browser modals in the artifact frame
+
+**Decision:** The RACI page uses no `confirm`, `prompt` or `alert`. Destructive actions act immediately and offer Undo on the toast; anything that needed text input uses an inline field. `deliverables/README.md` records the rule so a future edit does not reintroduce them.
+
+**Why:** Alvin reported delete not working. The artifact frame is sandboxed without the `allow-modals` keyword, so the browser ignores `confirm()` and returns false, and ignores `prompt()` and returns null, logging only a console warning. Delete was guarded by `if(!confirm(...)) return`, so it always bailed. The same root cause had silently broken **Revert to published** and **Add function**, neither of which had been reported yet. One symptom, three dead controls.
+
+The testing lesson is the more useful half. Every earlier round was driven against a `file://` open of the page, where modals work normally, so all three controls passed. Verifying inside a sandboxed iframe is what reproduced it, and that is now how this page gets tested.
+
+**Alternatives considered:** Ask for `allow-modals`. Not available to declare, and modal dialogs are the wrong pattern for a page people edit live in a meeting. Build a custom modal overlay for confirmation. Rejected as more machinery than the job needs; an immediate action with Undo is fewer clicks and more forgiving than a dialog, because it does not make you decide before you can see the result.
+
+**Status:** Shipped 2026-08-05. Delete removes the row and offers Undo, which restores it at its original index. Revert snapshots the edited copy first and offers Undo, so the button can no longer destroy a session's work outright. Add function opens an inline field with Enter to commit, Escape to cancel, and duplicate names rejected by name. Verified inside a sandboxed iframe rather than a bare file open. `PUB["version"]` deliberately left at v7 so viewers holding local edits keep them across the republish.
+
+**Open:** Nothing on this page relies on a modal now. Worth remembering for anything else published as an artifact: the sandbox also blocks the `beforeunload` prompt, so the unsaved-changes guard on this page is decorative rather than real. Export is the only durable save.
+
+---
 ## 2026-08-05 — More than one A is allowed; R is single and cannot be taken by accident
 
 **Decision:** An activity can have several positions accountable. Taking A displaces nobody. R stays single, sits last in the cell cycle, and cycling can never move it off its holder: if R is already held on that activity the cycle steps over R and names the holder, so clearing their cell is the only way to move it. Shift-click steps the cycle backwards.

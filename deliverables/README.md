@@ -59,6 +59,15 @@ falls back to a blob link, then hand the file back so `raci_rows.py` can be upda
 everything regenerated. **Copy for Excel** puts the whole matrix on the clipboard as
 tab-separated text. **Import JSON** loads an export back in.
 
+**No browser modals.** The artifact frame is sandboxed without `allow-modals`, so
+`confirm()` and `prompt()` are ignored by the browser: `confirm()` returns false and
+`prompt()` returns null, with only a console warning. Any control built on them fails
+silently. Delete, Revert to published and Add function all did until 2026-08-05. Delete
+and Revert now act immediately and offer Undo on the toast, and Add function uses an
+inline text field. Do not reintroduce `confirm`, `prompt` or `alert` in `build_html.py`:
+test in a sandboxed iframe, not just a local file, because a bare `file://` open has
+modals enabled and hides the bug.
+
 Bumping `PUB["version"]` in `build_html.py` changes the storage key, which retires every
 viewer's local edits. Do that when the published data moves far enough that stale local
 copies would mislead, and not otherwise.
