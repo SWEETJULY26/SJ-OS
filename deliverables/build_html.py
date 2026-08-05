@@ -11,62 +11,29 @@ def b64(name):
 FONT_REG = b64("Adrianna-Regular.ttf")
 FONT_DEMI = b64("Adrianna-Demibold.ttf")
 
-INI = [p[0] for p in POSITIONS]
 FUNCS = []
 for r in ROWS:
     if r[0] not in FUNCS:
         FUNCS.append(r[0])
 
-# ---- counts ----
-def counts(ini):
-    a = sum(1 for r in ROWS if r[2] == ini)
-    rr = sum(1 for r in ROWS if r[3] == ini)
-    ar = sum(1 for r in ROWS if r[2] == ini and r[3] == ini)
-    inc = sum(1 for r in ROWS if r[6] == ini)          # rows arriving on hire
-    out = sum(1 for r in ROWS if r[3] == ini and r[6])  # rows leaving on hire
-    return dict(a=a, r=rr, ar=ar, inc=inc, out=out)
-
-CNT = {i: counts(i) for i in INI}
-
-# ---- payload for client-side filtering ----
-payload = {
-    "positions": [{"id": p[0], "name": p[1], "title": p[2], "status": p[3], **CNT[p[0]]} for p in POSITIONS],
+# The published baseline. Everything on the page renders from this, and an
+# edited copy lives in the viewer's browser until they revert.
+PUB = {
+    "version": "v7",
+    "asOf": "31 July 2026",
+    "positions": [{"id": p[0], "name": p[1], "title": p[2], "status": p[3]}
+                  for p in POSITIONS],
     "functions": FUNCS,
-    "rows": [
-        {"f": r[0], "a": r[1], "A": r[2], "R": r[3], "C": r[4], "I": r[5],
-         "t": r[6], "src": r[7], "n": r[8]}
-        for r in ROWS
-    ],
+    "rows": [{"f": r[0], "act": r[1], "A": r[2], "R": r[3],
+              "C": list(r[4]), "I": list(r[5]),
+              "t": r[6] or "", "src": r[7], "n": r[8]}
+             for r in ROWS],
 }
-
-STATUS_LABEL = {"filled": "", "recruiting": "Open · recruiting now",
-                "phased": "Open · phased in after Ops", "contractor": "Contractor",
-                "partner": "External partner"}
-
-
-def cell(row, ini):
-    if row[2] == ini and row[3] == ini:
-        return ("ar", "A/R")
-    if row[2] == ini:
-        return ("a", "A")
-    if row[3] == ini:
-        return ("r", "R")
-    if ini in row[4]:
-        return ("c", "C")
-    if ini in row[5]:
-        return ("i", "I")
-    if row[6] == ini:
-        return ("t", "→")
-    return ("", "")
 
 e = html.escape
 
-# ---------------------------------------------------------------- build
-parts = []
-parts.append(f"""<style>
-@font-face{{font-family:'Adrianna';src:url(data:font/ttf;base64,{FONT_REG}) format('truetype');font-weight:400;font-display:block}}
-@font-face{{font-family:'Adrianna';src:url(data:font/ttf;base64,{FONT_DEMI}) format('truetype');font-weight:600;font-display:block}}
-:root{{
+CSS = """
+:root{
   --bone:#f4f0e8; --good-youth:#795d50; --pava-brown:#8a665a; --irie:#b08a6c;
   --soursop:#bcab83; --pava:#cab29d; --coffee-fix:#a2b2c8; --lychee:#d7d2cb;
   --pineapple:#f3d54e; --guava:#a9c47f; --rum:#9b5f3a;
@@ -74,200 +41,871 @@ parts.append(f"""<style>
   --ink-faint:#9a8b81; --rule:#e0d8ca; --rule-strong:#bcab83;
   --a-bg:#8a665a; --a-ink:#fbf9f4; --r-bg:#dfe6ef; --r-ink:#43536b;
   --c-ink:#7d6d63; --i-ink:#a4968c; --chip-open:#f3d54e; --chip-open-ink:#4a3c14;
-  --focus:#8a665a;
+  --focus:#8a665a; --warn:#9b5f3a; --edit:#a9c47f; --edit-ink:#2f4318;
   --step--1:.78rem; --step-0:.94rem; --step-1:1.18rem; --step-2:1.6rem; --step-3:2.3rem;
-}}
-@media (prefers-color-scheme:dark){{:root{{
+}
+@media (prefers-color-scheme:dark){:root{
   --ground:#241d19; --raised:#2e2621; --ink:#f0e9df; --ink-soft:#bdaca0;
   --ink-faint:#8b7a6e; --rule:#3d332c; --rule-strong:#5c4a3d;
   --a-bg:#b08a6c; --a-ink:#241d19; --r-bg:#33414f; --r-ink:#bcd0e4;
   --c-ink:#b0a096; --i-ink:#7d6d63; --chip-open:#d8bb3d; --chip-open-ink:#241d19;
-  --focus:#cab29d;
-}}}}
-:root[data-theme="dark"]{{
+  --focus:#cab29d; --warn:#d9a077; --edit:#5d7a3c; --edit-ink:#eef5e4;
+}}
+:root[data-theme="dark"]{
   --ground:#241d19; --raised:#2e2621; --ink:#f0e9df; --ink-soft:#bdaca0;
   --ink-faint:#8b7a6e; --rule:#3d332c; --rule-strong:#5c4a3d;
   --a-bg:#b08a6c; --a-ink:#241d19; --r-bg:#33414f; --r-ink:#bcd0e4;
   --c-ink:#b0a096; --i-ink:#7d6d63; --chip-open:#d8bb3d; --chip-open-ink:#241d19;
-  --focus:#cab29d;
-}}
-:root[data-theme="light"]{{
+  --focus:#cab29d; --warn:#d9a077; --edit:#5d7a3c; --edit-ink:#eef5e4;
+}
+:root[data-theme="light"]{
   --ground:#f4f0e8; --raised:#fbf9f4; --ink:#2e2521; --ink-soft:#6b5a51;
   --ink-faint:#9a8b81; --rule:#e0d8ca; --rule-strong:#bcab83;
   --a-bg:#8a665a; --a-ink:#fbf9f4; --r-bg:#dfe6ef; --r-ink:#43536b;
   --c-ink:#7d6d63; --i-ink:#a4968c; --chip-open:#f3d54e; --chip-open-ink:#4a3c14;
-  --focus:#8a665a;
-}}
-*{{box-sizing:border-box}}
-body{{margin:0;background:var(--ground);color:var(--ink);
+  --focus:#8a665a; --warn:#9b5f3a; --edit:#a9c47f; --edit-ink:#2f4318;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--ground);color:var(--ink);
   font-family:'Adrianna',ui-sans-serif,system-ui,sans-serif;font-size:var(--step-0);
-  line-height:1.5;-webkit-font-smoothing:antialiased}}
-.wrap{{max-width:1180px;margin:0 auto;padding:clamp(1.5rem,4vw,3.5rem) clamp(1rem,3vw,2rem) 5rem}}
-h1,h2,h3{{font-weight:600;margin:0;text-wrap:balance;color:var(--ink)}}
-h1{{font-size:var(--step-3);line-height:1.08;letter-spacing:-.015em}}
-h2{{font-size:var(--step-2);line-height:1.15}}
-h3{{font-size:var(--step-1)}}
-p{{margin:0}}
-.eyebrow{{font-size:var(--step--1);text-transform:uppercase;letter-spacing:.14em;
-  color:var(--ink-faint);font-weight:600}}
-.stack{{display:flex;flex-direction:column}}
-header.page{{display:flex;flex-direction:column;gap:.65rem;
-  padding-bottom:1.75rem;border-bottom:2px solid var(--rule-strong)}}
-header.page .lede{{max-width:62ch;color:var(--ink-soft);font-size:var(--step-1);line-height:1.45}}
-.meta{{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;font-size:var(--step--1);
-  color:var(--ink-faint);margin-top:.5rem}}
-section.block{{margin-top:3rem;display:flex;flex-direction:column;gap:1.1rem}}
+  line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(1.5rem,4vw,3.5rem) clamp(1rem,3vw,2rem) 6rem}
+h1,h2,h3{font-weight:600;margin:0;text-wrap:balance;color:var(--ink)}
+h1{font-size:var(--step-3);line-height:1.08;letter-spacing:-.015em}
+h2{font-size:var(--step-2);line-height:1.15}
+h3{font-size:var(--step-1)}
+p{margin:0}
+.eyebrow{font-size:var(--step--1);text-transform:uppercase;letter-spacing:.14em;
+  color:var(--ink-faint);font-weight:600}
+header.page{display:flex;flex-direction:column;gap:.65rem;
+  padding-bottom:1.75rem;border-bottom:2px solid var(--rule-strong)}
+header.page .lede{max-width:62ch;color:var(--ink-soft);font-size:var(--step-1);line-height:1.45}
+.meta{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;font-size:var(--step--1);
+  color:var(--ink-faint);margin-top:.5rem}
+section.block{margin-top:3rem;display:flex;flex-direction:column;gap:1.1rem}
 /* position strip */
-.pos-strip{{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);
-  grid-template-columns:repeat(auto-fit,minmax(178px,1fr))}}
-.pos{{background:var(--raised);border:0;text-align:left;font:inherit;color:inherit;
+.pos-strip{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);
+  grid-template-columns:repeat(auto-fit,minmax(178px,1fr))}
+.pos{background:var(--raised);border:0;text-align:left;font:inherit;color:inherit;
   padding:.85rem .9rem;display:flex;flex-direction:column;gap:.45rem;cursor:pointer;
-  position:relative;transition:background .13s ease}}
-.pos:hover{{background:var(--ground)}}
-.pos[aria-pressed="true"]{{background:var(--a-bg);color:var(--a-ink)}}
+  position:relative;transition:background .13s ease}
+.pos:hover{background:var(--ground)}
+.pos[aria-pressed="true"]{background:var(--a-bg);color:var(--a-ink)}
 .pos[aria-pressed="true"] .pos-title,.pos[aria-pressed="true"] .tally,
-.pos[aria-pressed="true"] .pos-name{{color:var(--a-ink)}}
-.pos:focus-visible{{outline:2px solid var(--focus);outline-offset:2px;z-index:2}}
-.pos-name{{font-weight:600;font-size:var(--step-0);line-height:1.2}}
-.pos-title{{font-size:var(--step--1);color:var(--ink-soft);line-height:1.3}}
-.tally{{display:flex;gap:.7rem;font-size:var(--step--1);color:var(--ink-faint);
-  font-variant-numeric:tabular-nums;margin-top:auto;padding-top:.3rem}}
-.tally b{{font-weight:600;color:var(--ink)}}
-.pos[aria-pressed="true"] .tally b{{color:var(--a-ink)}}
-.chip{{display:inline-block;font-size:.68rem;text-transform:uppercase;
+.pos[aria-pressed="true"] .pos-name{color:var(--a-ink)}
+.pos:focus-visible{outline:2px solid var(--focus);outline-offset:2px;z-index:2}
+.pos-name{font-weight:600;font-size:var(--step-0);line-height:1.2}
+.pos-title{font-size:var(--step--1);color:var(--ink-soft);line-height:1.3}
+.tally{display:flex;gap:.7rem;font-size:var(--step--1);color:var(--ink-faint);
+  font-variant-numeric:tabular-nums;margin-top:auto;padding-top:.3rem}
+.tally b{font-weight:600;color:var(--ink)}
+.pos[aria-pressed="true"] .tally b{color:var(--a-ink)}
+.chip{display:inline-block;font-size:.68rem;text-transform:uppercase;
   letter-spacing:.1em;font-weight:600;padding:.16rem .45rem;border-radius:2px;
-  background:var(--chip-open);color:var(--chip-open-ink);width:fit-content}}
-.chip.sub{{background:transparent;color:var(--ink-faint);
-  border:1px solid var(--rule-strong);padding:.14rem .42rem}}
-.chip.partner{{background:transparent;color:var(--r-ink);
-  border:1px solid var(--r-ink);padding:.14rem .42rem}}
+  background:var(--chip-open);color:var(--chip-open-ink);width:fit-content}
+.chip.sub{background:transparent;color:var(--ink-faint);
+  border:1px solid var(--rule-strong);padding:.14rem .42rem}
+.chip.partner{background:transparent;color:var(--r-ink);
+  border:1px solid var(--r-ink);padding:.14rem .42rem}
 /* legend */
-.legend{{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;font-size:var(--step--1);
-  color:var(--ink-soft);align-items:center}}
-.legend span{{display:inline-flex;align-items:center;gap:.45rem}}
-.mk{{display:inline-grid;place-items:center;width:1.5rem;height:1.35rem;
-  font-size:.72rem;font-weight:600;letter-spacing:.03em}}
-.mk.a{{background:var(--a-bg);color:var(--a-ink)}}
-.mk.r{{background:var(--r-bg);color:var(--r-ink)}}
-.mk.ar{{background:var(--a-bg);color:var(--a-ink);font-size:.62rem}}
-.mk.c{{color:var(--c-ink)}}
-.mk.i{{color:var(--i-ink)}}
-.mk.t{{color:var(--ink-faint)}}
+.legend{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;font-size:var(--step--1);
+  color:var(--ink-soft);align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:.45rem}
+.mk{display:inline-grid;place-items:center;width:1.5rem;height:1.35rem;
+  font-size:.72rem;font-weight:600;letter-spacing:.03em;min-width:1.35rem}
+.mk.a{background:var(--a-bg);color:var(--a-ink)}
+.mk.r{background:var(--r-bg);color:var(--r-ink)}
+.mk.ar{background:var(--a-bg);color:var(--a-ink);font-size:.62rem}
+.mk.c{color:var(--c-ink)}
+.mk.i{color:var(--i-ink)}
+.mk.t{color:var(--ink-faint)}
 /* toolbar */
-.toolbar{{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;
-  justify-content:space-between}}
-.btn{{font:inherit;font-size:var(--step--1);font-weight:600;background:transparent;
+.toolbar{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;
+  justify-content:space-between}
+.btnrow{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.btn{font:inherit;font-size:var(--step--1);font-weight:600;background:transparent;
   color:var(--ink-soft);border:1px solid var(--rule-strong);padding:.4rem .8rem;
-  border-radius:2px;cursor:pointer}}
-.btn:hover{{color:var(--ink);border-color:var(--ink-soft)}}
-.btn:focus-visible{{outline:2px solid var(--focus);outline-offset:2px}}
-.filter-note{{font-size:var(--step--1);color:var(--ink-faint)}}
+  border-radius:2px;cursor:pointer}
+.btn:hover{color:var(--ink);border-color:var(--ink-soft)}
+.btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.btn[aria-pressed="true"]{background:var(--edit);color:var(--edit-ink);
+  border-color:var(--edit)}
+.btn.quiet{border-color:transparent;color:var(--ink-faint)}
+.btn.quiet:hover{border-color:var(--rule)}
+.filter-note{font-size:var(--step--1);color:var(--ink-faint)}
+/* edit banner */
+.banner{display:none;gap:.75rem 1.1rem;align-items:baseline;flex-wrap:wrap;
+  border:1px solid var(--rule-strong);border-left:3px solid var(--edit);
+  background:var(--raised);padding:.7rem .9rem;font-size:var(--step--1);
+  color:var(--ink-soft)}
+.banner.on{display:flex}
+.banner b{color:var(--ink)}
+.banner .warn{color:var(--warn);font-weight:600}
 /* matrix */
-details.fn{{border-top:1px solid var(--rule)}}
-details.fn:last-of-type{{border-bottom:1px solid var(--rule)}}
-details.fn > summary{{cursor:pointer;padding:.85rem .2rem;display:flex;
-  align-items:baseline;gap:.75rem;list-style:none}}
-details.fn > summary::-webkit-details-marker{{display:none}}
-details.fn > summary::before{{content:"+";font-weight:600;color:var(--ink-faint);
-  width:1ch;display:inline-block}}
-details.fn[open] > summary::before{{content:"\u2212"}}
-details.fn > summary:focus-visible{{outline:2px solid var(--focus);outline-offset:-2px}}
-.fn-name{{font-weight:600;font-size:var(--step-1)}}
-.fn-count{{font-size:var(--step--1);color:var(--ink-faint);
-  font-variant-numeric:tabular-nums;margin-left:auto}}
-.scroller{{overflow-x:auto;padding-bottom:.4rem}}
-table{{border-collapse:collapse;width:100%;min-width:1080px;font-size:var(--step--1)}}
-thead th{{position:sticky;top:0;background:var(--ground);text-align:center;
+details.fn{border-top:1px solid var(--rule)}
+details.fn:last-of-type{border-bottom:1px solid var(--rule)}
+details.fn > summary{cursor:pointer;padding:.85rem .2rem;display:flex;
+  align-items:baseline;gap:.75rem;list-style:none}
+details.fn > summary::-webkit-details-marker{display:none}
+details.fn > summary::before{content:"+";font-weight:600;color:var(--ink-faint);
+  width:1ch;display:inline-block}
+details.fn[open] > summary::before{content:"\\2212"}
+details.fn > summary:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+.fn-name{font-weight:600;font-size:var(--step-1)}
+.fn-count{font-size:var(--step--1);color:var(--ink-faint);
+  font-variant-numeric:tabular-nums;margin-left:auto}
+.fn-name[contenteditable="true"]{outline:1px dashed var(--rule-strong);
+  outline-offset:3px;min-width:6ch}
+.scroller{overflow-x:auto;padding-bottom:.4rem}
+table{border-collapse:collapse;width:100%;min-width:1000px;font-size:var(--step--1)}
+thead th{position:sticky;top:0;background:var(--ground);text-align:center;
   font-weight:600;font-size:.68rem;letter-spacing:.04em;padding:.4rem .05rem .5rem;
-  border-bottom:1px solid var(--rule-strong);color:var(--ink-soft);white-space:nowrap}}
-thead th.act{{text-align:left;min-width:230px;width:34%;letter-spacing:.1em;
+  border-bottom:1px solid var(--rule-strong);color:var(--ink-soft);white-space:nowrap}
+thead th.act{text-align:left;min-width:230px;width:32%;letter-spacing:.1em;
   text-transform:uppercase;padding-left:0;position:sticky;left:0;
-  background:var(--ground);z-index:3}}
-tbody td{{border-bottom:1px solid var(--rule);padding:.5rem .05rem;text-align:center;
-  vertical-align:middle}}
-tbody td.act{{text-align:left;padding:.55rem 1rem .55rem 0;line-height:1.4;
-  color:var(--ink);position:sticky;left:0;background:var(--ground);z-index:2}}
-tbody tr:hover td{{background:var(--raised)}}
-tbody tr:hover td.act{{background:var(--raised)}}
-.mk{{min-width:1.35rem}}
-tbody tr.dim td.act{{color:var(--ink-faint)}}
-td .mk{{margin:0 auto}}
-td.col-dim .mk{{opacity:.26}}
-.srcbtn{{background:none;border:0;padding:0;font:inherit;font-size:.68rem;
+  background:var(--ground);z-index:3}
+thead th.tools{width:1%}
+tbody td{border-bottom:1px solid var(--rule);padding:.5rem .05rem;text-align:center;
+  vertical-align:middle}
+tbody td.act{text-align:left;padding:.55rem 1rem .55rem 0;line-height:1.4;
+  color:var(--ink);position:sticky;left:0;background:var(--ground);z-index:2}
+tbody tr:hover td{background:var(--raised)}
+tbody tr:hover td.act{background:var(--raised)}
+tbody tr.flag td.act{box-shadow:inset 3px 0 0 var(--warn)}
+tbody tr.flag td.act{padding-left:.55rem}
+td.col-dim .mk{opacity:.26}
+.acttext{display:block}
+.acttext[contenteditable="true"]{outline:1px dashed var(--rule-strong);
+  outline-offset:3px;min-height:1.4em}
+.rowmsg{display:block;font-size:.68rem;color:var(--warn);margin-top:.2rem}
+.srcbtn{background:none;border:0;padding:0;font:inherit;font-size:.68rem;
   color:var(--ink-faint);cursor:pointer;text-decoration:underline;
   text-decoration-style:dotted;text-underline-offset:2px;opacity:0;
-  transition:opacity .12s ease}}
+  transition:opacity .12s ease}
 tbody tr:hover .srcbtn,tbody tr:focus-within .srcbtn,
-.srcbtn[aria-expanded="true"]{{opacity:1}}
-@media (hover:none){{.srcbtn{{opacity:1}}}}
-.srcbtn:hover{{color:var(--ink-soft)}}
-.srcbtn:focus-visible{{outline:2px solid var(--focus);outline-offset:2px}}
-tr.srcrow td{{padding:0 1rem .7rem 0;text-align:left;
+.srcbtn[aria-expanded="true"]{opacity:1}
+@media (hover:none){.srcbtn{opacity:1}}
+.srcbtn:hover{color:var(--ink-soft)}
+.srcbtn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+tr.srcrow td{padding:0 1rem .7rem 0;text-align:left;
   border-bottom:1px solid var(--rule);position:sticky;left:0;
-  background:var(--ground)}}
-tr.srcrow .srcwrap{{font-size:var(--step--1);color:var(--ink-soft);
-  line-height:1.5;max-width:78ch;display:flex;flex-direction:column;gap:.3rem}}
-tr.srcrow code{{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-  font-size:.72rem;color:var(--ink-faint);word-break:break-word}}
-tr[hidden]{{display:none}}
+  background:var(--ground)}
+tr.srcrow .srcwrap{font-size:var(--step--1);color:var(--ink-soft);
+  line-height:1.5;max-width:78ch;display:flex;flex-direction:column;gap:.3rem}
+tr.srcrow code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:.72rem;color:var(--ink-faint);word-break:break-word}
+tr[hidden]{display:none}
+/* editable cells */
+.cellbtn{width:100%;min-height:1.9rem;background:none;border:0;padding:0;
+  font:inherit;cursor:pointer;display:grid;place-items:center;border-radius:2px}
+.cellbtn:hover{background:var(--rule)}
+.cellbtn:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+.cellbtn .mk.empty{color:var(--ink-faint);opacity:.45;font-weight:400}
+.rowtools{display:flex;gap:.15rem;justify-content:flex-end;white-space:nowrap}
+.icb{font:inherit;font-size:.8rem;line-height:1;background:none;border:1px solid transparent;
+  color:var(--ink-faint);cursor:pointer;padding:.15rem .3rem;border-radius:2px}
+.icb:hover{color:var(--ink);border-color:var(--rule-strong)}
+.icb:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.icb.del:hover{color:var(--warn);border-color:var(--warn)}
+.fnsel{font:inherit;font-size:.68rem;background:var(--raised);color:var(--ink-soft);
+  border:1px solid var(--rule);border-radius:2px;max-width:8.5rem}
+.addrow{padding:.6rem 0 .9rem}
 /* mobile cards */
-.cards{{display:none}}
-@media (max-width:700px){{
-  .scroller{{display:none}}
-  .cards{{display:flex;flex-direction:column;gap:1px;background:var(--rule);
-    border-block:1px solid var(--rule)}}
-  .card{{background:var(--raised);padding:.8rem .85rem;display:flex;
-    flex-direction:column;gap:.45rem}}
-  .card .who{{display:flex;flex-wrap:wrap;gap:.35rem .9rem;font-size:var(--step--1)}}
-  .card .who span{{display:inline-flex;gap:.4rem;align-items:center}}
-  .card .lbl{{color:var(--ink-faint);font-size:.68rem;text-transform:uppercase;
-    letter-spacing:.08em}}
-  h1{{font-size:1.75rem}}
-}}
-footer.page{{margin-top:3.5rem;padding-top:1.25rem;border-top:1px solid var(--rule);
+.cards{display:none}
+@media (max-width:700px){
+  .scroller{display:none}
+  .cards{display:flex;flex-direction:column;gap:1px;background:var(--rule);
+    border-block:1px solid var(--rule)}
+  .card{background:var(--raised);padding:.8rem .85rem;display:flex;
+    flex-direction:column;gap:.45rem}
+  .card .who{display:flex;flex-wrap:wrap;gap:.35rem .9rem;font-size:var(--step--1)}
+  .card .who span{display:inline-flex;gap:.4rem;align-items:center}
+  .card .lbl{color:var(--ink-faint);font-size:.68rem;text-transform:uppercase;
+    letter-spacing:.08em}
+  h1{font-size:1.75rem}
+  body.editing .cards{display:none}
+  body.editing .scroller{display:block}
+}
+/* toast */
+.toast{position:fixed;left:50%;bottom:1.25rem;transform:translateX(-50%);
+  background:var(--ink);color:var(--ground);font-size:var(--step--1);
+  padding:.55rem .95rem;border-radius:3px;max-width:min(92vw,44ch);
+  opacity:0;pointer-events:none;transition:opacity .18s ease;z-index:20;
+  text-align:center}
+.toast.on{opacity:1}
+footer.page{margin-top:3.5rem;padding-top:1.25rem;border-top:1px solid var(--rule);
   font-size:var(--step--1);color:var(--ink-faint);display:flex;
-  flex-direction:column;gap:.4rem;max-width:78ch}}
-@media (prefers-reduced-motion:reduce){{*{{transition:none!important;animation:none!important}}}}
-</style>""")
+  flex-direction:column;gap:.4rem;max-width:78ch}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+"""
+
+JS = r"""
+(function(){
+  var PUB = window.__RACI__;
+  var KEY = 'acb-raci-' + PUB.version;
+  var D, editing = false, active = null, dirty = false;
+
+  function clone(x){ return JSON.parse(JSON.stringify(x)); }
+
+  function load(){
+    try {
+      var raw = localStorage.getItem(KEY);
+      if(!raw) return null;
+      var d = JSON.parse(raw);
+      if(!d || !Array.isArray(d.rows) || !Array.isArray(d.functions)) return null;
+      return d;
+    } catch(err){ return null; }
+  }
+  function save(){
+    dirty = true;
+    try { localStorage.setItem(KEY, JSON.stringify(D)); }
+    catch(err){ toast('Could not save locally. Export before you close the tab.'); }
+    banner();
+  }
+
+  var saved = load();
+  D = saved || clone(PUB);
+  dirty = !!saved;
+
+  // ---- position helpers
+  function pos(id){
+    for(var i=0;i<D.positions.length;i++) if(D.positions[i].id===id) return D.positions[i];
+    return null;
+  }
+  function isOpen(id){ var p=pos(id); return !!p && (p.status==='recruiting'||p.status==='phased'); }
+  function isPartner(id){ var p=pos(id); return !!p && p.status==='partner'; }
+  function label(id){
+    var p = pos(id); if(!p) return id || '';
+    return (p.status==='filled'||p.status==='contractor') ? p.name : p.title;
+  }
+
+  // A row's letter for one position. '' | 'C' | 'I' | 'R' | 'A' | 'AR'
+  function letterOf(row, id){
+    if(row.A===id && row.R===id) return 'AR';
+    if(row.A===id) return 'A';
+    if(row.R===id) return 'R';
+    if(row.C.indexOf(id)>-1) return 'C';
+    if(row.I.indexOf(id)>-1) return 'I';
+    if(row.t===id) return 'T';
+    return '';
+  }
+  var MK = {A:['a','A'], R:['r','R'], AR:['ar','A/R'], C:['c','C'], I:['i','I'], T:['t','\u2192']};
+
+  function strip(row, id){
+    if(row.A===id) row.A = '';
+    if(row.R===id) row.R = '';
+    row.C = row.C.filter(function(x){ return x!==id; });
+    row.I = row.I.filter(function(x){ return x!==id; });
+    if(row.t===id) row.t = '';
+  }
+
+  // Cycle order depends on what the seat is allowed to hold. A vacancy cannot be
+  // accountable or responsible, and accountability never leaves the company.
+  function cycle(id){
+    if(isOpen(id)) return ['','T','C','I'];
+    if(isPartner(id)) return ['','C','I','R'];
+    return ['','C','I','R','A','AR'];
+  }
+
+  // Returns the letters this assignment took off other positions, so the change
+  // is never silent. One A and one R per activity is the whole point.
+  function setLetter(row, id, next){
+    var moved = [];
+    strip(row, id);
+    if(next==='C') row.C.push(id);
+    else if(next==='I') row.I.push(id);
+    else if(next==='T') row.t = id;
+    else if(next==='R'){
+      if(row.R && row.R!==id) moved.push(['R', row.R]);
+      row.R = id;
+    }
+    else if(next==='A'){
+      if(row.A && row.A!==id) moved.push(['A', row.A]);
+      row.A = id;
+    }
+    else if(next==='AR'){
+      if(row.A && row.A!==id) moved.push(['A', row.A]);
+      if(row.R && row.R!==id) moved.push(['R', row.R]);
+      row.A = id; row.R = id;
+    }
+    return moved;
+  }
+
+  function bump(row, id){
+    var order = cycle(id), cur = letterOf(row, id);
+    var at = order.indexOf(cur);
+    var next = order[(at<0 ? 0 : at+1) % order.length];
+    return {next: next, moved: setLetter(row, id, next)};
+  }
+
+  // ---- counts
+  function counts(id){
+    var a=0,r=0,ar=0,inc=0,out=0;
+    D.rows.forEach(function(row){
+      if(row.A===id) a++;
+      if(row.R===id) r++;
+      if(row.A===id && row.R===id) ar++;
+      if(row.t===id) inc++;
+      if(row.R===id && row.t) out++;
+    });
+    return {a:a,r:r,ar:ar,inc:inc,out:out};
+  }
+  function problems(){
+    var miss=0, both=0;
+    D.rows.forEach(function(row){
+      if(!row.A || !row.R) miss++;
+      if(row.A && row.A===row.R) both++;
+    });
+    return {miss:miss, both:both};
+  }
+
+  // ---- rendering
+  var stripEl = document.getElementById('posStrip');
+  var matrix  = document.getElementById('matrix');
+  var stateEl = document.getElementById('filterState');
+  var bannerEl= document.getElementById('banner');
+  var toastEl = document.getElementById('toast');
+  var metaEl  = document.getElementById('meta');
+
+  var STATUS = {filled:'', recruiting:'Open \u00b7 recruiting now',
+                phased:'Open \u00b7 phased in after Ops', contractor:'Contractor',
+                partner:'External partner'};
+
+  function el(tag, cls, text){
+    var n = document.createElement(tag);
+    if(cls) n.className = cls;
+    if(text!=null) n.textContent = text;
+    return n;
+  }
+
+  function renderPositions(){
+    stripEl.textContent = '';
+    D.positions.forEach(function(p){
+      var c = counts(p.id);
+      var b = el('button','pos'); b.type='button';
+      b.setAttribute('data-pos', p.id);
+      b.setAttribute('aria-pressed', active===p.id ? 'true':'false');
+      b.appendChild(el('span','pos-name', p.name));
+      b.appendChild(el('span','pos-title', p.title));
+      if(p.status==='recruiting'||p.status==='phased')
+        b.appendChild(el('span','chip', STATUS[p.status]));
+      else if(p.status==='contractor')
+        b.appendChild(el('span','chip sub', STATUS[p.status]));
+      else if(p.status==='partner')
+        b.appendChild(el('span','chip partner', STATUS[p.status]));
+      var t = el('span','tally');
+      if(p.status==='recruiting'||p.status==='phased'){
+        t.appendChild(tal('Absorbs', c.inc));
+      } else {
+        t.appendChild(tal('A', c.a)); t.appendChild(tal('R', c.r));
+        if(c.out) t.appendChild(tal('Hands off', c.out));
+      }
+      b.appendChild(t);
+      stripEl.appendChild(b);
+    });
+  }
+  function tal(k,v){
+    var s = el('span'); s.appendChild(document.createTextNode(k+' '));
+    var b = el('b', null, String(v)); s.appendChild(b); return s;
+  }
+
+  function rowsOf(fn){ return D.rows.filter(function(r){ return r.f===fn; }); }
+
+  function renderMatrix(){
+    matrix.textContent = '';
+    D.functions.forEach(function(fn, fi){
+      var frows = rowsOf(fn);
+      var d = el('details','fn');
+      d.setAttribute('data-fn', fn);
+      if(openState[fn]===undefined) openState[fn] = fi < 2;
+      d.open = !!openState[fn];
+      d.addEventListener('toggle', function(){ openState[fn] = d.open; });
+
+      var s = el('summary');
+      var nm = el('span','fn-name', fn);
+      if(editing){
+        nm.contentEditable = 'true';
+        nm.addEventListener('keydown', function(ev){
+          if(ev.key==='Enter'){ ev.preventDefault(); nm.blur(); }
+        });
+        nm.addEventListener('click', function(ev){ ev.preventDefault(); ev.stopPropagation(); });
+        nm.addEventListener('blur', function(){
+          var v = nm.textContent.trim();
+          if(!v || v===fn){ nm.textContent = fn; return; }
+          if(D.functions.indexOf(v)>-1){ toast('There is already a function called ' + v + '.');
+            nm.textContent = fn; return; }
+          D.functions[D.functions.indexOf(fn)] = v;
+          D.rows.forEach(function(r){ if(r.f===fn) r.f = v; });
+          openState[v] = openState[fn];
+          save(); render();
+        });
+      }
+      s.appendChild(nm);
+      s.appendChild(el('span','fn-count', frows.length + ' activities'));
+      d.appendChild(s);
+
+      d.appendChild(buildTable(fn, frows));
+      d.appendChild(buildCards(frows));
+
+      if(editing){
+        var wrapAdd = el('div','addrow');
+        var add = el('button','btn quiet','+ Add activity');
+        add.type='button';
+        add.addEventListener('click', function(){ addRow(fn); });
+        wrapAdd.appendChild(add);
+        d.appendChild(wrapAdd);
+      }
+      matrix.appendChild(d);
+    });
+  }
+  var openState = {};
+
+  function buildTable(fn, frows){
+    var sc = el('div','scroller');
+    var tb = el('table');
+    var thead = el('thead'), htr = el('tr');
+    htr.appendChild(el('th','act','Activity'));
+    D.positions.forEach(function(p){
+      var th = el('th', null, p.id);
+      th.setAttribute('data-col', p.id);
+      th.title = p.name + ', ' + p.title;
+      htr.appendChild(th);
+    });
+    if(editing) htr.appendChild(el('th','tools',''));
+    thead.appendChild(htr); tb.appendChild(thead);
+
+    var body = el('tbody');
+    frows.forEach(function(row){
+      var idx = D.rows.indexOf(row);
+      var tr = el('tr');
+      tr.setAttribute('data-row', String(idx));
+      if(editing && (!row.A || !row.R)) tr.className = 'flag';
+
+      var act = el('td','act');
+      var txt = el('span','acttext', row.act);
+      if(editing){
+        txt.contentEditable = 'true';
+        txt.addEventListener('blur', function(){
+          var v = txt.textContent.replace(/\s+/g,' ').trim();
+          row.act = v || 'Untitled activity';
+          if(!v) txt.textContent = row.act;
+          save();
+        });
+        txt.addEventListener('keydown', function(ev){
+          if(ev.key==='Enter'){ ev.preventDefault(); txt.blur(); }
+        });
+      }
+      act.appendChild(txt);
+
+      if(editing){
+        var msgs = [];
+        if(!row.A) msgs.push('no one accountable');
+        if(!row.R) msgs.push('no one doing the work');
+        if(msgs.length) act.appendChild(el('span','rowmsg', msgs.join('; ')));
+      } else {
+        var sb = el('button','srcbtn','source');
+        sb.type='button';
+        sb.setAttribute('data-src', String(idx));
+        sb.setAttribute('aria-expanded','false');
+        sb.setAttribute('aria-controls','src'+idx);
+        act.appendChild(document.createElement('br'));
+        act.appendChild(sb);
+      }
+      tr.appendChild(act);
+
+      D.positions.forEach(function(p){
+        var td = el('td');
+        td.setAttribute('data-col', p.id);
+        var L = letterOf(row, p.id);
+        if(editing){
+          var b = el('button','cellbtn'); b.type='button';
+          b.setAttribute('aria-label', p.name + ' on ' + row.act);
+          b.appendChild(mark(L, true));
+          b.addEventListener('click', function(){
+            var res = bump(row, p.id);
+            save();
+            if(res.moved.length){
+              toast(res.moved.map(function(m){
+                return m[0] + ' moved off ' + label(m[1]);
+              }).join(', ') + '. One A and one R per activity.');
+            }
+            render();
+          });
+          td.appendChild(b);
+        } else if(L){
+          td.appendChild(mark(L, false));
+        }
+        tr.appendChild(td);
+      });
+
+      if(editing) tr.appendChild(rowTools(row, fn));
+      body.appendChild(tr);
+
+      if(!editing){
+        var sr = el('tr','srcrow');
+        sr.id = 'src'+idx; sr.hidden = true;
+        var std = el('td'); std.colSpan = D.positions.length + 1;
+        var w = el('div','srcwrap');
+        w.appendChild(el('span', null, row.n));
+        w.appendChild(el('code', null, row.src));
+        std.appendChild(w); sr.appendChild(std); body.appendChild(sr);
+      }
+    });
+    tb.appendChild(body);
+    sc.appendChild(tb);
+    return sc;
+  }
+
+  function mark(L, editable){
+    if(!L) return el('i','mk empty', editable ? '\u00b7' : '');
+    var m = MK[L];
+    return el('i','mk '+m[0], m[1]);
+  }
+
+  function rowTools(row, fn){
+    var td = el('td','tools');
+    var box = el('div','rowtools');
+
+    var up = el('button','icb','\u25b2'); up.type='button';
+    up.title='Move up'; up.setAttribute('aria-label','Move activity up');
+    up.addEventListener('click', function(){ move(row, -1); });
+    var dn = el('button','icb','\u25bc'); dn.type='button';
+    dn.title='Move down'; dn.setAttribute('aria-label','Move activity down');
+    dn.addEventListener('click', function(){ move(row, 1); });
+
+    var sel = el('select','fnsel');
+    sel.title = 'Move to another function';
+    sel.setAttribute('aria-label','Function');
+    D.functions.forEach(function(f){
+      var o = el('option', null, f); o.value = f;
+      if(f===fn) o.selected = true;
+      sel.appendChild(o);
+    });
+    sel.addEventListener('change', function(){
+      row.f = sel.value;
+      var i = D.rows.indexOf(row);
+      D.rows.splice(i,1);
+      var last = -1;
+      for(var k=0;k<D.rows.length;k++) if(D.rows[k].f===row.f) last = k;
+      D.rows.splice(last+1, 0, row);
+      openState[row.f] = true;
+      save(); render();
+      toast('Moved to ' + row.f + '.');
+    });
+
+    var del = el('button','icb del','\u00d7'); del.type='button';
+    del.title='Delete'; del.setAttribute('aria-label','Delete activity');
+    del.addEventListener('click', function(){
+      if(!confirm('Delete "' + row.act + '"?')) return;
+      D.rows.splice(D.rows.indexOf(row),1);
+      save(); render();
+    });
+
+    box.appendChild(up); box.appendChild(dn); box.appendChild(sel); box.appendChild(del);
+    td.appendChild(box);
+    return td;
+  }
+
+  function move(row, dir){
+    var same = rowsOf(row.f);
+    var at = same.indexOf(row);
+    var swapWith = same[at + dir];
+    if(!swapWith) return;
+    var i = D.rows.indexOf(row), j = D.rows.indexOf(swapWith);
+    D.rows[i] = swapWith; D.rows[j] = row;
+    save(); render();
+  }
+
+  function addRow(fn){
+    var row = {f:fn, act:'New activity', A:'', R:'', C:[], I:[], t:'',
+               src:'Added on the page', n:'Added by hand. Not yet sourced.'};
+    var last = -1;
+    for(var k=0;k<D.rows.length;k++) if(D.rows[k].f===fn) last = k;
+    D.rows.splice(last+1, 0, row);
+    openState[fn] = true;
+    save(); render();
+    var trs = matrix.querySelectorAll('details.fn[data-fn="'+cssEsc(fn)+'"] tbody tr');
+    for(var q=0;q<trs.length;q++){
+      if(trs[q].getAttribute('data-row')===String(D.rows.indexOf(row))){
+        var t = trs[q].querySelector('.acttext');
+        if(t){ t.focus(); document.getSelection().selectAllChildren(t); }
+        break;
+      }
+    }
+  }
+  function cssEsc(s){ return s.replace(/"/g,'\\"'); }
+
+  function buildCards(frows){
+    var c = el('div','cards');
+    frows.forEach(function(row){
+      var card = el('div','card');
+      var st = el('strong', null, row.act);
+      card.appendChild(st);
+      var who = el('div','who');
+      var wa = el('span'); wa.appendChild(mark(row.A?'A':'', false));
+      wa.appendChild(document.createTextNode(row.A ? label(row.A) : 'no owner'));
+      var wr = el('span'); wr.appendChild(mark(row.R?'R':'', false));
+      wr.appendChild(document.createTextNode(row.R ? label(row.R) : 'unassigned'));
+      who.appendChild(wa); who.appendChild(wr);
+      if(row.t){
+        var wt = el('span');
+        wt.appendChild(el('span','lbl','moves to'));
+        wt.appendChild(document.createTextNode(label(row.t)));
+        who.appendChild(wt);
+      }
+      card.appendChild(who);
+      c.appendChild(card);
+    });
+    return c;
+  }
+
+  // ---- filter + dimming
+  function applyFilter(){
+    document.querySelectorAll('[data-col]').forEach(function(n){
+      n.classList.toggle('col-dim', !!active && n.getAttribute('data-col')!==active);
+    });
+    document.querySelectorAll('#matrix tbody tr[data-row]').forEach(function(tr){
+      var show = true;
+      if(active){
+        var i = parseInt(tr.getAttribute('data-row'),10);
+        show = !!letterOf(D.rows[i], active);
+      }
+      tr.hidden = !show;
+      var s = document.getElementById('src'+tr.getAttribute('data-row'));
+      if(s && !show) s.hidden = true;
+    });
+    document.querySelectorAll('#matrix details.fn').forEach(function(d){
+      var vis = d.querySelectorAll('tbody tr[data-row]:not([hidden])').length;
+      var total = d.querySelectorAll('tbody tr[data-row]').length;
+      d.hidden = !!active && vis===0;
+      if(active && vis>0) d.open = true;
+      d.querySelector('.fn-count').textContent =
+        active ? vis + ' of ' + total + ' activities' : total + ' activities';
+    });
+    if(active){
+      var p = pos(active);
+      stateEl.textContent = 'Showing ' + p.name + ', ' + p.title;
+    } else {
+      stateEl.textContent = 'Showing all positions';
+    }
+  }
+
+  function banner(){
+    var pr = problems();
+    bannerEl.textContent = '';
+    bannerEl.classList.toggle('on', editing || dirty);
+    if(!(editing || dirty)) return;
+    var lead = el('span');
+    if(editing){
+      lead.appendChild(document.createTextNode('Editing. Click a cell to cycle through '));
+      lead.appendChild(el('b', null, 'C, I, R, A'));
+      lead.appendChild(document.createTextNode(' and back to blank. Edits save in this browser only.'));
+    } else {
+      lead.appendChild(el('b', null, 'Edited copy.'));
+      lead.appendChild(document.createTextNode(' You are seeing local changes, not the published version.'));
+    }
+    bannerEl.appendChild(lead);
+    if(pr.miss) bannerEl.appendChild(el('span','warn', pr.miss +
+      (pr.miss===1 ? ' activity is missing an A or an R' : ' activities are missing an A or an R')));
+    if(pr.both) bannerEl.appendChild(el('span', null, pr.both +
+      ' with the same person on A and R'));
+    bannerEl.appendChild(el('span', null, D.rows.length + ' activities \u00b7 ' +
+      D.functions.length + ' functions'));
+  }
+
+  function metaLine(){
+    metaEl.textContent = '';
+    metaEl.appendChild(el('span', null, D.rows.length + ' activities \u00b7 ' +
+      D.functions.length + ' functions'));
+    metaEl.appendChild(el('span', null, 'As of ' + D.asOf));
+    metaEl.appendChild(el('span', null,
+      'Reflects the 30 July leadership review and the 31 July role corrections'));
+  }
+
+  function render(){
+    document.body.classList.toggle('editing', editing);
+    renderPositions(); renderMatrix(); metaLine(); banner(); applyFilter();
+  }
+
+  // ---- toast
+  var toastTimer;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove('on'); }, 3600);
+  }
+
+  // ---- export / import
+  function payload(){
+    return JSON.stringify({version: D.version, asOf: D.asOf,
+      positions: D.positions, functions: D.functions, rows: D.rows}, null, 2);
+  }
+  function download(name, text){
+    if(window.claude && window.claude.downloads){
+      window.claude.downloads.save({filename:name, data:text}).then(function(){
+        toast('Saved ' + name + '.');
+      }, function(err){
+        var code = err && err.code;
+        if(code==='declined') return;
+        if(code==='rate_limited'){ toast('A save prompt is already open. Try again in a moment.'); return; }
+        fallback(name, text);
+      });
+      return;
+    }
+    fallback(name, text);
+  }
+  function fallback(name, text){
+    try {
+      var url = URL.createObjectURL(new Blob([text], {type:'application/json'}));
+      var a = document.createElement('a');
+      a.href = url; a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+    } catch(err){
+      copy(text, 'Could not download. The JSON is on your clipboard instead.');
+    }
+  }
+  function copy(text, msg){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ toast(msg); },
+        function(){ toast('Could not copy. Use Export instead.'); });
+    } else { toast('Copying is not available here. Use Export instead.'); }
+  }
+  function tsv(){
+    var head = ['Function','Activity'].concat(D.positions.map(function(p){ return p.id; }))
+      .concat(['Transitions to','Source','Notes']);
+    var lines = [head.join('\t')];
+    D.rows.forEach(function(r){
+      var cells = [r.f, r.act];
+      D.positions.forEach(function(p){
+        var L = letterOf(r, p.id);
+        cells.push(L==='T' ? '\u2192' : (L==='AR' ? 'A/R' : L));
+      });
+      cells.push(r.t ? label(r.t) : '', r.src, r.n);
+      lines.push(cells.map(function(c){ return String(c).replace(/[\t\r\n]+/g,' '); }).join('\t'));
+    });
+    return lines.join('\n');
+  }
+
+  // ---- wiring
+  stripEl.addEventListener('click', function(ev){
+    var b = ev.target.closest('.pos'); if(!b) return;
+    var id = b.getAttribute('data-pos');
+    active = (active===id) ? null : id;
+    stripEl.querySelectorAll('.pos').forEach(function(x){
+      x.setAttribute('aria-pressed', x.getAttribute('data-pos')===active ? 'true':'false');
+    });
+    applyFilter();
+  });
+
+  matrix.addEventListener('click', function(ev){
+    var s = ev.target.closest('.srcbtn'); if(!s) return;
+    var row = document.getElementById('src'+s.getAttribute('data-src'));
+    if(row){
+      row.hidden = !row.hidden;
+      s.setAttribute('aria-expanded', row.hidden ? 'false':'true');
+    }
+  });
+
+  var editBtn = document.getElementById('editBtn');
+  editBtn.addEventListener('click', function(){
+    editing = !editing;
+    editBtn.setAttribute('aria-pressed', editing ? 'true':'false');
+    editBtn.textContent = editing ? 'Done editing' : 'Edit';
+    document.getElementById('editTools').hidden = !editing;
+    render();
+  });
+
+  document.getElementById('addFn').addEventListener('click', function(){
+    var name = prompt('Name of the new function');
+    if(!name) return;
+    name = name.trim();
+    if(!name) return;
+    if(D.functions.indexOf(name)>-1){ toast('That function already exists.'); return; }
+    D.functions.push(name);
+    openState[name] = true;
+    save(); render();
+    addRow(name);
+  });
+
+  document.getElementById('exportBtn').addEventListener('click', function(){
+    download('AC-Brands-RACI.json', payload());
+  });
+  document.getElementById('copyBtn').addEventListener('click', function(){
+    copy(tsv(), 'Copied as tab-separated text. Paste straight into Excel.');
+  });
+  var file = document.getElementById('importFile');
+  document.getElementById('importBtn').addEventListener('click', function(){ file.click(); });
+  file.addEventListener('change', function(){
+    var f = file.files && file.files[0]; if(!f) return;
+    var fr = new FileReader();
+    fr.onload = function(){
+      try {
+        var d = JSON.parse(String(fr.result));
+        if(!d || !Array.isArray(d.rows) || !Array.isArray(d.positions) ||
+           !Array.isArray(d.functions)) throw new Error('shape');
+        D = d; openState = {}; save(); render();
+        toast('Loaded ' + d.rows.length + ' activities from ' + f.name + '.');
+      } catch(err){
+        toast('That file is not a RACI export.');
+      }
+      file.value = '';
+    };
+    fr.readAsText(f);
+  });
+  document.getElementById('revertBtn').addEventListener('click', function(){
+    if(!confirm('Discard your local edits and go back to the published version?')) return;
+    try { localStorage.removeItem(KEY); } catch(err){}
+    D = clone(PUB); dirty = false; openState = {};
+    render();
+    toast('Back to the published version.');
+  });
+
+  document.getElementById('expandAll').addEventListener('click', function(){
+    D.functions.forEach(function(f){ openState[f] = true; });
+    document.querySelectorAll('#matrix details.fn').forEach(function(d){ d.open = true; });
+  });
+  document.getElementById('collapseAll').addEventListener('click', function(){
+    D.functions.forEach(function(f){ openState[f] = false; });
+    document.querySelectorAll('#matrix details.fn').forEach(function(d){ d.open = false; });
+  });
+
+  window.addEventListener('beforeunload', function(ev){
+    if(editing){ ev.preventDefault(); ev.returnValue = ''; }
+  });
+
+  render();
+  if(dirty && !editing) toast('Showing your edited copy. Revert to see the published version.');
+})();
+"""
+
+# ---------------------------------------------------------------- build
+parts = []
+parts.append("<style>\n"
+             "@font-face{font-family:'Adrianna';src:url(data:font/ttf;base64,"
+             + FONT_REG + ") format('truetype');font-weight:400;font-display:block}\n"
+             "@font-face{font-family:'Adrianna';src:url(data:font/ttf;base64,"
+             + FONT_DEMI + ") format('truetype');font-weight:600;font-display:block}\n"
+             + CSS + "</style>")
 
 parts.append('<div class="wrap">')
 
-# ---- header
-parts.append(f"""<header class="page">
-<p class="eyebrow">AC Brands · Operations &amp; Product Development</p>
+parts.append("""<header class="page">
+<p class="eyebrow">AC Brands &middot; Operations &amp; Product Development</p>
 <h1>Who owns what</h1>
 <p class="lede">Accountability across every function, by position. One person answers for each
 activity and one person does the work. Everyone else is consulted or kept informed.</p>
-<div class="meta"><span>{len(ROWS)} activities · {len(FUNCS)} functions</span>
-<span>As of 31 July 2026</span>
-<span>Reflects the 30 July leadership review and the 31 July role corrections</span></div>
+<div class="meta" id="meta"></div>
 </header>""")
 
-# ---- positions
 parts.append("""<section class="block">
 <h2>Positions</h2>
 <p class="filter-note">Select a position to see only the activities it touches. Select again to clear.</p>
-<div class="pos-strip" id="posStrip">""")
-for pid, name, title, status in POSITIONS:
-    c = CNT[pid]
-    chip = ""
-    if status in ("recruiting", "phased"):
-        chip = f'<span class="chip">{e(STATUS_LABEL[status])}</span>'
-    elif status in ("contractor", "partner"):
-        cls = "chip sub" if status == "contractor" else "chip partner"
-        chip = f'<span class="{cls}">{e(STATUS_LABEL[status])}</span>'
-    if status in ("recruiting", "phased"):
-        tally = f'<span>Absorbs <b>{c["inc"]}</b></span>'
-    else:
-        tally = f'<span>A <b>{c["a"]}</b></span><span>R <b>{c["r"]}</b></span>'
-        if c["out"]:
-            tally += f'<span>Hands off <b>{c["out"]}</b></span>'
-    parts.append(f"""<button class="pos" type="button" data-pos="{pid}" aria-pressed="false">
-<span class="pos-name">{e(name)}</span><span class="pos-title">{e(title)}</span>
-{chip}<span class="tally">{tally}</span></button>""")
-parts.append('</div></section>')
+<div class="pos-strip" id="posStrip"></div>
+</section>""")
 
-# ---- legend
 parts.append("""<section class="block"><h2>The matrix</h2>
 <div class="legend">
 <span><i class="mk a">A</i> Answers for the outcome</span>
@@ -275,69 +913,43 @@ parts.append("""<section class="block"><h2>The matrix</h2>
 <span><i class="mk ar">A/R</i> Both, so no second pair of eyes</span>
 <span><i class="mk c">C</i> Consulted</span>
 <span><i class="mk i">I</i> Informed</span>
-<span><i class="mk t">→</i> Moves here on hire</span>
+<span><i class="mk t">&rarr;</i> Moves here on hire</span>
 </div>
 <div class="toolbar">
-<div><button class="btn" type="button" id="expandAll">Expand all</button>
-<button class="btn" type="button" id="collapseAll">Collapse all</button></div>
+<div class="btnrow">
+<button class="btn" type="button" id="editBtn" aria-pressed="false">Edit</button>
+<button class="btn" type="button" id="expandAll">Expand all</button>
+<button class="btn" type="button" id="collapseAll">Collapse all</button>
+</div>
 <span class="filter-note" id="filterState">Showing all positions</span>
-</div>""")
+</div>
+<div class="btnrow" id="editTools" hidden>
+<button class="btn quiet" type="button" id="addFn">+ Add function</button>
+<button class="btn quiet" type="button" id="exportBtn">Export JSON</button>
+<button class="btn quiet" type="button" id="copyBtn">Copy for Excel</button>
+<button class="btn quiet" type="button" id="importBtn">Import JSON</button>
+<button class="btn quiet" type="button" id="revertBtn">Revert to published</button>
+<input type="file" id="importFile" accept=".json,application/json" hidden>
+</div>
+<div class="banner" id="banner"></div>
+<div id="matrix"></div>
+</section>""")
 
-# ---- function tables
-head_cells = "".join(
-    f'<th data-col="{p[0]}" title="{e(p[1])}, {e(p[2])}">{p[0]}</th>' for p in POSITIONS)
-ri = 0
-for fi, fn in enumerate(FUNCS):
-    frows = [r for r in ROWS if r[0] == fn]
-    op = " open" if fi < 2 else ""
-    parts.append(f'<details class="fn" data-fn="{e(fn)}"{op}><summary>'
-                 f'<span class="fn-name">{e(fn)}</span>'
-                 f'<span class="fn-count">{len(frows)} activities</span></summary>')
-    # desktop table
-    parts.append(f'<div class="scroller"><table><thead><tr>'
-                 f'<th class="act">Activity</th>{head_cells}</tr></thead><tbody>')
-    for r in frows:
-        ri += 1
-        tds = []
-        for pid in INI:
-            cls, txt = cell(r, pid)
-            inner = f'<i class="mk {cls}">{txt}</i>' if txt else ""
-            tds.append(f'<td data-col="{pid}">{inner}</td>')
-        parts.append(
-            f'<tr data-row="{ri}"><td class="act">{e(r[1])}<br>'
-            f'<button class="srcbtn" type="button" data-src="{ri}" '
-            f'aria-expanded="false" aria-controls="src{ri}">source</button></td>'
-            + "".join(tds) + '</tr>')
-        parts.append(
-            f'<tr class="srcrow" id="src{ri}" hidden><td colspan="{len(INI)+1}">'
-            f'<div class="srcwrap"><span>{e(r[8])}</span><code>{e(r[7])}</code></div></td></tr>')
-    parts.append('</tbody></table></div>')
-    # mobile cards
-    parts.append('<div class="cards">')
-    for r in frows:
-        def nm(i):
-            for p in POSITIONS:
-                if p[0] == i:
-                    return p[1] if p[3] == "filled" or p[3] == "contractor" else p[2]
-            return i
-        xfer = (f'<span><span class="lbl">moves to</span>'
-                f'{e(nm(r[6]))}</span>') if r[6] else ""
-        parts.append(f"""<div class="card"><strong>{e(r[1])}</strong>
-<div class="who"><span><i class="mk a">A</i>{e(nm(r[2]))}</span>
-<span><i class="mk r">R</i>{e(nm(r[3]))}</span>{xfer}</div></div>""")
-    parts.append('</div></details>')
-
-parts.append('</section>')
-
-# ---- footer
-parts.append(f"""<footer class="page">
-<p><strong>How this was built.</strong> Every row traces to a source: the operating procedures and
-role definitions in the SJ-OS repository, the two specialist job descriptions, or the 30 July
-leadership review. Open any row's source link to see which.</p>
-<p>One row has no documented owner and shows the VP of Operations by default because the work falls
-there in practice: Shopify revenue and channel position. It is marked as inferred rather than
-sourced. Accounts payable and HR onboarding used to sit here too, and are now owned by Ironclad
-Finance and Calm HR.</p>
+parts.append("""<footer class="page">
+<p><strong>Editing.</strong> Press Edit, then click any cell to cycle it through C, I, R, A and back
+to blank. Activity names and function names become editable, rows can be reordered, moved to another
+function, added or deleted. One A and one R per activity is enforced: giving A to someone takes it
+off whoever held it. Open seats can only receive the transition arrow and partner organisations
+cannot hold A, because a vacancy cannot be accountable and accountability does not leave the company.</p>
+<p><strong>Where edits live.</strong> In your own browser, on this device. They are not shared with
+anyone else opening this link, and they survive a reload but not a cleared cache. Export JSON when a
+change is worth keeping and send it back to Alvin to fold into the repository, which is what the
+spreadsheet and this page are both generated from. Copy for Excel puts the whole matrix on your
+clipboard as a table.</p>
+<p><strong>How this was built.</strong> Every published row traces to a source: the operating
+procedures and role definitions in the SJ-OS repository, the two specialist job descriptions, or the
+30 July leadership review. Open any row's source link to see which. Rows you add on the page are
+marked as added by hand rather than sourced.</p>
 <p><strong>Partner organisations</strong> hold the work but never the accountability. That stays with
 an employee. Pedrero Regulatory is consulted rather than responsible because our procedures make
 them consult-only, with no access to our systems.</p>
@@ -347,64 +959,9 @@ represented, because nothing in our operating documentation defines who owns it.
 </footer>""")
 
 parts.append('</div>')
-
-# ---- script
-parts.append("""<script>
-(function(){
-  var strip=document.getElementById('posStrip'), state=document.getElementById('filterState');
-  var active=null;
-  function apply(){
-    document.querySelectorAll('[data-col]').forEach(function(el){
-      el.classList.toggle('col-dim', !!active && el.getAttribute('data-col')!==active);
-    });
-    document.querySelectorAll('tbody tr[data-row]').forEach(function(tr){
-      var show=true;
-      if(active){
-        var td=tr.querySelector('td[data-col="'+active+'"]');
-        show = !!(td && td.querySelector('.mk'));
-      }
-      tr.hidden=!show;
-      var s=document.getElementById('src'+tr.getAttribute('data-row'));
-      if(s && !show) s.hidden=true;
-    });
-    document.querySelectorAll('details.fn').forEach(function(d){
-      var vis=d.querySelectorAll('tbody tr[data-row]:not([hidden])').length;
-      d.hidden = !!active && vis===0;
-      if(active && vis>0) d.open=true;
-      var c=d.querySelector('.fn-count');
-      var total=d.querySelectorAll('tbody tr[data-row]').length;
-      c.textContent = active ? vis+' of '+total+' activities' : total+' activities';
-    });
-    if(active){
-      var b=strip.querySelector('[data-pos="'+active+'"]');
-      state.textContent='Showing '+b.querySelector('.pos-name').textContent.trim()+
-        ', '+b.querySelector('.pos-title').textContent.trim();
-    } else { state.textContent='Showing all positions'; }
-  }
-  strip.addEventListener('click',function(ev){
-    var b=ev.target.closest('.pos'); if(!b) return;
-    var id=b.getAttribute('data-pos');
-    active = (active===id) ? null : id;
-    strip.querySelectorAll('.pos').forEach(function(x){
-      x.setAttribute('aria-pressed', x.getAttribute('data-pos')===active ? 'true':'false');
-    });
-    apply();
-  });
-  document.addEventListener('click',function(ev){
-    var s=ev.target.closest('.srcbtn'); if(!s) return;
-    var row=document.getElementById('src'+s.getAttribute('data-src'));
-    if(row){ row.hidden=!row.hidden;
-      s.setAttribute('aria-expanded', row.hidden ? 'false':'true'); }
-  });
-  document.getElementById('expandAll').addEventListener('click',function(){
-    document.querySelectorAll('details.fn').forEach(function(d){d.open=true;});
-  });
-  document.getElementById('collapseAll').addEventListener('click',function(){
-    document.querySelectorAll('details.fn').forEach(function(d){d.open=false;});
-  });
-  apply();
-})();
-</script>""")
+parts.append('<div class="toast" id="toast" role="status" aria-live="polite"></div>')
+parts.append('<script>window.__RACI__=' + json.dumps(PUB) + ';</script>')
+parts.append('<script>' + JS + '</script>')
 
 io.open(OUT, "w", encoding="utf-8").write(
     "<title>AC Brands: Who owns what</title>\n" + "\n".join(parts))

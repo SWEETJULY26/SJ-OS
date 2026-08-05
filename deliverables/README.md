@@ -3,7 +3,7 @@
 Outputs built from this repo that are meant to leave it. Committed so they survive
 the session that produced them and so the next person can see how they were derived.
 
-## AC Brands RACI: v6, 2026-07-31
+## AC Brands RACI: v7, 2026-08-04
 
 Org-wide RACI. **102 activities across eleven functions, led by position with names
 cross-referenced.** Built for the resource-needs conversation with Danielle and
@@ -11,17 +11,52 @@ Nicole, and updated to reflect the 2026-07-30 leadership review.
 
 Three artifacts, one dataset:
 
-- **`AC-Brands-RACI.html`**: the team-facing version. Position-led columns with
-  status chips, collapsible function sections, click-a-position filtering, and the
-  two open seats shown as columns with transition arrows on the rows they absorb.
-  Sources are behind a per-row disclosure so the team isn't reading file paths.
-  Self-contained: brand fonts and all styling are inlined, no external requests.
+- **`AC-Brands-RACI.html`**: the team-facing version, and since v7 an editing surface
+  as well. Position-led columns with status chips, collapsible function sections,
+  click-a-position filtering, and the two open seats shown as columns with transition
+  arrows on the rows they absorb. Sources are behind a per-row disclosure so the team
+  isn't reading file paths. Self-contained: brand fonts and all styling are inlined,
+  no external requests. See Editing below.
 - **`AC-Brands-RACI.xlsx`**: the working tool. `RACI` carries a two-row header
   (position code, then holder) plus `Transitions to`, `Source` and `Notes`.
   `Analysis` has live COUNTIF formulas over Sheet 1 including projected A and R
   books once both seats are filled. `Gaps` lists open seats with salary bands,
   unowned functions, single points of failure and open items.
 - **`AC-Brands-RACI-summary.md`**: the one-pager for Danielle and Nicole.
+
+### Editing
+
+The page renders the matrix from a JSON payload rather than from baked-in markup, so
+it can be changed in the browser. Press **Edit** and every cell becomes a button that
+cycles through blank, C, I, R, A and back. Activity names and function names become
+editable text, rows can be reordered within a function, moved to another function,
+added or deleted, and a whole function can be added.
+
+Three invariants are enforced in the editor, the same ones `verify.py` enforces on the
+data. One A and one R per activity, so giving A to someone takes it off whoever held
+it and the page says whose it was. An open seat can only receive the transition arrow,
+because a vacancy cannot be accountable. A partner organisation can hold R but not A,
+because accountability does not leave the company. Rows left without an A or an R are
+flagged in the margin and counted in the banner rather than silently accepted.
+
+Edits live in the viewer's own browser via `localStorage`, keyed to the payload
+version. They survive a reload, they are not shared with anyone else opening the link,
+and **Revert to published** discards them. There is no shared-state capability
+available to this account, so a genuinely multi-editor page is not currently possible.
+The round trip is **Export JSON**, which uses the `downloads` runtime capability and
+falls back to a blob link, then hand the file back so `raci_rows.py` can be updated and
+everything regenerated. **Copy for Excel** puts the whole matrix on the clipboard as
+tab-separated text. **Import JSON** loads an export back in.
+
+Bumping `PUB["version"]` in `build_html.py` changes the storage key, which retires every
+viewer's local edits. Do that when the published data moves far enough that stale local
+copies would mislead, and not otherwise.
+
+### What v7 changed
+
+The HTML page became editable, and the page is now client-rendered from the payload
+rather than server-rendered as static rows. No data changed: same 102 activities, same
+owners, same counts.
 
 ### What v6 changed
 
@@ -138,7 +173,9 @@ visible.
   function, activity, A, R, consulted, informed, transition, source, notes. Edit
   here, not in the spreadsheet or the HTML.
 - `build_raci.py`: renders the three xlsx sheets from `raci_rows.py`.
-- `build_html.py`: renders the team-facing page from the same data. Expects the
+- `build_html.py`: renders the team-facing editable page from the same data. The row
+  data goes in as a JSON payload and the matrix is built in the browser, so the CSS
+  and the JS in this file are the page. Expects the
   base64 font payloads alongside it; regenerate them from
   `.claude/skills/sweet-july-skin-brand/assets/fonts/`.
 - `transform_v2.py` through `transform_v6.py`: the migration chain. Kept for the audit trail, so it shows every

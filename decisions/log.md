@@ -75,6 +75,21 @@ Keep it terse. Future-you will thank present-you for capturing the *why*, not ju
 **Status:** All four drift instances fixed 2026-07-29. Full findings in `decisions/wiki-layer-audit-2026-07-29.md`. Two items left open there — Job 0 (the bridges' wiki write-back) has not fired since 2026-05-26, leaving 123 of 133 pages as untouched seed; and `Bridge-and-System-Audit-2026-05-26.md` is cited from three files but exists nowhere, most likely lost in the 2026-07-19 consolidation.
 
 ---
+## 2026-08-04 — The RACI page is the editing surface, and the repo is still the source of truth
+
+**Decision:** The team-facing RACI page becomes editable in the browser. Cells cycle through blank, C, I, R and A; activity and function names are editable; rows can be reordered, moved between functions, added and deleted; functions can be added. The page is now client-rendered from a JSON payload instead of static markup, which is what makes any of that possible.
+
+Two things stay put. The **repo is still the source of truth**: `deliverables/raci_rows.py` is what the spreadsheet, the summary and the page are all generated from, and a change is only real once it lands there. And the **three data invariants are enforced in the editor**, not just in `verify.py`: one A and one R per activity, with the page naming whoever just lost a letter; open seats can hold only the transition arrow, because a vacancy cannot be accountable; partner organisations can hold R but never A, because accountability does not leave the company. A row left without an A or an R is flagged and counted rather than silently accepted.
+
+**Why:** Every change so far has come back through Claude, which makes a five-second correction cost a whole session. The people who spot a wrong cell are the people in the meeting looking at it. Letting them make the change where they see it is the point, and enforcing the invariants in the editor means the shape of a RACI survives contact with people who have not read the framework.
+
+**Alternatives considered:** Make the spreadsheet the only editing surface. Rejected, not because it cannot be edited but because it is the artifact nobody opens in a meeting, and edits there are just as unshared while losing the invariant checks. Wire the page to write back to the repo directly. Rejected for now: it needs credentials in a page anyone with the link can open, and the review step before a change becomes canonical is worth keeping. Let the page write to shared storage so the team edits one copy together. Not available: the account has `downloads` and `mcp` runtime capabilities and no shared-state capability, so this was ruled out by what exists rather than by preference.
+
+**Status:** Shipped 2026-08-04 as v7. Same 102 activities, same owners, same counts. Edits live in each viewer's own browser via `localStorage` keyed to the payload version, survive a reload, are not shared, and can be discarded with Revert to published. Export JSON uses the `downloads` capability with a blob fallback; Copy for Excel puts the matrix on the clipboard as tab-separated text; Import JSON loads an export back in. Verified in Chromium: the cycle order, the A and R displacement messages, the open-seat and partner restrictions, add, delete, reorder, move between functions, persistence across reload, and revert.
+
+**Open:** The round trip is manual. An export has to come back to Alvin to be folded into `raci_rows.py`. If that starts happening often, the next step is a proper write path rather than a page that emails itself. Also worth watching: because local edits are keyed to the payload version, anyone holding local edits will not see a newly published baseline until they revert, so bumping the version is how you force everyone onto new data.
+
+---
 ## 2026-07-31 — Coastal Interactive on the matrix; nobody blank on a product decision
 
 **Decision:** Two additions after the first RACI merge.
