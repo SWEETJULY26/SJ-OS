@@ -6,7 +6,7 @@
 **Revision Number:** 1.0
 **Prepared by:** Alvin Belt (adverse-event-and-recall-reporter skill-side); Reg Lead (procedural-side); Pedrero Regulatory consult on substantive content.
 **Approved by:** Alvin Belt
-**Status:** Ratified 2026-05-09. Original draft authored same day, ratified in-place. SharePoint master copy to be filed at `Sweet July/PD/Quality Control & Assurance/SOP/Reportable Events Procedure SKN-OPS-009 Rev.1.docx`.
+**Status:** Ratified 2026-05-09. Original draft authored same day, ratified in-place. Canonical procedure text lives at `sops/SKN-OPS-009-reportable-events-procedure.md`.
 
 **Owner:** adverse-event-and-recall-reporter (skill-side); Reg Lead (procedural-side, currently Alvin Belt at v6.2)
 **Anchors:** SKN-OPS-001 Rev.1 §5.6 (retention), SKN-OPS-002 Rev.1 (SAE intake — complaint-and-event-handler), SKN-OPS-003 Rev.1 (recall — complaint-and-event-handler), system-c-regulatory-scope.md (system architecture)

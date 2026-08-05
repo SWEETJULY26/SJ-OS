@@ -19,7 +19,7 @@ These shape every action the skill takes. Not negotiable on a per-task basis.
 
 **Read-most by design.** The skill aggregates and surfaces; sub-skills do the workflow writes. Two HITL gates: cross-skill task creation (Operator stages, QA Lead approves) and SOP ratification approval (QA Lead approves; Operator stages from the queue). Everything else is read-only.
 
-**SOP catalog as canonical reference.** The catalog at `references/sop-catalog.md` is the runtime source of truth for which SOP revision is current. Sub-skills query the catalog before significant writes. The catalog mirrors SharePoint state plus skill-side metadata (last review, next-review-due, ratification status, owner role, in-flight drafts).
+**SOP catalog as canonical reference.** The catalog at `references/sop-catalog.md` is the runtime index of which SOP revision is current. Sub-skills query the catalog before significant writes. The procedure text itself is canonical in `sops/` (markdown, not SharePoke or Supabase, per the 2026-08-04 decision); the catalog tracks revision, effective date, ratification status, owner role, and in-flight drafts on top of that.
 
 **Asana = workflow surface. PLM = source of truth (sub-skills' domain).** This skill writes Asana project status updates, cross-cutting tasks, and SOP catalog entries. PLM reads happen via plm-assistant when needed for QoS or audit context.
 

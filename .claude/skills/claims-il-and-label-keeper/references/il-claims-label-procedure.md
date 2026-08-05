@@ -6,7 +6,7 @@
 **Revision Number:** 2.0
 **Prepared by:** Alvin Belt (claims-il-and-label-keeper skill-side); Reg Lead (procedural-side); Pedrero Regulatory consult on substantive content (2026-05-12 touchbase prompted Rev.2 additions).
 **Approved by:** Alvin Belt
-**Status:** Rev.2 ratified 2026-05-12 in-place during the post-Pedrero update session — same pattern as Rev.1. Rev.1 (effective 2026-05-09) superseded. SharePoint master copy filed at `Sweet July/PD/Quality Control & Assurance/SOP/IL Claims Label Procedure SKN-OPS-008 Rev.2.docx`.
+**Status:** Rev.2 ratified 2026-05-12 in-place during the post-Pedrero update session — same pattern as Rev.1. Rev.1 (effective 2026-05-09) superseded. Canonical procedure text lives at `sops/SKN-OPS-008-il-claims-label-procedure.md`.
 
 **Owner:** claims-il-and-label-keeper (skill-side); Reg Lead (procedural-side, currently Alvin Belt at v6.6)
 **Anchors:** SKN-OPS-001 Rev.1 §5.6 (retention), system-c-regulatory-scope.md (system architecture), `regulatory-manager/references/state-packaging-laws.md` (CA SB 343, 19-state toxics, EPR), `regulatory-manager/references/canada-compliance.md` (Health Canada notification, extended allergens, Quebec French-language)

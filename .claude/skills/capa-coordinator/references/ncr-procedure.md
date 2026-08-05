@@ -6,7 +6,7 @@
 **Revision Number:** 1.0
 **Prepared by:** Alvin Belt (capa-coordinator skill-side); QA Lead (procedural-side)
 **Approved by:** Alvin Belt
-**Status:** Ratified 2026-05-09. Drafted 2026-04-29 to fill the gap left by SKN-OPS-001 §5.1–§5.2 (which names the NCR Form in Appendix A without specifying a standalone non-conformance procedure); ratified in-place during the System B post-build review. SharePoint master copy to be filed at `Sweet July/PD/Quality Control & Assurance/SOP/Non-Conformance Report (NCR) Procedure SKN-OPS-005 Rev.1.docx`.
+**Status:** Ratified 2026-05-09. Drafted 2026-04-29 to fill the gap left by SKN-OPS-001 §5.1–§5.2 (which names the NCR Form in Appendix A without specifying a standalone non-conformance procedure); ratified in-place during the System B post-build review. Canonical procedure text lives at `sops/SKN-OPS-005-ncr-procedure.md`.
 
 **Owner:** capa-coordinator (skill-side); QA Lead (procedural-side, currently Perrine — technical QA/QC lead)
 **Anchors:** SKN-OPS-001 Rev.1 §5.1 (Identification), §5.2 (Investigation), §5.6 (Documentation)
