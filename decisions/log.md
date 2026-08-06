@@ -75,6 +75,68 @@ Keep it terse. Future-you will thank present-you for capturing the *why*, not ju
 **Status:** All four drift instances fixed 2026-07-29. Full findings in `decisions/wiki-layer-audit-2026-07-29.md`. Two items left open there — Job 0 (the bridges' wiki write-back) has not fired since 2026-05-26, leaving 123 of 133 pages as untouched seed; and `Bridge-and-System-Audit-2026-05-26.md` is cited from three files but exists nowhere, most likely lost in the 2026-07-19 consolidation.
 
 ---
+## 2026-08-06 — Every activity carries a description and a worked example
+
+**Decision:** Clicking an activity on the RACI page opens a drawer describing what the work actually is, with a concrete example, the full A/R/C/I list by name and title, why it sits there, and the source citation. All 102 activities are covered. The text lives in `deliverables/activity_notes.py` and `verify.py` fails if a row loses its breakdown or a breakdown loses its row.
+
+**Why:** Alvin's call, and the gap was real. A RACI answers who owns a thing and says nothing about what the thing is. Half the rows on this matrix are named in vocabulary that only makes sense if you were in the room: reformulation claim bridge, UBM cohort positioning, three-way reconciliation, OOS versus OOT. Handing that to Danielle and Nicole, and later to two new hires, meant handing over a document that needs a translator. The examples matter more than the definitions, because "acknowledgement variance" becomes obvious the moment you read a case where the vendor confirms a different price and date than you ordered.
+
+It also makes the matrix usable as an onboarding artifact rather than only a resourcing one. The two specialists arrive into 34 transitioning rows, and this is what tells them what those rows mean.
+
+**Alternatives considered:** Tooltips on hover. Rejected, no room for an example and useless on touch. A separate glossary document. Rejected, it separates the definition from the assignment so both go stale independently. Generating descriptions from the skill files at build time. Rejected, the skills describe how the automation works rather than what the activity is, and several activities have no skill at all; the marketing, wholesale and web rows are exactly the ones that most needed explaining.
+
+**Status:** Shipped 2026-08-06. The drawer replaced the per-row source disclosure, which showed a file path and nothing else. Verified inside a sandboxed iframe: 102 triggers, sections render in order, focus moves to Close on open and returns to the activity on dismiss, Escape and scrim both close, tab focus stays in the panel, body scroll locks, mobile renders as a bottom sheet, edit mode keeps the activity as editable text rather than a trigger, and a hand-added row says it has no breakdown yet. `PUB["version"]` stayed at v7 so local edits survived. All eight verify checks pass.
+
+**Open:** The breakdowns are written from the repo and from how the work actually runs, so they are mine rather than sourced to a procedure. Worth Nicole reading the Quality and Regulatory ones and Soraya the Marketing ones, since a wrong description is more misleading than a missing one.
+
+---
+## 2026-08-05 — No browser modals in the artifact frame
+
+**Decision:** The RACI page uses no `confirm`, `prompt` or `alert`. Destructive actions act immediately and offer Undo on the toast; anything that needed text input uses an inline field. `deliverables/README.md` records the rule so a future edit does not reintroduce them.
+
+**Why:** Alvin reported delete not working. The artifact frame is sandboxed without the `allow-modals` keyword, so the browser ignores `confirm()` and returns false, and ignores `prompt()` and returns null, logging only a console warning. Delete was guarded by `if(!confirm(...)) return`, so it always bailed. The same root cause had silently broken **Revert to published** and **Add function**, neither of which had been reported yet. One symptom, three dead controls.
+
+The testing lesson is the more useful half. Every earlier round was driven against a `file://` open of the page, where modals work normally, so all three controls passed. Verifying inside a sandboxed iframe is what reproduced it, and that is now how this page gets tested.
+
+**Alternatives considered:** Ask for `allow-modals`. Not available to declare, and modal dialogs are the wrong pattern for a page people edit live in a meeting. Build a custom modal overlay for confirmation. Rejected as more machinery than the job needs; an immediate action with Undo is fewer clicks and more forgiving than a dialog, because it does not make you decide before you can see the result.
+
+**Status:** Shipped 2026-08-05. Delete removes the row and offers Undo, which restores it at its original index. Revert snapshots the edited copy first and offers Undo, so the button can no longer destroy a session's work outright. Add function opens an inline field with Enter to commit, Escape to cancel, and duplicate names rejected by name. Verified inside a sandboxed iframe rather than a bare file open. `PUB["version"]` deliberately left at v7 so viewers holding local edits keep them across the republish.
+
+**Open:** Nothing on this page relies on a modal now. Worth remembering for anything else published as an artifact: the sandbox also blocks the `beforeunload` prompt, so the unsaved-changes guard on this page is decorative rather than real. Export is the only durable save.
+
+---
+## 2026-08-05 — More than one A is allowed; R is single and cannot be taken by accident
+
+**Decision:** An activity can have several positions accountable. Taking A displaces nobody. R stays single, sits last in the cell cycle, and cycling can never move it off its holder: if R is already held on that activity the cycle steps over R and names the holder, so clearing their cell is the only way to move it. Shift-click steps the cycle backwards.
+
+This replaces the exactly-one-A rule that the original RACI brief set. Two restrictions are unchanged: an open seat can hold only the transition arrow, and a partner organisation can hold R but never A.
+
+**Why:** Alvin's call, and both halves came out of using the thing. Shared accountability is real on this team, so a matrix that forces a single A was making him pick a winner where two people genuinely answer together. The ordering was a straight defect: R sat mid-cycle, so clicking a cell towards C, I or A passed through R and silently pulled R off whichever position held it on that row, wrecking selections elsewhere. Ordering alone was not enough, because a full lap back to blank still crosses R. Refusing to move R by cycling is what actually makes clicking safe.
+
+**Alternatives considered:** Keep one A and add a second column for co-owners. Rejected, it encodes the same ambiguity the RACI is meant to remove and nobody would read the second column. Let R be multi as well. Rejected, R is who does the work and splitting it is how a task ends up done by nobody; the A/R flag on the Gaps sheet only means something while R is single. Let cycling steal R but announce it, which is what shipped first. Rejected after using it: a toast does not undo a change you did not want, and the whole complaint was edits leaking into cells he was not looking at.
+
+**Status:** Shipped 2026-08-05. The page carries A as a list. `deliverables/raci_rows.py` still holds one code per row because that is what today's data says, but `build_raci.py` accepts a code or a list, and `verify.py` now checks for at least one A and exactly one R and reports how many rows carry more than one. So an export with shared A folds back in without another schema change. Proved the tolerance with a temporary two-A row: both positions get an A marker in the spreadsheet. Verified in Chromium: cycle order is C, I, A, R, blank; four positions held A on one row at once with tallies tracking; R untouched throughout; R settable once its slot is free; existing A/R cells still render and clear in one click; open-seat and partner limits intact; edits survive a reload.
+
+**Correction, same day.** Making A a set removed A/R from the cycle, so it could no longer be set by hand. Restored: the cycle is blank, C, I, A, A/R, R. Both A/R and R claim R, so both sit at the end and both are skipped when another position holds R, with the toast naming the holder. A/R and a separate A can coexist on one activity, which is a shape the old one-A rule could not express at all.
+
+**Open:** The A/R count in the banner still reads "same person on A and R" per row, which is literally true but means less now that a row can carry other A's alongside. If shared A becomes common, the single-point-of-failure measure on the Gaps sheet needs rethinking, since it was written when one A per row was guaranteed.
+
+---
+## 2026-08-04 — The RACI page is the editing surface, and the repo is still the source of truth
+
+**Decision:** The team-facing RACI page becomes editable in the browser. Cells cycle through blank, C, I, R and A; activity and function names are editable; rows can be reordered, moved between functions, added and deleted; functions can be added. The page is now client-rendered from a JSON payload instead of static markup, which is what makes any of that possible.
+
+Two things stay put. The **repo is still the source of truth**: `deliverables/raci_rows.py` is what the spreadsheet, the summary and the page are all generated from, and a change is only real once it lands there. And the **three data invariants are enforced in the editor**, not just in `verify.py`: one A and one R per activity, with the page naming whoever just lost a letter; open seats can hold only the transition arrow, because a vacancy cannot be accountable; partner organisations can hold R but never A, because accountability does not leave the company. A row left without an A or an R is flagged and counted rather than silently accepted.
+
+**Why:** Every change so far has come back through Claude, which makes a five-second correction cost a whole session. The people who spot a wrong cell are the people in the meeting looking at it. Letting them make the change where they see it is the point, and enforcing the invariants in the editor means the shape of a RACI survives contact with people who have not read the framework.
+
+**Alternatives considered:** Make the spreadsheet the only editing surface. Rejected, not because it cannot be edited but because it is the artifact nobody opens in a meeting, and edits there are just as unshared while losing the invariant checks. Wire the page to write back to the repo directly. Rejected for now: it needs credentials in a page anyone with the link can open, and the review step before a change becomes canonical is worth keeping. Let the page write to shared storage so the team edits one copy together. Not available: the account has `downloads` and `mcp` runtime capabilities and no shared-state capability, so this was ruled out by what exists rather than by preference.
+
+**Status:** Shipped 2026-08-04 as v7. Same 102 activities, same owners, same counts. Edits live in each viewer's own browser via `localStorage` keyed to the payload version, survive a reload, are not shared, and can be discarded with Revert to published. Export JSON uses the `downloads` capability with a blob fallback; Copy for Excel puts the matrix on the clipboard as tab-separated text; Import JSON loads an export back in. Verified in Chromium: the cycle order, the A and R displacement messages, the open-seat and partner restrictions, add, delete, reorder, move between functions, persistence across reload, and revert.
+
+**Open:** The round trip is manual. An export has to come back to Alvin to be folded into `raci_rows.py`. If that starts happening often, the next step is a proper write path rather than a page that emails itself. Also worth watching: because local edits are keyed to the payload version, anyone holding local edits will not see a newly published baseline until they revert, so bumping the version is how you force everyone onto new data.
+
+---
 ## 2026-07-31 — Coastal Interactive on the matrix; nobody blank on a product decision
 
 **Decision:** Two additions after the first RACI merge.

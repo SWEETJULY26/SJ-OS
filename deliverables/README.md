@@ -3,7 +3,7 @@
 Outputs built from this repo that are meant to leave it. Committed so they survive
 the session that produced them and so the next person can see how they were derived.
 
-## AC Brands RACI: v6, 2026-07-31
+## AC Brands RACI: v7, 2026-08-04
 
 Org-wide RACI. **102 activities across eleven functions, led by position with names
 cross-referenced.** Built for the resource-needs conversation with Danielle and
@@ -11,17 +11,95 @@ Nicole, and updated to reflect the 2026-07-30 leadership review.
 
 Three artifacts, one dataset:
 
-- **`AC-Brands-RACI.html`**: the team-facing version. Position-led columns with
-  status chips, collapsible function sections, click-a-position filtering, and the
-  two open seats shown as columns with transition arrows on the rows they absorb.
-  Sources are behind a per-row disclosure so the team isn't reading file paths.
-  Self-contained: brand fonts and all styling are inlined, no external requests.
+- **`AC-Brands-RACI.html`**: the team-facing version, and since v7 an editing surface
+  as well. Position-led columns with status chips, collapsible function sections,
+  click-a-position filtering, and the two open seats shown as columns with transition
+  arrows on the rows they absorb. Clicking an activity opens a breakdown of what the work
+  is, with an example and the source. Self-contained: brand fonts and all styling are
+  inlined, no external requests. See Activity breakdowns and Editing below.
 - **`AC-Brands-RACI.xlsx`**: the working tool. `RACI` carries a two-row header
   (position code, then holder) plus `Transitions to`, `Source` and `Notes`.
   `Analysis` has live COUNTIF formulas over Sheet 1 including projected A and R
   books once both seats are filled. `Gaps` lists open seats with salary bands,
   unowned functions, single points of failure and open items.
 - **`AC-Brands-RACI-summary.md`**: the one-pager for Danielle and Nicole.
+
+### Activity breakdowns
+
+Clicking an activity opens a side drawer with five things: a plain description of what
+the work actually is, a worked example using real SKUs and vendors, who holds each
+letter with names and titles, why it sits where it does, and the `file:line` source.
+On mobile the same panel arrives as a bottom sheet. Escape, the scrim and the Close
+button all dismiss it, and focus returns to the activity you came from.
+
+The text lives in `activity_notes.py`, keyed by exact activity string, with a `what`
+and an `example` per row. All 102 rows are covered and `verify.py` fails the build if
+any row loses its breakdown or if a breakdown exists with no matching row. A row added
+on the page has no entry, so its drawer says so rather than showing an empty section.
+
+This replaced the per-row source disclosure, which showed a file path and nothing else.
+The matrix says who owns a thing; the drawer is what makes it legible to somebody who
+was not in the meeting where it was named.
+
+### Editing
+
+The page renders the matrix from a JSON payload rather than from baked-in markup, so
+it can be changed in the browser. Press **Edit** and every cell becomes a button that
+cycles through blank, C, I, A, A/R and R and back. Shift-click steps backwards. Activity names
+and function names become editable text, rows can be reordered within a function, moved
+to another function, added or deleted, and a whole function can be added.
+
+**A can be shared, R cannot.** An activity may have several positions accountable, so
+taking A displaces nobody. This replaced the original one-A rule on 2026-08-05 at Alvin's
+instruction.
+
+R is single, and the two states that claim it, **A/R** and **R**, sit at the end of the
+cycle for a reason: clicking through a cell must never rewrite a different one. If R is
+already held on that activity, cycling skips past both and names the holder, so the only
+way to move R is to clear their cell first. That is two clicks rather than one, and it is
+the whole reason a click can no longer disturb a cell you were not looking at. A/R and a
+separate A can sit on the same activity: one position both answers and does the work,
+another only answers.
+
+Two restrictions still hold, and `verify.py` enforces both on the data. An open seat can
+only receive the transition arrow, because a vacancy cannot be accountable. A partner
+organisation can hold R but never A, because accountability does not leave the company.
+An activity with no A at all, or with nobody doing the work, is flagged in the margin and
+counted in the banner rather than silently accepted.
+
+Edits live in the viewer's own browser via `localStorage`, keyed to the payload
+version. They survive a reload, they are not shared with anyone else opening the link,
+and **Revert to published** discards them. There is no shared-state capability
+available to this account, so a genuinely multi-editor page is not currently possible.
+The round trip is **Export JSON**, which uses the `downloads` runtime capability and
+falls back to a blob link, then hand the file back so `raci_rows.py` can be updated and
+everything regenerated. **Copy for Excel** puts the whole matrix on the clipboard as
+tab-separated text. **Import JSON** loads an export back in.
+
+**No browser modals.** The artifact frame is sandboxed without `allow-modals`, so
+`confirm()` and `prompt()` are ignored by the browser: `confirm()` returns false and
+`prompt()` returns null, with only a console warning. Any control built on them fails
+silently. Delete, Revert to published and Add function all did until 2026-08-05. Delete
+and Revert now act immediately and offer Undo on the toast, and Add function uses an
+inline text field. Do not reintroduce `confirm`, `prompt` or `alert` in `build_html.py`:
+test in a sandboxed iframe, not just a local file, because a bare `file://` open has
+modals enabled and hides the bug.
+
+Bumping `PUB["version"]` in `build_html.py` changes the storage key, which retires every
+viewer's local edits. Do that when the published data moves far enough that stale local
+copies would mislead, and not otherwise.
+
+### What v7 changed
+
+The HTML page became editable, and the page is now client-rendered from the payload
+rather than server-rendered as static rows. No data changed: same 102 activities, same
+owners, same counts.
+
+The A column widened from one holder to many. `raci_rows.py` still carries a single code
+per row because that is what the data says today, but `build_raci.py` accepts either a
+code or a list of codes, and `verify.py` now checks for **at least one** A and exactly one
+R, reporting how many rows carry more than one. So an export with shared accountability
+folds straight back in without another schema change.
 
 ### What v6 changed
 
@@ -134,17 +212,22 @@ the two job descriptions attached to it. Eleven rows rest on those rather than o
 anything in this repo; `verify.py` reports them separately so the distinction stays
 visible.
 
+- `activity_notes.py`: the per-activity `what` and `example` shown in the drawer,
+  keyed by exact activity string. Edit here when an activity is renamed, or the
+  breakdown stops matching its row and `verify.py` will say so.
 - `raci_rows.py`: the row data and the position roster. One tuple per activity:
   function, activity, A, R, consulted, informed, transition, source, notes. Edit
   here, not in the spreadsheet or the HTML.
 - `build_raci.py`: renders the three xlsx sheets from `raci_rows.py`.
-- `build_html.py`: renders the team-facing page from the same data. Expects the
+- `build_html.py`: renders the team-facing editable page from the same data. The row
+  data goes in as a JSON payload and the matrix is built in the browser, so the CSS
+  and the JS in this file are the page. Expects the
   base64 font payloads alongside it; regenerate them from
   `.claude/skills/sweet-july-skin-brand/assets/fonts/`.
 - `transform_v2.py` through `transform_v6.py`: the migration chain. Kept for the audit trail, so it shows every
   A/R reassignment and which rows were added, rather than the v2 data appearing
   from nowhere.
-- `verify.py`: seven checks. No departed-employee references in any cell of any
+- `verify.py`: eight checks. No departed-employee references in any cell of any
   sheet or in the summary or the HTML; exactly one A and one R per row; every cited
   `file:line` resolves in this repo; every repo citation carries ownership language;
   no open seat holds A or R and no partner organisation holds A, since a vacancy cannot be

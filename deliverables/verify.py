@@ -57,8 +57,8 @@ for s, coord, v in ph:
     if s == "RACI" and coord[0] in "CDEFGHIJKL":
         print("   FAIL - appears in a person column"); fail += 1
 
-# ---------- 2. exactly one A and one R per row
-hdr("2. Exactly one A and one R per row (Sheet 1)")
+# ---------- 2. at least one A, exactly one R per row
+hdr("2. At least one A and exactly one R per row (Sheet 1)")
 ws = wb["RACI"]
 head = [c.value for c in ws[1]]
 pcols = [i for i, h in enumerate(head)
@@ -66,6 +66,7 @@ pcols = [i for i, h in enumerate(head)
 print(f"  person columns: {[head[i] for i in pcols]}")
 bad = 0
 n = 0
+multi = 0
 for r in range(3, ws.max_row + 1):
     if not ws.cell(row=r, column=2).value:
         continue
@@ -77,15 +78,46 @@ for r in range(3, ws.max_row + 1):
     n += 1
     a = sum(1 for v in vals if v in ("A", "A/R"))
     rr = sum(1 for v in vals if v in ("R", "A/R"))
-    if a != 1 or rr != 1:
+    if a > 1:
+        multi += 1
+    if a < 1 or rr != 1:
         bad += 1
         print(f"   FAIL row {r}: A={a} R={rr} :: {ws.cell(row=r, column=2).value[:60]}")
 print(f"  activity rows checked: {n}")
-print("  PASS - every row has exactly one A and one R" if bad == 0 else f"  FAIL - {bad} bad rows")
+print(f"  rows with more than one A: {multi} (allowed since 2026-08-05)")
+print("  PASS - every row has at least one A and exactly one R"
+      if bad == 0 else f"  FAIL - {bad} bad rows")
 if bad:
     fail += 1
 if n != len(ROWS):
     print(f"  FAIL - counted {n} rows, expected {len(ROWS)}"); fail += 1
+
+# ---------- 2b. every activity has a breakdown
+hdr("2b. Every activity has a What-it-is and an example")
+from activity_notes import INFO as ACT_INFO
+acts = [r[1] for r in ROWS]
+no_what = [a for a in acts if not ACT_INFO.get(a, {}).get("what")]
+no_eg = [a for a in acts if not ACT_INFO.get(a, {}).get("example")]
+orphan = [k for k in ACT_INFO if k not in acts]
+print(f"  activities: {len(acts)} | breakdowns: {len(ACT_INFO)}")
+for a in no_what:
+    print(f"   FAIL - no 'what' for: {a[:70]}")
+for a in no_eg:
+    print(f"   FAIL - no example for: {a[:70]}")
+for a in orphan:
+    print(f"   FAIL - breakdown with no matching row: {a[:70]}")
+if no_what or no_eg or orphan:
+    fail += 1
+else:
+    print("  PASS - all activities described, no orphaned breakdowns")
+
+# the departed employee must not reappear via the breakdowns
+bad_name = [a for a, v in ACT_INFO.items()
+            if "ciarra" in (v.get("what", "") + v.get("example", "")).lower()]
+if bad_name:
+    print(f"   FAIL - departed employee named in {len(bad_name)} breakdowns"); fail += 1
+else:
+    print("  PASS - no departed-employee references in the breakdowns")
 
 # ---------- 3. every source resolves to a real file:line
 hdr("3. Source resolution - read each file:line back out of SJ-OS")
@@ -213,10 +245,14 @@ hdr("5. Open seats and partner orgs hold no accountability")
 from raci_rows import POSITIONS
 OPEN = [p[0] for p in POSITIONS if p[3] in ("recruiting", "phased")]
 print(f"  open seats: {OPEN}")
-bad_seat = [(r[0], r[1]) for r in ROWS if r[2] in OPEN or r[3] in OPEN]
+def alist(x):
+    return [x] if isinstance(x, str) else list(x)
+
+bad_seat = [(r[0], r[1]) for r in ROWS
+            if any(a in OPEN for a in alist(r[2])) or r[3] in OPEN]
 print(f"  rows assigning A or R to an open seat: {len(bad_seat)}")
 PARTNER = [p[0] for p in POSITIONS if p[3] == "partner"]
-bad_p = [(r[0], r[1]) for r in ROWS if r[2] in PARTNER]
+bad_p = [(r[0], r[1]) for r in ROWS if any(a in PARTNER for a in alist(r[2]))]
 print(f"  partner orgs: {PARTNER}")
 print(f"  rows assigning A to a partner org: {len(bad_p)}")
 for b in bad_p:

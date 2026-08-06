@@ -19,9 +19,9 @@ for r in ROWS:
 
 def counts(i):
     return dict(
-        a=sum(1 for r in ROWS if r[2] == i),
+        a=sum(1 for r in ROWS if i in ([r[2]] if isinstance(r[2], str) else r[2])),
         r=sum(1 for r in ROWS if r[3] == i),
-        ar=sum(1 for r in ROWS if r[2] == i == r[3]),
+        ar=sum(1 for r in ROWS if r[3] == i and i in ([r[2]] if isinstance(r[2], str) else r[2])),
         out=sum(1 for r in ROWS if r[3] == i and r[6]),
         inc=sum(1 for r in ROWS if r[6] == i))
 CNT = {i: counts(i) for i in INI}
@@ -69,8 +69,12 @@ for j, i in enumerate(INI):
 
 for f, act, Aa, Rr, C, I, T, src, notes in ROWS:
     letters = {}
-    letters[Aa] = "A/R" if Aa == Rr else "A"
-    if Rr != Aa:
+    # A may be one code or several: the page allows an activity to be answered
+    # for by more than one position. R stays single.
+    for k in ([Aa] if isinstance(Aa, str) else list(Aa)):
+        if k:
+            letters[k] = "A/R" if k == Rr else "A"
+    if Rr and Rr not in letters:
         letters[Rr] = "R"
     for k in C:
         letters.setdefault(k, "C")
@@ -113,7 +117,7 @@ ws.row_dimensions[1].height = 28
 lr = last + 2
 ws.cell(row=lr, column=1, value="Legend").font = F_T
 for j, (txt, fill) in enumerate([
-    ("A = answers for the outcome (exactly one per row)", FILL_A),
+    ("A = answers for the outcome (at least one per row, and it can be shared)", FILL_A),
     ("R = does the work (exactly one per row)", FILL_R),
     ("A/R = the same person holds both, so the row has no second pair of eyes", FILL_A),
     ("C = consulted before the decision", None),
