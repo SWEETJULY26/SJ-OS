@@ -1,4 +1,4 @@
-<title>Sweet July Skin — Market Expansion Map</title>
+<title>Sweet July Skin Market Expansion Map</title>
 <style>
   :root{
     --ground:#FAF7F0; --panel:#F1ECE1; --ink:#22301F; --ink-soft:#5A6353; --line:#DDD5C4;
@@ -53,6 +53,7 @@
   .marker.tier-now .dot{background:var(--now);box-shadow:0 0 0 4px color-mix(in srgb, var(--now) 25%, transparent);}
   .marker.tier-next .dot{background:var(--next);box-shadow:0 0 0 4px color-mix(in srgb, var(--next) 28%, transparent);}
   .marker.tier-later .dot{background:var(--later);box-shadow:0 0 0 4px color-mix(in srgb, var(--later) 28%, transparent);}
+  .marker.tier-blue .dot{background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent);}
   .marker:hover .dot,.marker:focus-visible .dot{box-shadow:0 0 0 7px color-mix(in srgb, var(--accent) 30%, transparent);}
   .marker:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px;}
   .marker .tag{font-size:11.5px;font-weight:600;background:var(--ground);border:1px solid var(--line);
@@ -70,7 +71,7 @@
   .pill{align-self:flex-start;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
     padding:3px 9px;border-radius:99px;color:#fff;}
   .pill.now{background:var(--now);} .pill.next{background:var(--next);} .pill.later{background:var(--later);}
-  .pill.frame-pill{background:var(--accent);}
+  .pill.frame-pill{background:var(--accent);} .pill.blue{background:var(--accent);}
   :root[data-theme="dark"] .pill, :root:not([data-theme="light"]) .pill{color:var(--ground);}
   .backdrop{position:fixed;inset:0;background:rgba(15,20,14,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:40;}
   .backdrop.open{opacity:1;pointer-events:auto;}
@@ -99,7 +100,7 @@
   <header>
     <div class="eyebrow">Sweet July Skin · Strategy &amp; Vision</div>
     <h1>Market Expansion Map</h1>
-    <p class="sub">A starting point for the expansion conversation, not a plan. For each candidate market: why we would be there, what success could look like, what it costs and risks, and what would have to be true before it earns a budget line.</p>
+    <p class="sub">A starting point for the expansion conversation, not a plan. For each candidate market: why we would be there, what success could look like, what it costs and risks, and what would have to be true before it earns a budget line. Grounded in where we actually are: live on Ulta Beauty Marketplace, an active Thirteen Lune wholesale account, and a South Africa first order already in motion.</p>
     <p class="meta">Talking points for the leadership ops planning workshop, late September 2026. Everything here is directional and open for debate.</p>
   </header>
 
@@ -111,17 +112,16 @@
     <span>Where we play today:</span>
     <span class="chip">DTC · sweetjuly.com</span>
     <span class="chip">Amazon</span>
-    <span class="chip">Ulta</span>
-    <span class="chip">Sephora</span>
-    <span class="chip">Whole Foods</span>
-    <span class="chip">Cafe brand touchpoints</span>
+    <span class="chip">Ulta Beauty Marketplace · since Jun 2026</span>
+    <span class="chip">Thirteen Lune wholesale</span>
+    <span class="chip">Nordstrom.com · launching Q3</span>
   </div>
 
   <div class="legend" aria-hidden="true">
-    <span class="item"><span class="swatch" style="background:var(--now)"></span>Signal now, cheap tests in 2026</span>
+    <span class="item"><span class="swatch" style="background:var(--now)"></span>Live now, define success</span>
     <span class="item"><span class="swatch" style="background:var(--next)"></span>Decide in the 2027 planning cycle</span>
-    <span class="item"><span class="swatch" style="background:var(--later)"></span>Watch, no spend</span>
-    <span class="item"><span class="swatch" style="background:var(--accent)"></span>Jamaica, brand root</span>
+    <span class="item"><span class="swatch" style="background:var(--accent)"></span>Blue sky goal</span>
+    <span class="item"><span class="swatch" style="background:var(--accent);opacity:.55"></span>Jamaica, brand root</span>
   </div>
 
   <div class="mapbox" id="mapbox">
@@ -150,17 +150,18 @@ const MARKETS = [
     mapless:true,
     card:'The P&L reality, the principles that gate every candidate, and the portfolio-level definition of success we need to agree on.',
     sections:[
-      {h:'The honest starting point', p:'We are below plan and break-even has moved out. Expansion is not a growth reflex, it is a capital allocation question. Every dollar and every hour spent opening a new market competes directly with growing the channels we are already in. That is the bar each candidate on this map has to clear.'},
+      {h:'The honest starting point', p:'Q2 closed at $152.8K net revenue for Skin, up 69% year over year but 20% below the $190K plan, and break-even has moved out. Expansion is not a growth reflex, it is a capital allocation question. Every dollar and every hour spent opening a new market competes directly with growing the channels we are already in. That is the bar each candidate on this map has to clear.'},
       {h:'Proposed principles (to debate)', items:[
         'Prove, then spend. Cheap demand signals come before any commitment. No market gets real money on instinct.',
         'Brand fit is the filter. We go where the Caribbean-rooted story lands hardest, because that is where we win without outspending anyone.',
         'No budget line without a written definition of success and a kill threshold agreed in advance.',
-        'Existing channels get first claim on capital until we are back on plan. Expansion rides on proof, not hope.'
+        'Existing channels get first claim on capital until we are back on plan. Expansion rides on proof, not hope.',
+        'Do not expand distribution we cannot keep in stock. The Lychee and Discovery Set outages cost an estimated $110 to 120K over three quarters. Every new channel multiplies the cost of a stockout.'
       ]},
       {h:'What success looks like at the portfolio level', items:[
         'Expansion never pushes the break-even date out. Any move must be contribution-positive within an agreed window or it gets cut.',
         'Each entry produces evidence we can reuse: sell-through data, compliance dossiers, retailer relationships.',
-        'Leadership attention stays protected. The cafe taught us what a small initiative costs when it has no guardrails.'
+        'Leadership attention stays protected. Partner-led entries where someone else carries the operational load rank ahead of entries we have to staff.'
       ]},
       {h:'Open questions for the workshop', items:[
         'What revenue or margin milestone in current channels unlocks expansion spend at all?',
@@ -171,40 +172,98 @@ const MARKETS = [
     ask:'Agree the principles and the unlock milestone first. Until those are set, every market below stays a question mark by design.'
   },
   {
-    id:'thirteenlune', name:'Thirteen Lune', place:'United States · retail partner candidate', tier:'now', tierLabel:'Signal now',
-    lon:-118.2, lat:34.05,
-    card:'A brand-fit retail door in our home market. Adds retail proof without international complexity.',
+    id:'ulta', name:'Ulta: marketplace to in-store', place:'United States · the blue sky goal', tier:'blue', tierLabel:'Blue sky',
+    lon:-88.0, lat:41.8,
+    card:'We are live on Ulta Beauty Marketplace today. The blue sky goal is earning the wholesale and in-store conversation.',
     sections:[
-      {h:'Why we would be there', p:'Thirteen Lune is built around Black- and Brown-founded beauty brands, online and through JCPenney shop-in-shops. The strategic value is proof: another retail door in our home market, won on brand story, that strengthens the track record we will later show international buyers and bigger retail partners. It is the cheapest way to test whether our story wins retail placement on its own.'},
+      {h:'Why we would be there', p:'We are already on the ladder. Ulta Beauty Marketplace went live June 16 with 9 SKUs and did $4.3K in under two weeks with no prior infrastructure. Marketplace is the wedge: it builds sell-through data inside Ulta\u2019s own ecosystem, which is exactly the evidence a wholesale buyer needs to say yes to in-store doors. Physical Ulta retail is the single biggest prize on this map and the clearest expression of the three-year vision.'},
       {h:'What success could look like (to debate)', items:[
-        'Placement secured with zero new headcount and no new supply chain.',
-        'Sell-through comparable to our Ulta baseline within the first season.',
-        'A reorder. One reorder says more to a future buyer than any pitch deck.',
-        'Terms that clear our margin floor and do not undercut the Ulta relationship.'
+        'Near term: marketplace velocity worth talking about. Grow the 9 SKUs, add Coffee Fix Eye Cream and Soursop Vitamin C Serum (already the Q3 goal), and set a monthly revenue bar we would proudly show a buyer.',
+        'The milestone: a wholesale buyer meeting earned on data, not warm intros alone.',
+        'The blue sky: an in-store pilot in a defined door count, with sell-through targets and a replenishment record that earns expansion to more doors.'
       ]},
       {h:'Cost and risk', items:[
-        'Cash cost is low: pitch materials exist, compliance pack exists, no new regulatory work.',
-        'The real cost is attention during the Ulta launch window.',
-        'Risk: wholesale terms that dilute margin, or a placement that spreads thin inventory across too many doors.'
+        'Marketplace phase: near zero incremental cost, it is live and growing.',
+        'In-store is a different business: retailer margin, chargebacks, planograms, in-store support and marketing spend, plus inventory depth per door.',
+        'The risk is asking too early. One weak in-store pilot closes the door harder than never asking.'
       ]},
       {h:'What would have to be true', items:[
-        'Ulta launch has landed and is stable, so this is not competing for the same weeks of attention.',
-        'Assortment can be hero-SKU only.',
-        'Margin math works at their terms. If it does not, we walk.'
+        'Marketplace sell-through strong enough to lead the pitch.',
+        'Inventory reliability proven. September restock holds and no core SKU goes dark through Q4.',
+        'Launch track record intact: Pineapple Punch and the fall launches ship on time and in full.',
+        'Unit economics that survive retailer margin at in-store terms.'
       ]},
       {h:'What it takes, directionally', items:[
-        'No new regulatory work. Existing MoCRA coverage and claims files carry over.',
-        'Standard retailer compliance package, one more routing guide at the 3PL.'
+        'No new regulatory work, domestic channel.',
+        'Wholesale infrastructure: routing compliance, EDI or portal ops, chargeback prevention. Some of this exists from current wholesale.',
+        'A real trade marketing budget when in-store happens.'
       ]}
     ],
-    ask:'Is one more US retail door additive to the story we are building, or a distraction from making Ulta work? If additive, when does outreach start?'
+    ask:'What marketplace number earns the wholesale pitch? Name it now so the team knows exactly what they are building toward.'
   },
   {
-    id:'canada', name:'Canada', place:'First international candidate', tier:'next', tierLabel:'Decide 2027',
+    id:'thirteenlune', name:'Thirteen Lune', place:'Active partner · the international vehicle', tier:'now', tierLabel:'Live now',
+    lon:-118.2, lat:34.05,
+    card:'Already an active wholesale account. Their footprint, starting with South Africa, could carry us into new markets without us building anything.',
+    sections:[
+      {h:'Why we would be there', p:'We already are. Thirteen Lune is an active wholesale account: orders shipped in May, compliance docs delivered, operational kinks (like their one-SKU-per-box packing rule) already worked through. The strategic question is no longer whether to enter, it is how far to ride the partner. Their footprint is becoming the lowest-cost vehicle we have for international reach, starting with South Africa, and potentially extending to other markets as they grow.'},
+      {h:'What success could look like (to debate)', items:[
+        'Reorder cadence on domestic wholesale, not one-off POs.',
+        'The South Africa first order ships clean and sells through, proving the partner can carry us into a market we never touch operationally.',
+        'A defined view of their expansion roadmap, so we know which future markets ride this rail versus need our own entry.'
+      ]},
+      {h:'Cost and risk', items:[
+        'Near zero incremental cost, the account and the 3PL routing already exist.',
+        'Concentration risk: a partner-led international strategy inherits the partner\u2019s health, retail relationships, and priorities.',
+        'Wholesale margin is structurally thinner, so volume has to justify the lane.'
+      ]},
+      {h:'What would have to be true', items:[
+        'Their sell-through on our SKUs stays healthy enough that they keep buying.',
+        'Their international expansion is real and funded, not aspirational.',
+        'Our inventory position can support their orders without starving DTC and Amazon.'
+      ]},
+      {h:'What it takes, directionally', items:[
+        'Keep doing what we are doing: clean fulfillment, current compliance docs, responsive account management.',
+        'A quarterly conversation with their team about where their footprint goes next.'
+      ]}
+    ],
+    ask:'Do we formalize Thirteen Lune as our international rail, with a partner review each quarter, instead of treating each order as one-off wholesale?'
+  },
+  {
+    id:'southafrica', name:'South Africa', place:'Entering now, partner-led via Thirteen Lune', tier:'now', tierLabel:'Live now',
+    lon:28.0, lat:-26.2,
+    card:'First wholesale order via Thirteen Lune is a Q3 goal. The partner carries the market; our job is to define success before it ships.',
+    sections:[
+      {h:'Why we would be there', p:'This one moved from idea to motion: the first Thirteen Lune South Africa wholesale order is a stated Q3 goal. The brand story resonates across the African diaspora and the partner carries import, distribution, and retail. What is missing is not a plan to enter, it is a definition of success. Without one, we will not know in January whether South Africa is a growth lane or a rounding error.'},
+      {h:'What success could look like (to debate)', items:[
+        'Order one ships clean and on time, no compliance surprises at import.',
+        'A reorder within an agreed window. One reorder converts this from experiment to lane.',
+        'Enough sell-through visibility from the partner to judge the market, not just the order.'
+      ]},
+      {h:'Cost and risk', items:[
+        'Internal cost is near zero because the partner carries the market. Protect that.',
+        'Wholesale-through-partner margin is the thinnest lane we have, so this is strategic reach, not near-term P&L.',
+        'Heat-sensitive formulas and long ocean freight need a supply chain check before larger orders.'
+      ]},
+      {h:'What would have to be true (to go beyond order one)', items:[
+        'Reorders happen without us pushing.',
+        'The partner shares sell-through data, not just POs.',
+        'Larger volumes still work with our inventory position and freight realities.'
+      ]},
+      {h:'What it takes, directionally', items:[
+        'Lighter regulatory regime than UK or EU, and the importer handles permits and duties.',
+        'Compliance docs largely exist from the MSDS package already delivered to Thirteen Lune.',
+        'A freight and stability check for ocean shipments of heat-sensitive SKUs.'
+      ]}
+    ],
+    ask:'Before the first order ships: what reorder window and sell-through visibility do we require to call South Africa working?'
+  },
+  {
+    id:'canada', name:'Canada', place:'First self-driven international candidate', tier:'next', tierLabel:'Decide 2027',
     lon:-79.4, lat:43.7,
     card:'Closest analog market, large Caribbean diaspora, and a nearly free way to test demand before committing.',
     sections:[
-      {h:'Why we would be there', p:'The closest analog to our home market, and Toronto holds one of the largest Caribbean communities outside the islands. The brand story lands without translation. Our Sephora relationship gives a warm retail path if we ever want one, and a Thirteen Lune cross-border route has been floated. Most importantly, Canada is the one international market where we can buy a real demand signal for almost nothing: turn on cross-border DTC shipping and watch.'},
+      {h:'Why we would be there', p:'The closest analog to our home market, and Toronto holds one of the largest Caribbean communities outside the islands. The brand story lands without translation. Unlike South Africa, no partner is carrying us in yet, so Canada is the first market where we would drive entry ourselves. That is exactly why it needs the cheap test first: turn on cross-border DTC shipping and watch, before any retail conversation. If Thirteen Lune\u2019s footprint extends here, the partner rail becomes an option too.'},
       {h:'What success could look like (to debate)', items:[
         'Phase 1, the signal: Canadian orders reach an agreed share of DTC volume by an agreed date. The number is the workshop conversation, not this map.',
         'Phase 2, retail: only if the signal clears and the US retail track record is strong. Success there means placement plus sell-through, defined before we commit.',
@@ -233,11 +292,11 @@ const MARKETS = [
     lon:-0.1, lat:51.5,
     card:'Deepest premium beauty market of the candidates and a strong diaspora story. Compliance costs are front-loaded, so it must be a deliberate bet.',
     sections:[
-      {h:'Why we would be there', p:'The UK is the biggest prize on this map. A deep premium beauty market, retailers that actively hunt distinctive founder stories, and a British-Jamaican community where the brand story is arguably more resonant than at home. But UK compliance is front-loaded: every product needs a safety assessment and a UK Responsible Person before the first unit sells. There is no cheap signal here. The UK is either a deliberate, funded bet or it is nothing, which is exactly why the strategy conversation has to happen before any plan.'},
+      {h:'Why we would be there', p:'The UK is the biggest international prize on this map. A deep premium beauty market, retailers that actively hunt distinctive founder stories, and a British-Jamaican community where the brand story is arguably more resonant than at home. But UK compliance is front-loaded: every product needs a safety assessment and a UK Responsible Person before the first unit sells. There is no cheap signal here unless a partner such as Thirteen Lune extends its footprint and carries the compliance burden. Otherwise the UK is either a deliberate, funded bet or it is nothing, which is exactly why the strategy conversation has to happen before any plan.'},
       {h:'What success could look like (to debate)', items:[
         'An entry gate, agreed in advance: a US wholesale run rate or retail proof point that makes us credible to a UK buyer. Define the number at the workshop.',
         'If we enter: a named retail partner at launch, sell-through targets for the first two seasons, contribution positive within an agreed window.',
-        'Reusable output either way: safety dossiers built for the UK carry most of the weight for the EU and South Africa later.'
+        'Reusable output either way: safety dossiers built for the UK carry most of the weight for the EU later.'
       ]},
       {h:'Cost and risk', items:[
         'A real program: Responsible Person, safety report per product, notifications, label rework, launch marketing, 20% VAT inside the shelf price.',
@@ -246,7 +305,7 @@ const MARKETS = [
       ]},
       {h:'What would have to be true', items:[
         'The entry gate is met, whatever we set it at.',
-        'A UK retail partner shows genuine interest, not politeness.',
+        'A UK retail partner shows genuine interest, not politeness. Or the Thirteen Lune rail reaches the UK and changes the math entirely.',
         'FY27 can carry the compliance start (Responsible Person plus hero-SKU safety reports) without stretching the core P&L.'
       ]},
       {h:'What it takes, directionally', items:[
@@ -257,35 +316,6 @@ const MARKETS = [
       ]}
     ],
     ask:'What is the entry gate? Name the US proof point that unlocks UK spend, so the decision makes itself when the number arrives.'
-  },
-  {
-    id:'southafrica', name:'South Africa', place:'Watch item, by design', tier:'later', tierLabel:'Watch',
-    lon:28.0, lat:-26.2,
-    card:'The strongest brand-story fit and the weakest near-term P&L case. Stays on the map as a watch item so it never becomes an attention leak.',
-    sections:[
-      {h:'Why we would be there', p:'The why here is brand, not P&L. The story resonates across the African diaspora and South Africa is the continent’s most developed beauty retail market. But the premium segment is small in dollar terms, the currency is volatile, and the logistics are long. A market whose case is brand-led is exactly the kind that quietly eats attention, which is what the cafe taught us. So it stays on the map, and it stays a watch item.'},
-      {h:'What success could look like (to debate)', items:[
-        'Right now, success is discipline: zero spend, zero attention leak, inbound distributor interest logged and nothing more.',
-        'If we ever enter: distributor-led only, with the distributor carrying import, compliance, and retail relationships.',
-        'Sequencing win: UK-grade dossiers would make the paperwork nearly free, so South Africa only makes sense after the UK, never before.'
-      ]},
-      {h:'Cost and risk', items:[
-        'Cash cost today: nothing.',
-        'Distributor margins run deep, typically 30 to 40 percent off wholesale, so the unit economics need honest modeling before any excitement.',
-        'The real risk is the attention creep pattern we already know.'
-      ]},
-      {h:'What would have to be true', items:[
-        'A credible distributor approaches us, not the other way around.',
-        'UK or EU dossiers already exist.',
-        'The core P&L is healthy enough that this is genuinely incremental.'
-      ]},
-      {h:'What it takes, directionally', items:[
-        'Lighter-touch regime than the UK: industry self-regulation tracking EU standards, English labels acceptable.',
-        'Import permits and duties sit with the distributor.',
-        'Heat-sensitive formulas need a supply chain review for long ocean freight.'
-      ]}
-    ],
-    ask:'Confirm South Africa stays watch-only with the guardrails written down, so it cannot become the next quiet attention leak?'
   }
 ];
 
