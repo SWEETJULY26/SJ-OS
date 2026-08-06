@@ -323,3 +323,17 @@ Logistics was worse than "independent axes," which is how the registry had it. `
 **Owner:** Alvin. Skill-side mirror files updated in this pass; `sops/` is where all future SOP edits land first.
 
 **Open:** The annual review for SKN-OPS-001–004 is still owed, just batched for later. No date is set for when "the rest of the SOPs are populated" — that's Alvin's call as he authors them.
+
+---
+
+## 2026-08-06 — Three-Year Plan (2027–2029) built from last year's strategic deck; Sweet July Cafe goes up for a 2027 go/no-go this cycle
+
+**Decision:** Danielle's Q2 check-in (8/5) raised three things for leadership to get more strategic on: the three-year plan, where Sweet July Cafe fits, and getting 2027 on the books for budgeting. Rather than starting from scratch, the 2025 "Strategic Alignment Meeting" Canva deck (North Star, entity consolidation, 2026 Operating Roadmap) got copied to a working file and five new pages added at the front: a cover, a scorecard against the 2025 plan, a revised three-year vision covering 2027–2029, a dedicated Sweet July Cafe strategic-fit page, and a runway/decision-asks page. The original 42 pages stay intact behind it as reference.
+
+**Why:** The old deck's own roadmap slide already flagged "Sweet July Cafe: Revisit in next Leadership" — this is that revisit, and it only lands in the FY27 budget if a go/no-go call happens this cycle. The scorecard exists because the sales roadmap in the old deck predates the Ulta result — Danielle's read in the 8/5 check-in was that Ulta hit a two-year target in under a year, which moves the 2027 sales base case and makes the old $3–3.5M figure worth revisiting upward. The skill/agent system build (RACI at 102 activities, quality gate live, SOPs canonicalized, queue registry, Ops Specialist search underway) is included as counted progress against this plan rather than separate overhead, since that's the direct answer to "build out the AI-assisted skill system" in `context/priorities.md`.
+
+**Alternatives considered:** Build a fresh deck from nothing — rejected, the 2025 deck already has the right frame (North Star, runway, quarterly execution) and rebuilding it loses the paper trail of what's already been decided. Fold the Cafe decision into the sales roadmap slide rather than giving it its own page — rejected, it has no owner and no budget line yet, and burying it inside another slide is how it drifted a full year already.
+
+**Owner:** Alvin.
+
+**Status:** Working copy built and committed in Canva (five new pages, reordered to the front). Runway/burn model still needs rerunning against current numbers (Oakland transition, agency cuts) before the meeting — the deck flags this rather than guessing at updated figures. Sweet July Cafe still has no owner and no budget number; that's the explicit ask of the new page, not something resolved here.
