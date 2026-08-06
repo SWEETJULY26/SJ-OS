@@ -2,10 +2,10 @@
 sop_id: SKN-OPS-010
 title: Supplier Onboarding Procedure
 revision: "1"
-status: draft
+status: ratified
 owner: Alvin Belt, VP of Operations
-effective_date: null
-next_review_date: null
+effective_date: 2026-08-06
+next_review_date: 2027-08-06
 ---
 
 # Supplier Onboarding Procedure
@@ -29,30 +29,43 @@ Applies to any new external supplier of components, materials, finished goods, p
 ## 4. Responsibilities
 
 - **Operator** (Alvin Belt, VP of Operations) — runs intake from the first supplier email, confirms the staged PLM vendor record, and gives final sign-off on activation.
+- **First-contact owner** — whoever the vendor type routes to at step 5.1 (see the routing table): Technical QA Lead, Marketing Manager, Sr. Director Consumer Strategy & Ops, or Operations. Owns the earliest contact and the Proceed/Pass call at intake.
 - **PD / Ops team** — collects compliance documents from the new supplier and tracks them against the checklist in Asana.
 - **VP of Operations** — approves the vendor's move from onboarding to active status.
 
 ## 5. Procedure
 
-### 5.1 Trigger
+### 5.1 First contact and routing (documented, no task yet)
 
-Onboarding starts the moment a new supplier is identified, by any of the following: a referral or introduction email, an inbound RFQ reply, or a broker (for example, a PD contractor) connecting the Operator directly with the vendor's own contact. All three count as onboarding kickoff. A formal RFQ is not a precondition.
+Onboarding starts the moment a new supplier is identified — a referral or introduction email, an inbound RFQ reply, or a broker (for example, a PD contractor) connecting the Operator directly with the vendor's own contact. All three count as onboarding kickoff; a formal RFQ is not a precondition. At this stage the signal is logged against the eventual supplier wiki page only — no Asana task exists yet.
 
-### 5.2 Intake
+Who owns first contact, and therefore who the intake task in §5.2 gets assigned to, is set by vendor type:
 
-The first supplier-side email in the thread, whether it is the introduction itself or the vendor's own reply, is the source record. Capture: company name, primary contact name, email, and phone, any secondary contact, mailing address, website, and vendor type (packaging, filler or ingredient, lab or testing, service, freight, or other).
+| Vendor type | First-contact owner |
+|---|---|
+| Filler, ingredient, component, lab testing | Technical QA Lead |
+| Service (regulatory subtype) | Operations |
+| Service (marketing / agency subtype) | Marketing Manager |
+| Retailer, promotional goods, accessories | Sr. Director Consumer Strategy & Ops |
+| Freight forwarder, customs broker, cross-border partner, all other service | Operations |
 
-### 5.3 PLM vendor record creation
+### 5.2 Vendor intake (task opens, Proceed/Pass gate)
 
-The vendor record is staged by the `outlook-plm-bridge` skill (Flow C) and committed by `plm-assistant`, the sole writer to PLM, into the `vendors` table. Status starts as `onboarding`. The `onboarding_checklist` field initializes with NDA, W9, COI, MSA, and Banking all `false`, plus MSDS `false` only when `vendor_type` is `filler` or `ingredient`. No write happens without the Operator confirming the staged preview first.
+The first supplier-side email in the thread, whether it is the introduction itself or the vendor's own reply, is the source record. An onboarding task opens in the Vendor Onboarding queue, assigned per the §5.1 routing table. Capture: company name, primary contact name, email, and phone, any secondary contact, mailing address, website, and vendor type (filler, component, ingredient, lab testing, promotional goods, accessories, freight forwarder, customs broker, cross-border partner, or other service).
 
-### 5.4 Compliance document collection
+The first-contact owner comments either **Proceed** (advance to compliance doc collection) or **Pass** (close the task — this vendor doesn't move forward). Proceed auto-generates the six compliance-document subtasks.
 
-Progress is tracked as an Asana task in the Vendor Onboarding section, mirroring the same six-item checklist used in PLM. As each document lands (NDA, W9, COI, MSA, Banking, MSDS), the matching Asana subtask is marked complete and `vendors.onboarding_checklist` is updated to match. The jsonb field in PLM is the source of truth; the Asana subtask state mirrors it, not the other way around.
+### 5.3 Compliance document collection
 
-### 5.5 Gate to compliance-active
+Six subtasks track the checklist: NDA, W9, COI, MSA, Banking/ACH (required for every vendor type), and MSDS (required only for filler and ingredient types). As each document lands, the matching subtask is marked complete and `vendors.onboarding_checklist` is updated to match. The jsonb field in PLM is the source of truth; the Asana subtask state mirrors it, not the other way around.
 
-Once NDA and W9 are both on file, the vendor is ready for full activation and the onboarding task moves to the Compliance, Renewals & Disputes section. Any remaining items (COI, MSA, Banking, MSDS where applicable) do not block this move. They stay open on the vendor record and are chased separately.
+### 5.4 Gate to compliance-active
+
+Once NDA and W9 are both on file, the vendor is ready for full activation and the onboarding task moves to the Compliance, Renewals & Disputes section. Any remaining items (COI, MSA, Banking, MSDS where applicable) do not block this move — they stay open on the vendor record and are chased separately. This is the trigger for the PLM vendor record write in §5.5.
+
+### 5.5 PLM vendor record creation
+
+The vendor record is staged and committed by `plm-assistant`, the sole writer to PLM, into the `vendors` table once the §5.4 gate fires. Status starts as `onboarding`. The `onboarding_checklist` field initializes with NDA, W9, COI, MSA, and Banking all `false`, plus MSDS `false` only when vendor type is filler or ingredient. No write happens without the Operator confirming the staged preview first.
 
 ### 5.6 Commercial artifacts
 
@@ -85,4 +98,4 @@ The Operator runs intake, PLM staging, and confirmation. The PD or Ops team coll
 
 | Revision | Date | Description | Author |
 |---|---|---|---|
-| 1 | (unreleased) | Initial draft. | Alvin Belt |
+| 1 | 2026-08-06 | Initial ratification. Added the §5.1 vendor-type first-contact routing table and the Proceed/Pass intake gate, reconciled against purchasing-manager Job 2A–2D; renumbered §5.3–5.5 into correct sequence (doc collection → gate → PLM write). | Alvin Belt |
