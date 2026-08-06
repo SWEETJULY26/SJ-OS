@@ -323,3 +323,23 @@ Logistics was worse than "independent axes," which is how the registry had it. `
 **Owner:** Alvin. Skill-side mirror files updated in this pass; `sops/` is where all future SOP edits land first.
 
 **Open:** The annual review for SKN-OPS-001–004 is still owed, just batched for later. No date is set for when "the rest of the SOPs are populated" — that's Alvin's call as he authors them.
+
+---
+
+## 2026-08-06 — 13 new SOPs ratified for PD, Ops, and DTC/E-comm
+
+**Decision:** Alvin's call to populate the rest of the SOP set. Same pattern as SKN-OPS-006 through 010 — write down the procedure a skill already runs, ratify it in place — extended outside Quality for the first time, across three domains:
+
+- **PD:** SKN-OPS-011 (Formula Development Stage-Gate & IL Review Gate), SKN-OPS-012 (PD Readiness → PO Request Handoff, joint with Purchasing).
+- **Ops:** SKN-OPS-010 (Vendor Onboarding, previously draft — ratified in this pass with its first-contact routing table filled in from purchasing-manager), SKN-OPS-013 (PO Lifecycle), SKN-OPS-014 (Receipt Discrepancy Investigation), SKN-OPS-015 (Vendor Invoice Cost Classification & Routing), SKN-OPS-016 (Receiving & Batch Creation), SKN-OPS-017 (Inventory Adjustment, Write-Off, and Return Disposition), SKN-OPS-018 (Monthly S&OP Run), SKN-OPS-019 (Inbound Shipment Receipt & Fault-Attribution), SKN-OPS-020 (Retailer Outbound ASN & Routing Compliance), SKN-OPS-021 (International Outbound DTC Compliance).
+- **DTC/E-comm:** SKN-OPS-022 (DTC Order Exception Routing), SKN-OPS-023 (Pre-Ship OOS Hold Sync).
+
+**Numbering call.** There is no non-Quality SOP sequence anywhere in the repo, and SKN-OPS-010 already crossed into Purchasing before this pass, so all 13 new SOPs took the next open slots in the single existing SKN-OPS-NNN sequence rather than starting a second prefix. Next open slot is 024.
+
+**Why this scope, not more.** Each skill surveyed (asana-pd-manager, purchasing-manager, inventory-manager, supply-demand-planner, logistics-manager, oc3pl-order-manager) had a mix of genuinely governed procedures — staged workflows with roles, gates, and defined states — and thinner read/report jobs that don't carry the shape of a procedure a person is required to follow. Only the governed ones got a SOP; the read-side jobs (position keeping, sourcing/RFQ tracking, vendor performance scorecards, the daily fulfillment KPI log, customs watch, the weekly digest) stayed as skill behavior, not procedure.
+
+**What didn't happen.** None of the six PD/Ops/DTC skills got a dedicated skill-side mirror reference file the way the Quality skills have (`references/skn-ops-*.md`). Their working procedure text stayed inline in each `SKILL.md` — the `sops/` files are migrated from that inline text, and the `quality-manager` catalog cites the inline location rather than a mirror path. Externalizing each skill's mirror file is a follow-on, not done here.
+
+**Owner:** Alvin. `quality-manager/references/sop-catalog.md` carries all 23 SOPs now, with an open item flagging that a Quality-owned catalog holding non-Quality SOPs is a structural question, not a settled one.
+
+**Open:** Same annual-review deferral as the 2026-08-04 decision now applies to this batch too — SKN-OPS-011–023 join the "run once the full set is populated" review, not a per-SOP review on next review date. Whether a second catalog should exist for non-Quality SOPs, and whether the six skills should get dedicated mirror files, are both unresolved and noted in the catalog's own Open Items.
