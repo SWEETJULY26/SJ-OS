@@ -377,3 +377,18 @@ Logistics was worse than "independent axes," which is how the registry had it. `
 **Owner:** Alvin on the structure. quality-manager on `sop-program.md` and its own catalog; regulatory-manager, asana-pd-manager, and sjs-ops-system each on their own catalog going forward.
 
 **Open:** The `ops-manager` umbrella skill this flags as the real fix doesn't exist and isn't being built today. `sjs-ops-system` also has an apparent unaddressed duplicate, `ac-brands-ops-system` — same pattern PD already resolved (`ac-brands-pd-system` retired in favor of `sjs-pd-system`) — noticed in passing, not acted on here.
+
+---
+
+## 2026-08-06 (later still) — No `ops-manager` skill; `sjs-ops-system` is the settled Ops home; `ac-brands-ops-system` retired
+
+**Decision:** Two of the open items from the SOP-catalog split, closed the same day.
+
+1. **No `ops-manager` umbrella skill.** `sjs-ops-system` stays the permanent home for the Ops SOP catalog — not a stand-in awaiting a proper umbrella skill, the settled answer.
+2. **`ac-brands-ops-system` retired.** Same pattern as the 2026-07-20 `ac-brands-pd-system` → `sjs-pd-system` retirement: `ac-brands-ops-system` was a strictly older, less complete duplicate of `sjs-ops-system` (377 lines vs. 396; missing the international outbound DTC flow, the task-write-contract note, and the SOP catalog reference; stale on System B's build status). Nothing worth preserving. Removed entirely. Repointed its only two live references — `ac-brands-opportunity-assessment/SKILL.md` (two spots) and its `7-domain-methodology.md` — to `sjs-ops-system`. Unlike the PD case, no live scheduled Routine used `ac-brands-ops-system` as an entry point, so there was no Routine repointing to do.
+
+**Why:** Alvin's call, direct: Ops doesn't need a dedicated umbrella skill the way Quality and Regulatory have one — `sjs-ops-system` already spans the five Ops skills and can hold the catalog permanently. That removes the reason to keep `ac-brands-ops-system` around at all, so it goes the same way its PD counterpart did.
+
+**Owner:** Alvin. `sjs-ops-system/references/sop-catalog.md` and `SKILL.md` updated to state this as settled rather than provisional.
+
+**Open:** None — this closes both items flagged earlier today.

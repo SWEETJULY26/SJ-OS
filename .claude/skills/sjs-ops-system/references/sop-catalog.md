@@ -10,7 +10,7 @@ The runtime source of truth for which revision of an Ops SOP is current, across 
 
 **This catalog covers Ops's own SOPs only.** Quality, Regulatory, and PD each keep their own — see `quality-manager/references/sop-program.md` for the full catalogs-by-function map, and for the ratification protocol, annual review protocol, and numbering policy shared across all four. This file holds Ops's SOP rows and nothing else.
 
-**Why this lives in `sjs-ops-system` rather than an Ops umbrella skill.** Quality and Regulatory each have an umbrella skill that already holds canonical cross-skill state — `quality-manager` and `regulatory-manager` — and PD's core engine `asana-pd-manager` fills the same role for PD. Ops has no equivalent: `purchasing-manager`, `inventory-manager`, `supply-demand-planner`, `logistics-manager`, and `oc3pl-order-manager` are five peer skills with no umbrella, and `sjs-ops-system` (this router, alongside its apparent near-duplicate `ac-brands-ops-system`) was built as a thin, read-only router with no canonical data of its own. Putting the catalog here is the closest fit available today, not a perfect one. If an `ops-manager` umbrella skill is ever built to mirror `quality-manager`/`regulatory-manager` in shape, this catalog should move there.
+**Why this lives in `sjs-ops-system`.** Quality and Regulatory each have an umbrella skill that already holds canonical cross-skill state — `quality-manager` and `regulatory-manager` — and PD's core engine `asana-pd-manager` fills the same role for PD. Ops has five peer skills (`purchasing-manager`, `inventory-manager`, `supply-demand-planner`, `logistics-manager`, `oc3pl-order-manager`) and no single skill plays the P2P-spine role `asana-pd-manager` plays for PD, so `sjs-ops-system` — the one router that already spans all five — holds this catalog instead. Confirmed with Alvin 2026-08-06: no dedicated `ops-manager` umbrella skill is being built. This is the settled home, not a stand-in.
 
 This catalog is new as of 2026-08-06, created alongside the first PD/Ops/DTC SOP batch. Before this, none of the five Ops skills had a ratified SOP or a catalog.
 
@@ -50,7 +50,6 @@ No pinned-task rendering exists for this catalog yet — there's no single Ops-w
 
 ## 3. Open items (Ops-specific)
 
-- **No Ops umbrella skill.** This catalog's home in `sjs-ops-system` is a compromise — see the explanation above. Building an `ops-manager` skill that mirrors `quality-manager`/`regulatory-manager` in shape (cross-skill rollup, this catalog, a ratification queue) is the real fix, not done here.
 - **No dedicated skill-side mirror files.** All thirteen SOPs' working text lives inline in five different `SKILL.md` bodies. Externalizing each into its own `references/skn-ops-*.md`, matching the Quality pattern, is a follow-on decision.
 - **No Asana pinned-task rendering** (see §2).
 
