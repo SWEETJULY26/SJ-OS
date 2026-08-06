@@ -59,7 +59,7 @@ output on its own. The skill's job is to be the integration layer.
 - Existing-product margin questions → route to `sjs-margin-architect` family
 - Supplier or PD execution questions → route to `sjs-pd-system`
 - Recurring competitive monitoring → route to `sjs-comp-intel`
-- Operational decisions → route to `ac-brands-ops-system`
+- Operational decisions → route to `sjs-ops-system`
 - Brand-architecture decisions for products already in development → future
   sibling skill (`ac-brands-brand-architecture`, not yet built)
 
@@ -187,7 +187,7 @@ actively invoke them:
 
 - `sjs-pd-system` and child skills — for current-state PD context when
   SJS is the host brand
-- `ac-brands-ops-system` and child skills — for current-state Ops context
+- `sjs-ops-system` and child skills — for current-state Ops context
 - `sjs-margin-architect` family — for framework rules when SJS is the host
 - `sjs-comp-intel` and `sjs-retail-intel` — for current competitive context
 - Web search and web fetch — primary research tools

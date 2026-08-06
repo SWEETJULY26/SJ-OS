@@ -174,7 +174,7 @@ fit existing ops infrastructure or require new infrastructure?
 
 **Where to look:**
 
-- Light-touch reference to `ac-brands-ops-system` for current-state
+- Light-touch reference to `sjs-ops-system` for current-state
   Ops context
 - Retailer planogram observation (Ulta, Sephora, Target — what's on which
   shelf, what's not)
