@@ -379,6 +379,7 @@ See `references/trigger-phrases.md` for the grouped trigger library.
 ## Reference files
 
 - `references/role-map.md` — current role-holders for Operator, Reg Lead, External Reg Partner, QA Lead, Voice of Customer; canonical System C role-map home
+- `references/sop-catalog.md` — Regulatory's own ratified SOP catalog (SKN-OPS-008, 009), new as of 2026-08-06 (split out of quality-manager's combined catalog). The shared ratification/annual-review/numbering process it follows lives in `quality-manager/references/sop-program.md`.
 - `references/trigger-phrases.md` — grouped triggers by intent (intake/fan-out, rollup, registrations, attestation cadence, Pedrero liaison, ayesha seam, license audit, status)
 - `references/pedrero-contacts.md` — canonical Pedrero contact card (Amy Pedrero principal, Heather Folkes and Teona Bebia secondary); sub-skill role-maps reference this file
 - `references/sharepoint-pointer.md` — SharePoint regulatory folder structure pointer at `Sweet July/Regulatory/`; v6.1/v6.2 attachment migration plan

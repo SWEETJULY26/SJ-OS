@@ -363,6 +363,13 @@ and references files — the router does not duplicate them.
 
 ## Reference pointers
 
+- `references/sop-catalog.md` — Ops's own ratified SOP catalog (SKN-OPS-010,
+  012–023), covering Purchasing, Inventory, Supply & Demand Planning,
+  Logistics, and DTC/OC3PL. This is the first canonical data this router
+  holds — see that file's own note on why it lives here rather than in a
+  dedicated Ops umbrella skill, which doesn't exist yet. The shared
+  ratification/annual-review/numbering process it follows lives in
+  `quality-manager/references/sop-program.md`.
 - `purchasing-manager/SKILL.md` — full purchase-to-pay job list, Status
   field options, vendor and PO write patterns
 - `inventory-manager/SKILL.md` — position-keeping, receiving, recon, FEFO,

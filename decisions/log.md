@@ -343,3 +343,24 @@ Logistics was worse than "independent axes," which is how the registry had it. `
 **Owner:** Alvin. `quality-manager/references/sop-catalog.md` carries all 23 SOPs now, with an open item flagging that a Quality-owned catalog holding non-Quality SOPs is a structural question, not a settled one.
 
 **Open:** Same annual-review deferral as the 2026-08-04 decision now applies to this batch too — SKN-OPS-011–023 join the "run once the full set is populated" review, not a per-SOP review on next review date. Whether a second catalog should exist for non-Quality SOPs, and whether the six skills should get dedicated mirror files, are both unresolved and noted in the catalog's own Open Items.
+
+---
+
+## 2026-08-06 (later same day) — Quality owns the SOP process; each function gets its own catalog
+
+**Decision:** Split the single combined SOP catalog into four, one per function, and pull the shared process (ratification protocol, annual review protocol, numbering policy) out into its own file that Quality owns on everyone's behalf.
+
+1. **Four catalogs, one per function.** `quality-manager/references/sop-catalog.md` now lists only Quality's own SOPs (SKN-OPS-001–007). Three new catalogs: `regulatory-manager/references/sop-catalog.md` (008–009), `asana-pd-manager/references/sop-catalog.md` (011–012), `sjs-ops-system/references/sop-catalog.md` (010, 012–023).
+2. **One shared process, in a new file Quality owns.** `quality-manager/references/sop-program.md` now holds the ratification protocol, annual review protocol, and numbering policy — the same content that used to live inside the combined catalog — plus the catalogs-by-function map. All four catalogs point here instead of restating the process.
+3. **One numbering sequence, not four.** SKN-OPS-NNN stays a single company-wide sequence regardless of which catalog a number lands in. Whoever ratifies next checks `sop-program.md` for the true next-open slot (024), not just their own catalog — the two-functions-both-grab-024 collision is the exact risk this rule exists to prevent.
+4. **SKN-OPS-012 is deliberately listed twice.** It's the one SOP with two real owners (PD gates readiness, Purchasing gates the order), so it appears in both the PD and Ops catalogs, cross-referenced. Every other SOP number lives in exactly one catalog.
+
+**Why.** Alvin's framing: Quality should own the SOP *management process* company-wide, but each function should own its own catalog of its own SOPs. The single combined catalog from earlier the same day conflated the two — a Quality-owned file listing everyone's SOPs works fine at 10 rows, but doesn't scale and doesn't put ownership where it belongs as more Ops and PD SOPs get authored (which is imminent — Alvin's already planning more).
+
+**The Ops catalog's home is a compromise, stated as one.** Quality and Regulatory each have an umbrella skill that already holds canonical state (`quality-manager`, `regulatory-manager`), and PD's core engine `asana-pd-manager` fills the same role for PD. Ops has no equivalent — five peer skills (purchasing-manager, inventory-manager, supply-demand-planner, logistics-manager, oc3pl-order-manager) and two thin routers (`sjs-ops-system`, `ac-brands-ops-system`) with no canonical-data-holding skill among them. The Ops catalog landed in `sjs-ops-system` as the closest fit, not a resolved architecture — flagged explicitly in that catalog's own Open Items as needing an `ops-manager` umbrella skill eventually, mirroring `quality-manager`/`regulatory-manager` in shape.
+
+**Alternatives considered:** Keep one combined catalog and just tell people who owns which rows — rejected, that's the status quo from earlier today and it's what prompted this decision; a "catalog" with contributor-notes-by-domain isn't the same thing as catalog ownership. Split DTC/E-comm out from Ops as a fifth, separate catalog — considered per how the original authoring request was framed (PD, Ops, DTC/E-comm as three buckets), rejected in favor of one combined Ops catalog since no boundary between Ops and DTC exists anywhere else in the skill system (both route through the same `sjs-ops-system` router, same System 5 grouping).
+
+**Owner:** Alvin on the structure. quality-manager on `sop-program.md` and its own catalog; regulatory-manager, asana-pd-manager, and sjs-ops-system each on their own catalog going forward.
+
+**Open:** The `ops-manager` umbrella skill this flags as the real fix doesn't exist and isn't being built today. `sjs-ops-system` also has an apparent unaddressed duplicate, `ac-brands-ops-system` — same pattern PD already resolved (`ac-brands-pd-system` retired in favor of `sjs-pd-system`) — noticed in passing, not acted on here.
