@@ -14,15 +14,32 @@ Three artifacts, one dataset:
 - **`AC-Brands-RACI.html`**: the team-facing version, and since v7 an editing surface
   as well. Position-led columns with status chips, collapsible function sections,
   click-a-position filtering, and the two open seats shown as columns with transition
-  arrows on the rows they absorb. Sources are behind a per-row disclosure so the team
-  isn't reading file paths. Self-contained: brand fonts and all styling are inlined,
-  no external requests. See Editing below.
+  arrows on the rows they absorb. Clicking an activity opens a breakdown of what the work
+  is, with an example and the source. Self-contained: brand fonts and all styling are
+  inlined, no external requests. See Activity breakdowns and Editing below.
 - **`AC-Brands-RACI.xlsx`**: the working tool. `RACI` carries a two-row header
   (position code, then holder) plus `Transitions to`, `Source` and `Notes`.
   `Analysis` has live COUNTIF formulas over Sheet 1 including projected A and R
   books once both seats are filled. `Gaps` lists open seats with salary bands,
   unowned functions, single points of failure and open items.
 - **`AC-Brands-RACI-summary.md`**: the one-pager for Danielle and Nicole.
+
+### Activity breakdowns
+
+Clicking an activity opens a side drawer with five things: a plain description of what
+the work actually is, a worked example using real SKUs and vendors, who holds each
+letter with names and titles, why it sits where it does, and the `file:line` source.
+On mobile the same panel arrives as a bottom sheet. Escape, the scrim and the Close
+button all dismiss it, and focus returns to the activity you came from.
+
+The text lives in `activity_notes.py`, keyed by exact activity string, with a `what`
+and an `example` per row. All 102 rows are covered and `verify.py` fails the build if
+any row loses its breakdown or if a breakdown exists with no matching row. A row added
+on the page has no entry, so its drawer says so rather than showing an empty section.
+
+This replaced the per-row source disclosure, which showed a file path and nothing else.
+The matrix says who owns a thing; the drawer is what makes it legible to somebody who
+was not in the meeting where it was named.
 
 ### Editing
 
@@ -195,6 +212,9 @@ the two job descriptions attached to it. Eleven rows rest on those rather than o
 anything in this repo; `verify.py` reports them separately so the distinction stays
 visible.
 
+- `activity_notes.py`: the per-activity `what` and `example` shown in the drawer,
+  keyed by exact activity string. Edit here when an activity is renamed, or the
+  breakdown stops matching its row and `verify.py` will say so.
 - `raci_rows.py`: the row data and the position roster. One tuple per activity:
   function, activity, A, R, consulted, informed, transition, source, notes. Edit
   here, not in the spreadsheet or the HTML.
@@ -207,7 +227,7 @@ visible.
 - `transform_v2.py` through `transform_v6.py`: the migration chain. Kept for the audit trail, so it shows every
   A/R reassignment and which rows were added, rather than the v2 data appearing
   from nowhere.
-- `verify.py`: seven checks. No departed-employee references in any cell of any
+- `verify.py`: eight checks. No departed-employee references in any cell of any
   sheet or in the summary or the HTML; exactly one A and one R per row; every cited
   `file:line` resolves in this repo; every repo citation carries ownership language;
   no open seat holds A or R and no partner organisation holds A, since a vacancy cannot be

@@ -75,6 +75,21 @@ Keep it terse. Future-you will thank present-you for capturing the *why*, not ju
 **Status:** All four drift instances fixed 2026-07-29. Full findings in `decisions/wiki-layer-audit-2026-07-29.md`. Two items left open there — Job 0 (the bridges' wiki write-back) has not fired since 2026-05-26, leaving 123 of 133 pages as untouched seed; and `Bridge-and-System-Audit-2026-05-26.md` is cited from three files but exists nowhere, most likely lost in the 2026-07-19 consolidation.
 
 ---
+## 2026-08-06 — Every activity carries a description and a worked example
+
+**Decision:** Clicking an activity on the RACI page opens a drawer describing what the work actually is, with a concrete example, the full A/R/C/I list by name and title, why it sits there, and the source citation. All 102 activities are covered. The text lives in `deliverables/activity_notes.py` and `verify.py` fails if a row loses its breakdown or a breakdown loses its row.
+
+**Why:** Alvin's call, and the gap was real. A RACI answers who owns a thing and says nothing about what the thing is. Half the rows on this matrix are named in vocabulary that only makes sense if you were in the room: reformulation claim bridge, UBM cohort positioning, three-way reconciliation, OOS versus OOT. Handing that to Danielle and Nicole, and later to two new hires, meant handing over a document that needs a translator. The examples matter more than the definitions, because "acknowledgement variance" becomes obvious the moment you read a case where the vendor confirms a different price and date than you ordered.
+
+It also makes the matrix usable as an onboarding artifact rather than only a resourcing one. The two specialists arrive into 34 transitioning rows, and this is what tells them what those rows mean.
+
+**Alternatives considered:** Tooltips on hover. Rejected, no room for an example and useless on touch. A separate glossary document. Rejected, it separates the definition from the assignment so both go stale independently. Generating descriptions from the skill files at build time. Rejected, the skills describe how the automation works rather than what the activity is, and several activities have no skill at all; the marketing, wholesale and web rows are exactly the ones that most needed explaining.
+
+**Status:** Shipped 2026-08-06. The drawer replaced the per-row source disclosure, which showed a file path and nothing else. Verified inside a sandboxed iframe: 102 triggers, sections render in order, focus moves to Close on open and returns to the activity on dismiss, Escape and scrim both close, tab focus stays in the panel, body scroll locks, mobile renders as a bottom sheet, edit mode keeps the activity as editable text rather than a trigger, and a hand-added row says it has no breakdown yet. `PUB["version"]` stayed at v7 so local edits survived. All eight verify checks pass.
+
+**Open:** The breakdowns are written from the repo and from how the work actually runs, so they are mine rather than sourced to a procedure. Worth Nicole reading the Quality and Regulatory ones and Soraya the Marketing ones, since a wrong description is more misleading than a missing one.
+
+---
 ## 2026-08-05 — No browser modals in the artifact frame
 
 **Decision:** The RACI page uses no `confirm`, `prompt` or `alert`. Destructive actions act immediately and offer Undo on the toast; anything that needed text input uses an inline field. `deliverables/README.md` records the rule so a future edit does not reintroduce them.

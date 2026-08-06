@@ -92,6 +92,33 @@ if bad:
 if n != len(ROWS):
     print(f"  FAIL - counted {n} rows, expected {len(ROWS)}"); fail += 1
 
+# ---------- 2b. every activity has a breakdown
+hdr("2b. Every activity has a What-it-is and an example")
+from activity_notes import INFO as ACT_INFO
+acts = [r[1] for r in ROWS]
+no_what = [a for a in acts if not ACT_INFO.get(a, {}).get("what")]
+no_eg = [a for a in acts if not ACT_INFO.get(a, {}).get("example")]
+orphan = [k for k in ACT_INFO if k not in acts]
+print(f"  activities: {len(acts)} | breakdowns: {len(ACT_INFO)}")
+for a in no_what:
+    print(f"   FAIL - no 'what' for: {a[:70]}")
+for a in no_eg:
+    print(f"   FAIL - no example for: {a[:70]}")
+for a in orphan:
+    print(f"   FAIL - breakdown with no matching row: {a[:70]}")
+if no_what or no_eg or orphan:
+    fail += 1
+else:
+    print("  PASS - all activities described, no orphaned breakdowns")
+
+# the departed employee must not reappear via the breakdowns
+bad_name = [a for a, v in ACT_INFO.items()
+            if "ciarra" in (v.get("what", "") + v.get("example", "")).lower()]
+if bad_name:
+    print(f"   FAIL - departed employee named in {len(bad_name)} breakdowns"); fail += 1
+else:
+    print("  PASS - no departed-employee references in the breakdowns")
+
 # ---------- 3. every source resolves to a real file:line
 hdr("3. Source resolution - read each file:line back out of SJ-OS")
 CITE = re.compile(r"([A-Za-z0-9_./-]+\.md):([0-9]+(?:[,-][0-9]+)*)")

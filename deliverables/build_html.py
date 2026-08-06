@@ -1,6 +1,7 @@
 import sys, os, io, json, html
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from raci_rows import ROWS, POSITIONS
+from activity_notes import INFO
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.expanduser("~/Documents/AC-Brands-RACI.html")
@@ -26,7 +27,9 @@ PUB = {
     "functions": FUNCS,
     "rows": [{"f": r[0], "act": r[1], "A": ([r[2]] if r[2] else []), "R": r[3],
               "C": list(r[4]), "I": list(r[5]),
-              "t": r[6] or "", "src": r[7], "n": r[8]}
+              "t": r[6] or "", "src": r[7], "n": r[8],
+              "what": INFO.get(r[1], {}).get("what", ""),
+              "eg": INFO.get(r[1], {}).get("example", "")}
              for r in ROWS],
 }
 
@@ -179,23 +182,62 @@ td.col-dim .mk{opacity:.26}
 .acttext[contenteditable="true"]{outline:1px dashed var(--rule-strong);
   outline-offset:3px;min-height:1.4em}
 .rowmsg{display:block;font-size:.68rem;color:var(--warn);margin-top:.2rem}
-.srcbtn{background:none;border:0;padding:0;font:inherit;font-size:.68rem;
-  color:var(--ink-faint);cursor:pointer;text-decoration:underline;
-  text-decoration-style:dotted;text-underline-offset:2px;opacity:0;
-  transition:opacity .12s ease}
-tbody tr:hover .srcbtn,tbody tr:focus-within .srcbtn,
-.srcbtn[aria-expanded="true"]{opacity:1}
-@media (hover:none){.srcbtn{opacity:1}}
-.srcbtn:hover{color:var(--ink-soft)}
-.srcbtn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-tr.srcrow td{padding:0 1rem .7rem 0;text-align:left;
-  border-bottom:1px solid var(--rule);position:sticky;left:0;
-  background:var(--ground)}
-tr.srcrow .srcwrap{font-size:var(--step--1);color:var(--ink-soft);
-  line-height:1.5;max-width:78ch;display:flex;flex-direction:column;gap:.3rem}
-tr.srcrow code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-  font-size:.72rem;color:var(--ink-faint);word-break:break-word}
 tr[hidden]{display:none}
+/* the activity opens a breakdown */
+.actbtn{background:none;border:0;padding:0;margin:0;font:inherit;text-align:left;
+  color:var(--ink);cursor:pointer;width:100%;line-height:1.4;
+  text-decoration:underline;text-decoration-color:transparent;
+  text-decoration-thickness:1px;text-underline-offset:3px;
+  transition:text-decoration-color .12s ease}
+.actbtn:hover{text-decoration-color:var(--rule-strong)}
+.actbtn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.cardbtn{background:none;border:0;padding:0;font:inherit;font-weight:600;
+  text-align:left;color:var(--ink);cursor:pointer}
+.cardbtn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(20,15,12,.42);z-index:30;
+  opacity:0;transition:opacity .18s ease}
+.scrim.on{opacity:1}
+body.drawer-open{overflow:hidden}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(30rem,100vw);
+  background:var(--raised);border-left:1px solid var(--rule-strong);z-index:31;
+  display:flex;flex-direction:column;transform:translateX(100%);
+  transition:transform .18s ease;box-shadow:-12px 0 32px rgba(20,15,12,.14)}
+.drawer.on{transform:translateX(0)}
+.drawer-close{align-self:flex-end;margin:.85rem .95rem 0;font:inherit;
+  font-size:var(--step--1);font-weight:600;background:transparent;
+  color:var(--ink-soft);border:1px solid var(--rule-strong);border-radius:2px;
+  padding:.3rem .7rem;cursor:pointer;flex:none}
+.drawer-close:hover{color:var(--ink);border-color:var(--ink-soft)}
+.drawer-close:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.drawer-body{overflow-y:auto;padding:.4rem clamp(1.1rem,3vw,1.6rem) 2.5rem;
+  display:flex;flex-direction:column;gap:1.2rem}
+.drawer-body h3{font-size:var(--step-1);line-height:1.25}
+.drawer-body .eyebrow{margin-bottom:-.75rem}
+.d-sec{display:flex;flex-direction:column;gap:.4rem}
+.d-sec h4{font-size:.68rem;text-transform:uppercase;letter-spacing:.11em;
+  font-weight:600;color:var(--ink-faint);margin:0}
+.d-sec p{font-size:var(--step--1);line-height:1.6;color:var(--ink-soft);max-width:46ch}
+.d-sec p.eg{border-left:2px solid var(--soursop);padding-left:.7rem;color:var(--ink)}
+.d-sec p.muted{color:var(--ink-faint)}
+.d-sec p.warn-line{color:var(--warn);font-weight:600}
+.d-sec code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:.7rem;color:var(--ink-faint);word-break:break-word;line-height:1.5}
+.who-wrap{display:flex;flex-direction:column;gap:.5rem}
+.who-row{display:grid;grid-template-columns:6.5rem 1fr;gap:.5rem;
+  font-size:var(--step--1);align-items:baseline}
+.who-lbl{color:var(--ink-faint);font-size:.68rem;text-transform:uppercase;
+  letter-spacing:.08em}
+.who-names{display:flex;flex-direction:column;gap:.25rem}
+.who-chip{color:var(--ink-soft);line-height:1.35}
+.who-chip b{color:var(--ink);font-weight:600}
+@media (max-width:700px){
+  .drawer{width:100vw;border-left:0;top:auto;height:88vh;
+    border-top-left-radius:6px;border-top-right-radius:6px;
+    transform:translateY(100%)}
+  .drawer.on{transform:translateY(0)}
+}
+@media (prefers-reduced-motion:reduce){.drawer,.scrim{transition:none}}
 /* editable cells */
 .cellbtn{width:100%;min-height:1.9rem;background:none;border:0;padding:0;
   font:inherit;cursor:pointer;display:grid;place-items:center;border-radius:2px}
@@ -513,7 +555,15 @@ JS = r"""
       if(editing && (!row.A.length || !row.R)) tr.className = 'flag';
 
       var act = el('td','act');
-      var txt = el('span','acttext', row.act);
+      var txt;
+      if(!editing){
+        txt = el('button','acttext actbtn', row.act);
+        txt.type = 'button';
+        txt.setAttribute('aria-label', row.act + '. Open the breakdown.');
+        txt.addEventListener('click', function(){ openDrawer(row, txt); });
+      } else {
+        txt = el('span','acttext', row.act);
+      }
       if(editing){
         txt.contentEditable = 'true';
         txt.addEventListener('blur', function(){
@@ -533,14 +583,6 @@ JS = r"""
         if(!row.A.length) msgs.push('no one accountable');
         if(!row.R) msgs.push('no one doing the work');
         if(msgs.length) act.appendChild(el('span','rowmsg', msgs.join('; ')));
-      } else {
-        var sb = el('button','srcbtn','source');
-        sb.type='button';
-        sb.setAttribute('data-src', String(idx));
-        sb.setAttribute('aria-expanded','false');
-        sb.setAttribute('aria-controls','src'+idx);
-        act.appendChild(document.createElement('br'));
-        act.appendChild(sb);
       }
       tr.appendChild(act);
 
@@ -576,15 +618,6 @@ JS = r"""
       if(editing) tr.appendChild(rowTools(row, fn));
       body.appendChild(tr);
 
-      if(!editing){
-        var sr = el('tr','srcrow');
-        sr.id = 'src'+idx; sr.hidden = true;
-        var std = el('td'); std.colSpan = D.positions.length + 1;
-        var w = el('div','srcwrap');
-        w.appendChild(el('span', null, row.n));
-        w.appendChild(el('code', null, row.src));
-        std.appendChild(w); sr.appendChild(std); body.appendChild(sr);
-      }
     });
     tb.appendChild(body);
     sc.appendChild(tb);
@@ -680,8 +713,15 @@ JS = r"""
     var c = el('div','cards');
     frows.forEach(function(row){
       var card = el('div','card');
-      var st = el('strong', null, row.act);
-      card.appendChild(st);
+      if(!editing){
+        var cb = el('button','cardbtn', row.act);
+        cb.type = 'button';
+        cb.setAttribute('aria-label', row.act + '. Open the breakdown.');
+        cb.addEventListener('click', function(){ openDrawer(row, cb); });
+        card.appendChild(cb);
+      } else {
+        card.appendChild(el('strong', null, row.act));
+      }
       var who = el('div','who');
       var wa = el('span'); wa.appendChild(mark(row.A.length?'A':'', false));
       wa.appendChild(document.createTextNode(row.A.length
@@ -769,9 +809,131 @@ JS = r"""
   }
 
   function render(){
+    closeDrawer();
     document.body.classList.toggle('editing', editing);
     renderPositions(); renderMatrix(); metaLine(); banner(); applyFilter();
   }
+
+  // ---- drawer: what the activity actually is
+  var drawer   = document.getElementById('drawer');
+  var scrim    = document.getElementById('scrim');
+  var dBody    = document.getElementById('drawerBody');
+  var dClose   = document.getElementById('drawerClose');
+  var lastFocus = null;
+
+  function whoLine(label, ids){
+    if(!ids.length) return null;
+    var row = el('div','who-row');
+    row.appendChild(el('span','who-lbl', label));
+    var names = el('span','who-names');
+    ids.forEach(function(id, i){
+      var p = pos(id);
+      var chip = el('span','who-chip');
+      chip.appendChild(el('b', null, p ? p.name : id));
+      if(p) chip.appendChild(document.createTextNode(' ' + p.title));
+      names.appendChild(chip);
+    });
+    row.appendChild(names);
+    return row;
+  }
+
+  function openDrawer(row, trigger){
+    lastFocus = trigger || null;
+    dBody.textContent = '';
+
+    dBody.appendChild(el('p','eyebrow', row.f));
+    dBody.appendChild(el('h3', null, row.act));
+
+    if(row.what){
+      var s1 = el('section','d-sec');
+      s1.appendChild(el('h4', null, 'What it is'));
+      s1.appendChild(el('p', null, row.what));
+      dBody.appendChild(s1);
+    }
+    if(row.eg){
+      var s2 = el('section','d-sec');
+      s2.appendChild(el('h4', null, 'For example'));
+      s2.appendChild(el('p','eg', row.eg));
+      dBody.appendChild(s2);
+    }
+    if(!row.what && !row.eg){
+      var s0 = el('section','d-sec');
+      s0.appendChild(el('p','muted',
+        'No breakdown recorded for this activity yet. It was probably added on the page.'));
+      dBody.appendChild(s0);
+    }
+
+    var s3 = el('section','d-sec');
+    s3.appendChild(el('h4', null, 'Who'));
+    var whoWrap = el('div','who-wrap');
+    var lines = [
+      whoLine('Accountable', row.A),
+      whoLine('Responsible', row.R ? [row.R] : []),
+      whoLine('Consulted', row.C),
+      whoLine('Informed', row.I)
+    ];
+    lines.forEach(function(l){ if(l) whoWrap.appendChild(l); });
+    if(!row.A.length || !row.R){
+      whoWrap.appendChild(el('p','warn-line',
+        (!row.A.length ? 'Nobody is accountable for this yet. ' : '') +
+        (!row.R ? 'Nobody is doing the work yet.' : '')));
+    }
+    if(row.R && row.A.indexOf(row.R) > -1){
+      whoWrap.appendChild(el('p','muted',
+        'The same position answers for this and does it, so there is no second pair of eyes.'));
+    }
+    if(row.t){
+      var p2 = pos(row.t);
+      whoWrap.appendChild(el('p','muted',
+        'Moves to ' + (p2 ? p2.title : row.t) + ' once that seat is filled.'));
+    }
+    s3.appendChild(whoWrap);
+    dBody.appendChild(s3);
+
+    if(row.n){
+      var s4 = el('section','d-sec');
+      s4.appendChild(el('h4', null, 'Why it sits here'));
+      s4.appendChild(el('p', null, row.n));
+      dBody.appendChild(s4);
+    }
+    if(row.src){
+      var s5 = el('section','d-sec');
+      s5.appendChild(el('h4', null, 'Source'));
+      s5.appendChild(el('code', null, row.src));
+      dBody.appendChild(s5);
+    }
+
+    drawer.hidden = false; scrim.hidden = false;
+    document.body.classList.add('drawer-open');
+    requestAnimationFrame(function(){
+      drawer.classList.add('on'); scrim.classList.add('on');
+      dClose.focus();
+    });
+  }
+
+  function closeDrawer(){
+    if(drawer.hidden) return;
+    drawer.classList.remove('on'); scrim.classList.remove('on');
+    document.body.classList.remove('drawer-open');
+    setTimeout(function(){ drawer.hidden = true; scrim.hidden = true; }, 180);
+    if(lastFocus && document.contains(lastFocus)) lastFocus.focus();
+    lastFocus = null;
+  }
+
+  dClose.addEventListener('click', closeDrawer);
+  scrim.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', function(ev){
+    if(ev.key === 'Escape' && !drawer.hidden){ ev.preventDefault(); closeDrawer(); }
+  });
+  // keep tab focus inside the panel while it is open
+  drawer.addEventListener('keydown', function(ev){
+    if(ev.key !== 'Tab') return;
+    var f = drawer.querySelectorAll('button, [href], input, [tabindex]:not([tabindex="-1"])');
+    if(!f.length) return;
+    var first = f[0], last = f[f.length-1];
+    if(ev.shiftKey && document.activeElement === first){ ev.preventDefault(); last.focus(); }
+    else if(!ev.shiftKey && document.activeElement === last){ ev.preventDefault(); first.focus(); }
+  });
 
   // ---- toast
   // The artifact frame is sandboxed without allow-modals, so confirm() and
@@ -860,14 +1022,6 @@ JS = r"""
     applyFilter();
   });
 
-  matrix.addEventListener('click', function(ev){
-    var s = ev.target.closest('.srcbtn'); if(!s) return;
-    var row = document.getElementById('src'+s.getAttribute('data-src'));
-    if(row){
-      row.hidden = !row.hidden;
-      s.setAttribute('aria-expanded', row.hidden ? 'false':'true');
-    }
-  });
 
   var editBtn = document.getElementById('editBtn');
   editBtn.addEventListener('click', function(){
@@ -1010,6 +1164,7 @@ parts.append("""<section class="block"><h2>The matrix</h2>
 </div>
 <span class="filter-note" id="filterState">Showing all positions</span>
 </div>
+<p class="filter-note">Click any activity for what it is, a worked example, and where the assignment came from.</p>
 <div class="btnrow" id="editTools" hidden>
 <button class="btn quiet" type="button" id="addFn">+ Add function</button>
 <span class="inline-form" id="addFnBox" hidden><label class="vh" for="addFnName">New function name</label>
@@ -1043,8 +1198,9 @@ spreadsheet and this page are both generated from. Copy for Excel puts the whole
 clipboard as a table.</p>
 <p><strong>How this was built.</strong> Every published row traces to a source: the operating
 procedures and role definitions in the SJ-OS repository, the two specialist job descriptions, or the
-30 July leadership review. Open any row's source link to see which. Rows you add on the page are
-marked as added by hand rather than sourced.</p>
+30 July leadership review. Click an activity to see which, alongside a plain description of the work
+and a worked example. Rows you add on the page carry no breakdown and are marked as added by hand
+rather than sourced.</p>
 <p><strong>Partner organisations</strong> hold the work but never the accountability. That stays with
 an employee. Pedrero Regulatory is consulted rather than responsible because our procedures make
 them consult-only, with no access to our systems.</p>
@@ -1054,6 +1210,10 @@ represented, because nothing in our operating documentation defines who owns it.
 </footer>""")
 
 parts.append('</div>')
+parts.append('<div class="scrim" id="scrim" hidden></div>')
+parts.append('<aside class="drawer" id="drawer" hidden role="dialog" aria-modal="true" aria-label="Activity breakdown">'
+             '<button class="drawer-close" id="drawerClose" type="button" aria-label="Close the breakdown">Close</button>'
+             '<div class="drawer-body" id="drawerBody"></div></aside>')
 parts.append('<div class="toast" id="toast" role="status" aria-live="polite"></div>')
 parts.append('<script>window.__RACI__=' + json.dumps(PUB) + ';</script>')
 parts.append('<script>' + JS + '</script>')
