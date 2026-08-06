@@ -204,6 +204,7 @@ The Timing/Cutover Risk Notes custom field (GID `1211644347258861` — see `refe
 - `references/confirmation-protocol.md` — Rules 1–8. The contract sibling skills consume.
 - `references/architecture/asana_task_contract.md` — system-wide task write contract: resolve before create, required fields, due-date ladder, collaborators, section moves and multi-homing. Rule 8 points here.
 - `references/role-map.md` — canonical PD-system role-map. Sibling PD skills reference this.
+- `references/sop-catalog.md` — PD's own ratified SOP catalog (SKN-OPS-011, 012), new as of 2026-08-06. The shared ratification/annual-review/numbering process it follows lives in `quality-manager/references/sop-program.md`.
 - `references/pd-projects.md` — SKU projects (looked up live), Formula Tracker + portfolio.
 - `references/suppliers.md` — PD-side supplier routing (formula vs. component).
 - External partner / contact recognition — read live from Supabase wiki, not from a file. `public.wiki_pages WHERE page_type='contact'` (people) and `WHERE page_type='partner'` (service contractors, labs, 3PLs, tooling) carry the recognition layer. The four bridges load them at run time. (Retired `references/external-contacts.md` on 2026-05-26 — see `Bridge-and-System-Audit-2026-05-26.md` Priority 1.)

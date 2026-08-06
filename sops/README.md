@@ -6,6 +6,17 @@ Each file is one SOP: `<sop-id>-<slug>.md`, with YAML frontmatter (`sop_id`, `ti
 
 Skills reference these files directly by `sop_id` when they need to walk a procedure, so an edit here takes effect everywhere that SOP is used without touching the skill itself. Formatted output (Word, PDF, a landing page) gets generated from the file on request — the markdown doesn't change to match the output, the output is rendered from the markdown.
 
+**Ratification, review, and numbering are one shared process, owned by Quality.** Each function keeps its own catalog of just its own SOPs — the table below lists every SOP; the catalogs are where you go to ratify a new one or check a revision at runtime.
+
+| Function | Catalog | Numbers |
+|---|---|---|
+| Quality | `.claude/skills/quality-manager/references/sop-catalog.md` | 001–007 |
+| Regulatory | `.claude/skills/regulatory-manager/references/sop-catalog.md` | 008–009 |
+| PD | `.claude/skills/asana-pd-manager/references/sop-catalog.md` | 011–012 |
+| Ops (Purchasing, Inventory, S&OP, Logistics, DTC/OC3PL) | `.claude/skills/sjs-ops-system/references/sop-catalog.md` | 010, 012–023 |
+
+The shared process itself — ratification protocol, annual review protocol, numbering policy — lives in `.claude/skills/quality-manager/references/sop-program.md`. SKN-OPS-012 is the one SOP that's genuinely joint (PD readiness gate, Purchasing order) and appears in both the PD and Ops catalogs.
+
 | SOP ID | Title | Status |
 |---|---|---|
 | SKN-OPS-001 | Corrective and Preventive Action (CAPA) Procedure | ratified — overdue for annual review |
