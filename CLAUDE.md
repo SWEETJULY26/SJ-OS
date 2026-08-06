@@ -20,6 +20,7 @@ Read `references/3ms-framework.md` once. It's how Alvin thinks about AI work. Mi
 - `references/` — frameworks, voice samples, API guides as you connect tools
 - `connections.md` — registry of every system your AIOS can reach
 - `decisions/log.md` — append-only record of decisions and why
+- `meetings/` — leadership meeting logs, one file per meeting (started 2026-08-06)
 - `archives/` — old stuff. Don't delete. Move here.
 
 See `EXPANSIONS.md` for what to add as you grow.

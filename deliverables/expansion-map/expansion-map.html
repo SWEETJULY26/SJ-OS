@@ -1,0 +1,432 @@
+<title>Sweet July Skin Market Expansion Map</title>
+<style>
+  :root{
+    --ground:#FAF7F0; --panel:#F1ECE1; --ink:#22301F; --ink-soft:#5A6353; --line:#DDD5C4;
+    --accent:#9E2F46; --accent-ink:#FAF7F0; --land:#B7C0AA; --sea-dot:#E9E3D5;
+    --now:#2E7D4F; --next:#B07C2A; --later:#77806F;
+    --shadow:0 18px 50px rgba(34,48,31,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#141B15; --panel:#1B241C; --ink:#EDE9DD; --ink-soft:#A7AF9E; --line:#2E392F;
+      --accent:#D96A80; --accent-ink:#141B15; --land:#41503F; --sea-dot:#1D271E;
+      --now:#5CB585; --next:#D8A455; --later:#8C9583;
+      --shadow:0 18px 50px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#141B15; --panel:#1B241C; --ink:#EDE9DD; --ink-soft:#A7AF9E; --line:#2E392F;
+    --accent:#D96A80; --accent-ink:#141B15; --land:#41503F; --sea-dot:#1D271E;
+    --now:#5CB585; --next:#D8A455; --later:#8C9583;
+    --shadow:0 18px 50px rgba(0,0,0,.5);
+  }
+  :root[data-theme="light"]{
+    --ground:#FAF7F0; --panel:#F1ECE1; --ink:#22301F; --ink-soft:#5A6353; --line:#DDD5C4;
+    --accent:#9E2F46; --accent-ink:#FAF7F0; --land:#B7C0AA; --sea-dot:#E9E3D5;
+    --now:#2E7D4F; --next:#B07C2A; --later:#77806F;
+    --shadow:0 18px 50px rgba(34,48,31,.18);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:1100px;margin:0 auto;padding:32px 20px 80px;}
+  header h1{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:clamp(26px,4vw,38px);line-height:1.15;margin:0 0 6px;text-wrap:balance;}
+  .eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:11px;color:var(--accent);font-weight:600;margin-bottom:10px;}
+  header p.sub{color:var(--ink-soft);max-width:64ch;margin:0 0 4px;}
+  .meta{font-size:13px;color:var(--ink-soft);}
+  .frame{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);
+    border-radius:0 6px 6px 0;padding:16px 20px;margin:22px 0 6px;max-width:74ch;}
+  .frame p{margin:0;font-size:14.5px;}
+  .frame strong{color:var(--accent);}
+  .base{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:16px 0 4px;font-size:13px;color:var(--ink-soft);}
+  .base .chip{background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:3px 11px;font-size:12.5px;color:var(--ink);}
+  .legend{display:flex;flex-wrap:wrap;gap:14px 22px;margin:18px 0 10px;align-items:center;}
+  .legend .item{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink-soft);}
+  .swatch{width:11px;height:11px;border-radius:50%;}
+  .mapbox{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-top:8px;}
+  .mapbox canvas{display:block;width:100%;height:auto;}
+  .marker{position:absolute;transform:translate(-50%,-50%);background:none;border:none;padding:0;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:2px;font:inherit;color:var(--ink);}
+  .marker .dot{width:14px;height:14px;border-radius:50%;background:var(--accent);
+    box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent);transition:box-shadow .2s;}
+  .marker.tier-now .dot{background:var(--now);box-shadow:0 0 0 4px color-mix(in srgb, var(--now) 25%, transparent);}
+  .marker.tier-next .dot{background:var(--next);box-shadow:0 0 0 4px color-mix(in srgb, var(--next) 28%, transparent);}
+  .marker.tier-later .dot{background:var(--later);box-shadow:0 0 0 4px color-mix(in srgb, var(--later) 28%, transparent);}
+  .marker.tier-blue .dot{background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent);}
+  .marker:hover .dot,.marker:focus-visible .dot{box-shadow:0 0 0 7px color-mix(in srgb, var(--accent) 30%, transparent);}
+  .marker:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px;}
+  .marker .tag{font-size:11.5px;font-weight:600;background:var(--ground);border:1px solid var(--line);
+    padding:2px 7px;border-radius:99px;white-space:nowrap;}
+  .home{position:absolute;transform:translate(-50%,-50%);font-size:11px;color:var(--accent);
+    display:flex;align-items:center;gap:5px;pointer-events:none;}
+  .home .heart{width:8px;height:8px;border-radius:50%;background:var(--accent);opacity:.85;}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:18px;}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px;text-align:left;
+    cursor:pointer;font:inherit;color:var(--ink);display:flex;flex-direction:column;gap:6px;transition:border-color .15s;}
+  .card:hover,.card:focus-visible{border-color:var(--accent);}
+  .card:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .card h3{margin:0;font-size:16px;font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;}
+  .card p{margin:0;font-size:13px;color:var(--ink-soft);}
+  .pill{align-self:flex-start;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    padding:3px 9px;border-radius:99px;color:#fff;}
+  .pill.now{background:var(--now);} .pill.next{background:var(--next);} .pill.later{background:var(--later);}
+  .pill.frame-pill{background:var(--accent);} .pill.blue{background:var(--accent);}
+  :root[data-theme="dark"] .pill, :root:not([data-theme="light"]) .pill{color:var(--ground);}
+  .backdrop{position:fixed;inset:0;background:rgba(15,20,14,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:40;}
+  .backdrop.open{opacity:1;pointer-events:auto;}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:min(460px,100%);background:var(--ground);
+    border-left:4px solid var(--accent);box-shadow:var(--shadow);transform:translateX(105%);
+    transition:transform .3s cubic-bezier(.3,.8,.3,1);z-index:50;overflow-y:auto;padding:28px 26px 48px;}
+  .drawer.open{transform:translateX(0);}
+  .drawer .close{position:absolute;top:14px;right:14px;background:var(--panel);border:1px solid var(--line);
+    border-radius:50%;width:34px;height:34px;font-size:16px;cursor:pointer;color:var(--ink);}
+  .drawer .close:focus-visible{outline:2px solid var(--accent);}
+  .drawer h2{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-size:26px;margin:8px 0 2px;text-wrap:balance;}
+  .drawer .kicker{font-size:13px;color:var(--ink-soft);margin:0 0 14px;}
+  .drawer section{margin-top:20px;}
+  .drawer h3{font-size:11.5px;text-transform:uppercase;letter-spacing:.13em;color:var(--accent);margin:0 0 7px;font-weight:700;}
+  .drawer p, .drawer li{font-size:14.5px;color:var(--ink);margin:0 0 6px;}
+  .drawer ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;}
+  .ask{background:var(--panel);border-left:3px solid var(--accent);padding:12px 14px;border-radius:0 6px 6px 0;margin-top:22px;}
+  .ask h3{margin-bottom:5px;}
+  .ask p{margin:0;font-size:14px;}
+  footer{margin-top:34px;font-size:12.5px;color:var(--ink-soft);max-width:70ch;}
+  @media (prefers-reduced-motion: reduce){ .drawer,.backdrop,.marker .dot{transition:none;} }
+  @media (max-width:640px){ .drawer{border-left:none;border-top:4px solid var(--accent);} }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Sweet July Skin · Strategy &amp; Vision</div>
+    <h1>Market Expansion Map</h1>
+    <p class="sub">A starting point for the expansion conversation, not a plan. For each candidate market: why we would be there, what success could look like, what it costs and risks, and what would have to be true before it earns a budget line. Grounded in where we actually are: live on Ulta Beauty Marketplace, an active Thirteen Lune wholesale account, and a South Africa first order already in motion.</p>
+    <p class="meta">Talking points for the leadership ops planning workshop, late September 2026. Everything here is directional and open for discussion.</p>
+  </header>
+
+  <div class="frame">
+    <p><strong>The tension this map exists to resolve:</strong> we are tracking below plan and the break-even horizon has moved out. Expansion adds cost, working capital, and leadership attention before it adds a dollar of contribution. So every candidate here has to answer three questions before anything else: why are we there, what does success look like, and what would have to be true first. Open the <strong>Start here</strong> card for the full frame.</p>
+  </div>
+
+  <div class="base">
+    <span>Where we play today:</span>
+    <span class="chip">DTC · sweetjuly.com</span>
+    <span class="chip">Amazon</span>
+    <span class="chip">Ulta Beauty Marketplace · since Jun 2026</span>
+    <span class="chip">Thirteen Lune wholesale</span>
+    <span class="chip">Nordstrom.com · launching Q3</span>
+  </div>
+
+  <div class="legend" aria-hidden="true">
+    <span class="item"><span class="swatch" style="background:var(--now)"></span>Live now, define success</span>
+    <span class="item"><span class="swatch" style="background:var(--next)"></span>Decide in the 2027 planning cycle</span>
+    <span class="item"><span class="swatch" style="background:var(--accent)"></span>Blue sky goal</span>
+    <span class="item"><span class="swatch" style="background:var(--accent);opacity:.55"></span>Jamaica, brand root</span>
+  </div>
+
+  <div class="mapbox" id="mapbox">
+    <canvas id="map" aria-label="Dotted world map with expansion candidates marked"></canvas>
+    <div class="home" data-lon="-77.3" data-lat="18.1"><span class="heart"></span>Jamaica</div>
+    <div class="home" data-lon="-122.3" data-lat="37.8"><span class="heart"></span>Oakland, home</div>
+  </div>
+
+  <div class="cards" id="cards"></div>
+
+  <footer>
+    Click any marker or card for the strategic brief. Nothing here is committed and none of the numbers are set. Each brief ends with the question it puts to the September workshop, and the detailed execution plan only gets built for markets that survive that conversation.
+  </footer>
+</div>
+
+<div class="backdrop" id="backdrop"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="d-title">
+  <button class="close" id="closeBtn" aria-label="Close">✕</button>
+  <div id="d-body"></div>
+</aside>
+
+<script>
+const MARKETS = [
+  {
+    id:'frame', name:'Start here: why expand at all?', place:'The strategic frame', tier:'frame-pill', tierLabel:'Start here',
+    mapless:true,
+    card:'The P&L reality, the principles that gate every candidate, and the portfolio-level definition of success we need to agree on.',
+    sections:[
+      {h:'The honest starting point', p:'Q2 closed at $152.8K net revenue for Skin, up 69% year over year but 20% below the $190K plan, and break-even has moved out. Expansion is not a growth reflex, it is a capital allocation question. Every dollar and every hour spent opening a new market competes directly with growing the channels we are already in. That is the bar each candidate on this map has to clear.'},
+      {h:'Proposed principles (open for discussion)', items:[
+        'Prove, then spend. Cheap demand signals come before any commitment. No market gets real money on instinct.',
+        'Brand fit is the filter. We go where the Caribbean-rooted story lands hardest, because that is where we win without outspending anyone.',
+        'No budget line without a written definition of success and a kill threshold agreed in advance.',
+        'Existing channels get first claim on capital until we are back on plan. Expansion rides on proof, not hope.',
+        'Do not expand distribution we cannot keep in stock. The Lychee and Discovery Set outages cost an estimated $110 to 120K over three quarters. Every new channel multiplies the cost of a stockout.'
+      ]},
+      {h:'What success looks like at the portfolio level', items:[
+        'Expansion never pushes the break-even date out. Any move must be contribution-positive within an agreed window or it gets cut.',
+        'Each entry produces evidence we can reuse: sell-through data, compliance dossiers, retailer relationships.',
+        'Leadership attention stays protected. Partner-led entries where someone else carries the operational load rank ahead of entries we have to staff.'
+      ]},
+      {h:'Open questions for the workshop', items:[
+        'What revenue or margin milestone in current channels unlocks expansion spend at all?',
+        'Who owns expansion? Is it a leadership workstream, a consultant validation, or both?',
+        'What is our appetite: one bet done well, or several cheap signals in parallel?'
+      ]}
+    ],
+    ask:'Agree the principles and the unlock milestone first. Until those are set, every market below stays a question mark by design.'
+  },
+  {
+    id:'ulta', name:'Ulta: marketplace to in-store', place:'United States · the blue sky goal', tier:'blue', tierLabel:'Blue sky',
+    lon:-88.0, lat:41.8,
+    card:'We are live on Ulta Beauty Marketplace today. The blue sky goal is earning the wholesale and in-store conversation.',
+    sections:[
+      {h:'Why we would be there', p:'We are already on the ladder. Ulta Beauty Marketplace went live June 16 with 9 SKUs and did $4.3K in under two weeks with no prior infrastructure. Marketplace is the wedge: it builds sell-through data inside Ulta\u2019s own ecosystem, which is exactly the evidence a wholesale buyer needs to say yes to in-store doors. Physical Ulta retail is the single biggest prize on this map and the clearest expression of the three-year vision.'},
+      {h:'What success could look like (open for discussion)', items:[
+        'Near term: marketplace velocity worth talking about. Grow the 9 SKUs, add Coffee Fix Eye Cream and Soursop Vitamin C Serum (already the Q3 goal), and set a monthly revenue bar we would proudly show a buyer.',
+        'The milestone: a wholesale buyer meeting earned on data, not warm intros alone.',
+        'The blue sky: an in-store pilot in a defined door count, with sell-through targets and a replenishment record that earns expansion to more doors.'
+      ]},
+      {h:'Cost and risk', items:[
+        'Marketplace phase: near zero incremental cost, it is live and growing.',
+        'In-store is a different business: retailer margin, chargebacks, planograms, in-store support and marketing spend, plus inventory depth per door.',
+        'The risk is asking too early. One weak in-store pilot closes the door harder than never asking.'
+      ]},
+      {h:'What would have to be true', items:[
+        'Marketplace sell-through strong enough to lead the pitch.',
+        'Inventory reliability proven. September restock holds and no core SKU goes dark through Q4.',
+        'Launch track record intact: Pineapple Punch and the fall launches ship on time and in full.',
+        'Unit economics that survive retailer margin at in-store terms.'
+      ]},
+      {h:'What it takes, directionally', items:[
+        'No new regulatory work, domestic channel.',
+        'Wholesale infrastructure: routing compliance, EDI or portal ops, chargeback prevention. Some of this exists from current wholesale.',
+        'A real trade marketing budget when in-store happens.'
+      ]}
+    ],
+    ask:'What marketplace number earns the wholesale pitch? Name it now so the team knows exactly what they are building toward.'
+  },
+  {
+    id:'thirteenlune', name:'Thirteen Lune', place:'Active partner · the international vehicle', tier:'now', tierLabel:'Live now',
+    lon:-118.2, lat:34.05,
+    card:'Already an active wholesale account. Their footprint, starting with South Africa, could carry us into new markets without us building anything.',
+    sections:[
+      {h:'Why we would be there', p:'We already are. Thirteen Lune is an active wholesale account: orders shipped in May, compliance docs delivered, operational kinks (like their one-SKU-per-box packing rule) already worked through. The strategic question is no longer whether to enter, it is how far to ride the partner. Their footprint is becoming the lowest-cost vehicle we have for international reach, starting with South Africa, and potentially extending to other markets as they grow.'},
+      {h:'What success could look like (open for discussion)', items:[
+        'Reorder cadence on domestic wholesale, not one-off POs.',
+        'The South Africa first order ships clean and sells through, proving the partner can carry us into a market we never touch operationally.',
+        'A defined view of their expansion roadmap, so we know which future markets ride this rail versus need our own entry.'
+      ]},
+      {h:'Cost and risk', items:[
+        'Near zero incremental cost, the account and the 3PL routing already exist.',
+        'Concentration risk: a partner-led international strategy inherits the partner\u2019s health, retail relationships, and priorities.',
+        'Wholesale margin is structurally thinner, so volume has to justify the lane.'
+      ]},
+      {h:'What would have to be true', items:[
+        'Their sell-through on our SKUs stays healthy enough that they keep buying.',
+        'Their international expansion is real and funded, not aspirational.',
+        'Our inventory position can support their orders without starving DTC and Amazon.'
+      ]},
+      {h:'What it takes, directionally', items:[
+        'Keep doing what we are doing: clean fulfillment, current compliance docs, responsive account management.',
+        'A quarterly conversation with their team about where their footprint goes next.'
+      ]}
+    ],
+    ask:'Do we formalize Thirteen Lune as our international rail, with a partner review each quarter, instead of treating each order as one-off wholesale?'
+  },
+  {
+    id:'southafrica', name:'South Africa', place:'Entering now, partner-led via Thirteen Lune', tier:'now', tierLabel:'Live now',
+    lon:28.0, lat:-26.2,
+    card:'First wholesale order via Thirteen Lune is a Q3 goal. The partner carries the market; our job is to define success before it ships.',
+    sections:[
+      {h:'Why we would be there', p:'This one moved from idea to motion: the first Thirteen Lune South Africa wholesale order is a stated Q3 goal. The brand story resonates across the African diaspora and the partner carries import, distribution, and retail. What is missing is not a plan to enter, it is a definition of success. Without one, we will not know in January whether South Africa is a growth lane or a rounding error.'},
+      {h:'What success could look like (open for discussion)', items:[
+        'Order one ships clean and on time, no compliance surprises at import.',
+        'A reorder within an agreed window. One reorder converts this from experiment to lane.',
+        'Enough sell-through visibility from the partner to judge the market, not just the order.'
+      ]},
+      {h:'Cost and risk', items:[
+        'Internal cost is near zero because the partner carries the market. Protect that.',
+        'Wholesale-through-partner margin is the thinnest lane we have, so this is strategic reach, not near-term P&L.',
+        'Heat-sensitive formulas and long ocean freight need a supply chain check before larger orders.'
+      ]},
+      {h:'What would have to be true (to go beyond order one)', items:[
+        'Reorders happen without us pushing.',
+        'The partner shares sell-through data, not just POs.',
+        'Larger volumes still work with our inventory position and freight realities.'
+      ]},
+      {h:'What it takes, directionally', items:[
+        'Lighter regulatory regime than UK or EU, and the importer handles permits and duties.',
+        'Compliance docs largely exist from the MSDS package already delivered to Thirteen Lune.',
+        'A freight and stability check for ocean shipments of heat-sensitive SKUs.'
+      ]}
+    ],
+    ask:'Before the first order ships: what reorder window and sell-through visibility do we require to call South Africa working?'
+  },
+  {
+    id:'canada', name:'Canada', place:'First self-driven international candidate', tier:'next', tierLabel:'Decide 2027',
+    lon:-79.4, lat:43.7,
+    card:'Closest analog market, large Caribbean diaspora, and a nearly free way to test demand before committing.',
+    sections:[
+      {h:'Why we would be there', p:'The closest analog to our home market, and Toronto holds one of the largest Caribbean communities outside the islands. The brand story lands without translation. Unlike South Africa, no partner is carrying us in yet, so Canada is the first market where we would drive entry ourselves. That is exactly why it needs the cheap test first: turn on cross-border DTC shipping and watch, before any retail conversation. If Thirteen Lune\u2019s footprint extends here, the partner rail becomes an option too.'},
+      {h:'What success could look like (open for discussion)', items:[
+        'Phase 1, the signal: Canadian orders reach an agreed share of DTC volume by an agreed date. The number is the workshop conversation, not this map.',
+        'Phase 2, retail: only if the signal clears and the US retail track record is strong. Success there means placement plus sell-through, defined before we commit.',
+        'Kill threshold: if the DTC signal is flat after a full season, Canada waits and we lose almost nothing.'
+      ]},
+      {h:'Cost and risk', items:[
+        'Signal phase: near zero. Shipping configuration and duties messaging.',
+        'Retail phase: bilingual labels (Quebec raises the bar on French), duty and freight math, retail working capital.',
+        'Risk of going early: those costs land on a P&L that is not yet carrying its plan.'
+      ]},
+      {h:'What would have to be true', items:[
+        'The DTC signal clears the threshold we set.',
+        'Label rework can batch with a planned reprint so we are not eating a standalone print run.',
+        'Duty and origin analysis (US and France manufacturing mix) does not break margin.'
+      ]},
+      {h:'What it takes, directionally', items:[
+        'Health Canada notification within 10 days of first sale, no fee, no pre-market approval.',
+        'Ingredient screen against the Hotlist, expected clean.',
+        'Bilingual labels are the real cost and the real timeline.'
+      ]}
+    ],
+    ask:'Do we turn on the Q4 DTC shipping test and set the signal threshold now, so the 2027 Canada decision is made with data instead of instinct?'
+  },
+  {
+    id:'uk', name:'United Kingdom', place:'The big prize, and the big bill', tier:'next', tierLabel:'Decide 2027',
+    lon:-0.1, lat:51.5,
+    card:'Deepest premium beauty market of the candidates and a strong diaspora story. Compliance costs are front-loaded, so it must be a deliberate bet.',
+    sections:[
+      {h:'Why we would be there', p:'The UK is the biggest international prize on this map. A deep premium beauty market, retailers that actively hunt distinctive founder stories, and a British-Jamaican community where the brand story is arguably more resonant than at home. But UK compliance is front-loaded: every product needs a safety assessment and a UK Responsible Person before the first unit sells. There is no cheap signal here unless a partner such as Thirteen Lune extends its footprint and carries the compliance burden. Otherwise the UK is either a deliberate, funded bet or it is nothing, which is exactly why the strategy conversation has to happen before any plan.'},
+      {h:'What success could look like (open for discussion)', items:[
+        'An entry gate, agreed in advance: a US wholesale run rate or retail proof point that makes us credible to a UK buyer. Define the number at the workshop.',
+        'If we enter: a named retail partner at launch, sell-through targets for the first two seasons, contribution positive within an agreed window.',
+        'Reusable output either way: safety dossiers built for the UK carry most of the weight for the EU later.'
+      ]},
+      {h:'Cost and risk', items:[
+        'A real program: Responsible Person, safety report per product, notifications, label rework, launch marketing, 20% VAT inside the shelf price.',
+        'All-in, a low-to-mid six figure entry done seriously.',
+        'The risk is drift: starting to pay for the UK while below plan at home, without an agreed gate, because it feels like momentum.'
+      ]},
+      {h:'What would have to be true', items:[
+        'The entry gate is met, whatever we set it at.',
+        'A UK retail partner shows genuine interest, not politeness. Or the Thirteen Lune rail reaches the UK and changes the math entirely.',
+        'FY27 can carry the compliance start (Responsible Person plus hero-SKU safety reports) without stretching the core P&L.'
+      ]},
+      {h:'What it takes, directionally', items:[
+        'UK Responsible Person appointed before sale.',
+        'Safety report per product signed by a qualified assessor, then notification via the UK portal.',
+        'Label rework per SKU. A UK 3PL node once DTC volume justifies it.',
+        'Decide early: UK only, or UK plus EU, which doubles the notification work.'
+      ]}
+    ],
+    ask:'What is the entry gate? Name the US proof point that unlocks UK spend, so the decision makes itself when the number arrives.'
+  }
+];
+
+// --- dotted world map ---
+const POLYS = [
+  [[-166,68],[-150,70],[-130,70],[-110,73],[-90,74],[-75,72],[-60,63],[-55,52],[-65,45],[-70,42],[-75,36],[-80,32],[-81,25],[-84,30],[-90,29],[-97,26],[-97,22],[-105,20],[-105,25],[-112,31],[-117,33],[-124,40],[-125,49],[-132,55],[-140,60],[-152,58],[-166,55]],
+  [[-105,20],[-97,16],[-90,14],[-83,9],[-79,8],[-83,13],[-92,15],[-100,18]],
+  [[-79,8],[-72,11],[-60,8],[-50,0],[-35,-8],[-39,-15],[-48,-25],[-53,-34],[-58,-39],[-65,-41],[-71,-45],[-72,-54],[-68,-55],[-75,-50],[-73,-40],[-70,-30],[-70,-18],[-76,-14],[-81,-5],[-80,0]],
+  [[-45,60],[-52,64],[-55,70],[-50,78],[-40,82],[-25,82],[-20,76],[-22,70],[-30,65],[-40,60]],
+  [[-9,43],[-9,38],[-6,36],[3,39],[3,43],[7,44],[10,44],[14,41],[16,38],[18,40],[15,45],[20,45],[22,40],[24,38],[26,40],[28,45],[30,46],[30,52],[28,56],[24,58],[21,55],[18,55],[13,54],[8,54],[5,53],[4,51],[0,49],[-2,48],[-4,48]],
+  [[5,58],[7,62],[14,66],[20,70],[28,71],[30,69],[28,64],[24,60],[18,59],[12,56],[8,57]],
+  [[-5,50],[-3,51],[1,51],[2,53],[0,54],[-2,56],[-4,58],[-6,58],[-5,55],[-4,53]],
+  [[-10,52],[-6,52],[-6,55],[-8,55],[-10,54]],
+  [[-17,15],[-16,20],[-10,28],[-6,33],[0,36],[10,37],[12,33],[20,32],[30,31],[33,28],[35,22],[37,18],[43,11],[51,12],[48,5],[41,-2],[40,-10],[36,-18],[34,-24],[32,-29],[28,-33],[22,-34],[18,-33],[15,-28],[12,-18],[9,-7],[9,0],[5,5],[-5,5],[-8,4],[-13,8],[-17,12]],
+  [[44,-25],[47,-25],[50,-16],[48,-13],[45,-17],[44,-22]],
+  [[28,45],[35,45],[40,43],[50,44],[60,45],[70,44],[80,42],[90,46],[100,42],[110,42],[120,40],[122,44],[130,42],[135,48],[140,54],[155,60],[160,60],[170,66],[178,68],[170,70],[150,72],[130,72],[110,74],[90,74],[70,72],[60,70],[50,68],[40,66],[35,60],[30,55],[28,50]],
+  [[35,30],[40,32],[48,30],[55,26],[59,23],[57,17],[52,15],[45,13],[43,17],[39,21],[35,28]],
+  [[61,25],[66,25],[70,21],[72,20],[72,15],[76,8],[80,10],[80,15],[85,19],[90,22],[92,21],[88,25],[80,28],[75,32],[70,34],[66,30]],
+  [[92,21],[98,16],[100,13],[103,10],[105,9],[107,12],[105,17],[108,20],[112,22],[116,23],[120,25],[122,30],[120,35],[122,40],[110,42],[100,42],[95,35],[92,28]],
+  [[95,5],[102,-4],[106,-6],[98,2]],
+  [[109,1],[115,-3],[117,3],[111,4]],
+  [[106,-7],[114,-8],[114,-7],[106,-6]],
+  [[114,-22],[114,-34],[118,-35],[124,-33],[130,-32],[136,-35],[140,-38],[146,-39],[150,-37],[153,-30],[153,-25],[146,-19],[142,-11],[137,-12],[132,-11],[126,-14],[122,-18]],
+  [[167,-46],[172,-43],[174,-38],[176,-38],[174,-41],[170,-46]],
+  [[130,31],[132,34],[136,35],[140,36],[141,40],[142,43],[144,43],[141,38],[137,34],[131,30]],
+  [[-84,22],[-80,23],[-74,20],[-78,21]]
+];
+const LON_MIN=-170, LON_MAX=180, LAT_MAX=80, LAT_MIN=-56;
+function inPoly(pt, poly){
+  let inside=false;
+  for(let i=0,j=poly.length-1;i<poly.length;j=i++){
+    const [xi,yi]=poly[i],[xj,yj]=poly[j];
+    if(((yi>pt[1])!==(yj>pt[1])) && (pt[0] < (xj-xi)*(pt[1]-yi)/(yj-yi)+xi)) inside=!inside;
+  }
+  return inside;
+}
+function isLand(lon,lat){ return POLYS.some(p=>inPoly([lon,lat],p)); }
+const canvas=document.getElementById('map'), box=document.getElementById('mapbox');
+function project(lon,lat,W,H){
+  return [ (lon-LON_MIN)/(LON_MAX-LON_MIN)*W, (LAT_MAX-lat)/(LAT_MAX-LAT_MIN)*H ];
+}
+function drawMap(){
+  const W=box.clientWidth, H=Math.round(W*0.46);
+  const dpr=window.devicePixelRatio||1;
+  canvas.width=W*dpr; canvas.height=H*dpr;
+  canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d'); ctx.scale(dpr,dpr);
+  const cs=getComputedStyle(document.documentElement);
+  const landC=cs.getPropertyValue('--land').trim(), seaC=cs.getPropertyValue('--sea-dot').trim();
+  ctx.clearRect(0,0,W,H);
+  const step=2.4;
+  for(let lat=LAT_MAX; lat>=LAT_MIN; lat-=step){
+    for(let lon=LON_MIN; lon<=LON_MAX; lon+=step){
+      const [x,y]=project(lon,lat,W,H);
+      const land=isLand(lon,lat);
+      ctx.fillStyle=land?landC:seaC;
+      ctx.beginPath();
+      ctx.arc(x,y,land?W/560:W/1100,0,Math.PI*2);
+      ctx.fill();
+    }
+  }
+  positionOverlays(W,H);
+}
+function positionOverlays(W,H){
+  document.querySelectorAll('.marker,.home').forEach(el=>{
+    const [x,y]=project(parseFloat(el.dataset.lon),parseFloat(el.dataset.lat),W,H);
+    el.style.left=x+'px'; el.style.top=y+'px';
+  });
+}
+// --- markers + cards ---
+const cardsEl=document.getElementById('cards');
+MARKETS.forEach(m=>{
+  if(!m.mapless){
+    const b=document.createElement('button');
+    b.className='marker tier-'+m.tier; b.dataset.lon=m.lon; b.dataset.lat=m.lat;
+    b.setAttribute('aria-label',m.name+', open brief');
+    b.innerHTML='<span class="dot"></span><span class="tag">'+m.name+'</span>';
+    b.addEventListener('click',()=>openDrawer(m));
+    box.appendChild(b);
+  }
+  const c=document.createElement('button');
+  c.className='card';
+  c.innerHTML='<span class="pill '+m.tier+'">'+m.tierLabel+'</span><h3>'+m.name+'</h3><p>'+m.card+'</p>';
+  c.addEventListener('click',()=>openDrawer(m));
+  cardsEl.appendChild(c);
+});
+// --- drawer ---
+const drawer=document.getElementById('drawer'), backdrop=document.getElementById('backdrop'),
+      dBody=document.getElementById('d-body'), closeBtn=document.getElementById('closeBtn');
+let lastFocus=null;
+function li(items){ return '<ul>'+items.map(i=>'<li>'+i+'</li>').join('')+'</ul>'; }
+function openDrawer(m){
+  lastFocus=document.activeElement;
+  dBody.innerHTML=
+    '<span class="pill '+m.tier+'">'+m.tierLabel+'</span>'+
+    '<h2 id="d-title">'+m.name+'</h2><p class="kicker">'+m.place+'</p>'+
+    m.sections.map(s=>'<section><h3>'+s.h+'</h3>'+(s.p?'<p>'+s.p+'</p>':'')+(s.items?li(s.items):'')+'</section>').join('')+
+    '<div class="ask"><h3>For the September workshop</h3><p>'+m.ask+'</p></div>';
+  drawer.classList.add('open'); backdrop.classList.add('open');
+  closeBtn.focus();
+}
+function closeDrawer(){
+  drawer.classList.remove('open'); backdrop.classList.remove('open');
+  if(lastFocus) lastFocus.focus();
+}
+closeBtn.addEventListener('click',closeDrawer);
+backdrop.addEventListener('click',closeDrawer);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDrawer(); });
+// --- theme redraw + resize ---
+new MutationObserver(drawMap).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+if(window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',drawMap);
+let rT; window.addEventListener('resize',()=>{clearTimeout(rT);rT=setTimeout(drawMap,120);});
+drawMap();
+</script>
