@@ -1,4 +1,4 @@
-# Leadership Business Review — 2026-08-06
+# Leadership Business Review (2026-08-06)
 
 **Attendees:** Alvin, Danielle, Nicole
 **Source:** Fireflies `01KZ4B2M0TJ38J4NDMW5R6QDVZ` (66 min)
@@ -7,7 +7,7 @@
 ## Headlines
 
 - **Pineapple Punch launch holds Aug 12.** Production done, ships Wed–Fri. Seal adhesive issue on the circular seal gets fixed post-delivery with a stronger adhesive on future runs; not worth delaying shipment. AQL sampling in place.
-- **Ulta timing workaround.** Ulta.com needs 24 hours after inventory receipt to go live. Nicole runs phantom inventory / pre-order buttons on Shopify to bridge the gap. Risk: Ulta reads phantom inventory as real stock — Nicole and Katie own the workaround. If shipment slips past Friday, labels get processed early for Ulta compliance.
+- **Ulta timing workaround.** Ulta.com needs 24 hours after inventory receipt to go live. Nicole runs phantom inventory / pre-order buttons on Shopify to bridge the gap. Risk: Ulta reads phantom inventory as real stock; Nicole and Katie own the workaround. If shipment slips past Friday, labels get processed early for Ulta compliance.
 - **Sales reset.** Tracking 50–70% below the $1.7M plan weekly; realistic outcome is ~20% YoY growth. Break-even slides from 2027–28 toward 2029–2030. Internal plan now tracks ambitious and realistic goals side by side; Danielle communicates the reset to finance.
 - **Three-year plan cadence set.** PD side of 2027 is mostly locked. Three-year vision + 2027 operating plan get workshopped at the leadership ops planning session in late September. Commercialization, resource planning, and omnichannel (international + retail partners) are the open components.
 - **Perrine's lane clarified.** Formula development only. Commercialization, retail expansion, and international strategy are led in-house; a growth/retail consultant is a validation option later, not a starting point.
