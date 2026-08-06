@@ -3,11 +3,12 @@
 Outputs built from this repo that are meant to leave it. Committed so they survive
 the session that produced them and so the next person can see how they were derived.
 
-## AC Brands RACI: v7, 2026-08-04
+## AC Brands RACI: v8, 2026-08-06
 
-Org-wide RACI. **102 activities across eleven functions, led by position with names
+Org-wide RACI. **94 activities across eleven functions, led by position with names
 cross-referenced.** Built for the resource-needs conversation with Danielle and
-Nicole, and updated to reflect the 2026-07-30 leadership review.
+Nicole, and updated to reflect the 2026-07-30 leadership review and Alvin's own pass over
+the matrix on the page on 2026-08-06.
 
 Three artifacts, one dataset:
 
@@ -33,13 +34,37 @@ On mobile the same panel arrives as a bottom sheet. Escape, the scrim and the Cl
 button all dismiss it, and focus returns to the activity you came from.
 
 The text lives in `activity_notes.py`, keyed by exact activity string, with a `what`
-and an `example` per row. All 102 rows are covered and `verify.py` fails the build if
+and an `example` per row. All 94 rows are covered and `verify.py` fails the build if
 any row loses its breakdown or if a breakdown exists with no matching row. A row added
 on the page has no entry, so its drawer says so rather than showing an empty section.
 
 This replaced the per-row source disclosure, which showed a file path and nothing else.
 The matrix says who owns a thing; the drawer is what makes it legible to somebody who
 was not in the meeting where it was named.
+
+### The round trip
+
+v8 is the first version where the data came back from the page instead of only going out
+to it. Alvin edited the published page, hit **Export JSON**, and the file folded back into
+`raci_rows.py`. The steps, in case it happens again:
+
+1. Diff the export against the published payload rather than trusting it wholesale. What
+   matters is which rows changed letters, which were deleted, and whether anything was
+   added on the page (an added row has no breakdown, so it needs one written).
+2. Check the invariants before writing anything: at least one A, exactly one R, no open
+   seat or partner org holding A, no position holding two letters on one row.
+3. Rewrite the rationale notes on rows whose letters moved. This is the part that cannot
+   be automated. A note reading "PD Lead owns the technical call outright" on a row whose
+   A is now the President is worse than no note, because it reads as sourced.
+4. Prune `activity_notes.py` for deleted rows or check 2b fails.
+5. Bump `PUB["version"]`. The localStorage key is version-scoped, so the bump retires
+   every viewer's local copy and the new baseline becomes what they see. Do this only when
+   the published data has caught up with the edits, never mid-round.
+
+What is deliberately not automated: the role-map runtime config under `.claude/skills/`.
+Those files decide where a live approval routes. If an edit on the page moves A on a
+quality or regulatory row, the matrix and the automation disagree until Alvin says which
+one is right. Flag it, do not reconcile it.
 
 ### Editing
 

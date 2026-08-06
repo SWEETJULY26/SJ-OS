@@ -202,10 +202,6 @@ INFO = {
     what="The front door for anyone who wants to sell Sweet July Skin: inbound retailer interest, reseller enquiries, and unsolicited distributor approaches. Deciding which are worth pursuing and which get a polite no.",
     example="A regional chain asks about stocking three SKUs. First contact establishes volume, terms and margin implications before it becomes a relationship, because a channel taken on bad terms is hard to unwind.",
 ),
-"Retail channel launch programs: UBM cohort positioning, price ladder, Amazon Vendor": dict(
-    what="Standing a SKU up in a retail channel, as distinct from running that channel day to day. Where the brand sits against its comp set on the shelf, how the range steps in price, and the mechanics of Amazon Vendor as a wholesale relationship.",
-    example="Ulta Beauty Marketplace launched June 2026. Positioning decided which comp brands to sit adjacent to and which price band to claim. The open question is the lip at $20 against a $24 to $29 peer band, which reads as influencer-premium rather than accessible-prestige.",
-),
 "Wholesale pipeline and new retail partner development": dict(
     what="Working the list of potential retail partners forward: who is in conversation, at what stage, what it would take to close, and what the economics would be.",
     example="A specialty retailer is interested but their margin requirement puts two SKUs below floor. The pipeline decision is whether to go with a subset, reprice, or pass.",
@@ -220,18 +216,6 @@ INFO = {
 ),
 
 # ---------------------------------------------------------------- Marketing & Brand
-"Quarterly competitive teardowns across the five comp brands": dict(
-    what="A deep quarterly read on the closest competitors: pricing, launches, claims, packaging, channel posture. Ten comp brands are profiled with tier ratings and full price ladders.",
-    example="Summer Fridays sits at tier 1 as the closest structural peer, running $24 lip to $45 moisturizer to $49 hero mask to $82 fragrance. That ladder is the benchmark our own pricing gets read against.",
-),
-"Quarterly teardown sign-off before circulation": dict(
-    what="Reading the teardown before it goes out and deciding it is right. A competitive read that circulates with a wrong conclusion gets repeated in decisions for a quarter.",
-    example="A teardown concludes a competitor is discounting structurally when it was a one-off event. Sign-off is where that gets caught, before it becomes an argument for repricing.",
-),
-"Monthly competitive trend digest and cross-stream signal routing": dict(
-    what="A lighter monthly pass on category movement, plus routing what it finds to whoever needs it. A competitor's pricing move is a margin signal; a packaging move is a PD signal.",
-    example="A competitor launches a refillable format. That routes to PD as a packaging question and to Margin as a cost one, rather than sitting in a digest nobody actions.",
-),
 "Social listening and comp brand monitoring (TikTok, IG, Pinterest, retailer new arrivals)": dict(
     what="Watching what the category and the comp set are doing in public, including retailer new-arrivals pages, which is often where a competitor launch shows up first.",
     example="A comp brand's lip product starts trending on TikTok. Volume signals like that are why lip is treated as the category-leading gateway SKU across the cohort.",
@@ -243,10 +227,6 @@ INFO = {
 "Annual team holiday communications (11 sends across 3 templates)": dict(
     what="The internal holiday and office-closure notices: 11 scheduled sends built from three templates, auto-sent on date, always from Alvin with the team on BCC.",
     example="The November Holiday Season Overview goes out ahead of Thanksgiving so nobody is planning work into a closure. Scheduled rather than remembered.",
-),
-"Weekly founder briefing, Slides 5 and 6": dict(
-    what="The weekly operations read for Ayesha, in the Canva deck. Slide 5 is business operations, Slide 6 is product development from the ops angle, filtered to founder-level signal.",
-    example="A supply-chain risk that could move a launch date belongs on Slide 5. A routine PO acknowledgement does not. The filter is the work.",
 ),
 "Operational special projects: labels, PR seeding, sampling": dict(
     what="The operational side of marketing pushes: getting labels produced, product into the right hands for PR, and samples where they need to be. Named explicitly in the Operations Specialist job description.",
@@ -325,18 +305,6 @@ INFO = {
 "Margin architecture framework and quarterly portfolio review": dict(
     what="The ratified margin framework and the quarterly sweep of every active SKU against every channel floor, plus the four portfolio-level checks.",
     example="The quarterly review runs wholesale floor hold, specialty prestige readiness, the 25 percent acquisition-mix cap and perpetual launch mode, and reports four traffic lights with exceptions named.",
-),
-"Per-SKU margin pressure-test against channel floors": dict(
-    what="Running one SKU's real landed cost and price against each channel's floor to see where it clears and where it fails. Channel-by-channel pass or fail with a margin waterfall.",
-    example="A serum clears DTC comfortably, clears Ulta Marketplace, and fails the Sephora floor. That is a launch-scope decision before it is a pricing one.",
-),
-"Walk-away decision when a SKU breaks its channel floor": dict(
-    what="What to do about a SKU that does not pencil, in the framework's order of preference: reformulate, reprice, restrict to fewer channels, or retire. Acquisition SKUs reorder that, putting restrict ahead of reformulate.",
-    example="A SKU misses its specialty floor by a few points. Reformulating to take cost out is preferred; restricting it to DTC and Amazon is the fallback that keeps it alive without breaking the channel.",
-),
-"SKU archetype and Standard / Acquisition designation": dict(
-    what="Two tags set at concept approval, before the BOM locks, that drive the price band and the COGS composition limits. Archetype is what the product leads with; designation is why it exists commercially. Neither can be changed retroactively.",
-    example="A vitamin C serum leading with a 15 percent active is formula_hero. A cooling eye treatment with a metal applicator is ritual_hero. Tagging the second as the first puts it in the wrong price band with the wrong cost ceiling.",
 ),
 "Monthly and quarterly vendor cost rollups": dict(
     what="Adding up what each vendor and category actually cost over the period, from the captured invoice data. What makes spend visible by function rather than only in aggregate.",
