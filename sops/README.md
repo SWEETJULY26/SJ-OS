@@ -17,4 +17,17 @@ Skills reference these files directly by `sop_id` when they need to walk a proce
 | SKN-OPS-007 | Batch Lifecycle Procedure | ratified |
 | SKN-OPS-008 | IL / Claims / Label Procedure | ratified (Rev.2) |
 | SKN-OPS-009 | Reportable Events Procedure | ratified |
-| SKN-OPS-010 | Supplier Onboarding Procedure | draft |
+| SKN-OPS-010 | Supplier Onboarding Procedure | ratified |
+| SKN-OPS-011 | Formula Development Stage-Gate & IL Review Gate Procedure | ratified |
+| SKN-OPS-012 | PD Readiness → PO Request Handoff Procedure | ratified |
+| SKN-OPS-013 | Purchase Order Lifecycle Procedure (Draft to Close) | ratified |
+| SKN-OPS-014 | Receipt Discrepancy Investigation Procedure | ratified |
+| SKN-OPS-015 | Vendor Invoice Cost Classification & Routing Procedure | ratified |
+| SKN-OPS-016 | Receiving & Batch Creation Procedure | ratified |
+| SKN-OPS-017 | Inventory Adjustment, Write-Off, and Return Disposition Procedure | ratified |
+| SKN-OPS-018 | Monthly S&OP Run Procedure | ratified |
+| SKN-OPS-019 | Inbound Shipment Receipt & Fault-Attribution Procedure | ratified |
+| SKN-OPS-020 | Retailer Outbound ASN & Routing Compliance Procedure | ratified |
+| SKN-OPS-021 | International Outbound DTC Compliance Procedure | ratified |
+| SKN-OPS-022 | DTC Order Exception Routing Procedure | ratified |
+| SKN-OPS-023 | Pre-Ship OOS Hold Sync Procedure | ratified |
