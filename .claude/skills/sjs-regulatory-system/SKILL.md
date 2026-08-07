@@ -63,7 +63,7 @@ outlook-asana-bridge      outlook-plm-bridge      fireflies-asana-bridge
 
 PLM is the source of truth for SKUs, batches, formulas, complaints. plm-assistant is the only writer. No System C skill bypasses it. Asana is the workflow surface; SJS Regulatory Management (gid 1214660807386611) and SJS Reportable Events (gid 1214660834583706) carry queue state. Artifacts (IL packets, claim sub evidence, label files, attestation drafts, registration filings, agency correspondence, Pedrero correspondence) live in SharePoint at `Sweet July/Regulatory/` once stood up; Asana attachments at v6.1/v6.2 interim until v6.3 SharePoint migration.
 
-The SOP catalog (lives in quality-manager, mirrors SharePoint at `Sweet July/PD/Quality Control & Assurance/SOP/`) holds System C SOPs (SKN-OPS-008 IL/Claims/Label, SKN-OPS-009 Reportable Events) alongside System B SOPs. Sub-skills query the catalog at runtime to confirm current revision before significant writes.
+System C SOPs (SKN-OPS-008 IL/Claims/Label, SKN-OPS-009 Reportable Events) are cataloged in Regulatory's own catalog at `regulatory-manager/references/sop-catalog.md` since the 2026-08-06 per-function split; canonical SOP text lives at repo root `sops/` per the 2026-08-04 decision — not SharePoint. Sub-skills query the catalog at runtime to confirm current revision before significant writes; the shared ratification/review/numbering process lives in `quality-manager/references/sop-program.md`.
 
 Pedrero Regulatory (Amy Pedrero principal, Heather Folkes and Teona Bebia secondary) is the external reviewer across System C. Canonical contact card lives in `regulatory-manager/references/pedrero-contacts.md`.
 

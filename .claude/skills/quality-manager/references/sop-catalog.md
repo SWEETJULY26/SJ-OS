@@ -30,8 +30,8 @@ The runtime source of truth for which revision of a Quality SOP is current. Sub-
 
 **Forms (SKN-F-OPS-NNN).** Five forms sit alongside the procedures in PLM `sop_documents`, all Rev 1.0, effective 2024-06-30, on the same 2026-06-30 review cycle as SKN-OPS-001–004: F-001 CAPA Investigation Template, F-002 SAE Report Form, F-003 SAE Investigation Template, F-004 Root Cause Analysis Tools, F-005 Non-Conformance Report (NCR) Form. They were absent from this catalog until the 2026-07-29 wiki audit.
 
-**SharePoint master path (historical, pre-2026-08-04):** `Sweet July/PD/Quality Control & Assurance/SOP/`
-**SOP & Form Log:** `Sweet July/PD/Quality Control & Assurance/Logs/SOP & Form Log.xlsx`
+**SharePoint master path (historical, pre-2026-08-04):** `Sweet July/Product Development/Quality Control & Assurance/SOP/` — note the real path is unabbreviated `Product Development`, directly under `Sweet July` (no folder named `PD` has ever existed in the tenant; the 2026-07-27 audit confirmed this and the string here was corrected 2026-08-07). That folder still holds only the four 2024 Rev.1 docx (SKN-OPS-001–004), now non-canonical copies of the `sops/` markdown — unmarked as superseded on the SharePoint side.
+**SOP & Form Log (historical):** `Sweet July/Product Development/Quality Control & Assurance/Logs/SOP & Form Log.xlsx` — last modified 2024-07-22; predates everything ratified since.
 
 ---
 

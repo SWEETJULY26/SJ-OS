@@ -64,7 +64,7 @@ outlook-asana-bridge      outlook-plm-bridge      fireflies-asana-bridge
 
 PLM is the source of truth for batches, vendors, lab records, and complaint records. plm-assistant is the only writer. No System B skill bypasses it. Asana is the workflow surface; sub-skill projects (SJS CAPA Log, SJ Skin Complaint Log, SJS Quality Management) carry queue state per skill.
 
-The SOP catalog (lives in quality-manager, mirrors SharePoint at `Sweet July/PD/Quality Control & Assurance/SOP/`) is queried by every sub-skill at runtime to confirm current revision before significant writes.
+The Quality SOP catalog (lives in quality-manager, covering SKN-OPS-001–007; canonical SOP text lives at repo root `sops/` per the 2026-08-04 decision — not SharePoint) is queried by every sub-skill at runtime to confirm current revision before significant writes. The shared ratification/review/numbering process lives in `quality-manager/references/sop-program.md`.
 
 ---
 
