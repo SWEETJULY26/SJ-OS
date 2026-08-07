@@ -62,6 +62,45 @@ Keep it terse. Future-you will thank present-you for capturing the *why*, not ju
 **Logged late.** The 2026-07-17 `fireflies-asana-bridge` eval run captured this decision from the SJS Builder Session and flagged it for the log; it was never written up. Surfaced again 2026-07-29 when the role map's stale row broke collaborator resolution during the task-write-contract build.
 
 ---
+## 2026-07-22 — Wire direct Shopify MCP reads into inventory-manager and supply-demand-planner
+
+**Decision:** Both skills now call Shopify directly via MCP instead of relying on PLM or manual upload for Shopify-sourced data. `inventory-manager` calls `mcp__Shopify__get-inventory-levels` for Job 1 (position keeping) and Job 4 (three-way reconciliation) — previously the Shopify side of that math had no defined live source at all. `supply-demand-planner` calls `mcp__Shopify__run-analytics-query` / `list-orders` for DTC actuals in Step 1 of the monthly S&OP run — previously "Shopify" was named as a source but the only concretely wired mechanism was manual CSV upload; CSV now drops to a fallback used only when the MCP read fails, and the run summary must flag it whenever that happens.
+
+**Why:** Alvin scoped this as the two skills where Shopify data actually feeds live decisions (inventory position/reconciliation, demand forecasting) — as opposed to oc3pl-order-manager (Logiwa is already authoritative there) or sjs-status-reporter (PD-only, inherits inventory data downstream instead). S&OP was the sharper gap of the two: a monthly forecast that drives buy recommendations was running on whatever CSV got uploaded, not on live sales data.
+
+**Alternatives considered:** Leaving supply-demand-planner on CSV-primary (rejected — no reason to prefer a manual upload over a live MCP read now that one exists); routing the new reads through PLM's existing Shopify sync instead of a direct MCP call (deferred — see open question below).
+
+**Owner:** Alvin.
+
+---
+## 2026-07-27 — SharePoint reality check: confirmed the live library, found real gaps behind five skills' assumptions
+
+**Decision/finding:** Swept the live SharePoint tenant (read-only MCP) against what `references/sharepoint-api.md` and five Quality/Regulatory skills had been assuming, prompted by Alvin wanting a serious SharePoint cleanup. Confirmed with Alvin: the `Shared Documents/Sweet July/...` library is the real, actively-used one. A migration to a dedicated `sites/SWEETJULY/...` site was started and abandoned — every folder checked there carries a single frozen timestamp (2026-02-28), while the old library has ongoing edits through May/July 2026. Treat any search hit against `sites/SWEETJULY/...` as stale duplicate content, not current state.
+
+Two real gaps surfaced in the live (correct) library itself, independent of the migration mess:
+
+1. **Five SOPs were never actually filed.** The SOP master folder (`Sweet July/Product Development/Quality Control & Assurance/SOP/`) holds only SKN-OPS-001–004 (the original 2024-06-30 batch). SKN-OPS-005 (NCR), 006 (Lab Quality), 007 (Batch Lifecycle), 008 (IL/Claims/Label), 009 (Reportable Events) — each ratified "in-place" per its owning skill's own working draft — were never uploaded as real `.docx` masters. The skills have been treating these as ratified for months off documents nobody filed.
+2. **`Sweet July/Regulatory/` doesn't exist.** Zero hits on direct search. `regulatory-manager`'s entire subfolder pointer (IL Versions, Claim Substantiation, Label Artwork Archive, Retailer Attestations, Reportable Events, Registrations, Pedrero Correspondence) describes a folder that was never built. A `Compliance/` folder and a loose `MOCRA_Ariana/` folder exist instead, directly under Product Development, holding some of the same conceptual content in an unmapped shape.
+
+Also corrected a path error: the real SOP root is `Sweet July/Product Development/Quality Control & Assurance/` (unabbreviated, under `Sweet July`, not `Sweet July Skin`) — `quality-manager/references/sop-catalog.md` had it abbreviated to `Sweet July/PD/...`. Fixed.
+
+**Why this matters:** every one of these skills has been operating on an assumed filing state that doesn't match reality — not a skill logic bug, a documentation/execution gap between "the SOP was ratified in the skill's own review process" and "someone actually uploaded the file." Worth catching before an audit or retailer questionnaire assumes those SOPs are on file where they're not.
+
+**CORRECTION, same day (2026-07-27), after a deeper structural sweep:** the claim above that `sites/SWEETJULY` is a frozen 2026-02-28 snapshot is **wrong and was dangerous advice**. It came from reading folder timestamps only. File timestamps on that site run through 2026-05-15, and — decisively — the entire OPERATIONS library exists ONLY there, with no counterpart in the live library, including two ACTIVE-marked Ops governance SOPs, the 2026 Supply + Demand Plan, and the vendor list. The two structures are split-brain (PD/Quality authoritative in the old library, Operations authoritative on the new site), not original-and-copy. **Deleting the new site would destroy unique work.** Any consolidation must merge. Corrected in `references/sharepoint-api.md`.
+
+**Not yet done (Alvin's call, most require manual SharePoint access since MCP here is read-only):**
+- Decide the fate of the unfinished `sites/SWEETJULY/...` migration — finish it, or merge its unique Operations content into the live library and then retire it. Not a straight delete.
+- File the five missing SOP masters as real uploads.
+- Decide whether to stand up the `Regulatory/` folder as documented, or repoint the three regulatory skills at `Compliance/` + `MOCRA_Ariana/` as they actually exist.
+- Get the real logistics SharePoint path (never located in this sweep; `logistics-manager` names it vaguely as "the logistics folder").
+
+Full corrected folder map in `references/sharepoint-api.md`.
+
+**Owner:** Alvin.
+
+**Open question raised during this work (not resolved, needs its own scoping pass):** PLM currently syncs to Shopify via a separate API integration, which feeds the landing hub's inventory dashboard. Now that Shopify has a direct MCP connector into Claude, does the PLM↔Shopify API sync still pull its weight, or should some/all of that data path move to direct MCP reads instead? This is a bigger build than the two-skill wiring above — touches the landing hub's data pipeline, not just a skill's read source — and needs its own scoping conversation before any change. For now, both syncs coexist: PLM's API sync keeps feeding the landing hub unchanged, and the two skills above read Shopify directly and separately. Flagged in both skills' SKILL.md so the duplication is visible until this resolves.
+
+---
 ## 2026-07-29 — PLM is runtime truth when the three SOP surfaces disagree
 
 **Decision:** Any SOP fact lives on three surfaces — `quality-manager/references/sop-catalog.md` in the repo, `sop_documents` in PLM, and a `sop/` page in the wiki. When they disagree, **PLM is runtime truth**: fix the repo catalog to match, then confirm the wiki page exists. A change that lands on one surface and not the other two is the defect, not a difference of opinion.
