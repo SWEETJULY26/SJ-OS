@@ -75,6 +75,24 @@ Keep it terse. Future-you will thank present-you for capturing the *why*, not ju
 **Status:** All four drift instances fixed 2026-07-29. Full findings in `decisions/wiki-layer-audit-2026-07-29.md`. Two items left open there — Job 0 (the bridges' wiki write-back) has not fired since 2026-05-26, leaving 123 of 133 pages as untouched seed; and `Bridge-and-System-Audit-2026-05-26.md` is cited from three files but exists nowhere, most likely lost in the 2026-07-19 consolidation.
 
 ---
+## 2026-08-06 — Alvin's edits on the page become the matrix
+
+**Decision:** The RACI page's export is now the source, and `raci_rows.py` follows it. Alvin reassigned 83 rows and deleted 8, taking the matrix from 102 activities to 94. The pattern: Danielle picks up A where the call is a leadership call rather than an operating one (HR policy, benefits, separations, accounts payable, claim substantiation, most of Marketing and Creative), Nicole picks up the documentation and regulatory gates plus all four Retail & Wholesale rows, and accountability on the quality system's own rows moved to Alvin while Nicole keeps the cross-function final check. Deleted: the four competitive-intelligence rows, three Finance rows on margin pressure-testing and the walk-away call and SKU archetype, and retail channel launch programs.
+
+**Why:** This is what making the page editable was for. The alternative is that every change waits on a rebuild, which is how the matrix goes stale. The edits went in as given rather than second-guessed; where a change looked like it might be a slip it is flagged in the row's note and in the summary rather than quietly reverted, because it is Alvin's matrix and a silent correction is worse than a wrong cell he can see.
+
+Rationale notes were rewritten on 46 rows. A note claiming "PD Lead owns the technical call outright" on a row whose A is now the President reads as sourced when it is stale, so leaving it would have been the real error.
+
+**Alternatives considered:** Reconciling the skill role-maps to match. Rejected for now: those files decide where a live approval routes, so changing them on a reading of the edits would silently redirect CAPA and vendor-flag approvals off Nicole. Left as-is and raised as the first decision Alvin needs from Danielle and Nicole. Also rejected: keeping `PUB["version"]` at v7 to preserve local copies. The published baseline now equals his edits, so the bump to v8 is what makes the local copy safe to retire.
+
+**Status:** Shipped 2026-08-06. All eight verify checks pass: 94 rows, 94 breakdowns, no orphans, every citation resolves, no open seat or partner holding A, 43 rows transitioning on hire. Page republished to the same URL.
+
+**Open:** Three things the edits raise. The quality gate now reads differently in the matrix than in the 30 July review, and the automation still routes to Nicole. Deleting the competitive-intelligence rows leaves `sjs-comp-intel` and its Routines running work nobody is named for. And two rows look like they may be slips rather than decisions: pre-launch stability testing, where Perrine makes the call and Danielle answers for it, and packaging development, where Ayesha answers for it and Erin and Jan drop to informed.
+
+**Owner:** Alvin.
+
+---
+
 ## 2026-08-06 — Every activity carries a description and a worked example
 
 **Decision:** Clicking an activity on the RACI page opens a drawer describing what the work actually is, with a concrete example, the full A/R/C/I list by name and title, why it sits there, and the source citation. All 102 activities are covered. The text lives in `deliverables/activity_notes.py` and `verify.py` fails if a row loses its breakdown or a breakdown loses its row.

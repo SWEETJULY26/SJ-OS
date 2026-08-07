@@ -20,12 +20,12 @@ for r in ROWS:
 # The published baseline. Everything on the page renders from this, and an
 # edited copy lives in the viewer's browser until they revert.
 PUB = {
-    "version": "v7",
-    "asOf": "31 July 2026",
+    "version": "v8",
+    "asOf": "6 August 2026",
     "positions": [{"id": p[0], "name": p[1], "title": p[2], "status": p[3]}
                   for p in POSITIONS],
     "functions": FUNCS,
-    "rows": [{"f": r[0], "act": r[1], "A": ([r[2]] if r[2] else []), "R": r[3],
+    "rows": [{"f": r[0], "act": r[1], "A": list(r[2]), "R": r[3],
               "C": list(r[4]), "I": list(r[5]),
               "t": r[6] or "", "src": r[7], "n": r[8],
               "what": INFO.get(r[1], {}).get("what", ""),
@@ -805,7 +805,7 @@ JS = r"""
       D.functions.length + ' functions'));
     metaEl.appendChild(el('span', null, 'As of ' + D.asOf));
     metaEl.appendChild(el('span', null,
-      'Reflects the 30 July leadership review and the 31 July role corrections'));
+      'Reflects the 30 July leadership review, the 31 July role corrections and Alvin\'s 6 August pass'));
   }
 
   function render(){
